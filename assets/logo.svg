@@ -1,13 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 64" width="340" height="64" role="img" aria-label="RecoverRevenue">
   <defs>
-    <linearGradient id="r3f" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#3a3e43"/><stop offset="1" stop-color="#24272a"/>
-    </linearGradient>
     <filter id="r3glow" x="-30%" y="-30%" width="160%" height="160%">
       <feGaussianBlur stdDeviation="2.2"/>
     </filter>
   </defs>
-  <rect x="2" y="2" width="60" height="60" rx="15" fill="url(#r3f)"/>
   <g fill="none" stroke-linecap="round" stroke-linejoin="round">
     <g stroke="#4fc2b4" stroke-width="11" opacity=".33" filter="url(#r3glow)">
       <path d="M17 45 V19 H25 a6.5 6.5 0 0 1 0 13 H17 M22 32 L28 45"/>
@@ -17,12 +13,8 @@
       <path d="M17 45 V19 H25 a6.5 6.5 0 0 1 0 13 H17 M22 32 L28 45"/>
       <path d="M36 19 H42 a6 6 0 0 1 0 12 H39 H42 a6.5 6.5 0 0 1 0 13 H35.5"/>
     </g>
-    <g stroke="url(#r3f)" stroke-width="3.6">
-      <path d="M17 45 V19 H25 a6.5 6.5 0 0 1 0 13 H17 M22 32 L28 45"/>
-      <path d="M36 19 H42 a6 6 0 0 1 0 12 H39 H42 a6.5 6.5 0 0 1 0 13 H35.5"/>
-    </g>
   </g>
-  <text x="74" y="43" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="30" font-weight="800" letter-spacing="-0.5">
+  <text x="66" y="43" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="30" font-weight="800" letter-spacing="-0.5">
     <tspan fill="#171a20">Recover</tspan><tspan fill="#4fc2b4">Revenue</tspan>
   </text>
 </svg>
