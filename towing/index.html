@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{BUSINESS_NAME}} — 24/7 Towing & Roadside, {{CITY}} FL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0b0c0e; --bg2: #101216; --ink: #f2f1ec; --dim: #878b94;
+    --line: rgba(242,241,236,.09); --amber: #ffb020; --amber-ink: #1c1200;
+    --display: 'Archivo Black', sans-serif; --body: 'Inter', sans-serif;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--body); background: var(--bg); color: var(--ink); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  ::selection { background: var(--amber); color: var(--amber-ink); }
+  a { color: inherit; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 112px 0; }
+  .eyebrow { font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .16em; color: var(--amber); margin-bottom: 16px; }
+  .display { font-family: var(--display); text-transform: uppercase; line-height: .98; letter-spacing: .01em; }
+
+  /* ---------- nav ---------- */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 90; background: rgba(11,12,14,.72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+  .nav-in { max-width: 1180px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-family: var(--display); font-size: 1rem; text-transform: uppercase; text-decoration: none; letter-spacing: .02em; }
+  .logo b { color: var(--amber); }
+  .nav-right { display: flex; align-items: center; gap: 20px; }
+  .nav-open { font-size: .78rem; color: var(--dim); display: flex; align-items: center; gap: 7px; }
+  .nav-open .pulse { width: 8px; height: 8px; border-radius: 50%; background: #37d67a; box-shadow: 0 0 0 0 rgba(55,214,122,.5); animation: pulse 2s infinite; }
+  @keyframes pulse { 70% { box-shadow: 0 0 0 8px rgba(55,214,122,0); } 100% { box-shadow: 0 0 0 0 rgba(55,214,122,0); } }
+  .nav-cta { background: var(--amber); color: var(--amber-ink); font-weight: 700; font-size: .86rem; text-decoration: none; padding: 10px 18px; border-radius: 8px; position: relative; overflow: hidden; }
+  .nav-cta span { position: relative; z-index: 1; }
+  .nav-cta::after { content: ""; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,.55) 50%, transparent 60%); transform: translateX(-120%); transition: transform .6s ease; }
+  .nav-cta:hover::after { transform: translateX(120%); }
+
+  /* ---------- hero ---------- */
+  .hero { position: relative; min-height: 100svh; display: flex; align-items: center; padding: 140px 0 80px; overflow: hidden; }
+  .hero-bg { position: absolute; inset: 0; z-index: 0; }
+  .hero-bg img { width: 100%; height: 100%; object-fit: cover; opacity: .32; }
+  .hero-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, rgba(11,12,14,.96) 30%, rgba(11,12,14,.55) 70%, rgba(11,12,14,.75) 100%); }
+  #road { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; }
+  .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(11,12,14,.25), rgba(11,12,14,0) 30%, rgba(11,12,14,.85) 92%); pointer-events: none; z-index: 1; }
+  .hero .wrap { position: relative; z-index: 2; display: grid; grid-template-columns: 1.2fr .8fr; gap: 64px; align-items: center; width: 100%; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; font-size: .8rem; font-weight: 600; color: var(--ink); background: rgba(242,241,236,.06); border: 1px solid var(--line); padding: 7px 14px; border-radius: 999px; margin-bottom: 26px; }
+  .hero-badge b { color: var(--amber); }
+  .hero h1 { font-size: clamp(2.7rem, 7.2vw, 5.4rem); margin-bottom: 24px; }
+  .hero h1 .stroke { color: transparent; -webkit-text-stroke: 2px var(--amber); }
+  .h-line { display: block; overflow: hidden; }
+  .h-line > span { display: inline-block; }
+  .hero-sub { color: var(--dim); font-size: 1.06rem; max-width: 460px; margin-bottom: 36px; }
+  .hero-sub strong { color: var(--ink); font-weight: 600; }
+  .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+  .btn-call { background: var(--amber); color: var(--amber-ink); font-weight: 700; font-size: 1.02rem; text-decoration: none; padding: 17px 30px; border-radius: 10px; display: inline-flex; align-items: center; gap: 10px; transition: transform .25s ease, box-shadow .25s ease; }
+  .btn-call:hover { transform: translateY(-2px); box-shadow: 0 14px 34px rgba(255,176,32,.28); }
+  .btn-ghost { color: var(--ink); font-weight: 600; font-size: .95rem; text-decoration: none; padding: 17px 24px; border: 1px solid var(--line); border-radius: 10px; transition: border-color .25s ease; }
+  .btn-ghost:hover { border-color: var(--amber); }
+
+  /* dispatch card */
+  .dispatch { background: rgba(16,18,22,.82); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid var(--line); border-radius: 18px; padding: 26px; box-shadow: 0 24px 60px rgba(0,0,0,.45); }
+  .dispatch-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .dispatch-head h3 { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .15em; color: var(--dim); }
+  .dispatch-live { font-size: .68rem; font-weight: 700; color: #37d67a; text-transform: uppercase; letter-spacing: .1em; display: flex; align-items: center; gap: 6px; }
+  .dispatch-live::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #37d67a; }
+  .d-row { display: flex; justify-content: space-between; align-items: baseline; padding: 13px 0; border-bottom: 1px solid var(--line); }
+  .d-row:last-of-type { border-bottom: none; }
+  .d-key { font-size: .84rem; color: var(--dim); }
+  .d-val { font-size: .95rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .d-val.amber { color: var(--amber); }
+  .d-bar { height: 5px; border-radius: 3px; background: rgba(242,241,236,.08); margin-top: 18px; overflow: hidden; }
+  .d-bar i { display: block; height: 100%; width: 0%; background: var(--amber); border-radius: 3px; }
+  .d-note { font-size: .76rem; color: var(--dim); margin-top: 12px; }
+
+  /* ---------- marquee ---------- */
+  .marquee { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 22px 0; overflow: hidden; background: var(--bg2); }
+  .marquee-track { display: flex; width: max-content; will-change: transform; animation: scroll 28s linear infinite; }
+  .marquee-track span { font-family: var(--display); text-transform: uppercase; font-size: 1.05rem; color: var(--dim); white-space: nowrap; padding-right: 18px; }
+  .marquee-track span i { color: var(--amber); font-style: normal; padding-right: 18px; }
+  @keyframes scroll { to { transform: translateX(-50%); } }
+
+  /* ---------- services bento ---------- */
+  .bento { display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 210px; gap: 14px; }
+  .cell { border: 1px solid var(--line); border-radius: 16px; padding: 26px; background: var(--bg2); display: flex; flex-direction: column; justify-content: flex-end; position: relative; overflow: hidden; transition: transform .3s ease, border-color .3s ease; }
+  .cell:hover { transform: translateY(-4px); border-color: rgba(255,176,32,.45); }
+  .cell.feature { grid-column: span 2; grid-row: span 2; justify-content: space-between; background: linear-gradient(160deg, #14161b 0%, var(--bg2) 60%); }
+  .cell.feature .cell-photo { position: absolute; inset: 0; z-index: 0; }
+  .cell.feature .cell-photo img { width: 100%; height: 100%; object-fit: cover; opacity: .38; }
+  .cell.feature .cell-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(16,18,22,.35) 0%, rgba(16,18,22,.92) 78%); }
+  .cell.feature > *:not(.cell-photo) { position: relative; z-index: 1; }
+  .cell.photo-cell { padding: 0; }
+  .cell.photo-cell img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+  .cell.photo-cell:hover img { transform: scale(1.05); }
+  .cell.photo-cell .pc-lb { position: absolute; left: 16px; bottom: 14px; z-index: 1; font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--ink); background: rgba(11,12,14,.72); backdrop-filter: blur(8px); padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); }
+  .cell h3 { font-family: var(--display); text-transform: uppercase; font-size: 1.02rem; margin-bottom: 6px; }
+  .cell.feature h3 { font-size: clamp(1.4rem, 2.4vw, 1.9rem); }
+  .cell p { font-size: .86rem; color: var(--dim); max-width: 420px; }
+  .cell .tag { align-self: flex-start; font-size: .66rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--amber); border: 1px solid rgba(255,176,32,.35); padding: 5px 11px; border-radius: 999px; }
+  .cell .big-eta { font-family: var(--display); font-size: clamp(2.6rem, 5vw, 4rem); color: var(--amber); line-height: 1; font-variant-numeric: tabular-nums; }
+  .cell .eta-cap { font-size: .78rem; color: var(--dim); margin-top: 6px; }
+
+  /* ---------- process ---------- */
+  .process { background: var(--bg2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
+  .step { padding: 36px 32px 8px 0; border-left: 1px solid var(--line); padding-left: 32px; }
+  .step:first-child { border-left: none; padding-left: 0; }
+  .step .num { font-family: var(--display); font-size: clamp(3.4rem, 6vw, 5rem); color: transparent; -webkit-text-stroke: 1.5px rgba(242,241,236,.28); line-height: 1; }
+  .step h3 { font-size: 1.08rem; font-weight: 700; margin: 18px 0 10px; }
+  .step p { font-size: .9rem; color: var(--dim); }
+  .step p b { color: var(--ink); font-weight: 600; }
+
+  /* ---------- fleet strip ---------- */
+  .fleet { padding: 0 0 112px; }
+  .fleet-grid { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 12px; }
+  .fleet-grid .f { position: relative; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); }
+  .fleet-grid img { width: 100%; height: 280px; object-fit: cover; transition: transform .5s ease; }
+  .fleet-grid .f:hover img { transform: scale(1.04); }
+  .fleet-grid .f span { position: absolute; left: 16px; bottom: 14px; font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--ink); background: rgba(11,12,14,.72); backdrop-filter: blur(8px); padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); }
+
+  /* ---------- stats ---------- */
+  .stats-band { position: relative; text-align: center; overflow: hidden; }
+  .stats-route { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); width: 100%; height: 140px; opacity: .5; pointer-events: none; }
+  .stats-grid { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; max-width: 900px; margin: 0 auto; }
+  .stat .n { font-family: var(--display); font-size: clamp(2.6rem, 6vw, 4.4rem); color: var(--ink); font-variant-numeric: tabular-nums; line-height: 1; }
+  .stat .n em { font-style: normal; color: var(--amber); }
+  .stat .l { font-size: .8rem; color: var(--dim); margin-top: 10px; text-transform: uppercase; letter-spacing: .1em; font-weight: 600; }
+
+  /* ---------- reviews ---------- */
+  .rev-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 44px; flex-wrap: wrap; }
+  .rev-head h2 { font-size: clamp(1.9rem, 4vw, 3rem); }
+  .g-badge { display: flex; align-items: center; gap: 12px; border: 1px solid var(--line); border-radius: 12px; padding: 12px 18px; background: var(--bg2); }
+  .g-badge .score { font-family: var(--display); font-size: 1.6rem; color: var(--amber); }
+  .g-badge .cap { font-size: .74rem; color: var(--dim); line-height: 1.4; }
+  .g-badge .stars { color: var(--amber); letter-spacing: 2px; font-size: .8rem; }
+  .rev-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .rev { border: 1px solid var(--line); border-radius: 16px; padding: 28px; background: var(--bg2); display: flex; flex-direction: column; gap: 18px; }
+  .rev .q { font-family: var(--display); color: var(--amber); font-size: 1.6rem; line-height: 1; }
+  .rev p { font-size: .92rem; color: var(--ink); line-height: 1.65; flex: 1; }
+  .rev .by { font-size: .8rem; color: var(--dim); }
+  .rev .by b { color: var(--ink); display: block; font-size: .86rem; }
+
+  /* ---------- final cta ---------- */
+  .final { text-align: center; padding: 140px 0 150px; position: relative; overflow: hidden; }
+  .final::before { content: ""; position: absolute; left: 50%; bottom: -40%; width: 900px; height: 500px; transform: translateX(-50%); background: radial-gradient(ellipse at center, rgba(255,176,32,.13), transparent 65%); pointer-events: none; }
+  .final .eyebrow { justify-content: center; }
+  .final h2 { font-size: clamp(2.2rem, 6vw, 4.6rem); margin-bottom: 18px; }
+  .final p { color: var(--dim); margin-bottom: 40px; font-size: 1.05rem; }
+  .final .phone { font-family: var(--display); font-size: clamp(1.8rem, 5vw, 3.2rem); color: var(--amber); text-decoration: none; display: inline-block; border-bottom: 3px solid rgba(255,176,32,.35); padding-bottom: 6px; transition: border-color .25s ease; }
+  .final .phone:hover { border-color: var(--amber); }
+  footer { border-top: 1px solid var(--line); padding: 30px 0; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: .8rem; color: var(--dim); }
+
+  /* sticky mobile call bar */
+  .callbar { position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 95; display: none; background: var(--amber); color: var(--amber-ink); border-radius: 14px; padding: 16px; text-align: center; font-weight: 800; font-size: 1rem; text-decoration: none; box-shadow: 0 12px 34px rgba(0,0,0,.5); transform: translateY(120%); transition: transform .4s cubic-bezier(.22,1,.36,1); }
+  .callbar.on { transform: translateY(0); }
+
+  @media (max-width: 900px) {
+    section { padding: 76px 0; }
+    .hero .wrap { grid-template-columns: 1fr; gap: 44px; }
+    .bento { grid-template-columns: 1fr 1fr; grid-auto-rows: 190px; }
+    .cell.feature { grid-column: span 2; }
+    .steps { grid-template-columns: 1fr; gap: 8px; }
+    .step { border-left: none; padding-left: 0; border-top: 1px solid var(--line); padding-top: 28px; }
+    .step:first-child { border-top: none; padding-top: 0; }
+    .stats-grid { grid-template-columns: 1fr; gap: 44px; }
+    .fleet { padding-bottom: 76px; }
+    .fleet-grid { grid-template-columns: 1fr; }
+    .fleet-grid img { height: 220px; }
+    .rev-grid { grid-template-columns: 1fr; }
+    .callbar { display: block; }
+    .nav-open { display: none; }
+  }
+  @media (max-width: 560px) {
+    .bento { grid-template-columns: 1fr; grid-auto-rows: auto; }
+    .cell { min-height: 150px; }
+    .cell.feature { grid-column: span 1; min-height: 300px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track { animation: none; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-in">
+    <a class="logo" href="#"><span data-p="name">{{BUSINESS_NAME}}</span><b>.</b></a>
+    <div class="nav-right">
+      <div class="nav-open"><span class="pulse"></span>Dispatch open now — 24/7</div>
+      <a class="nav-cta" href="tel:{{PHONE}}" data-p="tel"><span data-p="phone">{{PHONE}}</span></a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-bg"><img src="https://images.unsplash.com/photo-1730514784243-f0e7f09c9f50?q=80&w=1800&auto=format&fit=crop" alt="" loading="eager"></div>
+  <canvas id="road"></canvas>
+  <div class="wrap">
+    <div>
+      <div class="hero-badge">★ <b data-p="rating">{{RATING}}</b>&nbsp;· <span data-p="reviews">{{REVIEW_COUNT}}</span> Google reviews · <span data-p="city">{{CITY}}</span>, FL</div>
+      <h1 class="display">
+        <span class="h-line"><span>Stuck is</span></span>
+        <span class="h-line"><span>temporary.</span></span>
+        <span class="h-line"><span class="stroke">30 minutes,</span></span>
+        <span class="h-line"><span>tops.</span></span>
+      </h1>
+      <p class="hero-sub"><strong data-p="tagline">{{TAGLINE}}</strong> One call reaches a live dispatcher — not a voicemail — and a truck starts rolling while you're still on the phone. <span data-p="years">{{YEARS}}</span> years working <span data-p="city">{{CITY}}</span> roads, day and night.</p>
+      <div class="hero-ctas">
+        <a class="btn-call" href="tel:{{PHONE}}" data-p="tel">Get a truck rolling now</a>
+        <a class="btn-ghost" href="#services">What we handle</a>
+      </div>
+    </div>
+    <aside class="dispatch" aria-label="Sample dispatch status">
+      <div class="dispatch-head"><h3>Dispatch Board</h3><span class="dispatch-live">Live</span></div>
+      <div class="d-row"><span class="d-key">Nearest truck</span><span class="d-val">Unit 4 — Flatbed</span></div>
+      <div class="d-row"><span class="d-key">Current area</span><span class="d-val" data-p="city">{{CITY}}</span></div>
+      <div class="d-row"><span class="d-key">Est. arrival</span><span class="d-val amber"><span id="eta">18</span> min</span></div>
+      <div class="d-row"><span class="d-key">After-hours line</span><span class="d-val">Answered — always</span></div>
+      <div class="d-bar"><i id="etaBar"></i></div>
+      <p class="d-note">Every call is answered by a real person. If we're mid-tow, you get a text back in under a minute — never a dead line.</p>
+    </aside>
+  </div>
+</header>
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track" id="mq">
+    <span>Emergency Towing <i>/</i> Winch-Out Recovery <i>/</i> Jump Starts <i>/</i> Lockouts <i>/</i> Tire Changes <i>/</i> Mobile Mechanic <i>/</i> Accident Recovery <i>/</i> 24 Hours — 7 Days <i>/</i> </span>
+  </div>
+</div>
+
+<section id="services">
+  <div class="wrap">
+    <p class="eyebrow">What we handle</p>
+    <h2 class="display" style="font-size:clamp(1.9rem,4vw,3rem);margin-bottom:44px">Any vehicle. Any ditch.<br>Any hour.</h2>
+    <div class="bento reveal-group">
+      <div class="cell feature">
+        <div class="cell-photo"><img src="https://images.unsplash.com/photo-1686966933735-305bd8fe0a77?q=80&w=1200&auto=format&fit=crop" alt="Car being loaded onto a flatbed tow truck" loading="lazy"></div>
+        <span class="tag">Most called</span>
+        <div>
+          <div class="big-eta" id="etaBig">30</div>
+          <div class="eta-cap">minute average arrival, city limits</div>
+        </div>
+        <div>
+          <h3>Emergency Towing</h3>
+          <p>Flatbed and wheel-lift, sedans to dually trucks. Breakdown, accident, or a car that just gave up — we hook it, you ride up front, it gets where it needs to go.</p>
+        </div>
+      </div>
+      <div class="cell"><div><h3>Winch-Out Recovery</h3><p>Mud, sand, ditches, retention ponds. If it went off the pavement, we pull it back on.</p></div></div>
+      <div class="cell"><div><h3>Jump Starts &amp; Lockouts</h3><p>Dead battery or keys in the ignition — usually solved in one stop, no tow needed.</p></div></div>
+      <div class="cell"><div><h3>Tire Changes</h3><p>Spare mounted roadside. No spare? We tow you straight to the shop you choose.</p></div></div>
+      <div class="cell"><div><h3>Mobile Mechanic</h3><p>Some fixes shouldn't need a tow. Alternators, starters, belts — done where you're parked.</p></div></div>
+      <div class="cell photo-cell"><img src="https://images.unsplash.com/photo-1738101996177-13110d20a973?q=80&w=800&auto=format&fit=crop" alt="Tow operator in safety gear beside his truck" loading="lazy"><span class="pc-lb">On scene, day or night</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="process">
+  <div class="wrap">
+    <p class="eyebrow">How it works</p>
+    <h2 class="display" style="font-size:clamp(1.9rem,4vw,3rem);margin-bottom:52px">Three steps, zero runaround.</h2>
+    <div class="steps reveal-group">
+      <div class="step"><div class="num">01</div><h3>Call — a person answers</h3><p>Tell us where you are and what happened. <b>No phone tree, no callback queue.</b> Pin-drop by text works too.</p></div>
+      <div class="step"><div class="num">02</div><h3>Truck dispatched live</h3><p>You get the driver's name and a real ETA before you hang up. <b>Price quoted up front</b> — the number doesn't change on arrival.</p></div>
+      <div class="step"><div class="num">03</div><h3>Back on the road</h3><p>Hooked, hauled, or fixed on the spot. Card, cash, or tap to pay. <b>Most calls closed in under an hour, door to done.</b></p></div>
+    </div>
+  </div>
+</section>
+
+<div class="fleet">
+  <div class="wrap">
+    <div class="fleet-grid reveal-group">
+      <div class="f"><img src="https://images.unsplash.com/photo-1730514785075-b065c757b653?q=80&w=1000&auto=format&fit=crop" alt="SUV secured on a flatbed tow truck" loading="lazy"><span>Flatbed — zero drivetrain wear</span></div>
+      <div class="f"><img src="https://images.unsplash.com/photo-1698998882426-39a6609ab10a?q=80&w=800&auto=format&fit=crop" alt="Pickup truck being hauled on a flatbed" loading="lazy"><span>Trucks &amp; 4x4s welcome</span></div>
+      <div class="f"><img src="https://images.unsplash.com/photo-1616728827388-84563c099b29?q=80&w=800&auto=format&fit=crop" alt="Heavy-duty wrecker rig" loading="lazy"><span>Heavy recovery rig</span></div>
+    </div>
+  </div>
+</div>
+
+<section class="stats-band">
+  <svg class="stats-route" viewBox="0 0 1200 140" preserveAspectRatio="none" aria-hidden="true">
+    <path id="routePath" d="M-10,110 C200,110 260,30 460,30 S760,120 940,90 S1150,40 1210,55" fill="none" stroke="rgba(255,176,32,.4)" stroke-width="2" stroke-dasharray="8 10"/>
+  </svg>
+  <div class="wrap">
+    <div class="stats-grid">
+      <div class="stat"><div class="n"><em data-count data-p="years">{{YEARS}}</em>+</div><div class="l">Years on these roads</div></div>
+      <div class="stat"><div class="n"><span data-count data-p="reviews">{{REVIEW_COUNT}}</span></div><div class="l">Five-star Google reviews</div></div>
+      <div class="stat"><div class="n"><em>24/7</em></div><div class="l">Nights, weekends, holidays</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="rev-head">
+      <div>
+        <p class="eyebrow">Word on the street</p>
+        <h2 class="display">Drivers we've<br>pulled out of bad days.</h2>
+      </div>
+      <div class="g-badge">
+        <span class="score" data-p="rating">{{RATING}}</span>
+        <div class="cap"><span class="stars">★★★★★</span><br><span data-p="reviews">{{REVIEW_COUNT}}</span> reviews on Google</div>
+      </div>
+    </div>
+    <div class="rev-grid reveal-group">
+      <div class="rev"><span class="q">“</span><p>{{REVIEW_1}}</p><div class="by"><b>{{REVIEWER_1}}</b>Google review</div></div>
+      <div class="rev"><span class="q">“</span><p>{{REVIEW_2}}</p><div class="by"><b>{{REVIEWER_2}}</b>Google review</div></div>
+      <div class="rev"><span class="q">“</span><p>{{REVIEW_3}}</p><div class="by"><b>{{REVIEWER_3}}</b>Google review</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <p class="eyebrow">Before you need it</p>
+    <h2 class="display">Save this number.</h2>
+    <p>The worst time to search "tow truck near me" is from the shoulder of the highway.</p>
+    <a class="phone" href="tel:{{PHONE}}" data-p="tel"><span data-p="phone">{{PHONE}}</span></a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 <span data-p="name">{{BUSINESS_NAME}}</span> · <span data-p="city">{{CITY}}</span>, FL</span>
+    <span>Licensed &amp; insured · 24/7 dispatch · <a href="tel:{{PHONE}}" data-p="tel" style="color:var(--amber);text-decoration:none"><span data-p="phone">{{PHONE}}</span></a></span>
+  </div>
+</footer>
+
+<a class="callbar" id="callbar" href="tel:{{PHONE}}" data-p="tel">📞 Call now — a person answers</a>
+
+<script>
+// ---------- URL-parameter personalization (text a custom link mid-call) ----------
+// ?name=Mike's+Towing&phone=8135550100&city=Tampa&rating=4.8&reviews=112&years=15&tagline=...&r1=...&r2=...&r3=...&rn1=Name
+(function(){
+  const q = new URLSearchParams(location.search);
+  const get = k => q.get(k);
+  const phoneRaw = (get('phone') || '').replace(/[^\d]/g, '');
+  const phonePretty = phoneRaw.length === 10 ? `(${phoneRaw.slice(0,3)}) ${phoneRaw.slice(3,6)}-${phoneRaw.slice(6)}` : get('phone');
+  const tokens = {
+    '{{BUSINESS_NAME}}': get('name'), '{{CITY}}': get('city'), '{{PHONE}}': phonePretty,
+    '{{RATING}}': get('rating'), '{{REVIEW_COUNT}}': get('reviews'),
+    '{{YEARS}}': get('years'), '{{TAGLINE}}': get('tagline'),
+    '{{REVIEW_1}}': get('r1'), '{{REVIEW_2}}': get('r2'), '{{REVIEW_3}}': get('r3'),
+    '{{REVIEWER_1}}': get('rn1'), '{{REVIEWER_2}}': get('rn2'), '{{REVIEWER_3}}': get('rn3'),
+  };
+  const fallbacks = {
+    '{{BUSINESS_NAME}}': 'Ironline Towing', '{{CITY}}': 'Tampa', '{{PHONE}}': '(813) 555-0100',
+    '{{RATING}}': '4.9', '{{REVIEW_COUNT}}': '87', '{{YEARS}}': '12',
+    '{{TAGLINE}}': 'Family-run, straight prices, no games.',
+    '{{REVIEW_1}}': 'Blew a tire on I-275 at 11pm with my kids in the car. He answered on the second ring and was there in 20 minutes. Cannot say enough good things.',
+    '{{REVIEW_2}}': 'Quoted me a price on the phone and that is exactly what I paid. Try finding another tow company that does that.',
+    '{{REVIEW_3}}': 'Got my truck out of soft sand at the boat ramp when two other companies said they could not. Fast, careful, fair.',
+    '{{REVIEWER_1}}': 'Local driver', '{{REVIEWER_2}}': 'Local driver', '{{REVIEWER_3}}': 'Local driver',
+  };
+  let html = document.body.innerHTML, changed = false;
+  for (const [tok, val] of Object.entries(tokens)) {
+    const v = val || fallbacks[tok];
+    if (v && html.includes(tok)) { html = html.replaceAll(tok, v); changed = true; }
+  }
+  if (changed) document.body.innerHTML = html;
+  const name = get('name') || fallbacks['{{BUSINESS_NAME}}'];
+  const city = get('city') || fallbacks['{{CITY}}'];
+  document.title = `${name} — 24/7 Towing & Roadside, ${city} FL`;
+  const telDigits = phoneRaw || '8135550100';
+  document.querySelectorAll('[data-p="tel"]').forEach(el => { el.href = 'tel:' + telDigits; });
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script>
+// ---------- motion ----------
+(function(){
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isTouch = window.matchMedia('(pointer: coarse)').matches;
+
+  // headlight-streak canvas — the signature layer
+  try {
+    const cv = document.getElementById('road');
+    const ctx = cv.getContext('2d');
+    let w, h, streaks = [];
+    const COUNT = reduced ? 0 : (isTouch ? 14 : 30);
+    function size(){ w = cv.width = cv.offsetWidth * devicePixelRatio; h = cv.height = cv.offsetHeight * devicePixelRatio; }
+    size(); addEventListener('resize', size);
+    function mk(init){
+      const lane = Math.random();
+      return {
+        x: init ? Math.random() * w : -200,
+        y: h * (0.15 + lane * 0.75),
+        len: (60 + Math.random() * 160) * devicePixelRatio,
+        sp: (2.5 + Math.random() * 5) * devicePixelRatio,
+        a: 0.04 + Math.random() * 0.12,
+        hue: Math.random() < 0.72 ? '255,176,32' : '242,241,236',
+        th: (1 + Math.random() * 1.6) * devicePixelRatio,
+      };
+    }
+    for (let i = 0; i < COUNT; i++) streaks.push(mk(true));
+    let mx = 0.5;
+    if (!isTouch) addEventListener('mousemove', e => { mx = e.clientX / innerWidth; });
+    function frame(){
+      ctx.clearRect(0, 0, w, h);
+      // faint lane lines
+      ctx.strokeStyle = 'rgba(242,241,236,.045)';
+      ctx.lineWidth = 1 * devicePixelRatio;
+      ctx.setLineDash([14 * devicePixelRatio, 22 * devicePixelRatio]);
+      for (let i = 1; i < 4; i++) {
+        ctx.beginPath(); ctx.moveTo(0, h * i / 4); ctx.lineTo(w, h * i / 4); ctx.stroke();
+      }
+      ctx.setLineDash([]);
+      const drift = (mx - 0.5) * 0.8;
+      for (const s of streaks) {
+        s.x += s.sp * (1 + drift);
+        if (s.x - s.len > w) Object.assign(s, mk(false));
+        const g = ctx.createLinearGradient(s.x - s.len, s.y, s.x, s.y);
+        g.addColorStop(0, `rgba(${s.hue},0)`);
+        g.addColorStop(1, `rgba(${s.hue},${s.a})`);
+        ctx.strokeStyle = g;
+        ctx.lineWidth = s.th;
+        ctx.beginPath(); ctx.moveTo(s.x - s.len, s.y); ctx.lineTo(s.x, s.y); ctx.stroke();
+      }
+      if (COUNT) requestAnimationFrame(frame);
+    }
+    if (COUNT) requestAnimationFrame(frame); else { ctx && ctx.clearRect(0,0,w,h); }
+  } catch(e) { /* canvas unavailable — static hero is fine */ }
+
+  // ETA ticker in dispatch card
+  const eta = document.getElementById('eta'), etaBar = document.getElementById('etaBar');
+  if (eta && !reduced) {
+    let val = 18, dir = -1;
+    setInterval(() => {
+      val += dir; if (val <= 12) dir = 1; if (val >= 22) dir = -1;
+      eta.textContent = val;
+    }, 4000);
+  }
+
+  // GSAP choreography
+  try {
+    if (typeof gsap !== 'undefined' && !reduced) {
+      gsap.registerPlugin(ScrollTrigger);
+
+      gsap.from('.h-line > span', { yPercent: 115, duration: 0.9, ease: 'power3.out', stagger: 0.1, delay: 0.15 });
+      gsap.from('.hero-badge, .hero-sub, .hero-ctas', { y: 22, opacity: 0, duration: 0.8, ease: 'power2.out', stagger: 0.09, delay: 0.55 });
+      gsap.from('.dispatch', { y: 34, opacity: 0, duration: 1, ease: 'power2.out', delay: 0.75 });
+      if (etaBar) gsap.to(etaBar, { width: '62%', duration: 1.6, ease: 'power2.inOut', delay: 1.4 });
+
+      document.querySelectorAll('.reveal-group').forEach(group => {
+        gsap.from(group.children, {
+          y: 36, opacity: 0, duration: 0.8, ease: 'power2.out', stagger: 0.09,
+          scrollTrigger: { trigger: group, start: 'top 82%', once: true }
+        });
+      });
+
+      // count-up stats
+      document.querySelectorAll('[data-count]').forEach(el => {
+        const end = parseInt(el.textContent.replace(/\D/g, ''), 10);
+        if (!end) return;
+        const obj = { v: 0 };
+        gsap.to(obj, {
+          v: end, duration: 1.6, ease: 'power2.out', snap: { v: 1 },
+          onUpdate: () => { el.textContent = obj.v; },
+          scrollTrigger: { trigger: el, start: 'top 85%', once: true }
+        });
+      });
+
+      // route line draws across the stats band
+      const path = document.getElementById('routePath');
+      if (path) {
+        const len = path.getTotalLength();
+        gsap.set(path, { strokeDasharray: `${len}`, strokeDashoffset: len });
+        gsap.to(path, {
+          strokeDashoffset: 0, ease: 'none',
+          scrollTrigger: { trigger: '.stats-band', start: 'top 85%', end: 'bottom 45%', scrub: 1 }
+        });
+      }
+
+      // hero content eases back as you leave
+      gsap.to('.hero .wrap', {
+        opacity: 0.25, scale: 0.97, ease: 'none',
+        scrollTrigger: { trigger: '.hero', start: 'bottom 70%', end: 'bottom 20%', scrub: true }
+      });
+    }
+  } catch(e) { /* GSAP failed — page remains fully readable */ }
+
+  // sticky mobile call bar after hero
+  const bar = document.getElementById('callbar');
+  if (bar) {
+    addEventListener('scroll', () => {
+      bar.classList.toggle('on', scrollY > innerHeight * 0.6);
+    }, { passive: true });
+  }
+})();
+</script>
+</body>
+</html>

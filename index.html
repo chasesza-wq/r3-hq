@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RecoverRevenue — Websites & AI systems that make local businesses money</title>
+<meta name="description" content="We build websites and AI systems that make local businesses money — not just look good. Med spas, restaurants, home services.">
+<link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+<style>
+  :root{
+    --bg:#ffffff; --bg2:#f5f6f7; --ink:#171a20; --dim:#8e939c;
+    --line:rgba(23,26,32,.09); --blue:#143D73; --green:#1DB667;
+    --pill:#171a20; --pill-ink:#ffffff;
+  }
+  [data-theme="dark"]{
+    --bg:#101113; --bg2:#1a1c1f; --ink:#f4f5f6; --dim:#84888f;
+    --line:rgba(244,245,246,.09); --pill:#f4f5f6; --pill-ink:#101113;
+    --blue:#5B8DD9;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;
+    background:var(--bg); color:var(--ink);
+    transition:background .3s,color .3s;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+  h1,h2,h3{letter-spacing:-.03em;font-weight:700}
+  section{padding:clamp(70px,10vw,130px) 0}
+  .kicker{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);font-weight:700;margin-bottom:16px}
+  .h2{font-size:clamp(30px,4.4vw,52px);line-height:1.08;margin-bottom:18px}
+  .lead{font-size:clamp(16px,1.6vw,19px);line-height:1.65;color:var(--dim);max-width:640px}
+  .lead b{color:var(--ink)}
+
+  /* reveal */
+  .rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.22,.7,.3,1)}
+  .rv.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
+
+  /* ---------- nav ---------- */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:50;
+    background:color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-in{max-width:1120px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between}
+  .logo{font-size:13px;font-weight:800;letter-spacing:.18em}
+  .nav-links{display:flex;gap:28px;align-items:center}
+  .nav-links a{font-size:13.5px;font-weight:600;color:var(--dim);text-decoration:none;transition:color .2s}
+  .nav-links a:hover{color:var(--ink)}
+  .nav-cta{
+    font-size:13px;font-weight:700;color:var(--pill-ink)!important;background:var(--pill);
+    padding:9px 18px;border-radius:20px;
+  }
+  .tbtn{
+    width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:none;
+    color:var(--ink);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;
+  }
+  @media (max-width:760px){ .nav-links a.hideM{display:none} }
+
+  /* ---------- hero ---------- */
+  .hero{padding:170px 0 110px;text-align:left}
+  .hero h1{font-size:clamp(40px,7vw,84px);line-height:1.02;max-width:900px}
+  .hero h1 em{font-style:normal;color:var(--green)}
+  .hero .lead{margin:26px 0 38px}
+  .cta-row{display:flex;gap:14px;flex-wrap:wrap}
+  .btn{
+    display:inline-block;padding:16px 30px;border-radius:14px;font-size:15px;font-weight:700;
+    text-decoration:none;letter-spacing:-.01em;border:1px solid transparent;transition:transform .2s,opacity .2s;
+  }
+  .btn:hover{transform:translateY(-2px)}
+  .btn.solid{background:var(--pill);color:var(--pill-ink)}
+  .btn.ghost{border-color:var(--line);color:var(--ink)}
+  .hero-strip{
+    display:flex;gap:34px;flex-wrap:wrap;margin-top:64px;padding-top:28px;border-top:1px solid var(--line);
+  }
+  .hero-strip .it{font-size:13px;color:var(--dim);font-weight:600;display:flex;align-items:center;gap:8px}
+  .hero-strip .dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+
+  /* ---------- thesis ---------- */
+  .thesis{border-top:1px solid var(--line)}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:50px}
+  @media (max-width:820px){.grid3{grid-template-columns:1fr}}
+  .tcard{border:1px solid var(--line);border-radius:18px;padding:28px}
+  .tcard .n{font-size:13px;font-weight:800;color:var(--blue);letter-spacing:.12em;margin-bottom:14px}
+  .tcard h3{font-size:19px;margin-bottom:10px}
+  .tcard p{font-size:14.5px;line-height:1.6;color:var(--dim)}
+  .tcard p b{color:var(--ink)}
+
+  /* ---------- services / pricing ---------- */
+  .services{border-top:1px solid var(--line)}
+  .niche-tabs{display:flex;gap:8px;margin:40px 0 28px;flex-wrap:wrap}
+  .ntab{
+    padding:11px 22px;border-radius:22px;border:1px solid var(--line);background:none;
+    color:var(--dim);font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .2s;
+  }
+  .ntab.active{background:var(--pill);color:var(--pill-ink);border-color:transparent}
+  .niche{display:none}
+  .niche.active{display:block;animation:nf .35s ease}
+  @keyframes nf{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .niche-note{font-size:14px;color:var(--dim);margin-bottom:26px;max-width:620px;line-height:1.6}
+  .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media (max-width:900px){.tiers{grid-template-columns:1fr}}
+  .tier{border:1px solid var(--line);border-radius:20px;padding:30px;display:flex;flex-direction:column;position:relative}
+  .tier.feat{border-color:var(--blue)}
+  .tier .flag{
+    position:absolute;top:-11px;left:26px;background:var(--blue);color:#fff;
+    font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;border-radius:12px;padding:4px 12px;
+  }
+  .tier h3{font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+  .tier .price{font-size:38px;font-weight:700;letter-spacing:-.03em;margin:14px 0 2px;font-variant-numeric:tabular-nums}
+  .tier .price span{font-size:15px;color:var(--dim);font-weight:600;letter-spacing:0}
+  .tier .setup{font-size:13px;color:var(--dim);margin-bottom:18px}
+  .tier ul{list-style:none;margin:0 0 24px;flex:1}
+  .tier li{font-size:14px;line-height:1.5;color:var(--ink);padding:9px 0;border-top:1px solid var(--line);display:flex;gap:10px}
+  .tier li::before{content:"—";color:var(--blue);font-weight:700}
+  .tier .go{font-size:12.5px;color:var(--dim);margin-bottom:16px}
+  .tier a{
+    text-align:center;padding:13px;border-radius:12px;font-size:14px;font-weight:700;text-decoration:none;
+    border:1px solid var(--line);color:var(--ink);transition:all .2s;
+  }
+  .tier.feat a{background:var(--blue);color:#fff;border-color:transparent}
+  .tier a:hover{transform:translateY(-1px)}
+  .addon{
+    margin-top:16px;border:1px dashed var(--line);border-radius:16px;padding:20px 26px;
+    display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
+  }
+  .addon .t{font-size:14.5px;font-weight:700}
+  .addon .d{font-size:13px;color:var(--dim);margin-top:3px}
+  .addon .p{font-size:15px;font-weight:700;white-space:nowrap}
+  .terms{display:flex;gap:26px;flex-wrap:wrap;margin-top:34px}
+  .terms .it{font-size:12.5px;color:var(--dim);font-weight:600}
+  .terms .it b{color:var(--ink)}
+
+  /* ---------- portal ---------- */
+  .portal{border-top:1px solid var(--line);background:var(--bg2)}
+  .portal-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+  @media (max-width:920px){.portal-grid{grid-template-columns:1fr}}
+  .phone{
+    width:340px;max-width:100%;height:700px;margin:0 auto;border-radius:40px;overflow:hidden;
+    box-shadow:0 30px 70px rgba(0,0,0,.25),0 0 0 9px #17181a,0 0 0 11px #3a3b3e;
+    background:#000;
+  }
+  .phone iframe{width:100%;height:100%;border:none;display:block}
+  .plist{list-style:none;margin-top:26px}
+  .plist li{padding:15px 0;border-top:1px solid var(--line);font-size:15px;line-height:1.5}
+  .plist li b{display:block;margin-bottom:2px}
+  .plist li span{color:var(--dim);font-size:14px}
+  .try{font-size:13px;color:var(--dim);text-align:center;margin-top:16px}
+
+  /* ---------- proof ---------- */
+  .proof{border-top:1px solid var(--line)}
+  .proof-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:46px}
+  @media (max-width:820px){.proof-cards{grid-template-columns:1fr}}
+  .pcard{border:1px solid var(--line);border-radius:18px;overflow:hidden;text-decoration:none;color:var(--ink);transition:transform .25s}
+  .pcard:hover{transform:translateY(-4px)}
+  .pcard .thumb{height:170px;background:var(--bg2);display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--line);font-size:12px;letter-spacing:.18em;color:var(--dim);font-weight:800;text-transform:uppercase}
+  .pcard .thumb.t1{background:linear-gradient(135deg,#0e0f12,#23262e);color:#8a91a3}
+  .pcard .thumb.t2{background:linear-gradient(135deg,#101010,#2a1a3a);color:#a08ab8}
+  .pcard .thumb.t3{background:linear-gradient(135deg,#f2f3f5,#dfe3ea);color:#7b828f}
+  .pcard .body{padding:20px 22px}
+  .pcard h3{font-size:16px;margin-bottom:6px}
+  .pcard p{font-size:13.5px;color:var(--dim);line-height:1.55}
+  .std{
+    margin-top:40px;border:1px solid var(--line);border-radius:18px;padding:28px;
+    display:grid;grid-template-columns:repeat(4,1fr);gap:20px;
+  }
+  @media (max-width:820px){.std{grid-template-columns:1fr 1fr}}
+  .std .it .n{font-size:24px;font-weight:700;letter-spacing:-.02em}
+  .std .it .c{font-size:12px;color:var(--dim);margin-top:4px;line-height:1.5}
+  .fict{font-size:12px;color:var(--dim);margin-top:18px;line-height:1.6}
+
+  /* ---------- final cta ---------- */
+  .final{border-top:1px solid var(--line);text-align:center}
+  .final .h2{max-width:760px;margin:0 auto 18px}
+  .final .lead{margin:0 auto 40px}
+
+  footer{border-top:1px solid var(--line);padding:34px 0}
+  .foot-in{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+  footer .f{font-size:12.5px;color:var(--dim)}
+  footer a{color:var(--dim);text-decoration:none;font-size:12.5px;margin-left:18px}
+  footer a:hover{color:var(--ink)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-in">
+    <div class="logo" style="display:flex;align-items:center;gap:10px">
+      <img src="assets/logo-mark.svg" alt="" width="26" height="26" style="border-radius:6px" onerror="this.style.display='none'">
+      <span>Recover<span style="color:#4fc2b4">Revenue</span></span>
+    </div>
+    <div class="nav-links">
+      <a href="#services" class="hideM">Pricing</a>
+      <a href="#portal" class="hideM">Client Portal</a>
+      <a href="#work" class="hideM">Work</a>
+      <a href="portal/index.html">Log in</a>
+      <button class="tbtn" onclick="toggleTheme()" aria-label="Toggle theme">◐</button>
+      <a href="#book" class="nav-cta">Book a call</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="wrap">
+    <h1 class="rv">Your website should <em>make you money.</em><br>Ours do. Provably.</h1>
+    <p class="lead rv">We build websites and AI systems that make local businesses money — not just look good. Missed calls answered in seconds. No-shows recovered. Every dollar tracked in your own portal.</p>
+    <div class="cta-row rv">
+      <a class="btn solid" href="#book">Book a 15-minute call</a>
+      <a class="btn ghost" href="#portal">See the client portal</a>
+    </div>
+    <div class="hero-strip rv">
+      <div class="it"><span class="dot"></span>AI answers in under 30 seconds, 24/7</div>
+      <div class="it"><span class="dot"></span>Live in as few as 3 business days</div>
+      <div class="it"><span class="dot"></span>Month-to-month after 90 days</div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ THESIS ============ -->
+<section class="thesis" id="thesis">
+  <div class="wrap">
+    <div class="kicker rv">Why this works</div>
+    <h2 class="h2 rv">You don't have a traffic problem.<br>You have a conversion problem.</h2>
+    <p class="lead rv">You already pay for attention — ads, referrals, Google. Then that attention hits voicemail at 9 PM and calls the next listing. We fix the leak, not the faucet.</p>
+    <div class="grid3">
+      <div class="tcard rv">
+        <div class="n">01</div>
+        <h3>Every call answered</h3>
+        <p>An AI receptionist that picks up in <b>under 30 seconds, around the clock</b>, knows your services and pricing, and books the appointment while your competitor's phone rings out.</p>
+      </div>
+      <div class="tcard rv">
+        <div class="n">02</div>
+        <h3>No-shows recovered</h3>
+        <p>Automated reminders at 24 hours and 2 hours, waitlist backfill on cancellations. <b>Typically cuts no-shows by 50% or more.</b> Empty chairs become revenue again.</p>
+      </div>
+      <div class="tcard rv">
+        <div class="n">03</div>
+        <h3>Every dollar visible</h3>
+        <p>Your portal shows <b>revenue recovered this month</b> — conservatively attributed, updated live, reported plainly by the 5th. If it's not making you money, you'll see that too.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SERVICES / PRICING ============ -->
+<section class="services" id="services">
+  <div class="wrap">
+    <div class="kicker rv">Pricing — public, on purpose</div>
+    <h2 class="h2 rv">Pick your business. See the price.</h2>
+    <p class="lead rv">No "book a call to find out." Every plan is designed to pay for itself within the first 30 days.</p>
+
+    <div class="niche-tabs rv">
+      <button class="ntab active" data-n="medspa" onclick="setNiche('medspa')">Med Spas</button>
+      <button class="ntab" data-n="rest" onclick="setNiche('rest')">Restaurants</button>
+      <button class="ntab" data-n="trades" onclick="setNiche('trades')">Home Services</button>
+    </div>
+
+    <!-- MED SPA -->
+    <div class="niche active" id="n-medspa">
+      <p class="niche-note">Every missed call at a med spa is a $180+ appointment walking to the spa down the street. These systems answer, remind, and rebook — automatically.</p>
+      <div class="tiers">
+        <div class="tier rv">
+          <h3>Launch</h3>
+          <div class="price">$297<span>/mo</span></div>
+          <div class="setup">+ $997 setup</div>
+          <ul>
+            <li>AI voice receptionist — 24/7, answers &lt;30s</li>
+            <li>Books appointments, knows your services & pricing</li>
+            <li>Monthly performance report</li>
+          </ul>
+          <div class="go">Live in 7 business days</div>
+          <a href="#book">Start with Launch</a>
+        </div>
+        <div class="tier feat rv">
+          <div class="flag">Most popular</div>
+          <h3>Growth</h3>
+          <div class="price">$397<span>/mo</span></div>
+          <div class="setup">+ $1,497 setup</div>
+          <ul>
+            <li>Everything in Launch</li>
+            <li>No-show recovery — 24h + 2h SMS reminders</li>
+            <li>Waitlist activation on cancellations</li>
+          </ul>
+          <div class="go">Live in 7 business days</div>
+          <a href="#book">Start with Growth</a>
+        </div>
+        <div class="tier rv">
+          <h3>Partner</h3>
+          <div class="price">$597<span>/mo</span></div>
+          <div class="setup">+ $2,497 setup</div>
+          <ul>
+            <li>Everything in Growth</li>
+            <li>Past-client reactivation campaigns</li>
+            <li>Review funneler — 3–5x review velocity</li>
+            <li>Monthly strategy call</li>
+          </ul>
+          <div class="go">Live in 10 business days</div>
+          <a href="#book">Start with Partner</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESTAURANTS -->
+    <div class="niche" id="n-rest">
+      <p class="niche-note">Reservations captured while your host seats tables. Reminders that actually get confirmed. Guests who come back.</p>
+      <div class="tiers">
+        <div class="tier rv">
+          <h3>Launch</h3>
+          <div class="price">$1,200<span>/mo</span></div>
+          <div class="setup">+ $2,500 setup</div>
+          <ul>
+            <li>AI reservation capture</li>
+            <li>Confirmation texts</li>
+            <li>Review follow-up</li>
+          </ul>
+          <div class="go">Live in 5–7 business days</div>
+          <a href="#book">Start with Launch</a>
+        </div>
+        <div class="tier feat rv">
+          <div class="flag">Most popular</div>
+          <h3>Growth</h3>
+          <div class="price">$2,000<span>/mo</span></div>
+          <div class="setup">+ $4,500 setup</div>
+          <ul>
+            <li>Everything in Launch</li>
+            <li>Waitlist management</li>
+            <li>Special-occasion capture</li>
+            <li>Monthly revenue reporting</li>
+          </ul>
+          <div class="go">Live in 7–10 business days</div>
+          <a href="#book">Start with Growth</a>
+        </div>
+        <div class="tier rv">
+          <h3>Partner</h3>
+          <div class="price">$3,000<span>/mo</span></div>
+          <div class="setup">+ $7,500 setup</div>
+          <ul>
+            <li>Everything in Growth</li>
+            <li>Custom-branded mobile app</li>
+            <li>Loyalty & push notifications</li>
+          </ul>
+          <div class="go">Live in 10–14 business days</div>
+          <a href="#book">Start with Partner</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRADES -->
+    <div class="niche" id="n-trades">
+      <p class="niche-note">The job goes to whoever answers first. Missed-call text-back in under 60 seconds, first touch on new leads in under 2 minutes.</p>
+      <div class="tiers">
+        <div class="tier rv">
+          <h3>Launch</h3>
+          <div class="price">$149<span>/mo</span></div>
+          <div class="setup">+ $497 setup</div>
+          <ul>
+            <li>Pick 1 workflow — most pick Missed-Call Text-Back (&lt;60s)</li>
+            <li>Monthly performance report</li>
+          </ul>
+          <div class="go">Live in 3 business days</div>
+          <a href="#book">Start with Launch</a>
+        </div>
+        <div class="tier feat rv">
+          <div class="flag">Most popular</div>
+          <h3>Growth</h3>
+          <div class="price">$249<span>/mo</span></div>
+          <div class="setup">+ $997 setup</div>
+          <ul>
+            <li>Pick 3 workflows</li>
+            <li>Review funneler, lead nurture, no-show reduction & more</li>
+          </ul>
+          <div class="go">Live in 5 business days</div>
+          <a href="#book">Start with Growth</a>
+        </div>
+        <div class="tier rv">
+          <h3>Partner</h3>
+          <div class="price">$397<span>/mo</span></div>
+          <div class="setup">+ $1,997 setup</div>
+          <ul>
+            <li>All 6 workflows</li>
+            <li>Reporting dashboard</li>
+            <li>Monthly strategy call</li>
+          </ul>
+          <div class="go">Live in 7 business days</div>
+          <a href="#book">Start with Partner</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="addon rv">
+      <div>
+        <div class="t">Add-on: Conversion website</div>
+        <div class="d">Built to our verified standard — zero errors, zero layout breaks, tested at four screen widths before it ships.</div>
+      </div>
+      <div class="p">$1,497 build + $99/mo</div>
+    </div>
+
+    <div class="terms rv">
+      <div class="it"><b>Month-to-month</b> after your first 90 days</div>
+      <div class="it"><b>2 revision rounds</b> per deliverable</div>
+      <div class="it"><b>1-business-day</b> support response</div>
+      <div class="it"><b>You never touch the tech</b> — we build & maintain it all</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PORTAL ============ -->
+<section class="portal" id="portal">
+  <div class="wrap">
+    <div class="portal-grid">
+      <div>
+        <div class="kicker rv">The client portal</div>
+        <h2 class="h2 rv">Most agencies email you a Drive folder.<br>Your account comes with this.</h2>
+        <ul class="plist">
+          <li class="rv"><b>Revenue recovered — front and center</b><span>The first thing you see is what the system earned you this month. Conservatively attributed, live.</span></li>
+          <li class="rv"><b>Every automation, visible</b><span>Live status on each system: calls answered, no-shows saved, response times — proof the promises are kept.</span></li>
+          <li class="rv"><b>AI-written monthly reports</b><span>Plain English. What happened, what we changed, what's next. In your portal by the 5th.</span></li>
+          <li class="rv"><b>Calendar, messages, billing — one login</b><span>Book calls, message the team, see invoices and your contract. Everything in one place.</span></li>
+        </ul>
+      </div>
+      <div class="rv">
+        <div class="phone"><iframe src="portal/index.html" title="Client portal demo" loading="lazy"></iframe></div>
+        <div class="try">↑ This is live — tap around. Demo data, real product.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROOF ============ -->
+<section class="proof" id="work">
+  <div class="wrap">
+    <div class="kicker rv">The standard</div>
+    <h2 class="h2 rv">We're new. So the proof is the work.</h2>
+    <p class="lead rv">No clients yet — we built the portfolio we intend to earn. Every build below is a concept for a fictional brand, running real code, verified the same way client work will be.</p>
+
+    <div class="proof-cards">
+      <a class="pcard rv" href="https://chasesza-wq.github.io/fable5-demos/studio-portfolio/" target="_blank" rel="noopener">
+        <div class="thumb t3">Meridian®</div>
+        <div class="body"><h3>Full studio site</h3><p>Reactive WebGL terrain, scroll choreography, live stat counters, revenue-first copy.</p></div>
+      </a>
+      <a class="pcard rv" href="https://chasesza-wq.github.io/fable5-demos/spherical-gallery/" target="_blank" rel="noopener">
+        <div class="thumb t2">Sphere Gallery</div>
+        <div class="body"><h3>Inside-a-sphere gallery</h3><p>70 curved WebGL cards, drag with inertia, cinematic detail transitions.</p></div>
+      </a>
+      <a class="pcard rv" href="https://chasesza-wq.github.io/fable5-demos/portfolio-landing/" target="_blank" rel="noopener">
+        <div class="thumb t1">Mira Solenne</div>
+        <div class="body"><h3>Portfolio landing</h3><p>Three.js particle field, GSAP choreography, fully mobile-responsive.</p></div>
+      </a>
+    </div>
+
+    <div class="std rv">
+      <div class="it"><div class="n">0</div><div class="c">console errors allowed. Ever.</div></div>
+      <div class="it"><div class="n">4</div><div class="c">screen widths tested — 320 / 390 / 768 / 1440px</div></div>
+      <div class="it"><div class="n">0px</div><div class="c">horizontal overflow tolerated</div></div>
+      <div class="it"><div class="n">100%</div><div class="c">of builds verified in headless Chrome before shipping</div></div>
+    </div>
+    <p class="fict rv">All showcase brands (Meridian®, Mira Solenne) are fictional concept work and their statistics are illustrative. We say so because we'd rather show you our standard than borrow someone else's results.</p>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section class="final" id="book">
+  <div class="wrap">
+    <div class="kicker rv">Next step</div>
+    <h2 class="h2 rv">When's the last time your website booked you a job?</h2>
+    <p class="lead rv">15 minutes. We'll look at where your leads leak — nights, weekends, no-shows — and tell you plainly what recovering them is worth. If the math doesn't work, we'll say so.</p>
+    <div class="cta-row rv" style="justify-content:center">
+      <a class="btn solid" href="mailto:szarekch@gmail.com?subject=15-minute%20call">Book a 15-minute call</a>
+      <a class="btn ghost" href="portal/index.html">Tour the client portal</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-in">
+    <div class="f">© 2026 RecoverRevenue · Tampa Bay, FL</div>
+    <div>
+      <a href="#services">Pricing</a>
+      <a href="#portal">Portal</a>
+      <a href="#work">Work</a>
+      <a href="portal/index.html">Client login</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // theme: system follow + toggle
+  if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches){
+    document.documentElement.setAttribute("data-theme","dark");
+  }
+  window.toggleTheme = function(){
+    var d = document.documentElement;
+    d.setAttribute("data-theme", d.getAttribute("data-theme") === "dark" ? "light" : "dark");
+  };
+
+  // niche tabs
+  window.setNiche = function(n){
+    document.querySelectorAll(".niche").forEach(function(x){ x.classList.remove("active"); });
+    document.getElementById("n-" + n).classList.add("active");
+    document.querySelectorAll(".ntab").forEach(function(t){
+      t.classList.toggle("active", t.getAttribute("data-n") === n);
+    });
+    document.querySelectorAll("#n-" + n + " .rv").forEach(function(el){ el.classList.add("in"); });
+  };
+
+  // scroll reveals
+  try{
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); }
+      });
+    }, { threshold: .12 });
+    document.querySelectorAll(".rv").forEach(function(el){ io.observe(el); });
+  }catch(e){
+    document.querySelectorAll(".rv").forEach(function(el){ el.classList.add("in"); });
+  }
+})();
+</script>
+</body>
+</html>

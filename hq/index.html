@@ -1,0 +1,1775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>RecoverRevenue — Sales HQ</title>
+<link rel="icon" type="image/svg+xml" href="../assets/logo-mark.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sales HQ">
+<meta name="theme-color" content="#24272a">
+<style>
+  :root{
+    --bg:#ffffff; --bg2:#f4f5f6; --ink:#171a20; --dim:#8e939c;
+    --line:rgba(23,26,32,.08); --green:#1DB667; --amber:#f79009; --blue:#143D73;
+    --red:#d92d20; --sheet:#ffffff; --pill:#171a20; --pill-ink:#ffffff;
+  }
+  [data-theme="dark"]{
+    --bg:#111214; --bg2:#1b1d20; --ink:#f4f5f6; --dim:#84888f;
+    --line:rgba(244,245,246,.09); --sheet:#1b1d20; --pill:#f4f5f6; --pill-ink:#111214;
+    --blue:#5B8DD9; --red:#f97066;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;
+    background:#e8e9eb; display:flex; align-items:center; justify-content:center;
+    min-height:100vh; padding:24px; -webkit-font-smoothing:antialiased;
+  }
+  button{font-family:inherit;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+
+  /* phone frame on desktop */
+  .device{
+    width:100%; max-width:400px; height:820px; max-height:calc(100vh - 48px);
+    background:var(--bg); border-radius:44px; overflow:hidden; position:relative;
+    box-shadow:0 30px 80px rgba(0,0,0,.28), 0 0 0 10px #17181a, 0 0 0 12px #3a3b3e;
+    display:flex; flex-direction:column;
+    transition:background .3s;
+  }
+  @media (max-width:520px){
+    body{padding:0;background:var(--bg)}
+    .device{max-width:none;height:100vh;height:100dvh;max-height:none;border-radius:0;box-shadow:none}
+  }
+
+  /* ---------- header ---------- */
+  header{padding:22px 22px 8px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0}
+  .brand{font-size:12px; letter-spacing:.22em; font-weight:700; color:var(--dim); text-transform:uppercase; display:flex;align-items:center;gap:8px}
+  .brand b{color:var(--ink)}
+  .brand .rv{color:#4fc2b4}
+  .avatar{
+    width:36px;height:36px;border-radius:50%;background:var(--bg2);border:1px solid var(--line);
+    color:var(--ink); font-size:13px; font-weight:700; display:flex;align-items:center;justify-content:center;
+    cursor:pointer; user-select:none;
+  }
+
+  /* ---------- filter chips (global, top) ---------- */
+  .chips{display:flex;gap:6px;padding:5px 22px;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{
+    padding:7px 13px;border-radius:18px;border:none;background:var(--bg2);
+    color:var(--dim);font-size:12px;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums;
+  }
+  .chip.on{background:var(--pill);color:var(--pill-ink)}
+  .chip.pain.on{background:var(--amber);color:#fff}
+  .chip.stat.on{background:var(--green);color:#fff}
+  .chip-gap{flex:0 0 4px}
+
+  /* ---------- main ---------- */
+  main{flex:1; overflow-y:auto; padding:2px 22px 110px; scrollbar-width:none}
+  main::-webkit-scrollbar{display:none}
+  .screen{display:none; animation:fade .28s ease}
+  .screen.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion: reduce){ .screen{animation:none} }
+
+  h1{font-size:26px;font-weight:700;letter-spacing:-.02em;color:var(--ink);margin:8px 0 2px}
+  .sub{font-size:13px;color:var(--dim);margin-bottom:14px}
+  .sub b{color:var(--ink);font-weight:600}
+
+  /* meta line above lead */
+  .counterline{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--dim);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-top:10px}
+  .counterline .st{font-weight:700}
+
+  /* outcome segmented */
+  .outsec{margin-top:8px}
+  .outlabel{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);font-weight:600;margin-bottom:8px}
+  .dispos{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+  .dbtn{
+    padding:12px 2px;border-radius:12px;border:1px solid var(--line);background:var(--bg);
+    color:var(--dim);font-size:10.5px;font-weight:700;letter-spacing:.02em;
+  }
+  .dbtn:active{transform:scale(.96)}
+  .dbtn.na.on,.dbtn.vm.on{background:var(--bg2);color:var(--ink);border-color:transparent}
+  .dbtn.ni.on{background:var(--red);color:#fff;border-color:transparent}
+  .dbtn.int.on{background:var(--amber);color:#fff;border-color:transparent}
+  .dbtn.bk.on{background:var(--green);color:#fff;border-color:transparent}
+  .cbrow{display:flex;gap:6px;margin-top:10px;align-items:center;flex-wrap:wrap}
+  .cbrow .lbl{font-size:11px;color:var(--dim);font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-right:2px}
+  .cbbtn{padding:7px 13px;border-radius:16px;border:1px solid var(--line);background:none;color:var(--dim);font-size:12px;font-weight:600}
+  .cbbtn.on{background:var(--blue);color:#fff;border-color:transparent}
+  .note-in{
+    width:100%;margin-top:10px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;
+    color:var(--ink);font-family:inherit;font-size:13.5px;padding:11px 14px;outline:none;
+  }
+
+  /* hero loss stat */
+  .hero{padding:20px 0 18px;border-bottom:1px solid var(--line)}
+  .hero .label{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);font-weight:600}
+  .hero .num{font-size:46px;font-weight:700;letter-spacing:-.04em;color:var(--ink);line-height:1.1;margin:6px 0 2px;font-variant-numeric:tabular-nums}
+  .hero .num .per{font-size:16px;letter-spacing:0;color:var(--dim);font-weight:600}
+  .hero .delta{font-size:13px;color:var(--red);font-weight:600}
+  .hero .foot{font-size:12px;color:var(--dim);margin-top:8px}
+  .calcins{display:flex;gap:10px;margin-top:12px}
+  .calcins label{flex:1;font-size:11px;color:var(--dim);font-weight:600}
+  .calcins input{
+    width:100%;margin-top:4px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;color:var(--ink);
+    font-family:inherit;font-size:15px;font-weight:700;padding:9px 10px;font-variant-numeric:tabular-nums;outline:none;
+  }
+
+  /* rows (portal language) */
+  .rows{margin-top:2px}
+  .row{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:15px 0;border-bottom:1px solid var(--line);
+  }
+  .row .l{min-width:0;flex:1}
+  .row .t{font-size:15px;font-weight:600;color:var(--ink)}
+  .row .d{font-size:12.5px;color:var(--dim);margin-top:3px;line-height:1.45}
+  .row .d b{color:var(--ink);font-weight:600}
+  .row.clickable{cursor:pointer}
+  .row .r{display:flex;align-items:center;gap:10px;flex-shrink:0}
+  .chev{color:var(--dim);font-size:16px}
+  .sdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .phlink{font-size:13.5px;font-weight:700;color:var(--blue);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+  /* cards */
+  .card{border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:14px;background:var(--bg)}
+  .card .cl{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);font-weight:700;margin-bottom:6px}
+  .card p{font-size:13.5px;line-height:1.55;color:var(--ink)}
+  .card .sm{font-size:12.5px;color:var(--dim);margin-top:8px;line-height:1.5}
+
+  /* pills */
+  .pill{
+    display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:16px;border:none;border-radius:14px;
+    background:var(--pill);color:var(--pill-ink);font-size:15px;font-weight:700;
+    font-family:inherit;cursor:pointer;margin:16px 0 0;letter-spacing:-.01em;
+  }
+  .pill.call{background:var(--green);color:#fff}
+  .pill.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  .pill:active{transform:scale(.985)}
+  .pillrow{display:flex;gap:10px}
+  .pillrow .pill{margin-top:10px}
+  .phone-sub{font-size:12px;color:var(--dim);text-align:center;margin-top:8px;font-variant-numeric:tabular-nums}
+  .phone-sub b{cursor:pointer;color:var(--blue)}
+
+  /* script prose */
+  details.script{margin-top:16px;border-top:1px solid var(--line);padding-top:14px}
+  details.script summary{cursor:pointer;list-style:none;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+  details.script summary::after{content:" +"}
+  details.script[open] summary::after{content:" –"}
+  .prose h3{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin:16px 0 5px;font-weight:700}
+  .prose p{font-size:14px;line-height:1.6;color:var(--ink)}
+
+  /* search + sort */
+  .search{
+    width:100%;padding:13px 16px;border-radius:22px;border:1px solid var(--line);
+    background:var(--bg2);color:var(--ink);font-size:14px;font-family:inherit;outline:none;margin-bottom:6px;
+  }
+  .sortrow{display:flex;gap:6px;align-items:center;padding:6px 0 4px}
+  .sortrow .lbl{font-size:11px;color:var(--dim);font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-right:2px}
+  .sortrow .n{margin-left:auto;font-size:12px;color:var(--dim);font-weight:600;font-variant-numeric:tabular-nums}
+
+  /* calendar */
+  .day-group{margin-top:20px}
+  .day-label{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:700;margin-bottom:4px}
+  .evt{display:flex;gap:14px;padding:15px 0;border-bottom:1px solid var(--line);align-items:flex-start}
+  .evt .bar{width:3px;border-radius:2px;background:var(--blue);align-self:stretch;min-height:34px;flex-shrink:0}
+  .evt .bar.g{background:var(--green)} .evt .bar.a{background:var(--amber)} .evt .bar.dim{background:var(--line)}
+  .evt .body{flex:1;min-width:0}
+  .evt .t{font-size:14.5px;font-weight:600;color:var(--ink)}
+  .evt .d{font-size:12.5px;color:var(--dim);margin-top:2px;line-height:1.5}
+  .evt .acts{display:flex;gap:14px;margin-top:8px}
+  .linkbtn{font-size:13px;font-weight:600;color:var(--blue);cursor:pointer;background:none;border:none;font-family:inherit;padding:0}
+  .linkbtn.del{color:var(--red)}
+  .bform{border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:14px}
+  .bform label{display:block;font-size:11px;color:var(--dim);font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin:12px 0 5px}
+  .bform label:first-child{margin-top:0}
+  .bform input,.bform select{
+    width:100%;min-width:0;background:var(--bg2);border:1px solid var(--line);border-radius:11px;color:var(--ink);
+    font-family:inherit;font-size:14.5px;font-weight:600;padding:11px 10px;outline:none;
+  }
+  [data-theme="dark"] .bform input,[data-theme="dark"] .bform select{color-scheme:dark}
+  .bform .brow{display:flex;gap:8px}
+  .bform .brow > div{flex:1;min-width:0}
+  .bform .brow > div:last-child{flex:0 0 72px}
+  .fine{font-size:11px;color:var(--dim);line-height:1.5;margin-top:14px}
+
+  /* stats */
+  .rep-hero{border:1px solid var(--line);border-radius:16px;padding:20px;margin-top:4px;text-align:center}
+  .rep-hero .num{font-size:40px;font-weight:700;letter-spacing:-.03em;color:var(--ink);font-variant-numeric:tabular-nums}
+  .rep-hero .cap{font-size:12.5px;color:var(--dim);margin-top:4px}
+  .goal{height:6px;background:var(--bg2);border-radius:4px;overflow:hidden;margin-top:14px}
+  .goal i{display:block;height:100%;background:var(--green);border-radius:4px;transition:width .4s}
+  .payback{font-size:13px;font-weight:700;color:var(--green);margin-top:8px}
+  .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+  .kpi{border:1px solid var(--line);border-radius:14px;padding:14px}
+  .kpi .n{font-size:22px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+  .kpi .c{font-size:11.5px;color:var(--dim);margin-top:2px}
+  .fun{margin-top:6px}
+  .fbar{display:flex;align-items:center;gap:10px;font-size:12.5px;font-weight:600;padding:8px 0}
+  .fbar .fl{width:82px;color:var(--dim);font-size:11.5px}
+  .fbar .ft{width:34px;text-align:right;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .fbar .fb{flex:1;height:8px;background:var(--bg2);border-radius:5px;overflow:hidden}
+  .fbar .fb i{display:block;height:100%;border-radius:5px}
+  table.ntab{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums;margin-top:4px}
+  table.ntab th{font-size:10px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase;text-align:right;padding:6px;font-weight:700}
+  table.ntab th:first-child,table.ntab td:first-child{text-align:left}
+  table.ntab td{padding:9px 6px;border-top:1px solid var(--line);text-align:right;font-weight:600;color:var(--ink)}
+  table.ntab td.g{color:var(--green)}
+  .hours{display:flex;align-items:flex-end;gap:3px;height:56px;margin-top:12px}
+  .hours .hb{flex:1;background:var(--bg2);border-radius:3px 3px 0 0;min-height:3px}
+  .hours .hb.f{background:var(--blue)}
+  .hlabels{display:flex;gap:3px;margin-top:5px}
+  .hlabels span{flex:1;text-align:center;font-size:8.5px;color:var(--dim);font-weight:600}
+
+  .empty{text-align:center;color:var(--dim);padding:50px 10px;font-size:14px;line-height:1.6}
+
+  /* ---------- tab bar ---------- */
+  nav{
+    position:absolute;bottom:0;left:0;right:0;
+    display:flex;justify-content:space-around;align-items:center;
+    padding:10px 8px calc(14px + env(safe-area-inset-bottom));
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    border-top:1px solid var(--line);
+  }
+  .tab{
+    display:flex;flex-direction:column;align-items:center;gap:4px;
+    background:none;border:none;cursor:pointer;font-family:inherit;
+    color:var(--dim);font-size:10px;font-weight:600;letter-spacing:.02em;
+    width:64px;padding:4px 0;position:relative;
+  }
+  .tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .tab.active{color:var(--ink)}
+  .tab .nb{
+    position:absolute;top:-2px;right:14px;background:var(--blue);color:#fff;
+    font-size:9px;font-weight:700;border-radius:8px;padding:1px 5px;
+  }
+
+  /* ---------- account sheet ---------- */
+  .scrim{position:absolute;inset:0;background:rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .3s;z-index:20}
+  .scrim.open{opacity:1;pointer-events:auto}
+  .sheet{
+    position:absolute;left:0;right:0;bottom:0;z-index:21;
+    background:var(--sheet);border-radius:28px 28px 0 0;
+    max-height:86%;overflow-y:auto;padding:14px 22px 34px;
+    transform:translateY(102%);transition:transform .35s cubic-bezier(.32,.72,.28,1);
+  }
+  .sheet.open{transform:none}
+  .grab{width:38px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 18px}
+  .sheet h2{font-size:20px;font-weight:700;color:var(--ink);letter-spacing:-.02em}
+  .plan-chip{
+    display:inline-block;margin:8px 0 4px;font-size:11px;font-weight:700;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--blue);border:1px solid var(--blue);border-radius:20px;padding:4px 12px;
+  }
+  .theme-row{display:flex;align-items:center;justify-content:space-between;padding:17px 0;border-bottom:1px solid var(--line)}
+  .theme-row .t{font-size:14.5px;font-weight:600;color:var(--ink)}
+  .switch{width:52px;height:30px;border-radius:16px;background:var(--bg2);border:1px solid var(--line);position:relative;cursor:pointer;transition:background .25s;flex-shrink:0}
+  .switch::after{content:"";position:absolute;top:2px;left:2px;width:24px;height:24px;border-radius:50%;background:var(--ink);transition:transform .25s}
+  [data-theme="dark"] .switch::after{transform:translateX(22px)}
+</style>
+</head>
+<body>
+<div class="device" id="device">
+
+  <header>
+    <div class="brand">
+      <svg viewBox="0 0 64 64" width="22" height="22" style="flex-shrink:0" aria-hidden="true"><defs><linearGradient id="r3f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3e43"/><stop offset="1" stop-color="#24272a"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="15" fill="url(#r3f)"/><g fill="none" stroke-linecap="round" stroke-linejoin="round"><g stroke="#4fc2b4" stroke-width="8"><path d="M17 45 V19 H25 a6.5 6.5 0 0 1 0 13 H17 M22 32 L28 45"/><path d="M36 19 H42 a6 6 0 0 1 0 12 H39 H42 a6.5 6.5 0 0 1 0 13 H35.5"/></g><g stroke="url(#r3f)" stroke-width="3.6"><path d="M17 45 V19 H25 a6.5 6.5 0 0 1 0 13 H17 M22 32 L28 45"/><path d="M36 19 H42 a6 6 0 0 1 0 12 H39 H42 a6.5 6.5 0 0 1 0 13 H35.5"/></g></g></svg>
+      <span><b>Recover<span class="rv">Revenue</span></b>&nbsp; SALES HQ</span>
+    </div>
+    <div class="avatar" id="avatar" onclick="openSheet()">CS</div>
+  </header>
+
+  <div class="chips" id="nicheChips"></div>
+  <div class="chips" id="painChips"></div>
+
+  <main id="main">
+    <section class="screen active" id="scr-dial"></section>
+    <section class="screen" id="scr-leads"></section>
+    <section class="screen" id="scr-cal"></section>
+    <section class="screen" id="scr-stats"></section>
+  </main>
+
+  <nav>
+    <button class="tab active" data-scr="dial" onclick="go('dial')">
+      <svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>Dial
+    </button>
+    <button class="tab" data-scr="leads" onclick="go('leads')">
+      <svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>Leads
+    </button>
+    <button class="tab" data-scr="cal" onclick="go('cal')">
+      <span class="nb" id="calBadge" style="display:none"></span>
+      <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Calendar
+    </button>
+    <button class="tab" data-scr="stats" onclick="go('stats')">
+      <svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Stats
+    </button>
+  </nav>
+
+  <div class="scrim" id="scrim" onclick="closeSheet()"></div>
+  <div class="sheet" id="sheet">
+    <div class="grab"></div>
+    <h2 id="sheetRep">Chase</h2>
+    <div class="sub" style="margin-bottom:0">RecoverRevenue — internal</div>
+    <span class="plan-chip">Sales HQ · Team Dialer</span>
+
+    <div class="theme-row">
+      <span class="t">Dark mode</span>
+      <div class="switch" onclick="toggleTheme()"></div>
+    </div>
+
+    <div class="rows">
+      <div class="row clickable" onclick="switchRep()">
+        <div class="l"><div class="t">Who's dialing</div><div class="d" id="repLine">Calls get tagged with your initials</div></div><span class="chev">›</span>
+      </div>
+      <div class="row clickable" onclick="document.getElementById('fileIn').click()">
+        <div class="l"><div class="t">Load leads JSON</div><div class="d">Swap in a new scrape — Vector drops them in outreach/leads/</div></div><span class="chev">›</span>
+      </div>
+      <div class="row clickable" onclick="exportResults()">
+        <div class="l"><div class="t">Export results</div><div class="d">Full call log + meetings, for merging across devices</div></div><span class="chev">›</span>
+      </div>
+      <div class="row" style="border-bottom:none">
+        <div class="l"><div class="t">Daily goal</div><div class="d"><b>30 dials</b> per rep — edit DAILY_GOAL in the file</div></div>
+      </div>
+    </div>
+    <input type="file" id="fileIn" accept=".json" style="display:none">
+    <button class="pill ghost" onclick="closeSheet()">Close</button>
+  </div>
+
+</div>
+
+<script>
+// ══════════════ EDITABLE CONSTANTS ══════════════
+const DAILY_GOAL = 30;
+// Founding-client intro pricing (anchor against OFFERS.md canonical:
+// $497 setup + $149/mo automation; site add-on $1,497 + $99/mo).
+const PRICE_TIERS = [
+  { max: 150000,  name: "Starter",  pitch: "$297 website + $149/mo receptionist — founding rate" },
+  { max: 500000,  name: "Standard", pitch: "$497 website + $199/mo receptionist" },
+  { max: Infinity, name: "Premium", pitch: "$997 website + $297/mo receptionist + text-back" },
+];
+const CLOSE_RATE = 0.5;
+const JOBS_PER_REVIEW = 20;
+const REVIEW_WINDOW_MONTHS = 36;
+const DEMO_BASE = "https://chasesza-wq.github.io/r3-hq"; // live GitHub Pages; move to recoverrevenue.co later
+const DEMO_PATHS = { towing: "/towing", car_detailing: "/detailing", tree_service: "/tree" };
+const BEST_TIME = {
+  "towing": "Mid-morning 9–11am", "car_detailing": "Early 7–9am, before jobs",
+  "junk_removal": "Late afternoon 3–5pm", "pressure_washing": "Early AM or 4–6pm",
+  "mobile_mechanic": "8–9am before first job", "lawn_care": "11am–1pm or after 4pm",
+  "handyman": "7–8am or 5–6pm", "tree_service": "7–8am or lunch", "appliance_repair": "8–9am",
+  "default": "8–9am or 4–6pm",
+};
+const NICHE_LABEL = {
+  car_detailing:"Detailing", pressure_washing:"Pressure Wash", handyman:"Handyman", towing:"Towing",
+  tree_service:"Tree", junk_removal:"Junk", lawn_care:"Lawn", mobile_mechanic:"Mechanic", appliance_repair:"Appliance",
+};
+const PAINS = [
+  ["no-site","No Website"], ["free-page","Free Page Only"], ["ai-reception","AI Reception Fit"],
+  ["low-reviews","Low Reviews"], ["high-ticket","High Ticket"],
+];
+const STATUSES = [["all","All"],["uncalled","Uncalled"],["callbacks","Callbacks"],["interested","Interested"],["booked","Booked"]];
+
+// ══════════════ LEADS (embedded; replace via Load leads JSON) ══════════════
+const LEADS = [
+  {
+    "business_name": "Mike's Auto Detailing",
+    "category": "car_detailing",
+    "phone": "8137872751",
+    "owner_name": "Mike",
+    "city": "Tampa",
+    "website": null,
+    "has_website": false,
+    "rating": 4.6,
+    "review_count": 61,
+    "est_revenue_annual": 266875,
+    "employees_est": "1-3",
+    "summary": "Veteran-owned, detailing since 1988, Mike inspects every car; Facebook + Yelp only, gmail contact. Verified active with real phone and recent reviews.",
+    "why_on_list": "No website and hands literally in soap buckets all day \u2014 calls go unanswered mid-job. Pitch: $500 booking site + missed-call text-back that auto-quotes details.",
+    "source": "yelp + web verification",
+    "avg_ticket": 175,
+    "quality_score": 85.4
+  },
+  {
+    "business_name": "Dirty D's Mobile Repair",
+    "category": "mobile_mechanic",
+    "phone": "7276578747",
+    "owner_name": "David Gaffney",
+    "city": "Pinellas Park",
+    "website": null,
+    "has_website": false,
+    "rating": 4.4,
+    "review_count": 30,
+    "est_revenue_annual": 225000,
+    "employees_est": "1-2",
+    "summary": "Owner David Gaffney, 35 yrs ASE experience; mobile repair for motorcycles, golf carts, boats, cars; open 24hr; BBB/Yelp only. Verified active with real phone and recent reviews.",
+    "why_on_list": "Under a car all day means the phone rings out, and there is no website to catch the lead. Pitch: missed-call text-back + starter booking site; every saved call is a 250-dollar job.",
+    "source": "yelp + web verification",
+    "avg_ticket": 250,
+    "quality_score": 84.6
+  },
+  {
+    "business_name": "Let Rod Polish Em Off Mobile Ceramic Coatings & Auto Detailing",
+    "category": "car_detailing",
+    "phone": "8133137593",
+    "owner_name": "Rod",
+    "city": "Lithia",
+    "website": null,
+    "has_website": false,
+    "rating": 4.8,
+    "review_count": 44,
+    "est_revenue_annual": 192500,
+    "employees_est": "1-3",
+    "summary": "Solo mobile ceramic-coating and detailing operator named Rod; directory listings only, slots fill by phone. Verified active with real phone and recent reviews.",
+    "why_on_list": "No website and hands literally in soap buckets all day \u2014 calls go unanswered mid-job. Pitch: $500 booking site + missed-call text-back that auto-quotes details.",
+    "source": "yelp + web verification",
+    "avg_ticket": 175,
+    "quality_score": 83.8
+  },
+  {
+    "business_name": "Keep It Klean Car Care",
+    "category": "car_detailing",
+    "phone": "7278514349",
+    "owner_name": "Herbert Leroy Jones",
+    "city": "St. Petersburg",
+    "website": null,
+    "has_website": false,
+    "rating": 4.6,
+    "review_count": 42,
+    "est_revenue_annual": 183750,
+    "employees_est": "1-3",
+    "summary": "Owner Herbert Leroy Jones, 14 yrs mobile auto/RV/boat detailing; BBB + Nextdoor only. Verified active with real phone and recent reviews.",
+    "why_on_list": "No website and hands literally in soap buckets all day \u2014 calls go unanswered mid-job. Pitch: $500 booking site + missed-call text-back that auto-quotes details.",
+    "source": "yelp + web verification",
+    "avg_ticket": 175,
+    "quality_score": 82.2
+  },
+  {
+    "business_name": "4K Mobile Detailing Services",
+    "category": "car_detailing",
+    "phone": "8135202663",
+    "owner_name": "Lisbeth & Ray",
+    "city": "Seffner",
+    "website": null,
+    "has_website": false,
+    "rating": 4.9,
+    "review_count": 35,
+    "est_revenue_annual": 153125,
+    "employees_est": "1-3",
+    "summary": "Husband-and-wife mobile detailing team (Lisbeth & Ray), 20 yrs experience; only a free Square booking page. Verified active with real phone and recent reviews.",
+    "why_on_list": "No website and hands literally in soap buckets all day \u2014 calls go unanswered mid-job. Pitch: $500 booking site + missed-call text-back that auto-quotes details.",
+    "source": "yelp + web verification",
+    "avg_ticket": 175,
+    "quality_score": 80.6
+  },
+  {
+    "business_name": "Bayou Tinting & Detailing",
+    "category": "car_detailing",
+    "phone": "7275442886",
+    "owner_name": "Steve Struthers",
+    "city": "Pinellas Park",
+    "website": null,
+    "has_website": false,
+    "rating": 4.7,
+    "review_count": 37,
+    "est_revenue_annual": 161875,
+    "employees_est": "1-3",
+    "summary": "Tint & detail shop running since 1987 (pres. Steve Struthers), 187 Google reviews; only a free edan.io listing page. Verified active with real phone and recent reviews.",
+    "why_on_list": "No website and hands literally in soap buckets all day \u2014 calls go unanswered mid-job. Pitch: $500 booking site + missed-call text-back that auto-quotes details.",
+    "source": "yelp + web verification",
+    "avg_ticket": 175,
+    "quality_score": 80.6
+  },
+  {
+    "business_name": "Top Dog Mobile Detailing South",
+    "category": "car_detailing",
+    "phone": "4016445370",
+    "owner_name": "Carlos",
+    "city": "Land O' Lakes",
+    "website": null,
+    "has_website": false,
+    "rating": 4.8,
+    "review_count": 35,
+    "est_revenue_annual": 153125,
+    "employees_est": "1-3",
+    "summary": "Owner Carlos, 20-yr Marine Corps vet, solo mobile detailer; Facebook + Alignable only. Verified active with real phone and recent reviews.",
+    "why_on_list": "No website and hands literally in soap buckets all day \u2014 calls go unanswered mid-job. Pitch: $500 booking site + missed-call text-back that auto-quotes details.",
+    "source": "yelp + web verification",
+    "avg_ticket": 175,
+    "quality_score": 80.2
+  },
+  {
+    "business_name": "HandyDude Rob",
+    "category": "handyman",
+    "phone": "2022362722",
+    "owner_name": "Rob",
+    "city": "Seminole",
+    "website": null,
+    "has_website": false,
+    "rating": 4.2,
+    "review_count": 38,
+    "est_revenue_annual": 250000,
+    "employees_est": "1-2",
+    "summary": "Solo handyman Rob, 15 yrs, answers his own phone, rates about 40 pct below licensed shops; Yelp + Nextdoor only. Verified active with real phone and recent reviews.",
+    "why_on_list": "Owner swings the hammer and answers the phone - or does not. No website to send quote requests to. Pitch: starter site + missed-call text-back; one saved call pays the month.",
+    "source": "yelp + web verification",
+    "avg_ticket": 250,
+    "quality_score": 80.0
+  },
+  {
+    "business_name": "Fair Tech Mobile Car And Truck Repair",
+    "category": "mobile_mechanic",
+    "phone": "8133477872",
+    "owner_name": null,
+    "city": "Riverview",
+    "website": null,
+    "has_website": false,
+    "rating": 4.7,
+    "review_count": 51,
+    "est_revenue_annual": 300000,
+    "employees_est": "1-2",
+    "summary": "Family-owned ASE-certified mobile car/truck repair + roadside, prices about 40 pct under dealers; directory listings only. Verified active with real phone and recent reviews.",
+    "why_on_list": "Under a car all day means the phone rings out, and there is no website to catch the lead. Pitch: missed-call text-back + starter booking site; every saved call is a 250-dollar job.",
+    "source": "yelp + web verification",
+    "avg_ticket": 250,
+    "quality_score": 78.8
+  },
+  {
+    "business_name": "Guzman Per4mance Mobile Mechanic",
+    "category": "mobile_mechanic",
+    "phone": "8139068467",
+    "owner_name": "Guzman",
+    "city": "Tampa",
+    "website": null,
+    "has_website": false,
+    "rating": 4.6,
+    "review_count": 12,
+    "est_revenue_annual": 90000,
+    "employees_est": "1-2",
+    "summary": "Solo mobile mechanic since 2006 - fixes cars on the spot in your driveway; Yelp/Facebook only. Verified active with real phone and recent reviews.",
+    "why_on_list": "Under a car all day means the phone rings out, and there is no website to catch the lead. Pitch: missed-call text-back + starter booking site; every saved call is a 250-dollar job.",
+    "source": "yelp + web verification",
+    "avg_ticket": 250,
+    "quality_score": 78.2
+  },
+  {
+    "business_name": "Jimmy Tree",
+    "category": "tree_service",
+    "phone": "7275176711",
+    "owner_name": "Jimmy",
+    "city": "Pinellas Park",
+    "website": null,
+    "has_website": false,
+    "rating": 4.4,
+    "review_count": 17,
+    "est_revenue_annual": 289000,
+    "employees_est": "1-4",
+    "summary": "Solo operator Jimmy, 5-star cheap tree removals that beat competitor quotes; Yelp only. Verified active with real phone and recent reviews.",
+    "why_on_list": "High-ticket jobs booked entirely by phone with no website to capture after-hours storm/emergency demand. Pitch: starter site + missed-call text-back; one saved call covers a year of service.",
+    "source": "yelp + web verification",
+    "avg_ticket": 850,
+    "quality_score": 75.4
+  },
+  {
+    "business_name": "Tyler's Tree Trimming",
+    "category": "tree_service",
+    "phone": "7273667777",
+    "owner_name": "Tyler",
+    "city": "Clearwater",
+    "website": null,
+    "has_website": false,
+    "rating": 4.3,
+    "review_count": 16,
+    "est_revenue_annual": 272000,
+    "employees_est": "1-4",
+    "summary": "Owner Tyler, 24hr tree removal + junk hauling side work; Yelp + Nextdoor only. Verified active with real phone and recent reviews.",
+    "why_on_list": "High-ticket jobs booked entirely by phone with no website to capture after-hours storm/emergency demand. Pitch: starter site + missed-call text-back; one saved call covers a year of service.",
+    "source": "yelp + web verification",
+    "avg_ticket": 850,
+    "quality_score": 74.6
+  },
+  {
+    "business_name": "Frank's Towing and Transport",
+    "category": "towing",
+    "phone": "7275289301",
+    "owner_name": "Frank Ennis",
+    "city": "Pinellas Park",
+    "website": null,
+    "has_website": false,
+    "rating": 4.2,
+    "review_count": 5,
+    "est_revenue_annual": 120000,
+    "employees_est": "1-3",
+    "summary": "Family owned since 2006, run by Frank & Lisa Ennis; Facebook page only, no site. Small owner-operated Tampa Bay towing outfit found via Yelp with an active phone line and real reviews.",
+    "why_on_list": "No real website and the owner is driving the truck \u2014 every missed call is a lost $150+ tow to the next dispatcher. Pitch: $500 starter site + missed-call text-back/AI dispatcher.",
+    "source": "yelp + web verification",
+    "avg_ticket": 150,
+    "quality_score": 73.8
+  },
+  {
+    "business_name": "Swinton and Sons Junk Removal",
+    "category": "junk_removal",
+    "phone": "8132702129",
+    "owner_name": "Dennis Swinton",
+    "city": "Tampa",
+    "website": null,
+    "has_website": false,
+    "rating": 5.0,
+    "review_count": 7,
+    "est_revenue_annual": 100000,
+    "employees_est": "1-4",
+    "summary": "Owner-operated since 2001 by Dennis Swinton; junk, hoarding, evictions, estate cleanouts; directories only. Verified active with real phone and recent reviews.",
+    "why_on_list": "No website while competitors with sites take the Google jobs; owner is lifting couches when quote calls come in. Pitch: $500 site + missed-call text-back with photo-quote flow.",
+    "source": "yelp + web verification",
+    "avg_ticket": 350,
+    "quality_score": 72.8
+  },
+  {
+    "business_name": "High End Service",
+    "category": "appliance_repair",
+    "phone": "7275242210",
+    "owner_name": null,
+    "city": "Largo",
+    "website": null,
+    "has_website": false,
+    "rating": 4.4,
+    "review_count": 52,
+    "est_revenue_annual": 260000,
+    "employees_est": "1-4",
+    "summary": "Sub-Zero/Wolf factory-certified repair shop, walk-ins welcome; Yelp/BBB/YellowPages only, no site. Verified active with real phone and recent reviews.",
+    "why_on_list": "High-ticket jobs booked entirely by phone with no website to capture after-hours storm/emergency demand. Pitch: starter site + missed-call text-back; one saved call covers a year of service.",
+    "source": "yelp + web verification",
+    "avg_ticket": 250,
+    "quality_score": 72.6
+  },
+  {
+    "business_name": "Modern Curbside Appeal",
+    "category": "handyman",
+    "phone": "7275657412",
+    "owner_name": "Steven Dean",
+    "city": "Largo",
+    "website": null,
+    "has_website": false,
+    "rating": 4.5,
+    "review_count": 8,
+    "est_revenue_annual": 70000,
+    "employees_est": "1-2",
+    "summary": "New solo handyman business (est late 2024) by Steven Dean, open 24hr Mon-Sat; Yelp/BBB only. Verified active with real phone and recent reviews.",
+    "why_on_list": "Owner swings the hammer and answers the phone - or does not. No website to send quote requests to. Pitch: starter site + missed-call text-back; one saved call pays the month.",
+    "source": "yelp + web verification",
+    "avg_ticket": 250,
+    "quality_score": 69.2
+  },
+  {
+    "business_name": "Brighter Bayside Window Cleaning & Pressure Washing",
+    "category": "pressure_washing",
+    "phone": "8133823868",
+    "owner_name": "Donald Hensley",
+    "city": "St. Petersburg",
+    "website": null,
+    "has_website": false,
+    "rating": 5.0,
+    "review_count": 5,
+    "est_revenue_annual": 80000,
+    "employees_est": "1-2",
+    "summary": "Sole proprietorship of Donald Hensley since 2018; residential/commercial washes; BBB + Facebook only. Verified active with real phone and recent reviews.",
+    "why_on_list": "No website in a niche where every competitor with a site outranks them; owner is on a ladder when quote calls hit voicemail. Pitch: starter site + missed-call text-back, 300-dollar average job.",
+    "source": "yelp + web verification",
+    "avg_ticket": 300,
+    "quality_score": 69.0
+  },
+  {
+    "business_name": "Superior Hand Car Wash & Detail Center",
+    "category": "car_detailing",
+    "phone": "8138800444",
+    "owner_name": null,
+    "city": "Tampa",
+    "website": null,
+    "has_website": false,
+    "rating": 4.2,
+    "review_count": 61,
+    "est_revenue_annual": 266875,
+    "employees_est": "1-3",
+    "summary": "Family-owned hand wash & detail center on Memorial Hwy; only auto-generated directory pages. Verified active with real phone and recent reviews.",
+    "why_on_list": "No website and hands literally in soap buckets all day \u2014 calls go unanswered mid-job. Pitch: $500 booking site + missed-call text-back that auto-quotes details.",
+    "source": "yelp + web verification",
+    "avg_ticket": 175,
+    "quality_score": 68.8
+  },
+  {
+    "business_name": "Suncoast Hydro Cleaning",
+    "category": "pressure_washing",
+    "phone": "7272424257",
+    "owner_name": "Mark Wethington",
+    "city": "St. Petersburg",
+    "website": null,
+    "has_website": false,
+    "rating": 5.0,
+    "review_count": 4,
+    "est_revenue_annual": 80000,
+    "employees_est": "1-2",
+    "summary": "Owner Mark Wethington since 2012, soft-wash specialist who quotes on-site same day; BBB/Angi only. Verified active with real phone and recent reviews.",
+    "why_on_list": "No website in a niche where every competitor with a site outranks them; owner is on a ladder when quote calls hit voicemail. Pitch: starter site + missed-call text-back, 300-dollar average job.",
+    "source": "yelp + web verification",
+    "avg_ticket": 300,
+    "quality_score": 68.6
+  },
+  {
+    "business_name": "Handyman 360",
+    "category": "handyman",
+    "phone": "8134844914",
+    "owner_name": "Chad Lynch",
+    "city": "Riverview",
+    "website": null,
+    "has_website": false,
+    "rating": 4.6,
+    "review_count": 5,
+    "est_revenue_annual": 70000,
+    "employees_est": "1-2",
+    "summary": "Founded 2012 by Chad Lynch, residential handyman with GC partnership, A+ BBB; no own site, directories only. Verified active with real phone and recent reviews.",
+    "why_on_list": "Owner swings the hammer and answers the phone - or does not. No website to send quote requests to. Pitch: starter site + missed-call text-back; one saved call pays the month.",
+    "source": "yelp + web verification",
+    "avg_ticket": 250,
+    "quality_score": 68.4
+  },
+  {
+    "business_name": "The Nomads Lawn Sod and Tree Service",
+    "category": "lawn_care",
+    "phone": "7277686211",
+    "owner_name": "Trevor",
+    "city": "Clearwater",
+    "website": null,
+    "has_website": false,
+    "rating": 5.0,
+    "review_count": 7,
+    "est_revenue_annual": 62400,
+    "employees_est": "1-3",
+    "summary": "Owner Trevor, LLC est 2021, total property maintenance; Nextdoor/HomeAdvisor only. Verified active with real phone and recent reviews.",
+    "why_on_list": "Solo crew on a mower cannot hear the phone; recurring-revenue niche where one saved caller is worth 2k/yr. Pitch: missed-call text-back + starter site with route signup form.",
+    "source": "yelp + web verification",
+    "avg_ticket": 80,
+    "quality_score": 67.8
+  },
+  {
+    "business_name": "JAS Handyman Multi Services",
+    "category": "handyman",
+    "phone": "8138636124",
+    "owner_name": "Samuel Torres Segovia",
+    "city": "Tampa",
+    "website": null,
+    "has_website": false,
+    "rating": 4.1,
+    "review_count": 7,
+    "est_revenue_annual": 70000,
+    "employees_est": "1-2",
+    "summary": "LLC filed 2023 by Samuel Torres Segovia; doors, drywall, concrete, painting; Nextdoor + Yelp only. Verified active with real phone and recent reviews.",
+    "why_on_list": "Owner swings the hammer and answers the phone - or does not. No website to send quote requests to. Pitch: starter site + missed-call text-back; one saved call pays the month.",
+    "source": "yelp + web verification",
+    "avg_ticket": 250,
+    "quality_score": 67.2
+  },
+  {
+    "business_name": "RowsofPalms Handyman & Lawncare Services",
+    "category": "handyman",
+    "phone": "9414478560",
+    "owner_name": "Thomas",
+    "city": "Riverview",
+    "website": null,
+    "has_website": false,
+    "rating": 3.9,
+    "review_count": 7,
+    "est_revenue_annual": 70000,
+    "employees_est": "1-2",
+    "summary": "Owner Thomas; handyman + lawn + junk hauling combo crew; Yelp/Angi only. Verified active with real phone and recent reviews.",
+    "why_on_list": "Owner swings the hammer and answers the phone - or does not. No website to send quote requests to. Pitch: starter site + missed-call text-back; one saved call pays the month.",
+    "source": "yelp + web verification",
+    "avg_ticket": 250,
+    "quality_score": 66.4
+  },
+  {
+    "business_name": "Handsome Grandson Roadside Assistance & Towing",
+    "category": "towing",
+    "phone": "8137147959",
+    "owner_name": null,
+    "city": "Tampa",
+    "website": null,
+    "has_website": false,
+    "rating": 4.8,
+    "review_count": 16,
+    "est_revenue_annual": 120000,
+    "employees_est": "1-3",
+    "summary": "24/7 towing & roadside, 7+ yrs, books via a free Square page; owner-operated (goes by Mr. G). Small owner-operated Tampa Bay towing outfit found via Yelp with an active phone line and real reviews.",
+    "why_on_list": "No real website and the owner is driving the truck \u2014 every missed call is a lost $150+ tow to the next dispatcher. Pitch: $500 starter site + missed-call text-back/AI dispatcher.",
+    "source": "yelp + web verification",
+    "avg_ticket": 150,
+    "quality_score": 65.6
+  },
+  {
+    "business_name": "Mark Of All Trades",
+    "category": "handyman",
+    "phone": "3216342273",
+    "owner_name": "Mark Claborn",
+    "city": "Port Richey",
+    "website": null,
+    "has_website": false,
+    "rating": 4.0,
+    "review_count": 4,
+    "est_revenue_annual": 70000,
+    "employees_est": "1-2",
+    "summary": "Owner Mark Claborn, 20+ yrs, locally-owned handyman LLC; Yelp + Nextdoor only. Verified active with real phone and recent reviews.",
+    "why_on_list": "Owner swings the hammer and answers the phone - or does not. No website to send quote requests to. Pitch: starter site + missed-call text-back; one saved call pays the month.",
+    "source": "yelp + web verification",
+    "avg_ticket": 250,
+    "quality_score": 65.6
+  },
+  {
+    "business_name": "Ride & Shine Mobile Detailing",
+    "category": "car_detailing",
+    "phone": "8135800349",
+    "owner_name": null,
+    "city": "Land O' Lakes",
+    "website": null,
+    "has_website": false,
+    "rating": 5.0,
+    "review_count": 30,
+    "est_revenue_annual": 131250,
+    "employees_est": "1-3",
+    "summary": "Family-owned mobile detailing + pressure washing est 2019; fully self-contained rigs; Facebook/Nextdoor only. Verified active with real phone and recent reviews.",
+    "why_on_list": "No website and hands literally in soap buckets all day \u2014 calls go unanswered mid-job. Pitch: $500 booking site + missed-call text-back that auto-quotes details.",
+    "source": "yelp + web verification",
+    "avg_ticket": 175,
+    "quality_score": 64.0
+  },
+  {
+    "business_name": "Law's Towing",
+    "category": "towing",
+    "phone": "8136552939",
+    "owner_name": null,
+    "city": "Brandon",
+    "website": "lawstowing.weebly.com (free Weebly page)",
+    "has_website": false,
+    "rating": 5.0,
+    "review_count": 5,
+    "est_revenue_annual": 120000,
+    "employees_est": "1-3",
+    "summary": "Family-owned, 35 yrs in Brandon; only web presence is a free Weebly page. Small owner-operated Tampa Bay towing outfit found via Yelp with an active phone line and real reviews.",
+    "why_on_list": "No real website and the owner is driving the truck \u2014 every missed call is a lost $150+ tow to the next dispatcher. Pitch: $500 starter site + missed-call text-back/AI dispatcher.",
+    "source": "yelp + web verification",
+    "avg_ticket": 150,
+    "quality_score": 62.0
+  },
+  {
+    "business_name": "Towberme",
+    "category": "towing",
+    "phone": "7277127952",
+    "owner_name": null,
+    "city": "St. Petersburg",
+    "website": null,
+    "has_website": false,
+    "rating": 5.0,
+    "review_count": 4,
+    "est_revenue_annual": 120000,
+    "employees_est": "1-3",
+    "summary": "Solo operator est 2023 doing jumpstarts/lockouts/tows; Yelp + Nextdoor only. Small owner-operated Tampa Bay towing outfit found via Yelp with an active phone line and real reviews.",
+    "why_on_list": "No real website and the owner is driving the truck \u2014 every missed call is a lost $150+ tow to the next dispatcher. Pitch: $500 starter site + missed-call text-back/AI dispatcher.",
+    "source": "yelp + web verification",
+    "avg_ticket": 150,
+    "quality_score": 61.6
+  },
+  {
+    "business_name": "Harvey's Tree Surgeons",
+    "category": "tree_service",
+    "phone": "8135935490",
+    "owner_name": null,
+    "city": "Tampa",
+    "website": null,
+    "has_website": false,
+    "rating": 4.8,
+    "review_count": 16,
+    "est_revenue_annual": 272000,
+    "employees_est": "1-4",
+    "summary": "Family-owned est 2020, 24/7 storm work, uniformed crews; Facebook + BBB only, no site. Verified active with real phone and recent reviews.",
+    "why_on_list": "High-ticket jobs booked entirely by phone with no website to capture after-hours storm/emergency demand. Pitch: starter site + missed-call text-back; one saved call covers a year of service.",
+    "source": "yelp + web verification",
+    "avg_ticket": 850,
+    "quality_score": 61.6
+  },
+  {
+    "business_name": "B&B Major Appliance Service",
+    "category": "appliance_repair",
+    "phone": "7277430318",
+    "owner_name": null,
+    "city": "St. Petersburg",
+    "website": null,
+    "has_website": false,
+    "rating": 4.5,
+    "review_count": 20,
+    "est_revenue_annual": 120000,
+    "employees_est": "1-4",
+    "summary": "Factory-trained owner-operators since 2009, 65-dollar service call credited to repair; directories only. Verified active with real phone and recent reviews.",
+    "why_on_list": "High-ticket jobs booked entirely by phone with no website to capture after-hours storm/emergency demand. Pitch: starter site + missed-call text-back; one saved call covers a year of service.",
+    "source": "yelp + web verification",
+    "avg_ticket": 200,
+    "quality_score": 61.0
+  },
+  {
+    "business_name": "Elvis Towing Inc",
+    "category": "towing",
+    "phone": "7273233500",
+    "owner_name": null,
+    "city": "St. Petersburg",
+    "website": null,
+    "has_website": false,
+    "rating": 4.4,
+    "review_count": 8,
+    "est_revenue_annual": 120000,
+    "employees_est": "1-3",
+    "summary": "Family owned since 1976, same South St Pete lot; zero website in 50 years of business. Small owner-operated Tampa Bay towing outfit found via Yelp with an active phone line and real reviews.",
+    "why_on_list": "No real website and the owner is driving the truck \u2014 every missed call is a lost $150+ tow to the next dispatcher. Pitch: $500 starter site + missed-call text-back/AI dispatcher.",
+    "source": "yelp + web verification",
+    "avg_ticket": 150,
+    "quality_score": 60.8
+  },
+  {
+    "business_name": "Lanai Guy",
+    "category": "pressure_washing",
+    "phone": "8133165971",
+    "owner_name": null,
+    "city": "Seffner",
+    "website": null,
+    "has_website": false,
+    "rating": 4.7,
+    "review_count": 24,
+    "est_revenue_annual": 216000,
+    "employees_est": "1-2",
+    "summary": "25 yrs rescreening pool cages + pressure washing in Brandon/Riverview; Yelp + Angi only. Verified active with real phone and recent reviews.",
+    "why_on_list": "No website in a niche where every competitor with a site outranks them; owner is on a ladder when quote calls hit voicemail. Pitch: starter site + missed-call text-back, 300-dollar average job.",
+    "source": "yelp + web verification",
+    "avg_ticket": 300,
+    "quality_score": 60.4
+  },
+  {
+    "business_name": "Abba Agapa Tree And Landscaping Expert",
+    "category": "tree_service",
+    "phone": "7275094509",
+    "owner_name": null,
+    "city": "Clearwater",
+    "website": null,
+    "has_website": false,
+    "rating": 4.4,
+    "review_count": 16,
+    "est_revenue_annual": 272000,
+    "employees_est": "1-4",
+    "summary": "Owner-operated est 2019, lead climber with 20+ yrs, 24hr emergency; Yelp/BBB only. Verified active with real phone and recent reviews.",
+    "why_on_list": "High-ticket jobs booked entirely by phone with no website to capture after-hours storm/emergency demand. Pitch: starter site + missed-call text-back; one saved call covers a year of service.",
+    "source": "yelp + web verification",
+    "avg_ticket": 850,
+    "quality_score": 60.0
+  },
+  {
+    "business_name": "Evelands Towing and Recovery",
+    "category": "towing",
+    "phone": "7274235417",
+    "owner_name": null,
+    "city": "Clearwater",
+    "website": null,
+    "has_website": false,
+    "rating": 4.2,
+    "review_count": 5,
+    "est_revenue_annual": 120000,
+    "employees_est": "1-3",
+    "summary": "24/7 towing since 2008, contact is a Gmail address; directory listings only. Small owner-operated Tampa Bay towing outfit found via Yelp with an active phone line and real reviews.",
+    "why_on_list": "No real website and the owner is driving the truck \u2014 every missed call is a lost $150+ tow to the next dispatcher. Pitch: $500 starter site + missed-call text-back/AI dispatcher.",
+    "source": "yelp + web verification",
+    "avg_ticket": 150,
+    "quality_score": 58.8
+  },
+  {
+    "business_name": "Clutter Busters Junk Removal",
+    "category": "junk_removal",
+    "phone": "7272385629",
+    "owner_name": null,
+    "city": "St. Petersburg",
+    "website": null,
+    "has_website": false,
+    "rating": 5.0,
+    "review_count": 8,
+    "est_revenue_annual": 100000,
+    "employees_est": "1-4",
+    "summary": "18 years in business, same-day service, senior discounts; YellowPages/Facebook only. Verified active with real phone and recent reviews.",
+    "why_on_list": "No website while competitors with sites take the Google jobs; owner is lifting couches when quote calls come in. Pitch: $500 site + missed-call text-back with photo-quote flow.",
+    "source": "yelp + web verification",
+    "avg_ticket": 350,
+    "quality_score": 58.2
+  },
+  {
+    "business_name": "Junk Removal & Demolition Bandits",
+    "category": "junk_removal",
+    "phone": "8139005291",
+    "owner_name": null,
+    "city": "Plant City",
+    "website": null,
+    "has_website": false,
+    "rating": 5.0,
+    "review_count": 7,
+    "est_revenue_annual": 100000,
+    "employees_est": "1-4",
+    "summary": "Locally-owned 24/7 junk removal + light demo; send a photo for instant quote; Yelp/Nextdoor only. Verified active with real phone and recent reviews.",
+    "why_on_list": "No website while competitors with sites take the Google jobs; owner is lifting couches when quote calls come in. Pitch: $500 site + missed-call text-back with photo-quote flow.",
+    "source": "yelp + web verification",
+    "avg_ticket": 350,
+    "quality_score": 57.8
+  },
+  {
+    "business_name": "Oasis Towing & Recovery",
+    "category": "towing",
+    "phone": "7276231341",
+    "owner_name": null,
+    "city": "St. Petersburg",
+    "website": null,
+    "has_website": false,
+    "rating": 4.0,
+    "review_count": 4,
+    "est_revenue_annual": 120000,
+    "employees_est": "1-3",
+    "summary": "1 truck, 2 drivers per FMCSA; 24hr towing + lockouts; no web presence beyond directories. Small owner-operated Tampa Bay towing outfit found via Yelp with an active phone line and real reviews.",
+    "why_on_list": "No real website and the owner is driving the truck \u2014 every missed call is a lost $150+ tow to the next dispatcher. Pitch: $500 starter site + missed-call text-back/AI dispatcher.",
+    "source": "yelp + web verification",
+    "avg_ticket": 150,
+    "quality_score": 57.6
+  },
+  {
+    "business_name": "D & D Tree Service",
+    "category": "tree_service",
+    "phone": "8134461766",
+    "owner_name": null,
+    "city": "Wesley Chapel",
+    "website": null,
+    "has_website": false,
+    "rating": 4.3,
+    "review_count": 11,
+    "est_revenue_annual": 187000,
+    "employees_est": "1-4",
+    "summary": "LLC since 2014, tree removal + stump grinding + firewood shop on SR54; Facebook + gmail only. Verified active with real phone and recent reviews.",
+    "why_on_list": "High-ticket jobs booked entirely by phone with no website to capture after-hours storm/emergency demand. Pitch: starter site + missed-call text-back; one saved call covers a year of service.",
+    "source": "yelp + web verification",
+    "avg_ticket": 850,
+    "quality_score": 57.6
+  },
+  {
+    "business_name": "Low Cost Hauling & Junk Removal",
+    "category": "junk_removal",
+    "phone": "7274337027",
+    "owner_name": null,
+    "city": "St. Petersburg",
+    "website": null,
+    "has_website": false,
+    "rating": 5.0,
+    "review_count": 6,
+    "est_revenue_annual": 100000,
+    "employees_est": "1-4",
+    "summary": "Solo hauler since 2011 \u2014 call or text a photo for a quote; Yelp listing only. Verified active with real phone and recent reviews.",
+    "why_on_list": "No website while competitors with sites take the Google jobs; owner is lifting couches when quote calls come in. Pitch: $500 site + missed-call text-back with photo-quote flow.",
+    "source": "yelp + web verification",
+    "avg_ticket": 350,
+    "quality_score": 57.4
+  },
+  {
+    "business_name": "Action Junk Removal",
+    "category": "junk_removal",
+    "phone": "7272014922",
+    "owner_name": null,
+    "city": "Clearwater",
+    "website": null,
+    "has_website": false,
+    "rating": 5.0,
+    "review_count": 4,
+    "est_revenue_annual": 100000,
+    "employees_est": "1-4",
+    "summary": "Est 2016, 24-hr full cleanouts and construction debris; Yelp + Alignable only. Verified active with real phone and recent reviews.",
+    "why_on_list": "No website while competitors with sites take the Google jobs; owner is lifting couches when quote calls come in. Pitch: $500 site + missed-call text-back with photo-quote flow.",
+    "source": "yelp + web verification",
+    "avg_ticket": 350,
+    "quality_score": 56.6
+  },
+  {
+    "business_name": "Yess Solutions",
+    "category": "handyman",
+    "phone": "8133911671",
+    "owner_name": null,
+    "city": "Wesley Chapel",
+    "website": null,
+    "has_website": false,
+    "rating": 5.0,
+    "review_count": 4,
+    "est_revenue_annual": 70000,
+    "employees_est": "1-2",
+    "summary": "Small handyman/remodeling outfit on Thumbtack and Nextdoor; no site, no branding. Verified active with real phone and recent reviews.",
+    "why_on_list": "Owner swings the hammer and answers the phone - or does not. No website to send quote requests to. Pitch: starter site + missed-call text-back; one saved call pays the month.",
+    "source": "yelp + web verification",
+    "avg_ticket": 250,
+    "quality_score": 54.6
+  },
+  {
+    "business_name": "Kleen Exteriors Pressure Cleaning",
+    "category": "pressure_washing",
+    "phone": "7276416501",
+    "owner_name": null,
+    "city": "Clearwater",
+    "website": null,
+    "has_website": false,
+    "rating": 5.0,
+    "review_count": 6,
+    "est_revenue_annual": 80000,
+    "employees_est": "1-2",
+    "summary": "Soft wash + pressure cleaning for roofs, driveways, pool cages; Yelp/Alignable/Porch only. Verified active with real phone and recent reviews.",
+    "why_on_list": "No website in a niche where every competitor with a site outranks them; owner is on a ladder when quote calls hit voicemail. Pitch: starter site + missed-call text-back, 300-dollar average job.",
+    "source": "yelp + web verification",
+    "avg_ticket": 300,
+    "quality_score": 54.4
+  },
+  {
+    "business_name": "A&J Window Washing Services",
+    "category": "pressure_washing",
+    "phone": "8134843755",
+    "owner_name": null,
+    "city": "Wimauma",
+    "website": null,
+    "has_website": false,
+    "rating": 5.0,
+    "review_count": 6,
+    "est_revenue_annual": 80000,
+    "employees_est": "1-2",
+    "summary": "Two-person window washing + pressure washing crew covering south Hillsborough; Yelp + Facebook only. Verified active with real phone and recent reviews.",
+    "why_on_list": "No website in a niche where every competitor with a site outranks them; owner is on a ladder when quote calls hit voicemail. Pitch: starter site + missed-call text-back, 300-dollar average job.",
+    "source": "yelp + web verification",
+    "avg_ticket": 300,
+    "quality_score": 54.4
+  },
+  {
+    "business_name": "Clean Vibes Pressure Washing",
+    "category": "pressure_washing",
+    "phone": "7276237159",
+    "owner_name": null,
+    "city": "Largo",
+    "website": null,
+    "has_website": false,
+    "rating": 5.0,
+    "review_count": 5,
+    "est_revenue_annual": 80000,
+    "employees_est": "1-2",
+    "summary": "Family-owned LLC est 2021, house washes and driveways; Facebook page only, gmail contact. Verified active with real phone and recent reviews.",
+    "why_on_list": "No website in a niche where every competitor with a site outranks them; owner is on a ladder when quote calls hit voicemail. Pitch: starter site + missed-call text-back, 300-dollar average job.",
+    "source": "yelp + web verification",
+    "avg_ticket": 300,
+    "quality_score": 54.0
+  },
+  {
+    "business_name": "Tampa Bay Pressure Washing and Sealing Service",
+    "category": "pressure_washing",
+    "phone": "8136107266",
+    "owner_name": null,
+    "city": "Tampa",
+    "website": null,
+    "has_website": false,
+    "rating": 5.0,
+    "review_count": 5,
+    "est_revenue_annual": 80000,
+    "employees_est": "1-2",
+    "summary": "Est 2000, pay-on-satisfaction roof cleaning and paver sealing; Facebook + directories only after 25 years. Verified active with real phone and recent reviews.",
+    "why_on_list": "No website in a niche where every competitor with a site outranks them; owner is on a ladder when quote calls hit voicemail. Pitch: starter site + missed-call text-back, 300-dollar average job.",
+    "source": "yelp + web verification",
+    "avg_ticket": 300,
+    "quality_score": 54.0
+  },
+  {
+    "business_name": "Major League Pressure Cleaning",
+    "category": "pressure_washing",
+    "phone": "8137772259",
+    "owner_name": null,
+    "city": "Tampa",
+    "website": null,
+    "has_website": false,
+    "rating": 5.0,
+    "review_count": 5,
+    "est_revenue_annual": 80000,
+    "employees_est": "1-2",
+    "summary": "Small pressure washing + gutter crew; only a free auto-generated voolt page. Verified active with real phone and recent reviews.",
+    "why_on_list": "No website in a niche where every competitor with a site outranks them; owner is on a ladder when quote calls hit voicemail. Pitch: starter site + missed-call text-back, 300-dollar average job.",
+    "source": "yelp + web verification",
+    "avg_ticket": 300,
+    "quality_score": 54.0
+  },
+  {
+    "business_name": "Veteran Authority",
+    "category": "lawn_care",
+    "phone": "7274826915",
+    "owner_name": null,
+    "city": "St. Petersburg",
+    "website": null,
+    "has_website": false,
+    "rating": 4.3,
+    "review_count": 12,
+    "est_revenue_annual": 78400,
+    "employees_est": "1-3",
+    "summary": "Veteran-owned lawn + handyman LLC, mowing, arborist trims, eco treatments; Yelp/Angi/Nextdoor only. Verified active with real phone and recent reviews.",
+    "why_on_list": "Solo crew on a mower cannot hear the phone; recurring-revenue niche where one saved caller is worth 2k/yr. Pitch: missed-call text-back + starter site with route signup form.",
+    "source": "yelp + web verification",
+    "avg_ticket": 80,
+    "quality_score": 52.0
+  },
+  {
+    "business_name": "M&R Mowing Pros",
+    "category": "lawn_care",
+    "phone": "7277482710",
+    "owner_name": null,
+    "city": "St. Petersburg",
+    "website": null,
+    "has_website": false,
+    "rating": 4.4,
+    "review_count": 5,
+    "est_revenue_annual": 60000,
+    "employees_est": "1-3",
+    "summary": "Small mowing/edging/mulch crew serving St Pete for years; Yelp listing only. Verified active with real phone and recent reviews.",
+    "why_on_list": "Solo crew on a mower cannot hear the phone; recurring-revenue niche where one saved caller is worth 2k/yr. Pitch: missed-call text-back + starter site with route signup form.",
+    "source": "yelp + web verification",
+    "avg_ticket": 80,
+    "quality_score": 49.6
+  },
+  {
+    "business_name": "ACW Landscape Lawn & Tree",
+    "category": "lawn_care",
+    "phone": "7277682396",
+    "owner_name": null,
+    "city": "St. Petersburg",
+    "website": null,
+    "has_website": false,
+    "rating": 3.9,
+    "review_count": 10,
+    "est_revenue_annual": 72000,
+    "employees_est": "1-3",
+    "summary": "Landscaping/lawn/tree combo crew with pressure washing; directory listings only. Verified active with real phone and recent reviews.",
+    "why_on_list": "Solo crew on a mower cannot hear the phone; recurring-revenue niche where one saved caller is worth 2k/yr. Pitch: missed-call text-back + starter site with route signup form.",
+    "source": "yelp + web verification",
+    "avg_ticket": 80,
+    "quality_score": 49.6
+  },
+  {
+    "business_name": "GED Tree & Lawn Care",
+    "category": "lawn_care",
+    "phone": "7279454900",
+    "owner_name": null,
+    "city": "St. Petersburg",
+    "website": null,
+    "has_website": false,
+    "rating": 4.0,
+    "review_count": 8,
+    "est_revenue_annual": 65600,
+    "employees_est": "1-3",
+    "summary": "South St Pete tree + lawn + cleanout crew, open 7 days; Yelp + Facebook only. Verified active with real phone and recent reviews.",
+    "why_on_list": "Solo crew on a mower cannot hear the phone; recurring-revenue niche where one saved caller is worth 2k/yr. Pitch: missed-call text-back + starter site with route signup form.",
+    "source": "yelp + web verification",
+    "avg_ticket": 80,
+    "quality_score": 49.2
+  }
+];
+
+// ══════════════ PURE FUNCTIONS ══════════════
+function key(l){ return (l.business_name||"") + "|" + (l.phone||""); }
+function fmt(n){ return "$" + Math.round(n).toLocaleString(); }
+function esc(s){ return String(s??"").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function fmtPhone(p){ const d=String(p||"").replace(/\D/g,""); return d.length===10 ? `(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}` : p; }
+function telHref(l){ return "tel:" + String(l.phone||"").replace(/[^\d+]/g,""); }
+function smsHref(l, body){
+  const n = String(l.phone||"").replace(/[^\d+]/g,"");
+  const sep = /iPhone|iPad|Mac/i.test(navigator.userAgent) ? "&" : "?";
+  return `sms:${n}${sep}body=${encodeURIComponent(body)}`;
+}
+function missedCallLoss(m, t, cr){ const wk = m*t*cr; return { week:wk, month:wk*4.33, year:wk*52 }; }
+function revenueEstimate(rc, t){ const j=(rc*JOBS_PER_REVIEW)/REVIEW_WINDOW_MONTHS; return { jobsPerMonth:j, monthly:j*t }; }
+function tierFor(rev){ return PRICE_TIERS.find(t => (rev||0) <= t.max); }
+function painsOf(l){
+  const p = [];
+  if(!l.has_website) p.push("no-site");
+  if(l.website) p.push("free-page");
+  const s = (l.summary||"") + " " + (l.why_on_list||"");
+  if(/24.?(hr|hour|\/7)|dispatch|emergency|after.?hours/i.test(s) || ["towing","mobile_mechanic","appliance_repair"].includes(l.category)) p.push("ai-reception");
+  if((l.review_count||0) < 10) p.push("low-reviews");
+  if((l.avg_ticket||0) >= 300) p.push("high-ticket");
+  return p;
+}
+function demoUrl(l){
+  const path = DEMO_PATHS[l.category]; if(!DEMO_BASE || !path) return null;
+  const q = new URLSearchParams({ name:l.business_name||"", phone:l.phone||"", city:l.city||"",
+    rating:l.rating??"", reviews:l.review_count??"" });
+  return DEMO_BASE + path + "/?" + q.toString();
+}
+function filtered(){
+  return leads.filter(l=>{
+    if(niche!=="all" && l.category!==niche) return false;
+    const lp = painsOf(l);
+    for(const p of pains) if(!lp.includes(p)) return false;
+    const d = results[key(l)];
+    if(status==="uncalled")   return !d || !d.dispo;
+    if(status==="interested") return d && (d.dispo==="Interested"||d.dispo==="BOOKED");
+    if(status==="booked")     return d && d.dispo==="BOOKED";
+    if(status==="callbacks")  return d && d.cbDue && d.dispo!=="BOOKED" && d.dispo!=="Not Interested";
+    return true;
+  }).sort((a,b)=>{
+    if(status==="callbacks") return (results[key(a)].cbDue||"") < (results[key(b)].cbDue||"") ? -1 : 1;
+    if(sortBy==="reviews") return (b.review_count||0)-(a.review_count||0);
+    if(sortBy==="revenue") return (b.est_revenue_annual||0)-(a.est_revenue_annual||0);
+    return (b.quality_score||0)-(a.quality_score||0);
+  });
+}
+function cbTime(h){
+  const now = new Date();
+  if(h === -9){ const t = new Date(now); t.setDate(t.getDate()+1); t.setHours(9,0,0,0); return t.toISOString(); }
+  return new Date(now.getTime() + h*3600e3).toISOString();
+}
+
+// ══════════════ STATE ══════════════
+let leads = LEADS.slice();
+let results  = JSON.parse(localStorage.getItem("rr_dialer_results")||"{}");
+let meetings = JSON.parse(localStorage.getItem("rr_meetings")||"[]");
+let rep = localStorage.getItem("rr_rep") || "CS";
+let scr = "dial", niche = "all", pains = [], status = "all", sortBy = "score", search = "", idx = 0;
+function save(){ localStorage.setItem("rr_dialer_results", JSON.stringify(results)); }
+function saveMeetings(){ localStorage.setItem("rr_meetings", JSON.stringify(meetings)); }
+function rec(l){ return results[key(l)] || (results[key(l)] = {}); }
+
+// ══════════════ SHELL ══════════════
+const DISPOS = [["na","No Ans","No Answer"],["vm","VM","Voicemail"],["ni","Not Int","Not Interested"],["int","Interest","Interested"],["bk","Booked","BOOKED"]];
+
+function render(){
+  renderChips(); renderBadges();
+  if(scr==="dial") renderDial();
+  else if(scr==="leads") renderLeads();
+  else if(scr==="cal") renderCal();
+  else renderStats();
+}
+
+function renderChips(){
+  const counts = {};
+  leads.forEach(l=>{ counts[l.category]=(counts[l.category]||0)+1; });
+  const nOrder = Object.keys(NICHE_LABEL).filter(c=>counts[c]).sort((a,b)=>counts[b]-counts[a]);
+  document.getElementById("nicheChips").innerHTML =
+    `<button class="chip ${niche==="all"?"on":""}" onclick="setNiche('all')">All ${leads.length}</button>` +
+    nOrder.map(c=>`<button class="chip ${niche===c?"on":""}" onclick="setNiche('${c}')">${NICHE_LABEL[c]} ${counts[c]}</button>`).join("");
+  const cbCount = leads.filter(l=>{ const d=results[key(l)]; return d && d.cbDue && d.dispo!=="BOOKED" && d.dispo!=="Not Interested"; }).length;
+  document.getElementById("painChips").innerHTML =
+    PAINS.map(([id,lab])=>`<button class="chip pain ${pains.includes(id)?"on":""}" onclick="togglePain('${id}')">${lab}</button>`).join("") +
+    `<span class="chip-gap"></span>` +
+    STATUSES.map(([id,lab])=>`<button class="chip stat ${status===id?"on":""}" onclick="setStatus('${id}')">${lab}${id==="callbacks"&&cbCount?" "+cbCount:""}</button>`).join("");
+}
+
+function renderBadges(){
+  document.getElementById("avatar").textContent = rep;
+  document.getElementById("sheetRep").textContent = rep === "CS" ? "Chase" : rep;
+  document.getElementById("repLine").innerHTML = `Calls get tagged <b>${esc(rep)}</b> — tap to change`;
+  const upcoming = meetings.filter(m=>new Date(m.when) > new Date()).length;
+  const b = document.getElementById("calBadge");
+  b.style.display = upcoming ? "" : "none";
+  b.textContent = upcoming;
+}
+
+// ══════════════ DIAL ══════════════
+function renderDial(){
+  const v = document.getElementById("scr-dial");
+  const list = filtered();
+  if(!list.length){ v.innerHTML = '<h1>Dial</h1><div class="sub">Work the list, top score first</div><div class="empty">No leads match these filters.<br>Widen the niche or pain-point selection.</div>'; return; }
+  if(idx >= list.length) idx = list.length - 1;
+  if(idx < 0) idx = 0;
+  const l = list[idx], d = results[key(l)] || {};
+  const tier = tierFor(l.est_revenue_annual);
+  const rev = revenueEstimate(l.review_count||0, l.avg_ticket||150);
+  const first = l.owner_name ? l.owner_name.split(" ")[0] : null;
+  const lp = painsOf(l);
+  const showCb = d.dispo==="No Answer" || d.dispo==="Voicemail" || d.dispo==="Interested";
+  const demo = demoUrl(l);
+  const demoTxt = demo || "[demo link — text after hosting]";
+  const vmText = `Hey ${first||"there"}, Chase here — just left you a voicemail. I put a demo website together for ${l.business_name}. Takes 30 seconds to look at: ${demoTxt}`;
+  const introText = `Hey ${first||"there"}, Chase from RecoverRevenue — here's the demo site I built for ${l.business_name}: ${demoTxt}. If you like it, we can talk. If not, no hard feelings.`;
+  const stColor = d.dispo==="BOOKED"?"var(--green)":d.dispo==="Interested"?"var(--amber)":d.dispo==="Not Interested"?"var(--red)":"var(--dim)";
+
+  v.innerHTML = `
+  <div class="counterline"><span>${idx+1} / ${list.length} · ${esc(NICHE_LABEL[l.category]||l.category||"")}</span>
+    <span class="st" style="color:${stColor}">${d.dispo||"Uncalled"}${d.rep?` · ${esc(d.rep)}`:""}</span></div>
+
+  <div class="outsec">
+    <div class="outlabel">How did the call go?</div>
+    <div class="dispos">
+      ${DISPOS.map(([c,short,full])=>`<button class="dbtn ${c} ${d.dispo===full?"on":""}" onclick="setDispo('${full}')">${short}</button>`).join("")}
+    </div>
+    ${showCb ? `<div class="cbrow"><span class="lbl">Call back</span>
+      ${[["1h",1],["Tmrw 9am",-9],["3 days",72]].map(([lab,h])=>
+        `<button class="cbbtn" onclick="setCb(cbTime(${h}))">${lab}</button>`).join("")}
+      ${d.cbDue?`<button class="cbbtn on" onclick="setCb(null)">${new Date(d.cbDue).toLocaleString("en-US",{weekday:"short",hour:"numeric",minute:"2-digit"})} ✕</button>`:""}
+    </div>`:""}
+    <input class="note-in" placeholder="One-line note…" value="${esc(d.note||"")}" onchange="setNote(this.value)">
+  </div>
+
+  <h1 style="margin-top:18px">${first ? esc(first) : "Owner unknown"}</h1>
+  <div class="sub" style="margin-bottom:0"><b>${esc(l.business_name||"")}</b> · ${esc(l.city||"")} · ★ ${l.rating??"–"} (${l.review_count??0}) · est <b>${fmt(l.est_revenue_annual||0)}/yr</b></div>
+
+  <div class="hero">
+    <div class="label">Money walking — say it out loud</div>
+    <div class="num" id="calcOut">$0<span class="per">/mo</span></div>
+    <div class="delta" id="calcSub"></div>
+    <div class="foot">Assumes ${CLOSE_RATE*100}% of missed calls were winnable jobs · volume check: ~${Math.round(rev.jobsPerMonth)} jobs/mo ≈ ${fmt(rev.monthly)}/mo from ${l.review_count??0} reviews</div>
+    <div class="calcins">
+      <label>Missed calls / week<input type="number" id="cMissed" value="${d.missed ?? 5}" min="0"></label>
+      <label>Avg ticket $<input type="number" id="cTicket" value="${d.ticket ?? l.avg_ticket ?? 150}" min="0"></label>
+    </div>
+  </div>
+
+  <div class="rows">
+    <div class="row"><div class="l"><div class="t">The pitch</div><div class="d"><b>${tier.name}</b> — ${esc(tier.pitch)}</div></div></div>
+    <div class="row"><div class="l"><div class="t">Best time to call</div><div class="d">${esc(BEST_TIME[l.category]||BEST_TIME.default)} · Pain: ${lp.map(p=>(PAINS.find(x=>x[0]===p)||[])[1]).filter(Boolean).join(" · ")}</div></div></div>
+  </div>
+
+  <div class="card">
+    <div class="cl">Why they're on the list</div>
+    <p>${esc(l.why_on_list||"")}</p>
+    <div class="sm">${esc(l.summary||"")}</div>
+  </div>
+
+  <a class="pill call" href="${telHref(l)}" onclick="markCalled()">Call ${first?esc(first):"now"} — ${esc(fmtPhone(l.phone))}</a>
+  <div class="phone-sub">or <b onclick="copyText('${esc(fmtPhone(l.phone))}')">copy the number</b></div>
+  <div class="pillrow">
+    <a class="pill ghost" href="${smsHref(l, introText)}">Text demo link</a>
+    <a class="pill ghost" href="${smsHref(l, vmText)}">Post-VM text</a>
+  </div>
+
+  <details class="script">
+    <summary>Script &amp; objections</summary>
+    <div class="prose">
+      <h3>Opener</h3><p>"Hey ${first||"[name]"}, this is ${rep==="CS"?"Chase":"[your name]"} — I'll be quick. Do you have a website set up for ${esc(l.business_name||"[company]")}?"</p>
+      <h3>Bridge</h3><p>"Reason I'm calling — I build systems for ${esc(NICHE_LABEL[l.category]||"service")} businesses that text back every missed call in 60 seconds so the job doesn't go to the next ${esc(l.category==="towing"?"truck":"guy")}. You've got ${l.review_count??"a bunch of"} reviews — that's real trust — but when you're mid-job and the phone rings out, that money walks."</p>
+      <h3>The ask</h3><p>"Takes 2 minutes to see it. I'll text you a link right now — if it's not for you, no hard feelings."</p>
+      <h3>"How much is it?"</h3><p>"${esc(tier.pitch)}. One saved job pays for the month. But look at it first — no point talking price on something you haven't seen."</p>
+      <h3>"Not interested"</h3><p>"Fair enough. Can I ask — is it the cost, the timing, or just not a priority right now?"</p>
+      <h3>"I get all my work through referrals"</h3><p>"That's great — it means people trust you. This doesn't replace referrals, it makes them convert. When someone gets your name and Googles you, right now they find nothing."</p>
+      <h3>"Send me an email"</h3><p>"I can do that — what's the best email? I'll have it to you in 5 minutes." (Then actually send it in 5 minutes.)</p>
+      <h3>"I'm slammed right now"</h3><p>"Perfect time to build the pipeline so you're not scrambling when it slows down. I'll text it — look tonight, no pressure."</p>
+      <h3>Voicemail — under 25s, text immediately after</h3><p>"Hey ${first||"[name]"}, Chase calling. I built a demo website for ${esc(l.business_name||"[company]")} and wanted to show you before I moved on — it's live right now. Call me back, takes 2 minutes. Talk soon."</p>
+    </div>
+  </details>
+
+  <div class="pillrow">
+    <button class="pill ghost" onclick="nav(-1)">‹ Prev</button>
+    <button class="pill" onclick="nav(1)">Next ›</button>
+  </div>`;
+
+  document.getElementById("cMissed").addEventListener("input", recalc);
+  document.getElementById("cTicket").addEventListener("input", recalc);
+  recalc();
+}
+
+function recalc(){
+  const m = +document.getElementById("cMissed").value || 0;
+  const t = +document.getElementById("cTicket").value || 0;
+  const loss = missedCallLoss(m, t, CLOSE_RATE);
+  document.getElementById("calcOut").innerHTML = `${fmt(loss.month)}<span class="per">/mo</span>`;
+  document.getElementById("calcSub").textContent = `▼ ${fmt(loss.week)}/wk · ${fmt(loss.year)}/yr to the next guy`;
+  const l = filtered()[idx];
+  if(l){ const d = rec(l); d.missed = m; d.ticket = t; save(); }
+}
+
+// ══════════════ LEADS ══════════════
+function renderLeads(){
+  const v = document.getElementById("scr-leads");
+  const list = filtered().filter(l=>{
+    if(!search) return true;
+    const s = search.toLowerCase();
+    return (l.business_name||"").toLowerCase().includes(s) || (l.owner_name||"").toLowerCase().includes(s) || (l.city||"").toLowerCase().includes(s);
+  });
+  const dotFor = d => !d||!d.dispo ? "var(--line)" : d.dispo==="BOOKED" ? "var(--green)" : d.dispo==="Interested" ? "var(--amber)" : d.dispo==="Not Interested" ? "var(--red)" : "var(--dim)";
+  v.innerHTML = `
+    <h1>Leads</h1>
+    <div class="sub">${leads.length} verified owner-operators · Tampa Bay scrape</div>
+    <input class="search" placeholder="Search name, owner, city…" value="${esc(search)}" oninput="setSearch(this.value)">
+    <div class="sortrow"><span class="lbl">Sort</span>
+      ${[["score","Score"],["reviews","Reviews"],["revenue","Rev $"]].map(([id,lab])=>
+        `<button class="chip ${sortBy===id?"on":""}" onclick="setSort('${id}')">${lab}</button>`).join("")}
+      <span class="n">${list.length} shown</span>
+    </div>
+    <div class="rows">
+    ${list.map(l=>{
+      const d = results[key(l)];
+      const cb = d && d.cbDue && new Date(d.cbDue) <= new Date() && d.dispo!=="BOOKED" && d.dispo!=="Not Interested";
+      return `<div class="row clickable" onclick="openInDialer('${esc(key(l))}')">
+        <span class="sdot" style="background:${dotFor(d)}"></span>
+        <div class="l">
+          <div class="t">${esc(l.business_name)}</div>
+          <div class="d">${esc(l.owner_name||"owner?")} · ${esc(l.city)} · ★${l.rating??"–"}/${l.review_count??0}${d&&d.dispo?` · <b>${esc(d.dispo)}</b>`:""}${cb?` · <b style="color:var(--red)">call back now</b>`:""}</div>
+        </div>
+        <div class="r">
+          <a class="phlink" href="${telHref(l)}" onclick="event.stopPropagation();markCalledKey('${esc(key(l))}')">${esc(fmtPhone(l.phone))}</a>
+          <span class="chev">›</span>
+        </div>
+      </div>`; }).join("") || '<div class="empty">Nothing matches.</div>'}
+    </div>`;
+}
+
+// ══════════════ CALENDAR ══════════════
+let bookOpen = false, bookPrefill = null;
+function renderCal(){
+  const v = document.getElementById("scr-cal");
+  const now = new Date();
+  const defDate = new Date(now.getTime()+864e5).toISOString().slice(0,10);
+  const opts = leads.map(l=>`<option value="${esc(key(l))}" ${bookPrefill===key(l)?"selected":""}>${esc(l.business_name)} — ${esc(l.owner_name||l.city||"")}</option>`).join("");
+  const upcoming = meetings.slice().sort((a,b)=>a.when<b.when?-1:1);
+  let lastDay = "";
+  v.innerHTML = `
+    <h1>Calendar</h1>
+    <div class="sub">Demo calls you've booked · syncs to Apple Calendar via .ics</div>
+    <button class="pill" onclick="toggleBook()">${bookOpen?"Hide booking form":"Book a demo call"}</button>
+    ${bookOpen?`<div class="bform">
+      <label>Lead</label><select id="bLead">${opts}</select>
+      <div class="brow">
+        <div><label>Date</label><input type="date" id="bDate" value="${defDate}"></div>
+        <div><label>Time</label><input type="time" id="bTime" value="10:00"></div>
+        <div><label>Mins</label><select id="bDur"><option>15</option><option selected>20</option><option>30</option></select></div>
+      </div>
+      <label>Note</label><input type="text" id="bNote" placeholder="Screen-share demo — send link 10 min before">
+      <button class="pill call" onclick="saveMeeting()">Save meeting</button>
+      <div class="fine">Saving stores it here and downloads an .ics — open it and it drops straight into Apple Calendar with a 30-min prep alarm.</div>
+    </div>`:""}
+    ${upcoming.length ? upcoming.map(m=>{
+      const dt = new Date(m.when);
+      const past = dt < now;
+      const day = dt.toLocaleDateString("en-US",{weekday:"short", month:"short", day:"numeric"});
+      const head = day!==lastDay ? `<div class="day-group"><div class="day-label">${day}</div></div>` : "";
+      lastDay = day;
+      const lead = leads.find(l=>key(l)===m.leadKey);
+      const confirmText = `Hey ${(m.name||"").split(" ")[0]}, Chase from RecoverRevenue — confirming our ${dt.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"})} call ${day}. I'll walk you through the demo site I built for you. Talk then!`;
+      return head + `<div class="evt" ${past?'style="opacity:.5"':""}>
+        <div class="bar ${past?"dim":"g"}"></div>
+        <div class="body">
+          <div class="t">${esc(m.name)}${past?" ✓":""}</div>
+          <div class="d">${dt.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"})} · ${m.dur} min${m.rep?` · ${esc(m.rep)}`:""}${m.note?` · ${esc(m.note)}`:""}</div>
+          <div class="acts">
+            ${lead?`<a class="linkbtn" href="${telHref(lead)}">Call</a><a class="linkbtn" href="${smsHref(lead, confirmText)}">Text confirm</a>`:""}
+            <button class="linkbtn" onclick="downloadIcs('${m.id}')">.ics</button>
+            <button class="linkbtn del" onclick="delMeeting('${m.id}')">Remove</button>
+          </div>
+        </div>
+      </div>`; }).join("") : '<div class="empty">No meetings yet.<br>Mark a call <b>Booked</b> on the dialer and it lands here.</div>'}`;
+}
+function toggleBook(){ bookOpen = !bookOpen; renderCal(); }
+function saveMeeting(){
+  const k = document.getElementById("bLead").value;
+  const l = leads.find(x=>key(x)===k); if(!l) return;
+  const when = document.getElementById("bDate").value + "T" + document.getElementById("bTime").value;
+  const m = {
+    id: "m" + Date.now(),
+    leadKey: k, name: l.business_name, phone: l.phone,
+    when: new Date(when).toISOString(),
+    dur: +document.getElementById("bDur").value,
+    note: document.getElementById("bNote").value, rep,
+  };
+  meetings.push(m); saveMeetings(); bookOpen = false; bookPrefill = null;
+  downloadIcs(m.id);
+  render();
+}
+function delMeeting(id){ meetings = meetings.filter(m=>m.id!==id); saveMeetings(); render(); }
+function downloadIcs(id){
+  const m = meetings.find(x=>x.id===id); if(!m) return;
+  const s = new Date(m.when), e = new Date(s.getTime() + m.dur*60000);
+  const f = d => d.toISOString().replace(/[-:]/g,"").slice(0,15) + "Z";
+  const ics = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//RecoverRevenue//SalesHQ//EN","BEGIN:VEVENT",
+    "UID:"+m.id+"@recoverrevenue","DTSTAMP:"+f(new Date()),"DTSTART:"+f(s),"DTEND:"+f(e),
+    "SUMMARY:Demo call — "+String(m.name).replace(/[,;]/g," "),
+    "DESCRIPTION:"+((m.note||"")+" · "+fmtPhone(m.phone)).replace(/[,;]/g," "),
+    "BEGIN:VALARM","TRIGGER:-PT30M","ACTION:DISPLAY","DESCRIPTION:Prep demo link","END:VALARM",
+    "END:VEVENT","END:VCALENDAR"].join("\r\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([ics],{type:"text/calendar"}));
+  a.download = "meeting-" + String(m.name).replace(/\W+/g,"-").toLowerCase() + ".ics";
+  a.click();
+}
+
+// ══════════════ STATS ══════════════
+function renderStats(){
+  const v = document.getElementById("scr-stats");
+  const today = new Date().toISOString().slice(0,10);
+  const all = Object.values(results).filter(d=>d.dispo);
+  const todayCalls = all.filter(d=>(d.ts||"").slice(0,10)===today);
+  const connects = a => a.filter(d=>["Not Interested","Interested","BOOKED"].includes(d.dispo));
+  const count = (a,x) => a.filter(d=>d.dispo===x).length;
+  const tc = todayCalls.length;
+  const called = all.length, inter = count(all,"Interested")+count(all,"BOOKED"), booked = count(all,"BOOKED");
+  const pct = (a,b) => b ? Math.round(a/b*100) : 0;
+
+  const byNiche = {};
+  leads.forEach(l=>{
+    const d = results[key(l)]; const c = l.category;
+    const o = byNiche[c] || (byNiche[c]={t:0,called:0,int:0,bk:0});
+    o.t++;
+    if(d && d.dispo){ o.called++;
+      if(d.dispo==="Interested"||d.dispo==="BOOKED") o.int++;
+      if(d.dispo==="BOOKED") o.bk++; }
+  });
+  const byRep = {};
+  all.forEach(d=>{ const r=d.rep||"?"; const o=byRep[r]||(byRep[r]={c:0,int:0,bk:0}); o.c++;
+    if(d.dispo==="Interested"||d.dispo==="BOOKED") o.int++; if(d.dispo==="BOOKED") o.bk++; });
+  const hours = Array(12).fill(0);
+  connects(all).forEach(d=>{ const h=new Date(d.ts).getHours(); if(h>=7&&h<19) hours[h-7]++; });
+  const hmax = Math.max(...hours, 1);
+
+  v.innerHTML = `
+  <h1>Stats</h1>
+  <div class="sub">The scoreboard doesn't lie</div>
+
+  <div class="rep-hero">
+    <div class="num">${tc}</div>
+    <div class="cap">dials today · goal ${DAILY_GOAL}</div>
+    <div class="goal"><i style="width:${Math.min(100, pct(tc, DAILY_GOAL))}%"></i></div>
+    ${tc>=DAILY_GOAL?'<div class="payback">Goal hit — keep the streak</div>':`<div class="cap" style="margin-top:8px">${DAILY_GOAL-tc} to go</div>`}
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="n">${connects(todayCalls).length}</div><div class="c">connects today</div></div>
+    <div class="kpi"><div class="n">${count(todayCalls,"BOOKED")}</div><div class="c">booked today</div></div>
+    <div class="kpi"><div class="n">${pct(connects(all).length,called)}%</div><div class="c">connect rate (all time)</div></div>
+    <div class="kpi"><div class="n">${pct(booked,called)}%</div><div class="c">book rate of called</div></div>
+  </div>
+
+  <div class="card">
+    <div class="cl">Pipeline funnel — all time</div>
+    <div class="fun">
+    ${[["Leads",leads.length,"var(--dim)"],["Called",called,"var(--blue)"],["Interested",inter,"var(--amber)"],["Booked",booked,"var(--green)"]].map(([lab,n,c])=>
+      `<div class="fbar"><span class="fl">${lab}</span><div class="fb"><i style="width:${pct(n,leads.length)}%;background:${c}"></i></div><span class="ft">${n}</span></div>`).join("")}
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cl">By niche — where the pitch lands</div>
+    <table class="ntab"><tr><th>Niche</th><th>Leads</th><th>Called</th><th>Int</th><th>Booked</th></tr>
+    ${Object.entries(byNiche).sort((a,b)=>b[1].called-a[1].called||b[1].t-a[1].t).map(([c,o])=>
+      `<tr><td>${NICHE_LABEL[c]||c}</td><td>${o.t}</td><td>${o.called}</td><td>${o.int}</td><td class="g">${o.bk}</td></tr>`).join("")}
+    </table>
+  </div>
+
+  ${Object.keys(byRep).length ? `<div class="card">
+    <div class="cl">By rep</div>
+    <table class="ntab"><tr><th>Rep</th><th>Calls</th><th>Int</th><th>Booked</th></tr>
+    ${Object.entries(byRep).sort((a,b)=>b[1].c-a[1].c).map(([r,o])=>
+      `<tr><td>${esc(r)}</td><td>${o.c}</td><td>${o.int}</td><td class="g">${o.bk}</td></tr>`).join("")}
+    </table>
+  </div>`:""}
+
+  <div class="card">
+    <div class="cl">When they pick up</div>
+    <div class="hours">${hours.map(h=>`<div class="hb ${h>0?"f":""}" style="height:${Math.max(5,Math.round(h/hmax*100))}%"></div>`).join("")}</div>
+    <div class="hlabels">${["7a","8a","9a","10a","11a","12p","1p","2p","3p","4p","5p","6p"].map(x=>`<span>${x}</span>`).join("")}</div>
+  </div>`;
+}
+
+// ══════════════ ACTIONS ══════════════
+const mainEl = document.getElementById("main");
+window.go = function(name){
+  scr = name;
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById("scr-"+name).classList.add("active");
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active", t.getAttribute("data-scr")===name));
+  mainEl.scrollTop = 0;
+  closeSheet();
+  render();
+};
+function setNiche(n){ niche = n; idx = 0; render(); }
+function togglePain(p){ pains = pains.includes(p) ? pains.filter(x=>x!==p) : [...pains, p]; idx = 0; render(); }
+function setStatus(s){ status = s; idx = 0; render(); }
+function setSort(s){ sortBy = s; render(); }
+function setSearch(s){ search = s; renderLeads(); }
+function nav(dir){ idx += dir; renderDial(); mainEl.scrollTop = 0; }
+function switchRep(){
+  const r = prompt("Rep initials (who's dialing?)", rep);
+  if(r && r.trim()){ rep = r.trim().toUpperCase().slice(0,4); localStorage.setItem("rr_rep", rep); render(); }
+}
+function currentLead(){ return filtered()[idx]; }
+function setDispo(dispo){
+  const l = currentLead(); if(!l) return;
+  const d = rec(l);
+  d.dispo = dispo; d.ts = new Date().toISOString(); d.rep = rep;
+  save();
+  if(dispo==="BOOKED"){ bookPrefill = key(l); bookOpen = true; go("cal"); return; }
+  render();
+}
+function setCb(due){
+  const l = currentLead(); if(!l) return;
+  const d = rec(l);
+  if(due) d.cbDue = due; else delete d.cbDue;
+  save(); render();
+}
+function setNote(v){ const l = currentLead(); if(!l) return; rec(l).note = v; save(); }
+function markCalled(){ const l = currentLead(); if(!l) return; const d = rec(l); if(!d.ts) d.ts = new Date().toISOString(); save(); }
+function markCalledKey(k){ const d = results[k] || (results[k]={}); if(!d.ts) d.ts = new Date().toISOString(); save(); }
+function openInDialer(k){
+  niche = "all"; pains = []; status = "all"; search = "";
+  const list = filtered();
+  const i = list.findIndex(l=>key(l)===k);
+  if(i>=0){ idx = i; go("dial"); }
+}
+function copyText(t){
+  if(navigator.clipboard) navigator.clipboard.writeText(t);
+  else { const i=document.createElement("input"); i.value=t; document.body.appendChild(i); i.select(); document.execCommand("copy"); i.remove(); }
+}
+function exportResults(){
+  const out = { exported: new Date().toISOString(), leads: leads.map(l => ({...l, result: results[key(l)]||null})), meetings };
+  const blob = new Blob([JSON.stringify(out,null,2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "sales-hq-" + new Date().toISOString().slice(0,10) + ".json";
+  a.click();
+}
+document.getElementById("fileIn").addEventListener("change", e=>{
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = ()=>{ try{
+    const data = JSON.parse(r.result);
+    const arr = Array.isArray(data) ? data : data.leads;
+    if(Array.isArray(arr) && arr.length){ leads = arr.map(x=>{ const {result, ...l} = x; return l; }); idx = 0; niche = "all"; closeSheet(); render(); }
+    else alert("JSON must be an array of leads (or an export from this app).");
+  }catch(err){ alert("Invalid JSON: " + err.message); } };
+  r.readAsText(f);
+});
+
+// sheet
+const sheet = document.getElementById("sheet"), scrim = document.getElementById("scrim");
+window.openSheet = function(){ sheet.classList.add("open"); scrim.classList.add("open"); };
+window.closeSheet = function(){ sheet.classList.remove("open"); scrim.classList.remove("open"); };
+
+// theme (matches portal behavior)
+window.toggleTheme = function(){
+  const d = document.documentElement;
+  d.setAttribute("data-theme", d.getAttribute("data-theme")==="dark" ? "light" : "dark");
+};
+if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches){
+  document.documentElement.setAttribute("data-theme","dark");
+}
+
+// swipe navigation on dial screen
+let tx = null;
+mainEl.addEventListener("touchstart", e=>{ if(scr==="dial" && !e.target.closest("input,select,textarea,details")) tx = e.touches[0].clientX; }, {passive:true});
+mainEl.addEventListener("touchend", e=>{
+  if(tx===null || scr!=="dial") { tx=null; return; }
+  const dx = e.changedTouches[0].clientX - tx;
+  if(Math.abs(dx) > 70) nav(dx < 0 ? 1 : -1);
+  tx = null;
+}, {passive:true});
+document.addEventListener("keydown", e=>{
+  if(e.target.tagName==="INPUT"||e.target.tagName==="SELECT") return;
+  if(scr!=="dial") return;
+  if(e.key==="ArrowRight") nav(1);
+  if(e.key==="ArrowLeft") nav(-1);
+});
+
+render();
+</script>
+</body>
+</html>

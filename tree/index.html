@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{BUSINESS_NAME}} — Tree Service, {{CITY}} FL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --paper: #f7f5f0; --paper2: #efece4; --ink: #1c211a; --dim: #6f7469;
+    --line: rgba(28,33,26,.12); --green: #1e4d2b; --green-deep: #143520; --amber: #c97a1c;
+    --serif: 'Fraunces', serif; --sans: 'Space Grotesk', sans-serif;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--sans); background: var(--paper); color: var(--ink); line-height: 1.65; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  ::selection { background: var(--green); color: var(--paper); }
+  a { color: inherit; }
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 120px 0; }
+  .eyebrow { font-size: .72rem; font-weight: 600; text-transform: uppercase; letter-spacing: .2em; color: var(--green); margin-bottom: 18px; }
+  .serif { font-family: var(--serif); font-weight: 600; line-height: 1.06; letter-spacing: -.01em; }
+
+  /* ---------- nav ---------- */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 90; background: rgba(247,245,240,.82); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+  .nav-in { max-width: 1160px; margin: 0 auto; padding: 0 24px; height: 66px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-family: var(--serif); font-weight: 600; font-size: 1.15rem; text-decoration: none; }
+  .logo i { font-style: normal; color: var(--green); }
+  .nav-right { display: flex; align-items: center; gap: 18px; }
+  .nav-note { font-size: .76rem; color: var(--dim); }
+  .nav-cta { background: var(--green); color: var(--paper); font-weight: 600; font-size: .84rem; text-decoration: none; padding: 11px 20px; border-radius: 8px; transition: background .3s ease; }
+  .nav-cta:hover { background: var(--green-deep); }
+
+  /* ---------- hero ---------- */
+  .hero { min-height: 100svh; display: flex; align-items: center; padding: 150px 0 90px; position: relative; overflow: hidden; }
+  #leaves { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .hero .wrap { position: relative; display: grid; grid-template-columns: 1.15fr .85fr; gap: 60px; align-items: center; width: 100%; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; font-size: .78rem; font-weight: 500; color: var(--dim); border: 1px solid var(--line); background: rgba(255,255,255,.5); padding: 7px 15px; border-radius: 999px; margin-bottom: 28px; }
+  .hero-badge b { color: var(--green); }
+  .hero h1 { font-size: clamp(2.7rem, 6.6vw, 5rem); margin-bottom: 24px; }
+  .hero h1 em { font-style: italic; font-weight: 400; color: var(--green); }
+  .h-line { display: block; overflow: hidden; padding-bottom: .06em; }
+  .h-line > span { display: inline-block; }
+  .hero-sub { color: var(--dim); font-size: 1.06rem; max-width: 470px; margin-bottom: 38px; }
+  .hero-sub strong { color: var(--ink); font-weight: 600; }
+  .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+  .btn-green { background: var(--green); color: var(--paper); font-weight: 600; font-size: .98rem; text-decoration: none; padding: 16px 30px; border-radius: 10px; transition: background .3s ease, transform .3s ease, box-shadow .3s ease; }
+  .btn-green:hover { background: var(--green-deep); transform: translateY(-2px); box-shadow: 0 14px 30px rgba(30,77,43,.22); }
+  .btn-line { color: var(--ink); font-weight: 600; font-size: .94rem; text-decoration: none; padding: 16px 24px; border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,.5); transition: border-color .3s ease; }
+  .btn-line:hover { border-color: var(--green); }
+  .hero-meta { display: flex; gap: 30px; margin-top: 46px; flex-wrap: wrap; }
+  .hm b { font-family: var(--serif); font-size: 1.5rem; font-weight: 600; color: var(--green); display: block; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .hm > span { font-size: .76rem; color: var(--dim); }
+  .hero-art { position: relative; }
+  .hero-art svg { width: 100%; height: auto; display: block; }
+  .hero-art .cap { text-align: center; font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); margin-top: 14px; }
+
+  /* ---------- storm band ---------- */
+  .storm { background: var(--green-deep); color: var(--paper); padding: 96px 0; position: relative; overflow: hidden; }
+  .storm::before { content: ""; position: absolute; right: -160px; top: -160px; width: 520px; height: 520px; border-radius: 50%; background: radial-gradient(circle, rgba(201,122,28,.18), transparent 65%); }
+  .storm .wrap { position: relative; display: grid; grid-template-columns: 1.2fr .8fr; gap: 56px; align-items: center; }
+  .storm .eyebrow { color: var(--amber); }
+  .storm h2 { font-size: clamp(2rem, 4.6vw, 3.4rem); color: #fdfcf9; }
+  .storm p { color: rgba(247,245,240,.72); margin-top: 18px; max-width: 480px; }
+  .storm p b { color: #fdfcf9; }
+  .storm-cta { text-align: left; }
+  .storm-cta .lbl { font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; color: rgba(247,245,240,.6); margin-bottom: 12px; }
+  .storm-cta a.phone { font-family: var(--serif); font-weight: 600; font-size: clamp(1.7rem, 3.6vw, 2.6rem); color: var(--paper); text-decoration: none; border-bottom: 2px solid var(--amber); padding-bottom: 4px; transition: color .3s ease; display: inline-block; }
+  .storm-cta a.phone:hover { color: var(--amber); }
+  .storm-cta .sub { font-size: .82rem; color: rgba(247,245,240,.6); margin-top: 14px; }
+
+  /* ---------- services editorial ---------- */
+  .svc-head { max-width: 620px; margin-bottom: 64px; }
+  .svc-head h2 { font-size: clamp(2rem, 4.4vw, 3.2rem); }
+  .svc-head p { color: var(--dim); margin-top: 18px; }
+  .svc { display: grid; grid-template-columns: 110px 1fr 320px; gap: 36px; align-items: baseline; padding: 40px 0; border-top: 1px solid var(--line); }
+  .svc:last-child { border-bottom: 1px solid var(--line); }
+  .svc .n { font-family: var(--serif); font-weight: 400; font-style: italic; font-size: 2rem; color: var(--green); }
+  .svc h3 { font-family: var(--serif); font-weight: 600; font-size: 1.55rem; margin-bottom: 10px; }
+  .svc p { color: var(--dim); font-size: .94rem; max-width: 560px; }
+  .svc .fact { font-size: .82rem; color: var(--ink); background: var(--paper2); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+  .svc .fact b { color: var(--green); }
+
+  /* ---------- work gallery ---------- */
+  .work-gal { padding: 0 0 120px; }
+  .wg-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 36px; flex-wrap: wrap; }
+  .wg-head h2 { font-size: clamp(1.8rem, 3.8vw, 2.7rem); }
+  .wg-head p { color: var(--dim); font-size: .9rem; max-width: 360px; }
+  .wg-grid { display: grid; grid-template-columns: 1.35fr 1fr 1fr; grid-template-rows: 220px 220px; gap: 12px; }
+  .wg { position: relative; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); background: #fff; }
+  .wg.tall { grid-row: span 2; }
+  .wg img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+  .wg:hover img { transform: scale(1.04); }
+  .wg span { position: absolute; left: 14px; bottom: 12px; font-size: .68rem; font-weight: 600; text-transform: uppercase; letter-spacing: .12em; color: #fff; background: rgba(20,53,32,.78); backdrop-filter: blur(8px); padding: 6px 13px; border-radius: 999px; }
+
+  /* ---------- proof band ---------- */
+  .proof { background: var(--paper2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .proof .wrap { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; text-align: center; }
+  .pr b { font-family: var(--serif); font-weight: 600; font-size: clamp(2.2rem, 4.6vw, 3.4rem); color: var(--ink); display: block; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .pr b i { font-style: normal; color: var(--green); }
+  .pr span { font-size: .78rem; color: var(--dim); text-transform: uppercase; letter-spacing: .12em; font-weight: 500; }
+
+  /* ---------- reviews ---------- */
+  .rev-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 48px; flex-wrap: wrap; }
+  .rev-head h2 { font-size: clamp(2rem, 4.2vw, 3rem); }
+  .g-badge { display: flex; align-items: center; gap: 14px; border: 1px solid var(--line); border-radius: 14px; padding: 14px 20px; background: #fff; }
+  .g-badge .score { font-family: var(--serif); font-weight: 600; font-size: 1.7rem; color: var(--green); }
+  .g-badge .cap { font-size: .74rem; color: var(--dim); line-height: 1.45; }
+  .g-badge .stars { color: var(--amber); letter-spacing: 2px; }
+  .rev-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .rev { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 30px; display: flex; flex-direction: column; gap: 18px; transition: transform .3s ease, box-shadow .3s ease; }
+  .rev:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(28,33,26,.08); }
+  .rev p { font-size: .93rem; line-height: 1.7; flex: 1; }
+  .rev .by { font-size: .78rem; color: var(--dim); }
+  .rev .by b { color: var(--ink); display: block; font-size: .86rem; }
+
+  /* ---------- final ---------- */
+  .final { text-align: center; padding: 140px 0; }
+  .final h2 { font-size: clamp(2.2rem, 5.4vw, 4rem); margin-bottom: 20px; }
+  .final h2 em { font-style: italic; font-weight: 400; color: var(--green); }
+  .final p { color: var(--dim); max-width: 480px; margin: 0 auto 40px; }
+  footer { border-top: 1px solid var(--line); padding: 30px 0; background: var(--paper2); }
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: .8rem; color: var(--dim); }
+  footer a { color: var(--green); text-decoration: none; font-weight: 600; }
+
+  .callbar { position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 95; display: none; background: var(--green); color: var(--paper); border-radius: 12px; padding: 16px; text-align: center; font-weight: 700; font-size: .96rem; text-decoration: none; box-shadow: 0 12px 34px rgba(20,53,32,.4); transform: translateY(130%); transition: transform .45s cubic-bezier(.22,1,.36,1); }
+  .callbar.on { transform: translateY(0); }
+
+  @media (max-width: 940px) {
+    section { padding: 80px 0; }
+    .hero .wrap { grid-template-columns: 1fr; gap: 40px; }
+    .hero-art { max-width: 380px; margin: 0 auto; }
+    .storm .wrap { grid-template-columns: 1fr; gap: 36px; }
+    .svc { grid-template-columns: 1fr; gap: 14px; padding: 32px 0; }
+    .svc .n { font-size: 1.6rem; }
+    .svc .fact { max-width: 480px; }
+    .proof .wrap { grid-template-columns: 1fr 1fr; gap: 40px 20px; }
+    .work-gal { padding-bottom: 80px; }
+    .wg-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+    .wg { height: 190px; }
+    .wg.tall { grid-row: auto; grid-column: span 2; height: 240px; }
+    .rev-grid { grid-template-columns: 1fr; }
+    .callbar { display: block; }
+    .nav-note { display: none; }
+    .logo { font-size: .95rem; line-height: 1.2; }
+    .nav-cta { white-space: nowrap; font-size: .78rem; padding: 10px 14px; }
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-in">
+    <a class="logo" href="#"><span data-p="name">{{BUSINESS_NAME}}</span><i>.</i></a>
+    <div class="nav-right">
+      <span class="nav-note">Free estimates · <span data-p="city">{{CITY}}</span>, FL</span>
+      <a class="nav-cta" href="tel:{{PHONE}}" data-p="tel"><span data-p="phone">{{PHONE}}</span></a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <canvas id="leaves"></canvas>
+  <div class="wrap">
+    <div>
+      <div class="hero-badge">★ <b data-p="rating">{{RATING}}</b> · <span data-p="reviews">{{REVIEW_COUNT}}</span> Google reviews · licensed &amp; insured</div>
+      <h1 class="serif">
+        <span class="h-line"><span>Big trees.</span></span>
+        <span class="h-line"><span>Serious equipment.</span></span>
+        <span class="h-line"><span><em>Zero drama.</em></span></span>
+      </h1>
+      <p class="hero-sub"><strong data-p="tagline">{{TAGLINE}}</strong> From a single dead limb over the roof to full removals crane work — done clean, done safe, and your lawn looks untouched when we leave. <span data-p="years">{{YEARS}}</span> years climbing <span data-p="city">{{CITY}}</span> trees.</p>
+      <div class="hero-ctas">
+        <a class="btn-green" href="tel:{{PHONE}}" data-p="tel">Get a same-week estimate</a>
+        <a class="btn-line" href="#services">What we do</a>
+      </div>
+      <div class="hero-meta">
+        <div class="hm"><b><span data-count data-p="years">{{YEARS}}</span>+</b><span>Years in the canopy</span></div>
+        <div class="hm"><b data-p="rating">{{RATING}}</b><span>Google rating</span></div>
+        <div class="hm"><b>$2M</b><span>Liability coverage</span></div>
+      </div>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <svg viewBox="0 0 400 460" fill="none">
+        <g id="treeLines" stroke="#1e4d2b" stroke-width="2" stroke-linecap="round">
+          <path class="tl" d="M200 440 C200 380 196 330 198 280 C199 240 202 200 200 160"/>
+          <path class="tl" d="M199 300 C170 270 140 250 105 235 C88 228 70 224 55 224"/>
+          <path class="tl" d="M200 270 C232 240 262 222 300 210 C318 204 336 202 350 203"/>
+          <path class="tl" d="M199 220 C180 190 160 168 132 150 C118 141 103 136 90 134"/>
+          <path class="tl" d="M200 190 C218 162 240 140 268 124 C282 116 298 111 311 110"/>
+          <path class="tl" d="M200 160 C196 128 190 100 178 74 C171 59 162 46 152 37"/>
+          <path class="tl" d="M200 160 C208 130 218 104 234 80 C242 68 252 57 262 49"/>
+          <path class="tl" d="M55 224 C48 216 42 206 40 196" opacity=".7"/>
+          <path class="tl" d="M350 203 C358 195 364 185 366 175" opacity=".7"/>
+          <path class="tl" d="M90 134 C82 126 77 116 75 106" opacity=".7"/>
+          <path class="tl" d="M311 110 C318 102 322 92 323 82" opacity=".7"/>
+          <path class="tl" d="M152 37 C148 28 146 19 146 10" opacity=".7"/>
+          <path class="tl" d="M262 49 C267 40 270 31 271 22" opacity=".7"/>
+          <ellipse class="tl" cx="200" cy="150" rx="165" ry="118" opacity=".28" stroke-dasharray="3 8"/>
+          <path class="tl" d="M120 440 L280 440" stroke-width="1.5" opacity=".5"/>
+        </g>
+      </svg>
+      <p class="cap">Every cut planned before the saw starts</p>
+    </div>
+  </div>
+</header>
+
+<section class="storm" id="storm">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Storm response — 24/7</p>
+      <h2 class="serif">When the storm drops a tree, we pick up the phone.</h2>
+      <p>Tree on the roof, limb through the fence, driveway blocked — <b>we answer nights, weekends, and mid-hurricane cleanup.</b> Crews roll with tarps, chains, and a crane on call, and we document everything for your insurance claim.</p>
+    </div>
+    <div class="storm-cta">
+      <p class="lbl">Emergency line — answered live</p>
+      <a class="phone" href="tel:{{PHONE}}" data-p="tel"><span data-p="phone">{{PHONE}}</span></a>
+      <p class="sub">If a crew is mid-job, you get a text back within minutes — never a voicemail black hole.</p>
+    </div>
+  </div>
+</section>
+
+<section id="services">
+  <div class="wrap">
+    <div class="svc-head">
+      <p class="eyebrow">The work</p>
+      <h2 class="serif">Four things, done right.</h2>
+      <p>No upsells, no "while we're here" surprises. You get a written number before we start, and that's the number you pay.</p>
+    </div>
+    <div class="reveal-list">
+      <div class="svc">
+        <span class="n">No. 01</span>
+        <div>
+          <h3>Tree Removal</h3>
+          <p>Dead, dying, leaning, or too close to the house. Rigged and lowered piece by piece — or lifted out whole by crane when the yard's too tight. Nothing free-falls on our jobs.</p>
+        </div>
+        <div class="fact"><b>Roof-line removals</b> are 70% of our calls. Fences, pools, and flower beds survive every one.</div>
+      </div>
+      <div class="svc">
+        <span class="n">No. 02</span>
+        <div>
+          <h3>Trimming &amp; Pruning</h3>
+          <p>Structural pruning that keeps trees healthy and hurricane-ready — not the "hat-rack" hack jobs that kill canopies. Certified arborist standards on every cut.</p>
+        </div>
+        <div class="fact"><b>Pre-storm-season pruning</b> (May–June) is the single best insurance a Florida yard can buy.</div>
+      </div>
+      <div class="svc">
+        <span class="n">No. 03</span>
+        <div>
+          <h3>Stump Grinding</h3>
+          <p>Ground 8–12 inches below grade, chips hauled or left as mulch — your call. Sod-ready the same week, no stump slowly rotting into a termite buffet.</p>
+        </div>
+        <div class="fact"><b>Same-visit grinding</b> available on most removals — one crew, one bill, one clean yard.</div>
+      </div>
+      <div class="svc">
+        <span class="n">No. 04</span>
+        <div>
+          <h3>Lot &amp; Land Clearing</h3>
+          <p>Building, fencing, or reclaiming an overgrown acre — we clear it, grade-ready, with debris hauled the same day. Bonded for builder and HOA work.</p>
+        </div>
+        <div class="fact"><b>Free on-site walkthrough</b> with a written quote — usually within 48 hours of your call.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="work-gal">
+  <div class="wrap">
+    <div class="wg-head">
+      <div>
+        <p class="eyebrow">Recent work</p>
+        <h2 class="serif">Crews in the canopy this month.</h2>
+      </div>
+      <p>Real rigging, real climbs — every job photographed start to finish.</p>
+    </div>
+    <div class="wg-grid reveal-group">
+      <div class="wg tall"><img src="https://images.unsplash.com/photo-1626828476637-5bd713ef9f22?q=80&w=1000&auto=format&fit=crop" alt="Climber rigging a large oak removal" loading="lazy"><span>Rigged oak removal</span></div>
+      <div class="wg"><img src="https://images.unsplash.com/photo-1754322449185-31f56117ed87?q=80&w=800&auto=format&fit=crop" alt="Arborist cutting a limb over a roof line" loading="lazy"><span>Roof-line limb work</span></div>
+      <div class="wg"><img src="https://images.unsplash.com/photo-1754321902809-5c21cbc67228?q=80&w=800&auto=format&fit=crop" alt="Structural pruning in the canopy" loading="lazy"><span>Structural pruning</span></div>
+      <div class="wg"><img src="https://images.unsplash.com/photo-1721486168037-aab8e6095f67?q=80&w=800&auto=format&fit=crop" alt="Storm-felled tree sectioned in a yard" loading="lazy"><span>Storm cleanup</span></div>
+      <div class="wg"><img src="https://images.unsplash.com/photo-1697623317093-7a50b4aaf676?q=80&w=800&auto=format&fit=crop" alt="Sectioned logs staged for haul-away" loading="lazy"><span>Same-day haul-away</span></div>
+    </div>
+  </div>
+</div>
+
+<section class="proof">
+  <div class="wrap reveal-group">
+    <div class="pr"><b><i data-count data-p="years">{{YEARS}}</i>+</b><span>Years in business</span></div>
+    <div class="pr"><b data-count>1400</b><span>Trees removed safely</span></div>
+    <div class="pr"><b data-p="rating">{{RATING}}</b><span>Google rating</span></div>
+    <div class="pr"><b>0</b><span>Roofs harmed. Ever.</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="rev-head">
+      <div>
+        <p class="eyebrow">Neighbors' words</p>
+        <h2 class="serif">The yards speak for themselves.</h2>
+      </div>
+      <div class="g-badge">
+        <span class="score" data-p="rating">{{RATING}}</span>
+        <div class="cap"><span class="stars">★★★★★</span><br><span data-p="reviews">{{REVIEW_COUNT}}</span> reviews on Google</div>
+      </div>
+    </div>
+    <div class="rev-grid reveal-group">
+      <div class="rev"><p>“{{REVIEW_1}}”</p><div class="by"><b>{{REVIEWER_1}}</b>Google review</div></div>
+      <div class="rev"><p>“{{REVIEW_2}}”</p><div class="by"><b>{{REVIEWER_2}}</b>Google review</div></div>
+      <div class="rev"><p>“{{REVIEW_3}}”</p><div class="by"><b>{{REVIEWER_3}}</b>Google review</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <p class="eyebrow">Free estimates, written same day</p>
+    <h2 class="serif">That tree isn't going to<br>deal with <em>itself.</em></h2>
+    <p>Call or text a photo of the tree — we'll usually have a ballpark for you the same day and a written quote within 48 hours.</p>
+    <a class="btn-green" href="tel:{{PHONE}}" data-p="tel">Call <span data-p="phone">{{PHONE}}</span></a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 <span data-p="name">{{BUSINESS_NAME}}</span> · <span data-p="city">{{CITY}}</span>, FL</span>
+    <span>Licensed &amp; insured · $2M liability · <a href="tel:{{PHONE}}" data-p="tel"><span data-p="phone">{{PHONE}}</span></a></span>
+  </div>
+</footer>
+
+<a class="callbar" id="callbar" href="tel:{{PHONE}}" data-p="tel">🌳 Get a free estimate — call now</a>
+
+<script>
+// ---------- URL-parameter personalization ----------
+// ?name=Canopy+%26+Crown&phone=8135550100&city=Tampa&rating=4.9&reviews=132&years=17&tagline=...&r1=...&rn1=Name
+(function(){
+  const q = new URLSearchParams(location.search);
+  const get = k => q.get(k);
+  const phoneRaw = (get('phone') || '').replace(/[^\d]/g, '');
+  const phonePretty = phoneRaw.length === 10 ? `(${phoneRaw.slice(0,3)}) ${phoneRaw.slice(3,6)}-${phoneRaw.slice(6)}` : get('phone');
+  const tokens = {
+    '{{BUSINESS_NAME}}': get('name'), '{{CITY}}': get('city'), '{{PHONE}}': phonePretty,
+    '{{RATING}}': get('rating'), '{{REVIEW_COUNT}}': get('reviews'),
+    '{{YEARS}}': get('years'), '{{TAGLINE}}': get('tagline'),
+    '{{REVIEW_1}}': get('r1'), '{{REVIEW_2}}': get('r2'), '{{REVIEW_3}}': get('r3'),
+    '{{REVIEWER_1}}': get('rn1'), '{{REVIEWER_2}}': get('rn2'), '{{REVIEWER_3}}': get('rn3'),
+  };
+  const fallbacks = {
+    '{{BUSINESS_NAME}}': 'Canopy & Crown Tree Co', '{{CITY}}': 'Tampa', '{{PHONE}}': '(813) 555-0100',
+    '{{RATING}}': '4.9', '{{REVIEW_COUNT}}': '116', '{{YEARS}}': '17',
+    '{{TAGLINE}}': 'Family crew, certified arborist on every job.',
+    '{{REVIEW_1}}': 'They took down a 60-foot oak leaning over my pool cage without so much as scuffing the screen. Watching them rig it down was like watching surgery.',
+    '{{REVIEW_2}}': 'Hurricane dropped a limb through our fence at 2am. They answered, tarped the roof by sunrise, and handled the insurance photos. Cannot recommend enough.',
+    '{{REVIEW_3}}': 'Three quotes, theirs was the middle price but the only one with a certified arborist. Yard was cleaner when they left than when they arrived.',
+    '{{REVIEWER_1}}': 'Local homeowner', '{{REVIEWER_2}}': 'Local homeowner', '{{REVIEWER_3}}': 'Local homeowner',
+  };
+  let html = document.body.innerHTML, changed = false;
+  for (const [tok, val] of Object.entries(tokens)) {
+    const v = val || fallbacks[tok];
+    if (v && html.includes(tok)) { html = html.replaceAll(tok, v); changed = true; }
+  }
+  if (changed) document.body.innerHTML = html;
+  const name = get('name') || fallbacks['{{BUSINESS_NAME}}'];
+  const city = get('city') || fallbacks['{{CITY}}'];
+  document.title = `${name} — Tree Service, ${city} FL`;
+  const telDigits = phoneRaw || '8135550100';
+  document.querySelectorAll('[data-p="tel"]').forEach(el => { el.href = 'tel:' + telDigits; });
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isTouch = window.matchMedia('(pointer: coarse)').matches;
+
+  // ---------- drifting leaves canvas (signature ambience, very subtle) ----------
+  try {
+    const cv = document.getElementById('leaves');
+    const ctx = cv.getContext('2d');
+    let w, h;
+    const COUNT = reduced ? 0 : (isTouch ? 8 : 16);
+    function size(){ w = cv.width = cv.offsetWidth * devicePixelRatio; h = cv.height = cv.offsetHeight * devicePixelRatio; }
+    size(); addEventListener('resize', size);
+    const leaves = Array.from({ length: COUNT }, () => ({
+      x: Math.random() * 1, y: Math.random() * 1,
+      r: (3 + Math.random() * 5) * devicePixelRatio,
+      vy: (0.15 + Math.random() * 0.3) * devicePixelRatio,
+      vx: (Math.random() - 0.3) * 0.25 * devicePixelRatio,
+      ph: Math.random() * Math.PI * 2,
+      a: 0.06 + Math.random() * 0.1,
+      spin: Math.random() * Math.PI * 2, spinV: (Math.random() - 0.5) * 0.02,
+    })).map(l => (l.x *= 2000, l.y *= 2000, l));
+    let t = 0;
+    function frame(){
+      t += 0.01;
+      ctx.clearRect(0, 0, w, h);
+      for (const l of leaves) {
+        l.y += l.vy; l.x += l.vx + Math.sin(t * 2 + l.ph) * 0.3 * devicePixelRatio;
+        l.spin += l.spinV;
+        if (l.y - 20 > h) { l.y = -20; l.x = Math.random() * w; }
+        if (l.x > w + 20) l.x = -20;
+        if (l.x < -20) l.x = w + 20;
+        ctx.save();
+        ctx.translate(l.x, l.y); ctx.rotate(l.spin);
+        ctx.fillStyle = `rgba(30,77,43,${l.a})`;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, l.r, l.r * 0.55, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+      if (COUNT) requestAnimationFrame(frame);
+    }
+    if (COUNT) requestAnimationFrame(frame);
+  } catch(e) {}
+
+  // ---------- GSAP choreography ----------
+  try {
+    if (typeof gsap !== 'undefined' && !reduced) {
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.from('.h-line > span', { yPercent: 116, duration: 1.05, ease: 'power3.out', stagger: 0.12, delay: 0.15 });
+      gsap.from('.hero-badge, .hero-sub, .hero-ctas, .hero-meta', { y: 22, opacity: 0, duration: 0.9, ease: 'power2.out', stagger: 0.1, delay: 0.6 });
+
+      // tree line-draw — the signature reveal
+      document.querySelectorAll('.tl').forEach((p, i) => {
+        let len = 600;
+        try { len = p.getTotalLength(); } catch(e) {}
+        gsap.set(p, { strokeDasharray: p.getAttribute('stroke-dasharray') ? undefined : len, strokeDashoffset: p.getAttribute('stroke-dasharray') ? 0 : len });
+        if (!p.getAttribute('stroke-dasharray')) {
+          gsap.to(p, { strokeDashoffset: 0, duration: 1.6, ease: 'power2.inOut', delay: 0.5 + i * 0.12 });
+        } else {
+          gsap.from(p, { opacity: 0, duration: 1.4, delay: 2.2 });
+        }
+      });
+
+      document.querySelectorAll('.reveal-group').forEach(group => {
+        gsap.from(group.children, {
+          y: 32, opacity: 0, duration: 0.9, ease: 'power2.out', stagger: 0.1,
+          scrollTrigger: { trigger: group, start: 'top 82%', once: true }
+        });
+      });
+      document.querySelectorAll('.reveal-list .svc').forEach(el => {
+        gsap.from(el, {
+          y: 36, opacity: 0, duration: 0.9, ease: 'power2.out',
+          scrollTrigger: { trigger: el, start: 'top 85%', once: true }
+        });
+      });
+      gsap.from('.storm .wrap > *', {
+        y: 34, opacity: 0, duration: 0.9, ease: 'power2.out', stagger: 0.15,
+        scrollTrigger: { trigger: '.storm', start: 'top 75%', once: true }
+      });
+
+      // count-ups
+      document.querySelectorAll('[data-count]').forEach(el => {
+        const end = parseInt(el.textContent.replace(/\D/g, ''), 10);
+        if (!end) return;
+        const obj = { v: 0 };
+        gsap.to(obj, {
+          v: end, duration: 1.5, ease: 'power2.out', snap: { v: 1 },
+          onUpdate: () => { el.textContent = obj.v; },
+          scrollTrigger: { trigger: el, start: 'top 88%', once: true }
+        });
+      });
+    }
+  } catch(e) { /* static page remains fully readable */ }
+
+  // sticky mobile call bar
+  const bar = document.getElementById('callbar');
+  if (bar) addEventListener('scroll', () => bar.classList.toggle('on', scrollY > innerHeight * 0.6), { passive: true });
+})();
+</script>
+</body>
+</html>
