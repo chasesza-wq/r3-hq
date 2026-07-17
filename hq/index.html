@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>RecoverRevenue — Sales HQ</title>
-<link rel="icon" type="image/svg+xml" href="../assets/logo-mark.svg">
-<link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png">
+<link rel="icon" type="image/svg+xml" href="../website/assets/logo-mark.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../website/assets/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Sales HQ">
@@ -227,6 +227,48 @@
 
   .empty{text-align:center;color:var(--dim);padding:50px 10px;font-size:14px;line-height:1.6}
 
+  /* ---------- due-now rail ---------- */
+  .duebar{border:1px solid var(--line);border-radius:16px;margin-top:12px;overflow:hidden}
+  .duebar .dhead{display:flex;align-items:center;gap:8px;padding:12px 16px 10px;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--amber)}
+  .duebar .dhead .cnt{background:var(--amber);color:#fff;font-size:10px;font-weight:700;border-radius:9px;padding:1px 7px;letter-spacing:0}
+  .duebar .ditem{display:flex;align-items:center;gap:10px;padding:11px 16px;border-top:1px solid var(--line);cursor:pointer}
+  .duebar .ditem .bar{width:3px;align-self:stretch;border-radius:2px;background:var(--amber);flex-shrink:0;min-height:30px}
+  .duebar .ditem.over .bar{background:var(--red)}
+  .duebar .ditem .b{flex:1;min-width:0}
+  .duebar .ditem .t{font-size:13.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .duebar .ditem .d{font-size:11.5px;color:var(--dim);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .duebar .ditem .when{font-size:11.5px;font-weight:700;color:var(--amber);white-space:nowrap;font-variant-numeric:tabular-nums}
+  .duebar .ditem.over .when{color:var(--red)}
+  .tab .nb.red{background:var(--red)}
+
+  /* ---------- best-time indicator ---------- */
+  .btdot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--amber);vertical-align:1px}
+  .btdot.g{background:var(--green)}
+  .btflag{font-weight:700}
+  .btflag.g{color:var(--green)} .btflag.a{color:var(--amber)}
+
+  /* ---------- post-demo next-step strip ---------- */
+  .nextstrip{border:1px solid var(--amber);border-radius:14px;padding:13px 14px;margin-top:12px}
+  .nextstrip .ns-head{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);margin-bottom:8px}
+  .stagetrail{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px}
+  .stagechip{font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;background:var(--bg2);color:var(--dim);letter-spacing:.02em}
+  .stagechip.hit{background:var(--green);color:#fff}
+  .stagechip.cur{background:var(--pill);color:var(--pill-ink)}
+  .ns-btns{display:flex;gap:8px}
+  .nsbtn{flex:1;display:flex;align-items:center;justify-content:center;padding:11px 8px;border-radius:11px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:12.5px;font-weight:700;font-family:inherit;cursor:pointer}
+  .nsbtn:active{transform:scale(.97)}
+  .nsbtn.hot{background:var(--pill);color:var(--pill-ink);border-color:transparent}
+  .ns-due{font-size:11px;color:var(--dim);margin-top:9px;line-height:1.5}
+  .ns-due b{color:var(--amber)}
+
+  /* ---------- templates drawer ---------- */
+  .tpl{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:12px}
+  .tpl .tk{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:3px}
+  .tpl .tt{font-size:13px;font-weight:700;color:var(--ink)}
+  .tpl .tb{font-size:12.5px;color:var(--dim);line-height:1.5;margin-top:6px;white-space:pre-wrap}
+  .tpl .tacts{display:flex;gap:8px;margin-top:10px}
+  .tpl .tacts .nsbtn{flex:0 1 auto;padding:8px 14px;font-size:12px}
+
   /* ---------- tab bar ---------- */
   nav{
     position:absolute;bottom:0;left:0;right:0;
@@ -277,8 +319,20 @@
 
   <header>
     <div class="brand">
-      <svg viewBox="0 0 64 64" width="22" height="22" style="flex-shrink:0" aria-hidden="true"><defs><linearGradient id="r3f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3e43"/><stop offset="1" stop-color="#24272a"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="15" fill="url(#r3f)"/><g fill="none" stroke-linecap="round" stroke-linejoin="round"><g stroke="#4fc2b4" stroke-width="8"><path d="M17 45 V19 H25 a6.5 6.5 0 0 1 0 13 H17 M22 32 L28 45"/><path d="M36 19 H42 a6 6 0 0 1 0 12 H39 H42 a6.5 6.5 0 0 1 0 13 H35.5"/></g><g stroke="url(#r3f)" stroke-width="3.6"><path d="M17 45 V19 H25 a6.5 6.5 0 0 1 0 13 H17 M22 32 L28 45"/><path d="M36 19 H42 a6 6 0 0 1 0 12 H39 H42 a6.5 6.5 0 0 1 0 13 H35.5"/></g></g></svg>
-      <span><b>Recover<span class="rv">Revenue</span></b>&nbsp; SALES HQ</span>
+      <svg viewBox="0 0 64 64" style="width:24px;height:24px;flex-shrink:0" aria-label="R3">
+        <defs><filter id="r3glowH" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2.2"/></filter></defs>
+        <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <g stroke="#4fc2b4" stroke-width="11" opacity=".33" filter="url(#r3glowH)">
+            <path d="M17 45 V19 H25 a6.5 6.5 0 0 1 0 13 H17 M22 32 L28 45"/>
+            <path d="M36 19 H42 a6 6 0 0 1 0 12 H39 H42 a6.5 6.5 0 0 1 0 13 H35.5"/>
+          </g>
+          <g stroke="#4fc2b4" stroke-width="8">
+            <path d="M17 45 V19 H25 a6.5 6.5 0 0 1 0 13 H17 M22 32 L28 45"/>
+            <path d="M36 19 H42 a6 6 0 0 1 0 12 H39 H42 a6.5 6.5 0 0 1 0 13 H35.5"/>
+          </g>
+        </g>
+      </svg>
+      <span>SALES HQ</span>
     </div>
     <div class="avatar" id="avatar" onclick="openSheet()">CS</div>
   </header>
@@ -295,6 +349,7 @@
 
   <nav>
     <button class="tab active" data-scr="dial" onclick="go('dial')">
+      <span class="nb red" id="dialBadge" style="display:none"></span>
       <svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>Dial
     </button>
     <button class="tab" data-scr="leads" onclick="go('leads')">
@@ -339,6 +394,14 @@
     <button class="pill ghost" onclick="closeSheet()">Close</button>
   </div>
 
+  <div class="sheet" id="tplSheet">
+    <div class="grab"></div>
+    <h2>Follow-up templates</h2>
+    <div class="sub" id="tplSub" style="margin-bottom:0"></div>
+    <div id="tplBody"></div>
+    <button class="pill ghost" onclick="closeSheet()">Close</button>
+  </div>
+
 </div>
 
 <script>
@@ -363,6 +426,23 @@ const BEST_TIME = {
   "handyman": "7–8am or 5–6pm", "tree_service": "7–8am or lunch", "appliance_repair": "8–9am",
   "default": "8–9am or 4–6pm",
 };
+// call-window hours (24h, local) matching BEST_TIME above — for the "Call now?" indicator
+const BEST_WINDOWS = {
+  "towing": [[9,11]], "car_detailing": [[7,9]], "junk_removal": [[15,17]],
+  "pressure_washing": [[6,9],[16,18]], "mobile_mechanic": [[8,9]], "lawn_care": [[11,13],[16,18]],
+  "handyman": [[7,8],[17,18]], "tree_service": [[7,8],[12,13]], "appliance_repair": [[8,9]],
+  "default": [[8,9],[16,18]],
+};
+const BEST_SHORT = {
+  "towing": "9–11am", "car_detailing": "7–9am", "junk_removal": "3–5pm",
+  "pressure_washing": "AM or 4–6pm", "mobile_mechanic": "8–9am", "lawn_care": "11–1 or 4pm+",
+  "handyman": "7–8a / 5–6p", "tree_service": "7–8a / noon", "appliance_repair": "8–9am",
+  "default": "8–9a / 4–6p",
+};
+// lead stage pipeline (additive field on rr_dialer_results entries)
+const STAGES = ["new","contacted","demo_sent","pricing_sent","booked"];
+const STAGE_LABEL = { new:"New", contacted:"Contacted", demo_sent:"Demo sent", pricing_sent:"Pricing sent", booked:"Booked" };
+const FOLLOWUP_HOURS = 4; // scripts rule: follow up 4 hours after demo sent
 const NICHE_LABEL = {
   car_detailing:"Detailing", pressure_washing:"Pressure Wash", handyman:"Handyman", towing:"Towing",
   tree_service:"Tree", junk_removal:"Junk", lawn_care:"Lawn", mobile_mechanic:"Mechanic", appliance_repair:"Appliance",
@@ -1330,6 +1410,41 @@ function cbTime(h){
   if(h === -9){ const t = new Date(now); t.setDate(t.getDate()+1); t.setHours(9,0,0,0); return t.toISOString(); }
   return new Date(now.getTime() + h*3600e3).toISOString();
 }
+// stage helpers — additive; entries without .stage still work (dispo implies contacted)
+function stageOf(d){ return (d && d.stage) || (d && d.dispo ? "contacted" : "new"); }
+function advanceStage(d, s){ if(STAGES.indexOf(s) >= STAGES.indexOf(stageOf(d))) d.stage = s; }
+// escape for embedding inside single-quoted JS strings in inline handlers (apostrophes in business names)
+function jsq(s){ return String(s??"").replace(/\\/g,"\\\\").replace(/'/g,"\\'"); }
+function armFollowup(d){
+  if(STAGES.indexOf(stageOf(d)) < STAGES.indexOf("pricing_sent") && !d.fuDue)
+    d.fuDue = new Date(Date.now() + FOLLOWUP_HOURS*3600e3).toISOString();
+}
+function inCallWindow(cat){
+  const w = BEST_WINDOWS[cat] || BEST_WINDOWS.default;
+  const now = new Date(), h = now.getHours() + now.getMinutes()/60;
+  return w.some(([a,b]) => h >= a && h < b);
+}
+function ago(iso){
+  const m = Math.max(0, Math.round((Date.now() - new Date(iso).getTime())/60000));
+  if(m < 60) return m + "m";
+  const h = Math.floor(m/60);
+  if(h < 24) return h + "h";
+  return Math.floor(h/24) + "d";
+}
+// callbacks + auto follow-ups whose time has arrived, oldest first
+function dueNow(){
+  const now = Date.now();
+  return leads.map(l => {
+    const d = results[key(l)]; if(!d) return null;
+    if(d.dispo === "BOOKED" || d.dispo === "Not Interested") return null;
+    const c = [];
+    if(d.cbDue && new Date(d.cbDue).getTime() <= now) c.push({ when: d.cbDue, type: "Callback" });
+    if(d.fuDue && new Date(d.fuDue).getTime() <= now) c.push({ when: d.fuDue, type: "Follow-up" });
+    if(!c.length) return null;
+    c.sort((a,b) => a.when < b.when ? -1 : 1);
+    return { l, d, when: c[0].when, type: c[0].type };
+  }).filter(Boolean).sort((a,b) => a.when < b.when ? -1 : 1);
+}
 
 // ══════════════ STATE ══════════════
 let leads = LEADS.slice();
@@ -1374,6 +1489,10 @@ function renderBadges(){
   const b = document.getElementById("calBadge");
   b.style.display = upcoming ? "" : "none";
   b.textContent = upcoming;
+  const due = dueNow().length;
+  const db = document.getElementById("dialBadge");
+  db.style.display = due ? "" : "none";
+  db.textContent = due;
 }
 
 // ══════════════ DIAL ══════════════
@@ -1394,8 +1513,30 @@ function renderDial(){
   const vmText = `Hey ${first||"there"}, Chase here — just left you a voicemail. I put a demo website together for ${l.business_name}. Takes 30 seconds to look at: ${demoTxt}`;
   const introText = `Hey ${first||"there"}, Chase from RecoverRevenue — here's the demo site I built for ${l.business_name}: ${demoTxt}. If you like it, we can talk. If not, no hard feelings.`;
   const stColor = d.dispo==="BOOKED"?"var(--green)":d.dispo==="Interested"?"var(--amber)":d.dispo==="Not Interested"?"var(--red)":"var(--dim)";
+  const inWin = inCallWindow(l.category);
+  const stage = stageOf(d);
+  const showNext = (d.dispo==="Interested" || STAGES.indexOf(stage) >= STAGES.indexOf("demo_sent"))
+    && stage !== "booked" && d.dispo !== "BOOKED" && d.dispo !== "Not Interested";
+  const pricingText = `Hey ${first||"there"}, Chase from RecoverRevenue. Straight-up pricing for ${l.business_name}: $497 setup + $149/mo — missed-call text-back live in 3 days. Want the website too? $1,497 build + $99/mo hosting. Demo's here if you want another look: ${demoTxt}. One saved job pays the month.`;
+  const trail = STAGES.map(s => {
+    const si = STAGES.indexOf(s), ci = STAGES.indexOf(stage);
+    return `<span class="stagechip ${si<ci?"hit":si===ci?"cur":""}">${STAGE_LABEL[s]}</span>`;
+  }).join("");
+  const due = dueNow();
+  const dueBar = due.length ? `<div class="duebar">
+    <div class="dhead">Due now <span class="cnt">${due.length}</span></div>
+    ${due.map(x => {
+      const over = Date.now() - new Date(x.when).getTime() > 3600e3;
+      return `<div class="ditem ${over?"over":""}" onclick="openInDialer('${esc(jsq(key(x.l)))}')">
+        <div class="bar"></div>
+        <div class="b"><div class="t">${esc(x.l.business_name)}</div>
+        <div class="d">${x.type}${x.d.dispo?` · ${esc(x.d.dispo)}`:""}${x.d.note?` · ${esc(x.d.note)}`:""}</div></div>
+        <span class="when">${over?"overdue · ":""}${ago(x.when)} ago</span>
+      </div>`; }).join("")}
+  </div>` : "";
 
   v.innerHTML = `
+  ${dueBar}
   <div class="counterline"><span>${idx+1} / ${list.length} · ${esc(NICHE_LABEL[l.category]||l.category||"")}</span>
     <span class="st" style="color:${stColor}">${d.dispo||"Uncalled"}${d.rep?` · ${esc(d.rep)}`:""}</span></div>
 
@@ -1411,6 +1552,16 @@ function renderDial(){
     </div>`:""}
     <input class="note-in" placeholder="One-line note…" value="${esc(d.note||"")}" onchange="setNote(this.value)">
   </div>
+
+  ${showNext?`<div class="nextstrip">
+    <div class="ns-head">Next step — don't let it cool off</div>
+    <div class="stagetrail">${trail}</div>
+    <div class="ns-btns">
+      <a class="nsbtn hot" href="${smsHref(l, pricingText)}" onclick="pricingSent()">Text pricing</a>
+      <button class="nsbtn" onclick="bookIt()">Book it</button>
+    </div>
+    ${d.fuDue?`<div class="ns-due">Auto follow-up due <b>${new Date(d.fuDue).toLocaleString("en-US",{weekday:"short",hour:"numeric",minute:"2-digit"})}</b> — clears when you text pricing or book</div>`:""}
+  </div>`:""}
 
   <h1 style="margin-top:18px">${first ? esc(first) : "Owner unknown"}</h1>
   <div class="sub" style="margin-bottom:0"><b>${esc(l.business_name||"")}</b> · ${esc(l.city||"")} · ★ ${l.rating??"–"} (${l.review_count??0}) · est <b>${fmt(l.est_revenue_annual||0)}/yr</b></div>
@@ -1428,7 +1579,7 @@ function renderDial(){
 
   <div class="rows">
     <div class="row"><div class="l"><div class="t">The pitch</div><div class="d"><b>${tier.name}</b> — ${esc(tier.pitch)}</div></div></div>
-    <div class="row"><div class="l"><div class="t">Best time to call</div><div class="d">${esc(BEST_TIME[l.category]||BEST_TIME.default)} · Pain: ${lp.map(p=>(PAINS.find(x=>x[0]===p)||[])[1]).filter(Boolean).join(" · ")}</div></div></div>
+    <div class="row"><div class="l"><div class="t">Best time to call <span class="btdot ${inWin?"g":""}"></span></div><div class="d"><span class="btflag ${inWin?"g":"a"}">${inWin?"Call now":"Off window"}</span> · ${esc(BEST_TIME[l.category]||BEST_TIME.default)} · Pain: ${lp.map(p=>(PAINS.find(x=>x[0]===p)||[])[1]).filter(Boolean).join(" · ")}</div></div></div>
   </div>
 
   <div class="card">
@@ -1440,9 +1591,10 @@ function renderDial(){
   <a class="pill call" href="${telHref(l)}" onclick="markCalled()">Call ${first?esc(first):"now"} — ${esc(fmtPhone(l.phone))}</a>
   <div class="phone-sub">or <b onclick="copyText('${esc(fmtPhone(l.phone))}')">copy the number</b></div>
   <div class="pillrow">
-    <a class="pill ghost" href="${smsHref(l, introText)}">Text demo link</a>
-    <a class="pill ghost" href="${smsHref(l, vmText)}">Post-VM text</a>
+    <a class="pill ghost" href="${smsHref(l, introText)}" onclick="demoSent()">Text demo link</a>
+    <a class="pill ghost" href="${smsHref(l, vmText)}" onclick="demoSent()">Post-VM text</a>
   </div>
+  <button class="pill ghost" onclick="openTpl()">Follow-up templates</button>
 
   <details class="script">
     <summary>Script &amp; objections</summary>
@@ -1501,14 +1653,15 @@ function renderLeads(){
     ${list.map(l=>{
       const d = results[key(l)];
       const cb = d && d.cbDue && new Date(d.cbDue) <= new Date() && d.dispo!=="BOOKED" && d.dispo!=="Not Interested";
-      return `<div class="row clickable" onclick="openInDialer('${esc(key(l))}')">
+      const inW = inCallWindow(l.category);
+      return `<div class="row clickable" onclick="openInDialer('${esc(jsq(key(l)))}')">
         <span class="sdot" style="background:${dotFor(d)}"></span>
         <div class="l">
           <div class="t">${esc(l.business_name)}</div>
-          <div class="d">${esc(l.owner_name||"owner?")} · ${esc(l.city)} · ★${l.rating??"–"}/${l.review_count??0}${d&&d.dispo?` · <b>${esc(d.dispo)}</b>`:""}${cb?` · <b style="color:var(--red)">call back now</b>`:""}</div>
+          <div class="d">${esc(l.owner_name||"owner?")} · ${esc(l.city)} · ★${l.rating??"–"}/${l.review_count??0} · <span class="btdot ${inW?"g":""}"></span> best ${esc(BEST_SHORT[l.category]||BEST_SHORT.default)}${d&&d.dispo?` · <b>${esc(d.dispo)}</b>`:""}${cb?` · <b style="color:var(--red)">call back now</b>`:""}</div>
         </div>
         <div class="r">
-          <a class="phlink" href="${telHref(l)}" onclick="event.stopPropagation();markCalledKey('${esc(key(l))}')">${esc(fmtPhone(l.phone))}</a>
+          <a class="phlink" href="${telHref(l)}" onclick="event.stopPropagation();markCalledKey('${esc(jsq(key(l)))}')">${esc(fmtPhone(l.phone))}</a>
           <span class="chev">›</span>
         </div>
       </div>`; }).join("") || '<div class="empty">Nothing matches.</div>'}
@@ -1573,6 +1726,7 @@ function saveMeeting(){
     note: document.getElementById("bNote").value, rep,
   };
   meetings.push(m); saveMeetings(); bookOpen = false; bookPrefill = null;
+  const d = rec(l); advanceStage(d, "booked"); delete d.fuDue; save();
   downloadIcs(m.id);
   render();
 }
@@ -1696,9 +1850,30 @@ function setDispo(dispo){
   const l = currentLead(); if(!l) return;
   const d = rec(l);
   d.dispo = dispo; d.ts = new Date().toISOString(); d.rep = rep;
+  advanceStage(d, dispo==="BOOKED" ? "booked" : "contacted");
+  if(dispo==="Interested") armFollowup(d); // 4-hour rule from the scripts
+  if(dispo==="BOOKED" || dispo==="Not Interested") delete d.fuDue;
   save();
   if(dispo==="BOOKED"){ bookPrefill = key(l); bookOpen = true; go("cal"); return; }
   render();
+}
+function demoSent(){
+  const l = currentLead(); if(!l) return;
+  const d = rec(l);
+  advanceStage(d, "demo_sent");
+  armFollowup(d);
+  save(); setTimeout(render, 400); // let the sms: href fire first
+}
+function pricingSent(){
+  const l = currentLead(); if(!l) return;
+  const d = rec(l);
+  advanceStage(d, "pricing_sent");
+  delete d.fuDue;
+  save(); setTimeout(render, 400);
+}
+function bookIt(){
+  const l = currentLead(); if(!l) return;
+  bookPrefill = key(l); bookOpen = true; go("cal");
 }
 function setCb(due){
   const l = currentLead(); if(!l) return;
@@ -1718,6 +1893,50 @@ function openInDialer(k){
 function copyText(t){
   if(navigator.clipboard) navigator.clipboard.writeText(t);
   else { const i=document.createElement("input"); i.value=t; document.body.appendChild(i); i.select(); document.execCommand("copy"); i.remove(); }
+}
+
+// ══════════════ FOLLOW-UP TEMPLATES ══════════════
+let tplCache = [];
+function tplFor(l){
+  const first = l.owner_name ? l.owner_name.split(" ")[0] : "there";
+  const demo = demoUrl(l) || "[demo link]";
+  const biz = l.business_name || "your business";
+  return [
+    { kind:"sms", name:"After demo",
+      body:`Hey ${first}, Chase here. That demo site for ${biz} is live: ${demo} — if it gets you one extra job it's paid for itself. Want me to make it real? $497 setup + $149/mo.` },
+    { kind:"sms", name:'After "send me info"',
+      body:`Hey ${first}, Chase from RecoverRevenue. No brochure, just this: ${demo} — a working site for ${biz}. $497 setup + $149/mo and every missed call gets a text back in 60 seconds. Look when you get a minute.` },
+    { kind:"sms", name:"Callback confirm",
+      body:`Hey ${first}, Chase — locking in our call. I'll have the ${biz} demo pulled up so you can see it live. 5 minutes, no pressure. Talk soon.` },
+    { kind:"email", name:"After demo", subj:`Your demo site is live — ${biz}`,
+      body:`Hey ${first},\n\nHere's the demo site I built for ${biz}: ${demo}\n\nIt's built from your Google listing — your reviews, your services. When someone Googles you, this is what they should find.\n\nPricing, no games: $497 setup + $149/mo for the missed-call text-back. Website add-on: $1,497 build + $99/mo hosting. One saved job covers the month.\n\nWant it live under your name? Reply or call me and it's done in 3 business days.\n\nChase\nRecoverRevenue` },
+    { kind:"email", name:'After "send me info"', subj:`The info you asked for — ${biz} (30-second read)`,
+      body:`Hey ${first},\n\nYou asked for info — here it is, no fluff.\n\nThe problem: you're mid-job, the phone rings out, and the customer calls the next guy.\nThe fix: every missed call gets a text back in 60 seconds, automatically.\nThe proof: I already built ${biz} a demo site — ${demo}\n\nCost: $497 setup + $149/mo. Website add-on: $1,497 + $99/mo hosting.\n\nLook at the demo tonight. If it's not for you, no hard feelings — you keep it.\n\nChase\nRecoverRevenue` },
+    { kind:"email", name:"Callback confirm", subj:`Confirming our call — ${biz}`,
+      body:`Hey ${first},\n\nConfirming our call. I'll have the ${biz} demo up on my screen so you can see exactly what your customers would see: ${demo}\n\n5 minutes. If you like it, we talk. If not, we're done in 5.\n\nChase\nRecoverRevenue` },
+  ];
+}
+function openTpl(){
+  const l = currentLead(); if(!l) return;
+  tplCache = tplFor(l);
+  document.getElementById("tplSub").textContent = `${l.business_name} — placeholders filled in`;
+  document.getElementById("tplBody").innerHTML = tplCache.map((t,i)=>`
+    <div class="tpl">
+      <div class="tk">${t.kind==="sms"?"SMS":"Email"} — ${esc(t.name)}</div>
+      ${t.subj?`<div class="tt">${esc(t.subj)}</div>`:""}
+      <div class="tb">${esc(t.body)}</div>
+      <div class="tacts">
+        <button class="nsbtn" onclick="copyTpl(${i}, this)">Copy</button>
+        ${t.kind==="sms"?`<a class="nsbtn hot" href="${smsHref(l, t.body)}">Text it</a>`:""}
+      </div>
+    </div>`).join("");
+  document.getElementById("tplSheet").classList.add("open");
+  document.getElementById("scrim").classList.add("open");
+}
+function copyTpl(i, btn){
+  const t = tplCache[i]; if(!t) return;
+  copyText(t.subj ? `Subject: ${t.subj}\n\n${t.body}` : t.body);
+  if(btn){ btn.textContent = "Copied ✓"; setTimeout(()=>{ btn.textContent = "Copy"; }, 1200); }
 }
 function exportResults(){
   const out = { exported: new Date().toISOString(), leads: leads.map(l => ({...l, result: results[key(l)]||null})), meetings };
@@ -1742,7 +1961,7 @@ document.getElementById("fileIn").addEventListener("change", e=>{
 // sheet
 const sheet = document.getElementById("sheet"), scrim = document.getElementById("scrim");
 window.openSheet = function(){ sheet.classList.add("open"); scrim.classList.add("open"); };
-window.closeSheet = function(){ sheet.classList.remove("open"); scrim.classList.remove("open"); };
+window.closeSheet = function(){ sheet.classList.remove("open"); document.getElementById("tplSheet").classList.remove("open"); scrim.classList.remove("open"); };
 
 // theme (matches portal behavior)
 window.toggleTheme = function(){
