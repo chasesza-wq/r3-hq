@@ -115,6 +115,15 @@
   .rev p { font-size: .93rem; line-height: 1.7; flex: 1; }
   .rev .by { font-size: .78rem; color: var(--dim); }
   .rev .by b { color: var(--ink); display: block; font-size: .86rem; }
+  /* placeholder state — a real prospect's review data hasn't been pulled yet */
+  .rev.is-ph { border-style: dashed; background: transparent; }
+  .rev.is-ph p { color: var(--dim); }
+  .rev-tag { align-self: flex-start; font-size: .62rem; font-weight: 700; text-transform: uppercase; letter-spacing: .14em; color: var(--green); border: 1px solid currentColor; border-radius: 999px; padding: 4px 10px; }
+  .g-badge.is-ph { border-style: dashed; background: transparent; }
+  .g-badge.is-ph .score { font-size: 1.3rem; }
+  /* real business names run long */
+  .logo { min-width: 0; max-width: 52vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hero-sub, .rev p { overflow-wrap: break-word; }
 
   /* ---------- final ---------- */
   .final { text-align: center; padding: 140px 0; }
@@ -166,21 +175,21 @@
   <canvas id="leaves"></canvas>
   <div class="wrap">
     <div>
-      <div class="hero-badge">★ <b data-p="rating">{{RATING}}</b> · <span data-p="reviews">{{REVIEW_COUNT}}</span> Google reviews · licensed &amp; insured</div>
+      <div class="hero-badge"><span data-rev-claim>★ <b data-p="rating">{{RATING}}</b> · <span data-p="reviews">{{REVIEW_COUNT}}</span> Google reviews · </span>licensed &amp; insured</div>
       <h1 class="serif">
         <span class="h-line"><span>Big trees.</span></span>
         <span class="h-line"><span>Serious equipment.</span></span>
         <span class="h-line"><span><em>Zero drama.</em></span></span>
       </h1>
-      <p class="hero-sub"><strong data-p="tagline">{{TAGLINE}}</strong> From a single dead limb over the roof to full removals crane work — done clean, done safe, and your lawn looks untouched when we leave. <span data-p="years">{{YEARS}}</span> years climbing <span data-p="city">{{CITY}}</span> trees.</p>
+      <p class="hero-sub"><strong data-p="tagline" data-tagline-claim>{{TAGLINE}}</strong> From a single dead limb over the roof to full removals crane work — done clean, done safe, and your lawn looks untouched when we leave.<span data-years-claim> <span data-p="years">{{YEARS}}</span> years climbing <span data-p="city">{{CITY}}</span> trees.</span></p>
       <div class="hero-ctas">
         <a class="btn-green" href="tel:{{PHONE}}" data-p="tel">Get a same-week estimate</a>
         <a class="btn-line" href="#services">What we do</a>
       </div>
       <div class="hero-meta">
-        <div class="hm"><b><span data-count data-p="years">{{YEARS}}</span>+</b><span>Years in the canopy</span></div>
-        <div class="hm"><b data-p="rating">{{RATING}}</b><span>Google rating</span></div>
-        <div class="hm"><b>$2M</b><span>Liability coverage</span></div>
+        <div class="hm" data-stat="years"><b><span data-count data-p="years">{{YEARS}}</span>+</b><span>Years in the canopy</span></div>
+        <div class="hm" data-stat="rating"><b data-p="rating">{{RATING}}</b><span>Google rating</span></div>
+        <div class="hm" data-stat="fixed"><b>$2M</b><span>Liability coverage</span></div>
       </div>
     </div>
     <div class="hero-art" aria-hidden="true">
@@ -288,10 +297,10 @@
 
 <section class="proof">
   <div class="wrap reveal-group">
-    <div class="pr"><b><i data-count data-p="years">{{YEARS}}</i>+</b><span>Years in business</span></div>
-    <div class="pr"><b data-count>1400</b><span>Trees removed safely</span></div>
-    <div class="pr"><b data-p="rating">{{RATING}}</b><span>Google rating</span></div>
-    <div class="pr"><b>0</b><span>Roofs harmed. Ever.</span></div>
+    <div class="pr" data-stat="years"><b><i data-count data-p="years">{{YEARS}}</i>+</b><span>Years in business</span></div>
+    <div class="pr" data-stat="fixed"><b data-count>1400</b><span>Trees removed safely</span></div>
+    <div class="pr" data-stat="rating"><b data-p="rating">{{RATING}}</b><span>Google rating</span></div>
+    <div class="pr" data-stat="fixed"><b>0</b><span>Roofs harmed. Ever.</span></div>
   </div>
 </section>
 
@@ -302,12 +311,12 @@
         <p class="eyebrow">Neighbors' words</p>
         <h2 class="serif">The yards speak for themselves.</h2>
       </div>
-      <div class="g-badge">
+      <div class="g-badge" data-gbadge>
         <span class="score" data-p="rating">{{RATING}}</span>
         <div class="cap"><span class="stars">★★★★★</span><br><span data-p="reviews">{{REVIEW_COUNT}}</span> reviews on Google</div>
       </div>
     </div>
-    <div class="rev-grid reveal-group">
+    <div class="rev-grid reveal-group" data-rev-grid>
       <div class="rev"><p>“{{REVIEW_1}}”</p><div class="by"><b>{{REVIEWER_1}}</b>Google review</div></div>
       <div class="rev"><p>“{{REVIEW_2}}”</p><div class="by"><b>{{REVIEWER_2}}</b>Google review</div></div>
       <div class="rev"><p>“{{REVIEW_3}}”</p><div class="by"><b>{{REVIEWER_3}}</b>Google review</div></div>
@@ -327,7 +336,7 @@
 <footer>
   <div class="wrap">
     <span>© 2026 <span data-p="name">{{BUSINESS_NAME}}</span> · <span data-p="city">{{CITY}}</span>, FL</span>
-    <span>Licensed &amp; insured · $2M liability · <a href="tel:{{PHONE}}" data-p="tel"><span data-p="phone">{{PHONE}}</span></a></span>
+    <span>Licensed &amp; insured<span data-stat="fixed"> · $2M liability</span> · <a href="tel:{{PHONE}}" data-p="tel"><span data-p="phone">{{PHONE}}</span></a></span>
   </div>
 </footer>
 
@@ -337,9 +346,17 @@
 // ---------- URL-parameter personalization ----------
 // ?name=Canopy+%26+Crown&phone=8135550100&city=Tampa&rating=4.9&reviews=132&years=17&tagline=...&r1=...&rn1=Name
 (function(){
+  // GENERIC  — no ?name=. Fictional demo business; sample content is safe.
+  // PROSPECT — ?name= given, i.e. a real business. Unsupplied fields are dropped,
+  //            never invented. PRODUCT.md Principle 5: no claim without a source.
   const q = new URLSearchParams(location.search);
-  const get = k => q.get(k);
-  const phoneRaw = (get('phone') || '').replace(/[^\d]/g, '');
+  const get = k => { const v = q.get(k); return v && v.trim() ? v.trim() : null; };
+  const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+  const esc = s => String(s).replace(/[&<>"']/g, c => ESC[c]);
+  const isProspect  = !!get('name');
+  const hasRealRevs = !!(get('r1') || get('rating') || get('reviews'));
+  const phMode      = isProspect && !hasRealRevs;
+  const phoneRaw = (get('phone') || '').replace(/\D/g, '');
   const phonePretty = phoneRaw.length === 10 ? `(${phoneRaw.slice(0,3)}) ${phoneRaw.slice(3,6)}-${phoneRaw.slice(6)}` : get('phone');
   const tokens = {
     '{{BUSINESS_NAME}}': get('name'), '{{CITY}}': get('city'), '{{PHONE}}': phonePretty,
@@ -357,12 +374,49 @@
     '{{REVIEW_3}}': 'Three quotes, theirs was the middle price but the only one with a certified arborist. Yard was cleaner when they left than when they arrived.',
     '{{REVIEWER_1}}': 'Local homeowner', '{{REVIEWER_2}}': 'Local homeowner', '{{REVIEWER_3}}': 'Local homeowner',
   };
-  let html = document.body.innerHTML, changed = false;
+  const resolved = {};
   for (const [tok, val] of Object.entries(tokens)) {
-    const v = val || fallbacks[tok];
-    if (v && html.includes(tok)) { html = html.replaceAll(tok, v); changed = true; }
+    if (val) resolved[tok] = val;
+    else if (!isProspect) resolved[tok] = fallbacks[tok];
+    else resolved[tok] = (tok === '{{CITY}}') ? fallbacks[tok] : '';
   }
-  if (changed) document.body.innerHTML = html;
+  let html = document.body.innerHTML;
+  for (const [tok, v] of Object.entries(resolved)) {
+    if (html.includes(tok)) html = html.replaceAll(tok, esc(v));
+  }
+  document.body.innerHTML = html;
+
+  const drop = sel => document.querySelectorAll(sel).forEach(el => el.remove());
+  if (isProspect) {
+    if (!get('tagline')) drop('[data-tagline-claim]');
+    if (!get('years'))   { drop('[data-years-claim]'); drop('[data-stat="years"]'); }
+    if (!get('rating'))  drop('[data-stat="rating"]');
+    // $2M coverage / 1400 trees / 0 roofs harmed are unsourceable for a real business
+    drop('[data-stat="fixed"]');
+    const hm = document.querySelector('.hero-meta');
+    if (hm && !hm.querySelector('.hm')) hm.remove();
+    const pr = document.querySelector('.proof');
+    if (pr && !pr.querySelector('.pr')) pr.remove();
+  }
+
+  if (phMode) {
+    document.querySelectorAll('[data-rev-claim]').forEach(el => { el.textContent = ''; });
+    const gb = document.querySelector('[data-gbadge]');
+    if (gb) { gb.classList.add('is-ph'); gb.innerHTML = '<span class="score">★</span><div class="cap">Your Google rating<br>lands here</div>'; }
+    const grid = document.querySelector('[data-rev-grid]');
+    if (grid) {
+      const biz = get('name');
+      const copy = [
+        'Your real Google reviews appear here — pulled straight from your profile and kept current.',
+        'Every new review lands on the site automatically. Nothing to copy over, nothing to maintain.',
+        'The ones that need a reply get flagged to your phone before they cost you a job.'
+      ];
+      grid.innerHTML = copy.map(t =>
+        `<div class="rev is-ph"><span class="rev-tag">Sample</span><p>${esc(t)}</p>` +
+        `<div class="by"><b>${esc(biz)}</b>Placeholder — not a real review</div></div>`).join('');
+    }
+  }
+
   const name = get('name') || fallbacks['{{BUSINESS_NAME}}'];
   const city = get('city') || fallbacks['{{CITY}}'];
   document.title = `${name} — Tree Service, ${city} FL`;

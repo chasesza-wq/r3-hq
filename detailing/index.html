@@ -150,6 +150,15 @@
   .rev p { font-size: .92rem; line-height: 1.65; flex: 1; }
   .rev .by { font-size: .78rem; color: var(--dim); }
   .rev .by b { color: var(--ink); display: block; font-size: .85rem; }
+  /* placeholder state — a real prospect's review data hasn't been pulled yet */
+  .rev.is-ph { border-style: dashed; background: transparent; }
+  .rev.is-ph p { color: var(--dim); }
+  .rev-tag { align-self: flex-start; font-size: .62rem; font-weight: 700; text-transform: uppercase; letter-spacing: .14em; color: var(--teal); border: 1px solid currentColor; border-radius: 999px; padding: 4px 10px; }
+  .g-badge.is-ph { border-style: dashed; background: transparent; }
+  .g-badge.is-ph .score { font-size: 1.3rem; }
+  /* real business names run long */
+  .logo { min-width: 0; max-width: 52vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hero-sub, .rev p { overflow-wrap: break-word; }
 
   /* ---------- area + faq ---------- */
   .af { display: grid; grid-template-columns: 1fr 1.2fr; gap: 70px; align-items: start; }
@@ -225,20 +234,20 @@
 <header class="hero">
   <div class="wrap">
     <div>
-      <div class="hero-badge">★ <b data-p="rating">{{RATING}}</b> on Google · <span data-p="reviews">{{REVIEW_COUNT}}</span> reviews · <span data-p="city">{{CITY}}</span>, FL</div>
+      <div class="hero-badge"><span data-rev-claim>★ <b data-p="rating">{{RATING}}</b> on Google · <span data-p="reviews">{{REVIEW_COUNT}}</span> reviews · </span><span data-p="city">{{CITY}}</span>, FL</div>
       <h1 class="display">
         <span class="h-line"><span>Showroom clean,</span></span>
         <span class="h-line"><span>in <em>your</em> driveway.</span></span>
       </h1>
-      <p class="hero-sub"><strong data-p="tagline">{{TAGLINE}}</strong> We bring the water, the power, and <span data-p="years">{{YEARS}}</span> years of experience to your home or office — you don't drive anywhere or wait in a lobby.</p>
+      <p class="hero-sub"><strong data-p="tagline" data-tagline-claim>{{TAGLINE}}</strong> <span data-sub-years>We bring the water, the power, and <span data-p="years">{{YEARS}}</span> years of experience to your home or office</span> — you don't drive anywhere or wait in a lobby.</p>
       <div class="hero-ctas">
         <a class="btn-main" href="tel:{{PHONE}}" data-p="tel">Get a quote in 2 minutes</a>
         <a class="btn-ghost" href="#pricing">See pricing</a>
       </div>
       <div class="hero-stats">
-        <div class="hs"><b><i data-count data-p="years">{{YEARS}}</i>+</b><span>Years detailing</span></div>
-        <div class="hs"><b data-count>2300</b><span>Cars detailed</span></div>
-        <div class="hs"><b data-p="rating">{{RATING}}</b><span>Google rating</span></div>
+        <div class="hs" data-stat="years"><b><i data-count data-p="years">{{YEARS}}</i>+</b><span>Years detailing</span></div>
+        <div class="hs" data-stat="cars"><b data-count>2300</b><span>Cars detailed</span></div>
+        <div class="hs" data-stat="rating"><b data-p="rating">{{RATING}}</b><span>Google rating</span></div>
       </div>
     </div>
     <div class="hero-photo">
@@ -407,12 +416,12 @@
         <p class="eyebrow">Reviews</p>
         <h2 class="display">Word travels fast on a clean car.</h2>
       </div>
-      <div class="g-badge">
+      <div class="g-badge" data-gbadge>
         <span class="score" data-p="rating">{{RATING}}</span>
         <div class="cap"><span class="stars">★★★★★</span><br><span data-p="reviews">{{REVIEW_COUNT}}</span> reviews on Google</div>
       </div>
     </div>
-    <div class="rev-grid reveal-group">
+    <div class="rev-grid reveal-group" data-rev-grid>
       <div class="rev"><span class="stars">★★★★★</span><p>“{{REVIEW_1}}”</p><div class="by"><b>{{REVIEWER_1}}</b>Google review</div></div>
       <div class="rev"><span class="stars">★★★★★</span><p>“{{REVIEW_2}}”</p><div class="by"><b>{{REVIEWER_2}}</b>Google review</div></div>
       <div class="rev"><span class="stars">★★★★★</span><p>“{{REVIEW_3}}”</p><div class="by"><b>{{REVIEWER_3}}</b>Google review</div></div>
@@ -477,9 +486,17 @@
 // ---------- URL-parameter personalization ----------
 // ?name=Shine+Society&phone=8135550100&city=Tampa&rating=4.9&reviews=64&years=8&tagline=...&r1=...&rn1=Name
 (function(){
+  // GENERIC  — no ?name=. Fictional demo business; sample content is safe.
+  // PROSPECT — ?name= given, i.e. a real business. Unsupplied fields are dropped,
+  //            never invented. PRODUCT.md Principle 5: no claim without a source.
   const q = new URLSearchParams(location.search);
-  const get = k => q.get(k);
-  const phoneRaw = (get('phone') || '').replace(/[^\d]/g, '');
+  const get = k => { const v = q.get(k); return v && v.trim() ? v.trim() : null; };
+  const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+  const esc = s => String(s).replace(/[&<>"']/g, c => ESC[c]);
+  const isProspect  = !!get('name');
+  const hasRealRevs = !!(get('r1') || get('rating') || get('reviews'));
+  const phMode      = isProspect && !hasRealRevs;
+  const phoneRaw = (get('phone') || '').replace(/\D/g, '');
   const phonePretty = phoneRaw.length === 10 ? `(${phoneRaw.slice(0,3)}) ${phoneRaw.slice(3,6)}-${phoneRaw.slice(6)}` : get('phone');
   const tokens = {
     '{{BUSINESS_NAME}}': get('name'), '{{CITY}}': get('city'), '{{PHONE}}': phonePretty,
@@ -497,12 +514,48 @@
     '{{REVIEW_3}}': 'The ceramic coating is incredible — three months later water still beads off and it looks freshly washed after rain.',
     '{{REVIEWER_1}}': 'Verified client', '{{REVIEWER_2}}': 'Verified client', '{{REVIEWER_3}}': 'Verified client',
   };
-  let html = document.body.innerHTML, changed = false;
+  const resolved = {};
   for (const [tok, val] of Object.entries(tokens)) {
-    const v = val || fallbacks[tok];
-    if (v && html.includes(tok)) { html = html.replaceAll(tok, v); changed = true; }
+    if (val) resolved[tok] = val;
+    else if (!isProspect) resolved[tok] = fallbacks[tok];
+    else resolved[tok] = (tok === '{{CITY}}') ? fallbacks[tok] : '';
   }
-  if (changed) document.body.innerHTML = html;
+  let html = document.body.innerHTML;
+  for (const [tok, v] of Object.entries(resolved)) {
+    if (html.includes(tok)) html = html.replaceAll(tok, esc(v));
+  }
+  document.body.innerHTML = html;
+
+  const drop = sel => document.querySelectorAll(sel).forEach(el => el.remove());
+  if (isProspect) {
+    if (!get('tagline')) drop('[data-tagline-claim]');
+    if (!get('years'))   { drop('[data-stat="years"]'); }
+    if (!get('rating'))  drop('[data-stat="rating"]');
+    drop('[data-stat="cars"]');   // hardcoded 2300 — unsourceable for a real business
+    const sub = document.querySelector('[data-sub-years]');
+    if (sub && !get('years')) sub.textContent = 'We bring the water and the power to your home or office';
+    const hs = document.querySelector('.hero-stats');
+    if (hs && !hs.querySelector('.hs')) hs.remove();
+  }
+
+  if (phMode) {
+    document.querySelectorAll('[data-rev-claim]').forEach(el => { el.textContent = 'Mobile service · '; });
+    const gb = document.querySelector('[data-gbadge]');
+    if (gb) { gb.classList.add('is-ph'); gb.innerHTML = '<span class="score">★</span><div class="cap">Your Google rating<br>lands here</div>'; }
+    const grid = document.querySelector('[data-rev-grid]');
+    if (grid) {
+      const biz = get('name');
+      const copy = [
+        'Your real Google reviews appear here — pulled straight from your profile and kept current.',
+        'Every new review lands on the site automatically. Nothing to copy over, nothing to maintain.',
+        'The ones that need a reply get flagged to your phone before they cost you a booking.'
+      ];
+      grid.innerHTML = copy.map(t =>
+        `<div class="rev is-ph"><span class="rev-tag">Sample</span><p>${esc(t)}</p>` +
+        `<div class="by"><b>${esc(biz)}</b>Placeholder — not a real review</div></div>`).join('');
+    }
+  }
+
   const name = get('name') || fallbacks['{{BUSINESS_NAME}}'];
   const city = get('city') || fallbacks['{{CITY}}'];
   document.title = `${name} — Mobile Auto Detailing, ${city} FL`;
