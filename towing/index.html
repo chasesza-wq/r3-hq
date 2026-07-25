@@ -303,8 +303,8 @@
   </svg>
   <div class="wrap">
     <div class="stats-grid">
-      <div class="stat"><div class="n"><em data-count data-p="years">{{YEARS}}</em>+</div><div class="l">Years on these roads</div></div>
-      <div class="stat"><div class="n"><span data-count data-p="reviews">{{REVIEW_COUNT}}</span></div><div class="l">Five-star Google reviews</div></div>
+      <div class="stat" data-stat="years"><div class="n"><em data-count data-p="years">{{YEARS}}</em>+</div><div class="l">Years on these roads</div></div>
+      <div class="stat" data-stat="reviews"><div class="n"><span data-count data-p="reviews">{{REVIEW_COUNT}}</span></div><div class="l">Five-star Google reviews</div></div>
       <div class="stat"><div class="n"><em>24/7</em></div><div class="l">Nights, weekends, holidays</div></div>
     </div>
   </div>
@@ -411,7 +411,16 @@
   // Drop any claim whose source wasn't supplied. Order matters: the DOM was just rebuilt.
   const drop = sel => document.querySelectorAll(sel).forEach(el => el.remove());
   if (isProspect && !get('tagline')) drop('[data-tagline-claim]');
-  if (isProspect && !get('years'))   drop('[data-years-claim]');
+  if (isProspect && !get('years'))   { drop('[data-years-claim]'); drop('[data-stat="years"]'); }
+  if (isProspect && !get('reviews')) drop('[data-stat="reviews"]');
+  // A stat whose number was dropped would leave an orphaned label ("+ / Years on
+  // these roads"), so the whole tile goes. Re-balance the grid around what's left.
+  const statsGrid = document.querySelector('.stats-grid');
+  if (statsGrid) {
+    const n = statsGrid.querySelectorAll('.stat').length;
+    if (n && n < 3) statsGrid.style.gridTemplateColumns = `repeat(${n}, minmax(0, 1fr))`;
+    if (!n) statsGrid.closest('.stats-band')?.remove();
+  }
 
   if (phMode) {
     // Rating claim in the hero badge -> neutral fact already true of the page.
