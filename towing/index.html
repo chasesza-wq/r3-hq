@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{BUSINESS_NAME}} — 24/7 Towing & Roadside, {{CITY}} FL</title>
+<meta name="description" content="24/7 towing and roadside recovery. One call reaches a live dispatcher — not a voicemail.">
+<!-- Link-preview tags. NOTE: iMessage/WhatsApp/Slack crawlers do NOT run JavaScript,
+     so these stay static no matter what ?name= is on the URL. A per-prospect preview
+     requires a generated static file per prospect (e.g. /towing/mikes-towing/). -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="24/7 Towing &amp; Roadside — a person answers, day or night">
+<meta property="og:description" content="One call reaches a live dispatcher, not a voicemail. See what a towing site should do.">
+<meta property="og:image" content="https://images.unsplash.com/photo-1730514784243-f0e7f09c9f50?q=80&w=1200&auto=format&fit=crop">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -26,7 +35,10 @@
   /* ---------- nav ---------- */
   nav { position: fixed; top: 0; left: 0; right: 0; z-index: 90; background: rgba(11,12,14,.72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
   .nav-in { max-width: 1180px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
-  .logo { font-family: var(--display); font-size: 1rem; text-transform: uppercase; text-decoration: none; letter-spacing: .02em; }
+  .logo { font-family: var(--display); font-size: 1rem; text-transform: uppercase; text-decoration: none; letter-spacing: .02em; min-width: 0; max-width: 52vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  /* real business names run long — never let one shove the call button off-screen */
+  .nav-right { flex-shrink: 0; }
+  .hero h1, .hero-sub, .rev p, footer .wrap { overflow-wrap: break-word; }
   .logo b { color: var(--amber); }
   .nav-right { display: flex; align-items: center; gap: 20px; }
   .nav-open { font-size: .78rem; color: var(--dim); display: flex; align-items: center; gap: 7px; }
@@ -140,6 +152,12 @@
   .rev p { font-size: .92rem; color: var(--ink); line-height: 1.65; flex: 1; }
   .rev .by { font-size: .8rem; color: var(--dim); }
   .rev .by b { color: var(--ink); display: block; font-size: .86rem; }
+  /* placeholder state — shown when a real prospect's review data hasn't been pulled yet */
+  .rev.is-ph { border-style: dashed; background: transparent; }
+  .rev.is-ph p { color: var(--dim); }
+  .rev-tag { align-self: flex-start; font-size: .62rem; font-weight: 700; text-transform: uppercase; letter-spacing: .14em; color: var(--amber); border: 1px solid rgba(255,176,32,.38); border-radius: 999px; padding: 4px 10px; }
+  .g-badge.is-ph { border-style: dashed; background: transparent; }
+  .g-badge.is-ph .score { font-size: 1.3rem; }
 
   /* ---------- final cta ---------- */
   .final { text-align: center; padding: 140px 0 150px; position: relative; overflow: hidden; }
@@ -200,14 +218,14 @@
   <canvas id="road"></canvas>
   <div class="wrap">
     <div>
-      <div class="hero-badge">★ <b data-p="rating">{{RATING}}</b>&nbsp;· <span data-p="reviews">{{REVIEW_COUNT}}</span> Google reviews · <span data-p="city">{{CITY}}</span>, FL</div>
+      <div class="hero-badge"><span data-rev-claim>★ <b data-p="rating">{{RATING}}</b>&nbsp;· <span data-p="reviews">{{REVIEW_COUNT}}</span> Google reviews · </span><span data-p="city">{{CITY}}</span>, FL</div>
       <h1 class="display">
         <span class="h-line"><span>Stuck is</span></span>
         <span class="h-line"><span>temporary.</span></span>
         <span class="h-line"><span class="stroke">30 minutes,</span></span>
         <span class="h-line"><span>tops.</span></span>
       </h1>
-      <p class="hero-sub"><strong data-p="tagline">{{TAGLINE}}</strong> One call reaches a live dispatcher — not a voicemail — and a truck starts rolling while you're still on the phone. <span data-p="years">{{YEARS}}</span> years working <span data-p="city">{{CITY}}</span> roads, day and night.</p>
+      <p class="hero-sub"><strong data-p="tagline" data-tagline-claim>{{TAGLINE}}</strong> One call reaches a live dispatcher — not a voicemail — and a truck starts rolling while you're still on the phone.<span data-years-claim> <span data-p="years">{{YEARS}}</span> years working <span data-p="city">{{CITY}}</span> roads, day and night.</span></p>
       <div class="hero-ctas">
         <a class="btn-call" href="tel:{{PHONE}}" data-p="tel">Get a truck rolling now</a>
         <a class="btn-ghost" href="#services">What we handle</a>
@@ -299,12 +317,12 @@
         <p class="eyebrow">Word on the street</p>
         <h2 class="display">Drivers we've<br>pulled out of bad days.</h2>
       </div>
-      <div class="g-badge">
+      <div class="g-badge" data-gbadge>
         <span class="score" data-p="rating">{{RATING}}</span>
         <div class="cap"><span class="stars">★★★★★</span><br><span data-p="reviews">{{REVIEW_COUNT}}</span> reviews on Google</div>
       </div>
     </div>
-    <div class="rev-grid reveal-group">
+    <div class="rev-grid reveal-group" data-rev-grid>
       <div class="rev"><span class="q">“</span><p>{{REVIEW_1}}</p><div class="by"><b>{{REVIEWER_1}}</b>Google review</div></div>
       <div class="rev"><span class="q">“</span><p>{{REVIEW_2}}</p><div class="by"><b>{{REVIEWER_2}}</b>Google review</div></div>
       <div class="rev"><span class="q">“</span><p>{{REVIEW_3}}</p><div class="by"><b>{{REVIEWER_3}}</b>Google review</div></div>
@@ -333,11 +351,29 @@
 <script>
 // ---------- URL-parameter personalization (text a custom link mid-call) ----------
 // ?name=Mike's+Towing&phone=8135550100&city=Tampa&rating=4.8&reviews=112&years=15&tagline=...&r1=...&r2=...&r3=...&rn1=Name
+// Two modes:
+//   GENERIC  — no ?name= supplied. A fictional demo business (Ironline Towing) with
+//              sample reviews. Safe: no real company is being described.
+//   PROSPECT — ?name= supplied, i.e. a real business. Any field NOT supplied is
+//              dropped rather than invented. A real company never inherits a made-up
+//              rating, review count, tenure, tagline, or testimonial.
+//              Binding rule — PRODUCT.md Principle 5: no claim without a source.
 (function(){
   const q = new URLSearchParams(location.search);
-  const get = k => q.get(k);
-  const phoneRaw = (get('phone') || '').replace(/[^\d]/g, '');
-  const phonePretty = phoneRaw.length === 10 ? `(${phoneRaw.slice(0,3)}) ${phoneRaw.slice(3,6)}-${phoneRaw.slice(6)}` : get('phone');
+  const get = k => { const v = q.get(k); return v && v.trim() ? v.trim() : null; };
+  const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+  const esc = s => String(s).replace(/[&<>"']/g, c => ESC[c]);
+
+  const isProspect  = !!get('name');
+  // A prospect page may only show review content that came from their real profile.
+  const hasRealRevs = !!(get('r1') || get('rating') || get('reviews'));
+  const phMode      = isProspect && !hasRealRevs;
+
+  const phoneRaw = (get('phone') || '').replace(/\D/g, '');
+  const phonePretty = phoneRaw.length === 10
+    ? `(${phoneRaw.slice(0,3)}) ${phoneRaw.slice(3,6)}-${phoneRaw.slice(6)}`
+    : get('phone');
+
   const tokens = {
     '{{BUSINESS_NAME}}': get('name'), '{{CITY}}': get('city'), '{{PHONE}}': phonePretty,
     '{{RATING}}': get('rating'), '{{REVIEW_COUNT}}': get('reviews'),
@@ -345,6 +381,8 @@
     '{{REVIEW_1}}': get('r1'), '{{REVIEW_2}}': get('r2'), '{{REVIEW_3}}': get('r3'),
     '{{REVIEWER_1}}': get('rn1'), '{{REVIEWER_2}}': get('rn2'), '{{REVIEWER_3}}': get('rn3'),
   };
+  // Fictional-business content. Rendered in GENERIC mode only — never inherited by a
+  // real prospect. In PROSPECT mode the only fallback is the neutral city label.
   const fallbacks = {
     '{{BUSINESS_NAME}}': 'Ironline Towing', '{{CITY}}': 'Tampa', '{{PHONE}}': '(813) 555-0100',
     '{{RATING}}': '4.9', '{{REVIEW_COUNT}}': '87', '{{YEARS}}': '12',
@@ -354,12 +392,52 @@
     '{{REVIEW_3}}': 'Got my truck out of soft sand at the boat ramp when two other companies said they could not. Fast, careful, fair.',
     '{{REVIEWER_1}}': 'Local driver', '{{REVIEWER_2}}': 'Local driver', '{{REVIEWER_3}}': 'Local driver',
   };
-  let html = document.body.innerHTML, changed = false;
+
+  const resolved = {};
   for (const [tok, val] of Object.entries(tokens)) {
-    const v = val || fallbacks[tok];
-    if (v && html.includes(tok)) { html = html.replaceAll(tok, v); changed = true; }
+    // In prospect mode an unsupplied field resolves to empty and its claim is removed
+    // from the DOM below; only CITY keeps a neutral default so copy still reads.
+    if (val) resolved[tok] = val;
+    else if (!isProspect) resolved[tok] = fallbacks[tok];
+    else resolved[tok] = (tok === '{{CITY}}') ? fallbacks[tok] : '';
   }
-  if (changed) document.body.innerHTML = html;
+
+  let html = document.body.innerHTML;
+  for (const [tok, v] of Object.entries(resolved)) {
+    if (html.includes(tok)) html = html.replaceAll(tok, esc(v));
+  }
+  document.body.innerHTML = html;
+
+  // Drop any claim whose source wasn't supplied. Order matters: the DOM was just rebuilt.
+  const drop = sel => document.querySelectorAll(sel).forEach(el => el.remove());
+  if (isProspect && !get('tagline')) drop('[data-tagline-claim]');
+  if (isProspect && !get('years'))   drop('[data-years-claim]');
+
+  if (phMode) {
+    // Rating claim in the hero badge -> neutral fact already true of the page.
+    document.querySelectorAll('[data-rev-claim]').forEach(el => { el.textContent = '24/7 dispatch · '; });
+    // Google score badge -> unfilled slot, not a number.
+    const gb = document.querySelector('[data-gbadge]');
+    if (gb) {
+      gb.classList.add('is-ph');
+      gb.innerHTML = '<span class="score">★</span><div class="cap">Your Google rating<br>lands here</div>';
+    }
+    // Testimonials -> clearly-marked sample cards.
+    const grid = document.querySelector('[data-rev-grid]');
+    if (grid) {
+      const biz = get('name');
+      const copy = [
+        'Your real Google reviews appear here — pulled straight from your profile and kept current.',
+        'Every new review lands on the site automatically. Nothing to copy over, nothing to maintain.',
+        'The ones that need a reply get flagged to your phone before they cost you a job.'
+      ];
+      grid.innerHTML = copy.map(t =>
+        `<div class="rev is-ph"><span class="rev-tag">Sample</span><p>${esc(t)}</p>` +
+        `<div class="by"><b>${esc(biz)}</b>Placeholder — not a real review</div></div>`
+      ).join('');
+    }
+  }
+
   const name = get('name') || fallbacks['{{BUSINESS_NAME}}'];
   const city = get('city') || fallbacks['{{CITY}}'];
   document.title = `${name} — 24/7 Towing & Roadside, ${city} FL`;
