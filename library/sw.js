@@ -1,6 +1,8 @@
-/* The Library — static build service worker. Bump CACHE on every deploy
-   or the phone keeps serving the old app and your change never appears. */
-const CACHE = "library-static-v1";
+/* The Library — static build service worker.
+   CACHE is stamped from the build content, so it changes whenever the app
+   does. Bumping it by hand was the step everyone forgets, and forgetting it
+   means the phone silently keeps serving the old app. */
+const CACHE = "library-static-7cf583ee94";
 const SHELL = ["./", "./index.html", "./manifest.webmanifest",
                "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
 
