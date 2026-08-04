@@ -1,0 +1,1680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0b0b0c">
+<title>The Library</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+  /* ------------------------------------------------------------------ */
+  /* The Library, mobile. A lamplit reading room, not a media app.      */
+  /* Ink #0b0b0c · panels #131316/#18181b · hairlines #27272a/#3f3f46   */
+  /* Amber #f59e0b · bright #fcd34d · brass #c9a86a                     */
+  /* Paper #0d0c0a · paper text #e8dfcd/#d8c8a6                         */
+  /* ------------------------------------------------------------------ */
+  *{box-sizing:border-box}
+  html{height:100%}
+  body{
+    margin:0;height:100dvh;overflow:hidden;
+    background:#0b0b0c;color:#d6d3d1;
+    font-family:-apple-system,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:16px;line-height:1.45;
+    -webkit-tap-highlight-color:transparent;
+    -webkit-font-smoothing:antialiased;
+    -webkit-text-size-adjust:100%;
+  }
+  img{max-width:100%}
+  button{font-family:inherit;color:inherit}
+  :root{color-scheme:dark}
+
+  /* ---- screens: three stacked scroll containers, one visible -------- */
+  .screen{
+    position:fixed;top:0;left:0;right:0;
+    bottom:calc(60px + env(safe-area-inset-bottom,0px));
+    overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+    visibility:hidden;
+  }
+  .screen.on{visibility:visible}
+  .wrap{max-width:560px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 20px) 16px 36px}
+
+  /* ---- bottom nav ---------------------------------------------------- */
+  #tabbar{
+    position:fixed;left:0;right:0;bottom:0;z-index:40;
+    display:flex;height:calc(60px + env(safe-area-inset-bottom,0px));
+    padding-bottom:env(safe-area-inset-bottom,0px);
+    background:rgba(11,11,12,.96);border-top:1px solid #1c1c1f;
+    -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  }
+  .tab{
+    flex:1;min-height:44px;border:none;background:none;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    color:#71717a;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  }
+  .tab svg{width:21px;height:21px}
+  .tab.on{color:#fcd34d}
+  .tab:active{opacity:.65}
+
+  /* ---- shared bits ---------------------------------------------------- */
+  .kicker{font-family:Georgia,"Times New Roman",serif;font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:#c9a86a}
+  .h1{font-family:Georgia,"Times New Roman",serif;font-size:26px;line-height:1.2;font-weight:700;color:#e8dfcd;margin:6px 0 0}
+  .sub{font-family:Georgia,"Times New Roman",serif;font-style:italic;font-size:13px;color:#78716c;margin-top:5px}
+  .axis-label{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#a8a29e;margin:22px 0 0}
+  .axis-label.brass{color:#c9a86a}
+
+  .pill{display:inline-flex;align-items:center;border-radius:9999px;padding:1px 8px;font-size:10px;font-weight:700;letter-spacing:.02em;line-height:1.7;white-space:nowrap}
+  .pill-calm{background:rgba(12,74,110,.35);color:#7dd3fc}
+  .pill-confront{background:rgba(136,19,55,.35);color:#fda4af}
+  .pill-fuel{background:rgba(120,53,15,.35);color:#fcd34d}
+
+  .clamp2{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+
+  .thumbbox{position:relative;display:block;overflow:hidden;background:linear-gradient(160deg,#161310,#221e17)}
+  .thumbbox img{width:100%;height:100%;object-fit:cover;display:block}
+  .thumbbox.noimg img{display:none}
+  .tglyph{position:absolute;inset:0;display:none;align-items:center;justify-content:center;font-family:Georgia,"Times New Roman",serif;font-size:26px;color:#c9a86a;opacity:.65}
+  .thumbbox.noimg .tglyph,.thumbbox.nothumb .tglyph{display:flex}
+  .badge{position:absolute;right:6px;bottom:6px;border-radius:6px;background:rgba(9,9,11,.85);color:#e7e5e4;font-size:11px;font-weight:600;padding:2px 6px;line-height:1.2;z-index:2}
+  .check{position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:9999px;background:rgba(9,9,11,.8);color:#fbbf24;display:flex;align-items:center;justify-content:center;font-size:12px;z-index:2}
+
+  /* ---- Today ----------------------------------------------------------- */
+  .glow{position:absolute;top:-130px;left:50%;transform:translateX(-50%);width:430px;height:300px;
+        background:radial-gradient(closest-side,rgba(245,158,11,.07),transparent);pointer-events:none}
+  #screen-today .wrap{position:relative}
+  .today-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  #sound-slot:empty{display:none}
+  .sound-btn{width:44px;height:44px;border-radius:10px;border:1px solid #27272a;background:rgba(19,19,22,.7);
+             color:#a8a29e;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
+  .sound-btn.on{border-color:rgba(245,158,11,.45);color:#fcd34d;background:rgba(245,158,11,.12)}
+  .sound-btn:active{opacity:.7}
+
+  .dcard{
+    display:block;width:100%;text-align:left;margin-top:16px;padding:0;cursor:pointer;
+    background:#131316;border:1px solid #1f1f23;border-radius:14px;overflow:hidden;
+    transition:transform .12s ease,background .12s ease;
+  }
+  .dcard:active{transform:scale(.985);background:#18181b}
+  .dcard > span{display:block}
+  .cbar{height:2px}
+  .cbar-calm{background:rgba(125,211,252,.5)}
+  .cbar-confront{background:rgba(251,113,133,.55)}
+  .cbar-fuel{background:rgba(245,158,11,.55)}
+  .dthumb{aspect-ratio:16/9}
+  .dbody{padding:12px 14px 15px}
+  .metarow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0}
+  .mmeta{font-size:11px;font-weight:600;color:#78716c;letter-spacing:.04em;white-space:nowrap}
+  .dtitle{display:block;font-family:Georgia,"Times New Roman",serif;font-size:19px;line-height:1.3;font-weight:700;color:#e8dfcd;margin-top:8px}
+  .dchan{display:block;font-size:12px;color:#a8a29e;margin-top:3px}
+  .dwhy{display:block;font-family:Georgia,"Times New Roman",serif;font-style:italic;font-size:14px;line-height:1.5;color:rgba(214,197,163,.6);margin-top:8px}
+  .dcard.finished{opacity:.55}
+
+  .fin{margin:40px 0 6px;text-align:center}
+  .fin-orn{font-size:17px;color:#c9a86a;opacity:.6}
+  .fin-rule{width:56px;height:1px;background:#27272a;margin:12px auto 0}
+  .fin-text{font-family:Georgia,"Times New Roman",serif;font-style:italic;font-size:13px;color:#78716c;margin-top:12px;line-height:1.6}
+
+  /* ---- Browse ----------------------------------------------------------- */
+  .charge-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:9px}
+  .charge-btn{
+    min-height:78px;border-radius:12px;border:1px solid #27272a;background:#131316;cursor:pointer;
+    display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;
+    padding:10px 11px;color:#a1a1aa;text-align:left;transition:background .12s ease;
+  }
+  .charge-btn:active{opacity:.75}
+  .cdot{width:7px;height:7px;border-radius:9999px;display:inline-block;margin-right:6px;flex:none}
+  .cdot-calm{background:#7dd3fc}
+  .cdot-confront{background:#fda4af}
+  .cdot-fuel{background:#fcd34d}
+  .cname{font-size:14px;font-weight:700;color:#d6d3d1;display:flex;align-items:center}
+  .chint{font-size:10.5px;color:#71717a;line-height:1.3}
+  .ccount{font-size:10px;color:#57534e;font-weight:600;margin-top:2px}
+  .charge-btn.on-calm{background:rgba(12,74,110,.26);border-color:rgba(125,211,252,.5)}
+  .charge-btn.on-calm .cname,.charge-btn.on-calm .chint,.charge-btn.on-calm .ccount{color:#7dd3fc}
+  .charge-btn.on-confront{background:rgba(136,19,55,.26);border-color:rgba(253,164,175,.5)}
+  .charge-btn.on-confront .cname,.charge-btn.on-confront .chint,.charge-btn.on-confront .ccount{color:#fda4af}
+  .charge-btn.on-fuel{background:rgba(120,53,15,.28);border-color:rgba(252,211,77,.5)}
+  .charge-btn.on-fuel .cname,.charge-btn.on-fuel .chint,.charge-btn.on-fuel .ccount{color:#fcd34d}
+
+  .chip-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:9px}
+  .fchip{
+    min-height:48px;border-radius:10px;border:1px solid #27272a;background:transparent;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+    color:#a1a1aa;padding:6px 4px;
+  }
+  .fchip:active{opacity:.7}
+  .fchip .fname{font-size:12.5px;font-weight:700}
+  .fchip .fhint{font-size:10px;color:#71717a}
+  .fchip.on{border-color:rgba(245,158,11,.45);background:rgba(245,158,11,.10)}
+  .fchip.on .fname,.fchip.on .fhint{color:#fcd34d}
+
+  .resultline{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:22px;min-height:24px}
+  .rcount{font-family:Georgia,"Times New Roman",serif;font-style:italic;font-size:13px;color:#78716c}
+  .clearbtn{border:none;background:none;color:#c9a86a;font-size:12px;font-weight:600;cursor:pointer;min-height:44px;padding:0 4px}
+  .clearbtn:active{opacity:.6}
+
+  .shelf{margin-top:10px}
+  .shelf-head{display:flex;align-items:baseline;gap:8px;padding:10px 0 2px;min-height:24px}
+  .shelf-name{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#d6d3d1}
+  .shelf-count{font-size:11px;color:#57534e;font-weight:600}
+  .shelf-rule{flex:1;height:1px;background:#1c1c1f;align-self:center}
+
+  .row{
+    display:flex;gap:12px;align-items:center;width:100%;min-height:44px;padding:8px 0;
+    background:none;border:none;border-bottom:1px solid #131316;text-align:left;cursor:pointer;
+  }
+  .row:active{background:#131316}
+  .row > span{display:block}
+  .rthumb{width:100px;aspect-ratio:16/9;border-radius:8px;flex:none}
+  .rthumb .badge{font-size:10px;padding:1px 5px;right:4px;bottom:4px}
+  .rthumb .tglyph{font-size:18px}
+  .rbody{flex:1;min-width:0}
+  .rtitle{font-family:Georgia,"Times New Roman",serif;font-size:14px;line-height:1.35;font-weight:700;color:#e7e0d0}
+  .rmeta{display:flex;align-items:center;gap:7px;margin-top:4px;flex-wrap:wrap}
+  .rsub{font-size:11px;color:#78716c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:14ch}
+  .row.finished .rtitle{color:#78716c}
+
+  .morebtn{
+    display:flex;align-items:center;justify-content:center;width:100%;min-height:44px;margin-top:2px;
+    border:none;background:none;color:#c9a86a;font-size:12px;font-weight:600;letter-spacing:.04em;cursor:pointer;
+  }
+  .morebtn:active{opacity:.6}
+  .noresult{font-family:Georgia,"Times New Roman",serif;font-style:italic;color:#78716c;font-size:14px;margin-top:26px;text-align:center;line-height:1.7}
+
+  /* ---- Journal ----------------------------------------------------------- */
+  .stat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:18px}
+  .stat{background:#131316;border:1px solid #1f1f23;border-radius:12px;padding:12px 8px;text-align:center}
+  .stat-n{font-family:Georgia,"Times New Roman",serif;font-size:24px;font-weight:700;color:#e8dfcd;line-height:1.1}
+  .stat-l{font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#78716c;margin-top:4px}
+  .daystrip{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+  .day{width:16px;height:16px;border-radius:4px;background:#141416;border:1px solid #1f1f23;flex:none}
+  .day.hit{background:rgba(245,158,11,.75);border-color:rgba(245,158,11,.75)}
+  .day.today{border-color:#c9a86a}
+  .honesty{font-family:Georgia,"Times New Roman",serif;font-style:italic;font-size:12px;color:#78716c;margin-top:8px}
+  .quizline{font-size:12px;color:#a8a29e;margin-top:16px;line-height:1.6}
+  .quizline b{color:#fcd34d;font-weight:700}
+
+  .pagecard{
+    display:block;width:100%;text-align:left;cursor:pointer;margin-top:10px;
+    background:linear-gradient(160deg,#151310,#191612);border:1px solid #2e2a24;border-radius:12px;padding:13px 14px;
+  }
+  .pagecard:active{opacity:.8}
+  .pagecard > span{display:block}
+  .pg-title{font-family:Georgia,"Times New Roman",serif;font-size:15px;line-height:1.35;font-weight:700;color:#e8dfcd}
+  .pg-snip{font-family:Georgia,"Times New Roman",serif;font-style:italic;font-size:13px;line-height:1.5;color:rgba(214,197,163,.55);margin-top:6px}
+  .pg-meta{font-size:10.5px;color:#78716c;margin-top:8px;font-weight:600}
+  .j-empty{text-align:center;margin-top:44px}
+  .nudge{font-size:12px;color:#78716c;margin-top:14px;font-style:italic;font-family:Georgia,"Times New Roman",serif}
+
+  /* ---- Paper: the full-screen reading/watching view ---------------------- */
+  #paper{
+    position:fixed;inset:0;z-index:60;background:#0d0c0a;visibility:hidden;
+    transform:translateY(102%);
+    transition:transform .3s cubic-bezier(.32,.72,.28,1),visibility 0s .3s;
+  }
+  #paper.open{visibility:visible;transform:none;transition:transform .3s cubic-bezier(.32,.72,.28,1)}
+  #paper-scroll{height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+  .paperbar{
+    position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:calc(env(safe-area-inset-top,0px) + 8px) 14px 8px;
+    background:rgba(13,12,10,.92);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(216,200,166,.08);
+  }
+  .paper-label{font-family:Georgia,"Times New Roman",serif;font-style:italic;font-size:12px;color:rgba(214,197,163,.5);
+               white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  #save-ind{opacity:0;transition:opacity .3s;font-size:11px;color:rgba(245,158,11,.75);font-style:italic;
+            font-family:Georgia,"Times New Roman",serif;flex:none;margin-left:auto;padding-right:8px}
+  .close-btn{
+    min-width:64px;min-height:44px;flex:none;border-radius:10px;cursor:pointer;
+    border:1px solid rgba(216,200,166,.16);background:rgba(24,22,18,.6);
+    color:#d8c8a6;font-size:13px;font-weight:600;
+  }
+  .close-btn:active{opacity:.7}
+
+  .notebook{max-width:640px;margin:0 auto;padding:16px 18px calc(90px + env(safe-area-inset-bottom,0px));color:#e6dfcd}
+  .stage{aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000;border:1px solid rgba(216,200,166,.08)}
+  .stage iframe{width:100%;height:100%;border:0;display:block}
+  .arthero{aspect-ratio:16/9;border-radius:12px}
+  .open-art{
+    display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;margin-top:12px;
+    border:1px solid rgba(245,158,11,.4);border-radius:10px;background:rgba(245,158,11,.10);
+    color:#fcd34d;font-weight:600;font-size:14px;text-decoration:none;
+  }
+  .open-art:active{opacity:.7}
+
+  .nb-title{font-family:Georgia,"Times New Roman",serif;font-size:22px;line-height:1.3;font-weight:700;color:#ece4d2;margin-top:16px}
+  .nb-meta{font-size:12px;color:rgba(214,197,163,.55);margin-top:5px}
+  .nb-tags{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:9px}
+  .nb-tag{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#78716c}
+  .nb-why{font-family:Georgia,"Times New Roman",serif;font-style:italic;color:rgba(214,197,163,.6);font-size:14px;line-height:1.55;margin-top:11px}
+
+  .finish{
+    width:100%;min-height:48px;margin-top:18px;border-radius:10px;cursor:pointer;
+    border:1px solid #3f3f46;background:rgba(24,24,27,.5);color:#e4e4e7;font-weight:600;font-size:14px;
+  }
+  .finish:active{opacity:.7}
+  .finish.done{border-color:rgba(245,158,11,.45);color:#fcd34d;background:rgba(245,158,11,.10)}
+
+  .nb-label{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,158,11,.7);margin:34px 0 0}
+  .habit{border:1px solid rgba(216,200,166,.14);border-radius:12px;padding:14px;background:rgba(22,19,15,.5);margin-top:10px}
+  .habit-title{font-family:Georgia,"Times New Roman",serif;font-size:17px;font-weight:700;color:#e8dfcd}
+  .habit-line{font-size:14px;line-height:1.65;color:#e9e2d0;margin-top:8px}
+  .habit-line .arrow{color:rgba(245,158,11,.7)}
+  .habit-days{font-size:12px;color:rgba(214,197,163,.55);margin-top:6px}
+  .habit-why{font-family:Georgia,"Times New Roman",serif;font-style:italic;font-size:13px;color:rgba(214,197,163,.55);margin-top:8px;line-height:1.5}
+  .habit-btns{display:flex;gap:8px;margin-top:12px}
+  .hbtn{flex:1;min-height:44px;border-radius:9px;border:1px solid #3f3f46;background:rgba(24,24,27,.5);
+        color:#e4e4e7;font-size:13px;font-weight:600;cursor:pointer}
+  .hbtn:active{opacity:.7}
+  .hbtn.take.on{border-color:rgba(245,158,11,.45);color:#fcd34d;background:rgba(245,158,11,.12)}
+  .habit-mark{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#fcd34d;margin-top:12px}
+
+  .q-block{margin-top:22px}
+  .q-frame{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(214,197,163,.45)}
+  .q-frame .qn{color:#fcd34d;margin-right:7px}
+  .q-text{font-family:Georgia,"Times New Roman",serif;font-size:15.5px;line-height:1.45;font-weight:700;color:#d8c8a6;margin-top:3px}
+  .q-progress{font-size:11px;color:rgba(214,197,163,.45);margin-top:14px;font-style:italic;font-family:Georgia,"Times New Roman",serif}
+
+  /* Ruled writing surfaces. No borders, no background boxes — the ruling
+     is the affordance. Text sits on a 34px rhythm so lines stay true. */
+  .ruled{
+    min-height:69px;line-height:34px;font-size:16px;color:#e9e2d0;margin-top:4px;
+    background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 33px,rgba(216,200,166,.14) 33px,rgba(216,200,166,.14) 34px);
+    background-attachment:local;
+    outline:none;border:none;padding:0 2px;caret-color:#f59e0b;word-break:break-word;white-space:pre-wrap;
+  }
+  .ruled:empty::before{content:attr(data-ph);color:rgba(214,197,163,.3);font-style:italic}
+
+  /* The journal: ONE sheet of ruled paper. The ruling lives on the sheet,
+     headings are pre-printed onto the same lines, and the writing areas are
+     transparent so everything shares a single continuous rule. */
+  .sheet{
+    position:relative;margin-top:10px;padding:0 2px 34px 18px;
+    background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 33px,rgba(216,200,166,.14) 33px,rgba(216,200,166,.14) 34px);
+  }
+  .sheet::before{content:"";position:absolute;left:7px;top:0;bottom:0;width:1px;background:rgba(201,168,106,.22)}
+  .sheet-h{
+    font-family:Georgia,"Times New Roman",serif;font-size:16px;font-weight:700;color:#d8c8a6;
+    letter-spacing:.03em;line-height:34px;margin:0;
+  }
+  .sheet-line{
+    line-height:34px;font-size:16px;color:#e9e2d0;min-height:68px;
+    outline:none;border:none;background:transparent;padding:0;margin:0;
+    caret-color:#f59e0b;word-break:break-word;white-space:pre-wrap;
+  }
+  .sheet-line:empty::before{content:attr(data-ph);color:rgba(214,197,163,.3);font-style:italic}
+
+  .offline{padding:60px 24px;text-align:center;font-family:Georgia,"Times New Roman",serif;font-style:italic;color:#78716c;line-height:1.8}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{transition-duration:.01ms !important;animation:none !important}
+  }
+</style>
+<!-- library:data:start -->
+<script>
+/* Generated by design/inject.py on 2026-08-03. Do not hand-edit. */
+window.ITEMS = [{"id":"nZNKnlfwuI8","medium":"video","title":"Everything changes when you stop playing it safe","channel":"Alastair","duration":491,"views":155796,"weight":"quick","shelf":"momentum","charge":"confront","why":"The cost of the safe choice, told through people who took the other one.","thumb":"https://i.ytimg.com/vi/nZNKnlfwuI8/mqdefault.jpg","url":"https://www.youtube.com/watch?v=nZNKnlfwuI8","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"JX-8-IYhQKk","medium":"video","title":"Finding Something to Live and Die For | The Philosophy of Viktor Frankl","channel":"Einzelgänger","duration":917,"views":2141418,"weight":"standard","shelf":"philosophy","charge":"calm","why":"Frankl on meaning as the thing that survives suffering.","thumb":"https://i.ytimg.com/vi/JX-8-IYhQKk/mqdefault.jpg","url":"https://www.youtube.com/watch?v=JX-8-IYhQKk","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"dzShYCq-AmY","medium":"video","title":"You have to show your mind that you are now a different version of yourself.","channel":"Kinzer Mind and Body","duration":1061,"views":56735,"weight":"standard","shelf":"mind","charge":"fuel","why":"Identity change as evidence you show your own brain, not a feeling you wait for.","thumb":"https://i.ytimg.com/vi/dzShYCq-AmY/mqdefault.jpg","url":"https://www.youtube.com/watch?v=dzShYCq-AmY","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"a3afI692X1Q","medium":"video","title":"how side-quest maxxing changed my life","channel":"mainstone.","duration":1245,"views":97303,"weight":"standard","shelf":"momentum","charge":"fuel","why":"Yakutsk at -56F. One odd decision compounding into a different life.","thumb":"https://i.ytimg.com/vi/a3afI692X1Q/mqdefault.jpg","url":"https://www.youtube.com/watch?v=a3afI692X1Q","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"8ne-_jl5ZdM","medium":"video","title":"The Desire to Be Great","channel":"Final Somow","duration":1348,"views":751034,"weight":"standard","shelf":"philosophy","charge":"confront","why":"What the desire to be great actually costs the person who has it.","thumb":"https://i.ytimg.com/vi/8ne-_jl5ZdM/mqdefault.jpg","url":"https://www.youtube.com/watch?v=8ne-_jl5ZdM","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"AA7xvq6amIo","medium":"video","title":"How to actually fkn get unstuck (the hard way)","channel":"Cru Mahoney","duration":975,"views":7347,"weight":"standard","shelf":"mind","charge":"confront","why":"Getting unstuck without the comfortable version of the advice.","thumb":"https://i.ytimg.com/vi/AA7xvq6amIo/mqdefault.jpg","url":"https://www.youtube.com/watch?v=AA7xvq6amIo","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"uszzQLl52q4","medium":"video","title":"You are one decision away from a different life","channel":"Alastair","duration":482,"views":92840,"weight":"quick","shelf":"momentum","charge":"fuel","why":"Stan Lee, Bob Ross, Virgil. The one risk that reroutes everything.","thumb":"https://i.ytimg.com/vi/uszzQLl52q4/mqdefault.jpg","url":"https://www.youtube.com/watch?v=uszzQLl52q4","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"eXQ3VVRuy1I","medium":"video","title":"how to *quickly* escape a dopamine hole","channel":"Newel of Knowledge ","duration":998,"views":1971653,"weight":"standard","shelf":"mind","charge":"confront","why":"Stop digging. Denial of pleasure, then hitting pause. The dopamine-hole exit.","thumb":"https://i.ytimg.com/vi/eXQ3VVRuy1I/mqdefault.jpg","url":"https://www.youtube.com/watch?v=eXQ3VVRuy1I","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"0KHvXrq0gT8","medium":"video","title":"Why Everyone Is Living The Same Life","channel":"Mikey Posada","duration":1362,"views":1250579,"weight":"standard","shelf":"mind","charge":"confront","why":"Why the algorithm flattened everyone into the same life. Brainrot as a monoculture.","thumb":"https://i.ytimg.com/vi/0KHvXrq0gT8/mqdefault.jpg","url":"https://www.youtube.com/watch?v=0KHvXrq0gT8","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"T6_rs_Qf_6A","medium":"video","title":"how to reinvent yourself in 90 days to become rich as f*ck","channel":"Mark Builds Brands","duration":4184,"views":370240,"weight":"deep","shelf":"momentum","charge":"fuel","why":"Long-form identity rebuild. Law of GOYA, stoic sparring, internal locus of control.","thumb":"https://i.ytimg.com/vi/T6_rs_Qf_6A/mqdefault.jpg","url":"https://www.youtube.com/watch?v=T6_rs_Qf_6A","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"TEZd4aUIFno","medium":"video","title":"How to Build Delusional Self-Belief","channel":"Jett Franzen","duration":1228,"views":214235,"weight":"standard","shelf":"mind","charge":"fuel","why":"Self-belief built on purpose instead of waiting to earn it.","thumb":"https://i.ytimg.com/vi/TEZd4aUIFno/mqdefault.jpg","url":"https://www.youtube.com/watch?v=TEZd4aUIFno","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"tqF1u-15amM","medium":"video","title":"everything you want comes when you stop forcing it","channel":"David Bayer","duration":1191,"views":357406,"weight":"standard","shelf":"mind","charge":"calm","why":"The case that forcing outcomes is what blocks them.","thumb":"https://i.ytimg.com/vi/tqF1u-15amM/mqdefault.jpg","url":"https://www.youtube.com/watch?v=tqF1u-15amM","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"tGotid-jjw4","medium":"video","title":"The Stoicism of Uncle Iroh","channel":"Master Samwise","duration":1034,"views":53307,"weight":"standard","shelf":"philosophy","charge":"calm","why":"Iroh as a stoicism primer. Learn how to live, from a tea guy.","thumb":"https://i.ytimg.com/vi/tGotid-jjw4/mqdefault.jpg","url":"https://www.youtube.com/watch?v=tGotid-jjw4","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"inP320Vi6SM","medium":"video","title":"Walden: Nature, Modernity and Solitude","channel":"Horse Jaw","duration":1497,"views":26236,"weight":"standard","shelf":"philosophy","charge":"calm","why":"Thoreau on solitude and modernity. The original anti-feed argument.","thumb":"https://i.ytimg.com/vi/inP320Vi6SM/mqdefault.jpg","url":"https://www.youtube.com/watch?v=inP320Vi6SM","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"9bHM-mhgQyk","medium":"video","title":"Be a Loser - The Philosophy of Henry David Thoreau","channel":"Pursuit of Wonder","duration":622,"views":2434706,"weight":"quick","shelf":"philosophy","charge":"confront","why":"Thoreau again: losing on purpose at a game you never agreed to play.","thumb":"https://i.ytimg.com/vi/9bHM-mhgQyk/mqdefault.jpg","url":"https://www.youtube.com/watch?v=9bHM-mhgQyk","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"GQBRqVn0Qpw","medium":"video","title":"The Burned Knowledge of Alexandria's Library","channel":"Luke Reagan","duration":2174,"views":1388740,"weight":"standard","shelf":"world","charge":"calm","why":"What burned with Alexandria, and what that says about what we keep.","thumb":"https://i.ytimg.com/vi/GQBRqVn0Qpw/mqdefault.jpg","url":"https://www.youtube.com/watch?v=GQBRqVn0Qpw","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"Fq7UeUg7YAM","medium":"video","title":"how to become so mentally healthy people lowkey think ur on brain steroids","channel":"Newel of Knowledge ","duration":1880,"views":540545,"weight":"standard","shelf":"mind","charge":"fuel","why":"Mood follows action. Wake up, do solids for your future self.","thumb":"https://i.ytimg.com/vi/Fq7UeUg7YAM/mqdefault.jpg","url":"https://www.youtube.com/watch?v=Fq7UeUg7YAM","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"SONBovrPRsU","medium":"video","title":"I don't belong, I never did...","channel":"Truly Seen","duration":482,"views":418675,"weight":"quick","shelf":"mind","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/SONBovrPRsU/mqdefault.jpg","url":"https://www.youtube.com/watch?v=SONBovrPRsU","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"Z-wmgfGG4fo","medium":"video","title":"going analog cured my brain (it really is the damn phone)","channel":"Notes From Slavy","duration":879,"views":99612,"weight":"quick","shelf":"mind","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/Z-wmgfGG4fo/mqdefault.jpg","url":"https://www.youtube.com/watch?v=Z-wmgfGG4fo","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"N1l3XDta1FU","medium":"video","title":"why you care too much","channel":"WuckaSpeaks","duration":866,"views":1563799,"weight":"quick","shelf":"mind","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/N1l3XDta1FU/mqdefault.jpg","url":"https://www.youtube.com/watch?v=N1l3XDta1FU","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"CnufavbVmTc","medium":"video","title":"How to Teach Yourself Anything (The Self-Study Blueprint)","channel":"The Study Coach - Tom Vorselen","duration":945,"views":300899,"weight":"standard","shelf":"craft","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/CnufavbVmTc/mqdefault.jpg","url":"https://www.youtube.com/watch?v=CnufavbVmTc","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"jpLp7NdsbOI","medium":"video","title":"The Most Valuable 40 Minutes You’ll Hear Today","channel":"Motivation2Study","duration":2513,"views":1042097,"weight":"deep","shelf":"mind","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/jpLp7NdsbOI/mqdefault.jpg","url":"https://www.youtube.com/watch?v=jpLp7NdsbOI","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"bPd9NnOzx78","medium":"video","title":"Accelerate Learning & Increase Cognitive Capacity | Dr. Tommy Wood","channel":"Andrew Huberman","duration":9686,"views":181927,"weight":"deep","shelf":"mind","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/bPd9NnOzx78/mqdefault.jpg","url":"https://www.youtube.com/watch?v=bPd9NnOzx78","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"VnAQVQNkEho","medium":"video","title":"The Darkest Thinker Who Understood Your Soul | Dostoevsky vs Nietzsche","channel":"Abyss Poet","duration":256,"views":7,"weight":"quick","shelf":"philosophy","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/VnAQVQNkEho/mqdefault.jpg","url":"https://www.youtube.com/watch?v=VnAQVQNkEho","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"PdDUYLXpwOU","medium":"video","title":"Why Nobody Will Listen To You Anymore.. Not Even Friends Or Family","channel":"terryjoeljunior","duration":1595,"views":22227,"weight":"standard","shelf":"mind","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/PdDUYLXpwOU/mqdefault.jpg","url":"https://www.youtube.com/watch?v=PdDUYLXpwOU","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"X02i1PqULHI","medium":"video","title":"The LIE That Keeps You Burned Out: Why Your Productivity Shame Is a Trap","channel":"Productive Patty","duration":5327,"views":3,"weight":"deep","shelf":"mind","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/X02i1PqULHI/mqdefault.jpg","url":"https://www.youtube.com/watch?v=X02i1PqULHI","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"76PzE22igls","medium":"video","title":"1 hour of advice that will change your life","channel":"solace","duration":5612,"views":263048,"weight":"deep","shelf":"momentum","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/76PzE22igls/mqdefault.jpg","url":"https://www.youtube.com/watch?v=76PzE22igls","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"8eRGkQPVB58","medium":"video","title":"How Detachment Leads to Greatness I Meister Eckhart","channel":"The Temporal Nomad","duration":3146,"views":23019,"weight":"deep","shelf":"philosophy","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/8eRGkQPVB58/mqdefault.jpg","url":"https://www.youtube.com/watch?v=8eRGkQPVB58","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"PU2u14XdgBc","medium":"video","title":"Become a Monster.","channel":"Be Invictus","duration":2366,"views":95962,"weight":"standard","shelf":"momentum","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/PU2u14XdgBc/mqdefault.jpg","url":"https://www.youtube.com/watch?v=PU2u14XdgBc","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"ucwnfFzlDWw","medium":"video","title":"The Death of an Innocent","channel":"Horses ","duration":3415,"views":892865,"weight":"deep","shelf":"culture","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/ucwnfFzlDWw/mqdefault.jpg","url":"https://www.youtube.com/watch?v=ucwnfFzlDWw","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"QWvujD_4QtA","medium":"video","title":"Train Your Mind to RESPOND, Not REACT | Stoic Philosophy","channel":"Stoic Journal","duration":1216,"views":778897,"weight":"standard","shelf":"philosophy","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/QWvujD_4QtA/mqdefault.jpg","url":"https://www.youtube.com/watch?v=QWvujD_4QtA","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"Fpzi9mBOyUo","medium":"video","title":"Ego Death","channel":"Jules","duration":3755,"views":605075,"weight":"deep","shelf":"mind","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/Fpzi9mBOyUo/mqdefault.jpg","url":"https://www.youtube.com/watch?v=Fpzi9mBOyUo","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"_5X9qRrAeHY","medium":"video","title":"How to Read Hard Books","channel":"Odysseas","duration":467,"views":110746,"weight":"quick","shelf":"craft","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/_5X9qRrAeHY/mqdefault.jpg","url":"https://www.youtube.com/watch?v=_5X9qRrAeHY","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"QTq0HP9EGqk","medium":"video","title":"The Quiet Death of Human Potential","channel":"Silent Psyche","duration":1726,"views":48,"weight":"standard","shelf":"momentum","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/QTq0HP9EGqk/mqdefault.jpg","url":"https://www.youtube.com/watch?v=QTq0HP9EGqk","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"xL77Py39JQA","medium":"video","title":"how to achieve anything effortlessly","channel":"Daniel Barada","duration":1883,"views":649846,"weight":"standard","shelf":"momentum","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/xL77Py39JQA/mqdefault.jpg","url":"https://www.youtube.com/watch?v=xL77Py39JQA","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"H2AqYcIHtOE","medium":"video","title":"How to Trick Your Monkey Brain Into Liking Hard Things (Dopamine Detox)","channel":"Brain Decode and Zyra ","duration":573,"views":67,"weight":"quick","shelf":"mind","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/H2AqYcIHtOE/mqdefault.jpg","url":"https://www.youtube.com/watch?v=H2AqYcIHtOE","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"XjwOtY38l2A","medium":"video","title":"The privilege of chasing your dreams","channel":"Verse Creates","duration":410,"views":400582,"weight":"quick","shelf":"momentum","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/XjwOtY38l2A/mqdefault.jpg","url":"https://www.youtube.com/watch?v=XjwOtY38l2A","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"61rmMkEdySM","medium":"video","title":"The cost of greatness","channel":"Verse Creates","duration":482,"views":388706,"weight":"quick","shelf":"momentum","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/61rmMkEdySM/mqdefault.jpg","url":"https://www.youtube.com/watch?v=61rmMkEdySM","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"woXoP3UB8Ss","medium":"video","title":"We're All Lost In Translation | Video Essay","channel":"Stevekonno","duration":1134,"views":42664,"weight":"standard","shelf":"culture","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/woXoP3UB8Ss/mqdefault.jpg","url":"https://www.youtube.com/watch?v=woXoP3UB8Ss","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"EwTUM9cFeSo","medium":"video","title":"Why don't movies look like *movies* anymore?","channel":"Patrick Tomasso","duration":475,"views":5047135,"weight":"quick","shelf":"culture","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/EwTUM9cFeSo/mqdefault.jpg","url":"https://www.youtube.com/watch?v=EwTUM9cFeSo","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"VImdAIIewiA","medium":"video","title":"Imagine being 22 while the world is collapsing","channel":"Ashley Embers","duration":2309,"views":574444,"weight":"standard","shelf":"culture","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/VImdAIIewiA/mqdefault.jpg","url":"https://www.youtube.com/watch?v=VImdAIIewiA","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"VCyYwmmAnIY","medium":"video","title":"The Philosophy of a Mind That Destroys Itself: The Ouroboros Trap","channel":"Mind's Paradox","duration":2007,"views":384023,"weight":"standard","shelf":"philosophy","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/VCyYwmmAnIY/mqdefault.jpg","url":"https://www.youtube.com/watch?v=VCyYwmmAnIY","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"9xEYNVbjmVo","medium":"video","title":"The Right To Be Forgotten","channel":"Void Productions","duration":1850,"views":113991,"weight":"standard","shelf":"culture","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/9xEYNVbjmVo/mqdefault.jpg","url":"https://www.youtube.com/watch?v=9xEYNVbjmVo","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"wmDoUa4f-NM","medium":"video","title":"Our Consumer Society","channel":"Then & Now","duration":5067,"views":2773980,"weight":"deep","shelf":"culture","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/wmDoUa4f-NM/mqdefault.jpg","url":"https://www.youtube.com/watch?v=wmDoUa4f-NM","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"LCpF7z4JszE","medium":"video","title":"Our Culture is Eating Itself","channel":"Solar Sands","duration":2400,"views":2613901,"weight":"standard","shelf":"culture","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/LCpF7z4JszE/mqdefault.jpg","url":"https://www.youtube.com/watch?v=LCpF7z4JszE","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"H18o9JcGVwQ","medium":"video","title":"How to shift your identity (for success)","channel":"Reodan Nathan ","duration":663,"views":3863,"weight":"quick","shelf":"momentum","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/H18o9JcGVwQ/mqdefault.jpg","url":"https://www.youtube.com/watch?v=H18o9JcGVwQ","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"8uoJNv9ufjM","medium":"video","title":"Why Nothing Feels Exciting Anymore","channel":"Johnny Harris","duration":2318,"views":3563200,"weight":"standard","shelf":"mind","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/8uoJNv9ufjM/mqdefault.jpg","url":"https://www.youtube.com/watch?v=8uoJNv9ufjM","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"RoldOz5YyAw","medium":"video","title":"Why The Movies Don't Feel The Same Anymore","channel":"Thomas Flight","duration":3694,"views":1267123,"weight":"deep","shelf":"culture","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/RoldOz5YyAw/mqdefault.jpg","url":"https://www.youtube.com/watch?v=RoldOz5YyAw","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"Nkg1uIXZwko","medium":"video","title":"The Psychology of Deep Thinkers - Carl Jung","channel":"Queen","duration":3014,"views":867799,"weight":"deep","shelf":"mind","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/Nkg1uIXZwko/mqdefault.jpg","url":"https://www.youtube.com/watch?v=Nkg1uIXZwko","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"prlXA___43I","medium":"video","title":"What David Lynch's diet can teach us about creativity","channel":"Lofi Cinema","duration":536,"views":557438,"weight":"quick","shelf":"culture","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/prlXA___43I/mqdefault.jpg","url":"https://www.youtube.com/watch?v=prlXA___43I","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"bzSliqJ5Q9Q","medium":"video","title":"Why Marty Supreme is a Modern American Epic | Video Essay","channel":"Midnight Showing","duration":979,"views":91383,"weight":"standard","shelf":"culture","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/bzSliqJ5Q9Q/mqdefault.jpg","url":"https://www.youtube.com/watch?v=bzSliqJ5Q9Q","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"reV4QdwD1PM","medium":"video","title":"The Art of Doing Less and Achieving More","channel":"Luca Sacchetto","duration":326,"views":401689,"weight":"quick","shelf":"momentum","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/reV4QdwD1PM/mqdefault.jpg","url":"https://www.youtube.com/watch?v=reV4QdwD1PM","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"nkqxmUj1yRg","medium":"video","title":"Perfect Days: The Power of No Mind","channel":"Tim Thoughts","duration":1005,"views":607919,"weight":"standard","shelf":"philosophy","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/nkqxmUj1yRg/mqdefault.jpg","url":"https://www.youtube.com/watch?v=nkqxmUj1yRg","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"O5axQ_yy3MA","medium":"video","title":"how to read critically in the age of bad media literacy","channel":"The Book Leo","duration":2360,"views":620070,"weight":"standard","shelf":"craft","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/O5axQ_yy3MA/mqdefault.jpg","url":"https://www.youtube.com/watch?v=O5axQ_yy3MA","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"LoQlvVTrA_g","medium":"video","title":"Write Notes Like Joan Didion","channel":"Josephine","duration":480,"views":708864,"weight":"quick","shelf":"craft","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/LoQlvVTrA_g/mqdefault.jpg","url":"https://www.youtube.com/watch?v=LoQlvVTrA_g","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"yYtWqBfllu4","medium":"video","title":"How to Unlock Your Creative Genius","channel":"byRolands","duration":373,"views":623835,"weight":"quick","shelf":"craft","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/yYtWqBfllu4/mqdefault.jpg","url":"https://www.youtube.com/watch?v=yYtWqBfllu4","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"iAqbBr4hF38","medium":"video","title":"I’m 35, a failure in society’s eyes, but the happiest man ever","channel":"Paul Yu","duration":1107,"views":465948,"weight":"standard","shelf":"culture","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/iAqbBr4hF38/mqdefault.jpg","url":"https://www.youtube.com/watch?v=iAqbBr4hF38","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"IDDg0UDWCzg","medium":"video","title":"The Most Overwhelming Feeling in The World.","channel":"Voided Thoughts","duration":877,"views":168573,"weight":"quick","shelf":"mind","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/IDDg0UDWCzg/mqdefault.jpg","url":"https://www.youtube.com/watch?v=IDDg0UDWCzg","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"6vpCO3BxIjk","medium":"video","title":"Why nothing feels real anymore...","channel":"Ashley Embers","duration":1798,"views":267378,"weight":"standard","shelf":"mind","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/6vpCO3BxIjk/mqdefault.jpg","url":"https://www.youtube.com/watch?v=6vpCO3BxIjk","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"uy24YeJutSM","medium":"video","title":"Man Who Masters His Temptations Masters His Fate","channel":"BHATT","duration":3114,"views":260093,"weight":"deep","shelf":"mind","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/uy24YeJutSM/mqdefault.jpg","url":"https://www.youtube.com/watch?v=uy24YeJutSM","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"BAGzJExrMvU","medium":"video","title":"I used to hate running. Now I haven’t missed a run in 2,964 days","channel":"Cru Mahoney","duration":991,"views":3501,"weight":"standard","shelf":"momentum","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/BAGzJExrMvU/mqdefault.jpg","url":"https://www.youtube.com/watch?v=BAGzJExrMvU","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"p8c0EX3nOgY","medium":"video","title":"Why Almost Nobody Gets The Life They Want - Jett Franzen","channel":"Podcast Summaries","duration":692,"views":89,"weight":"quick","shelf":"momentum","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/p8c0EX3nOgY/mqdefault.jpg","url":"https://www.youtube.com/watch?v=p8c0EX3nOgY","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"0wz88RNDMos","medium":"video","title":"You make a long car ride less miserable by realizing there is no where else to be. ","channel":"Kinzer Mind and Body","duration":1217,"views":10263,"weight":"standard","shelf":"philosophy","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/0wz88RNDMos/mqdefault.jpg","url":"https://www.youtube.com/watch?v=0wz88RNDMos","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"Gj_X0xNtnCc","medium":"video","title":"Sleeping With Your Phone Is Slowly Killing You","channel":"Brainiac","duration":319,"views":413203,"weight":"quick","shelf":"mind","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/Gj_X0xNtnCc/mqdefault.jpg","url":"https://www.youtube.com/watch?v=Gj_X0xNtnCc","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"88lgZ2anf7A","medium":"video","title":"growing up is strange","channel":"Finn Whitaker","duration":841,"views":227174,"weight":"quick","shelf":"culture","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/88lgZ2anf7A/mqdefault.jpg","url":"https://www.youtube.com/watch?v=88lgZ2anf7A","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"CEgBI8_R9l8","medium":"video","title":"Mishima, Bodybuilding & Greek Sculpture","channel":"Russell Walter","duration":1026,"views":552875,"weight":"standard","shelf":"culture","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/CEgBI8_R9l8/mqdefault.jpg","url":"https://www.youtube.com/watch?v=CEgBI8_R9l8","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"W1CqXLuMsYc","medium":"video","title":"Self-Transformation","channel":"Queen","duration":3678,"views":133009,"weight":"deep","shelf":"momentum","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/W1CqXLuMsYc/mqdefault.jpg","url":"https://www.youtube.com/watch?v=W1CqXLuMsYc","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"4LIoO3_inug","medium":"video","title":"Dead Poets Society changed my life","channel":"Antonio Norvelle","duration":938,"views":357,"weight":"standard","shelf":"culture","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/4LIoO3_inug/mqdefault.jpg","url":"https://www.youtube.com/watch?v=4LIoO3_inug","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"DrNHttO4MxM","medium":"video","title":"How to Read Hard Books (and actually understand them)","channel":"Unsolicited advice","duration":2089,"views":447060,"weight":"standard","shelf":"craft","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/DrNHttO4MxM/mqdefault.jpg","url":"https://www.youtube.com/watch?v=DrNHttO4MxM","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"P6ByXqqE37M","medium":"video","title":"if you can relate to this... you're on the right path","channel":"Notorious Nicco","duration":665,"views":28996,"weight":"quick","shelf":"momentum","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/P6ByXqqE37M/mqdefault.jpg","url":"https://www.youtube.com/watch?v=P6ByXqqE37M","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"vtQ5zAcnhhU","medium":"video","title":"Nah, da Vinci Was Literally A Lunatic","channel":"goblish","duration":810,"views":1376445,"weight":"quick","shelf":"craft","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/vtQ5zAcnhhU/mqdefault.jpg","url":"https://www.youtube.com/watch?v=vtQ5zAcnhhU","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"_pZDgL6QMN0","medium":"video","title":"How Different Are Our Inner Monologues?","channel":"Voided Thoughts","duration":528,"views":2336071,"weight":"quick","shelf":"mind","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/_pZDgL6QMN0/mqdefault.jpg","url":"https://www.youtube.com/watch?v=_pZDgL6QMN0","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"cIKjbY2nXfE","medium":"video","title":"Michelangelo - the Greatest Artist of All Time?","channel":"Awaken Wonder","duration":782,"views":302518,"weight":"quick","shelf":"craft","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/cIKjbY2nXfE/mqdefault.jpg","url":"https://www.youtube.com/watch?v=cIKjbY2nXfE","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"zhssPVkzDMY","medium":"video","title":"No amount of esoteric wisdom will fold your laundry for you.","channel":"Kinzer Mind and Body","duration":1070,"views":155636,"weight":"standard","shelf":"philosophy","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/zhssPVkzDMY/mqdefault.jpg","url":"https://www.youtube.com/watch?v=zhssPVkzDMY","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"SzzOq-6IZlY","medium":"video","title":"Why we choose to isolate ourselves.","channel":"Zaytheyapper","duration":683,"views":8469,"weight":"quick","shelf":"mind","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/SzzOq-6IZlY/mqdefault.jpg","url":"https://www.youtube.com/watch?v=SzzOq-6IZlY","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"-tqV4KGkzcQ","medium":"video","title":"The 1% Think Differently. Here's How.","channel":"Bygone Philosophy","duration":900,"views":23609,"weight":"standard","shelf":"momentum","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/-tqV4KGkzcQ/mqdefault.jpg","url":"https://www.youtube.com/watch?v=-tqV4KGkzcQ","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"2HCmv6aDYbQ","medium":"video","title":"Journal like a Renaissance Philosopher","channel":"ParkNotes","duration":1568,"views":597251,"weight":"standard","shelf":"craft","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/2HCmv6aDYbQ/mqdefault.jpg","url":"https://www.youtube.com/watch?v=2HCmv6aDYbQ","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"sbIAoCHliu4","medium":"video","title":"The Only 8 Minutes You Need to Succeed.","channel":"HisChapter","duration":513,"views":220785,"weight":"quick","shelf":"momentum","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/sbIAoCHliu4/mqdefault.jpg","url":"https://www.youtube.com/watch?v=sbIAoCHliu4","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"GteRElF533Q","medium":"video","title":"Aristotle's guide to the good life | Nicomachean Ethics","channel":"Jared Henderson","duration":1759,"views":766132,"weight":"standard","shelf":"philosophy","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/GteRElF533Q/mqdefault.jpg","url":"https://www.youtube.com/watch?v=GteRElF533Q","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"B7yr4WfDKiY","medium":"video","title":"Reading and the art of conversation ","channel":"Woanderings","duration":1766,"views":384685,"weight":"standard","shelf":"craft","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/B7yr4WfDKiY/mqdefault.jpg","url":"https://www.youtube.com/watch?v=B7yr4WfDKiY","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"Z_v7QNh0t9A","medium":"video","title":"“If I were not Alexander, then I should wish to be Diogenes\"","channel":"Agora","duration":1207,"views":55660,"weight":"standard","shelf":"philosophy","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/Z_v7QNh0t9A/mqdefault.jpg","url":"https://www.youtube.com/watch?v=Z_v7QNh0t9A","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"Td93HqdRjqY","medium":"video","title":"You Should Always Be Drunk, In Love, or Psychotic","channel":"Heaven Sent Honey","duration":1443,"views":82082,"weight":"standard","shelf":"philosophy","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/Td93HqdRjqY/mqdefault.jpg","url":"https://www.youtube.com/watch?v=Td93HqdRjqY","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"PK2SMIOHYig","medium":"video","title":"The Answer is Not a Hut in the Woods","channel":"exurb2a","duration":2786,"views":6493198,"weight":"deep","shelf":"philosophy","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/PK2SMIOHYig/mqdefault.jpg","url":"https://www.youtube.com/watch?v=PK2SMIOHYig","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"RkSIKCs8eNE","medium":"video","title":"everything makes sense if you surf and hike","channel":"mainstone.","duration":1771,"views":326481,"weight":"standard","shelf":"philosophy","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/RkSIKCs8eNE/mqdefault.jpg","url":"https://www.youtube.com/watch?v=RkSIKCs8eNE","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"q6MvZXq5hqw","medium":"video","title":"Stop using your emotional intelligence to be miserable. ","channel":"Kinzer Mind and Body and Profound Pondering","duration":4177,"views":39537,"weight":"deep","shelf":"mind","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/q6MvZXq5hqw/mqdefault.jpg","url":"https://www.youtube.com/watch?v=q6MvZXq5hqw","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"3kKB6wYqP7Y","medium":"video","title":"being productive is easy, actually","channel":"easy, actually","duration":488,"views":1686422,"weight":"quick","shelf":"momentum","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/3kKB6wYqP7Y/mqdefault.jpg","url":"https://www.youtube.com/watch?v=3kKB6wYqP7Y","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"VyVpnYJlwcY","medium":"video","title":"nobody knows how to talk anymore","channel":"the zurkie show","duration":1261,"views":840563,"weight":"standard","shelf":"culture","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/VyVpnYJlwcY/mqdefault.jpg","url":"https://www.youtube.com/watch?v=VyVpnYJlwcY","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"LDMY7qtOPiI","medium":"video","title":"How to Deal With Loneliness","channel":"Dry Creek Wrangler School","duration":1232,"views":6226559,"weight":"standard","shelf":"mind","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/LDMY7qtOPiI/mqdefault.jpg","url":"https://www.youtube.com/watch?v=LDMY7qtOPiI","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"udcZqVcqYh0","medium":"video","title":"How to explain things so anyone will understand","channel":"Matt Huang","duration":798,"views":66747,"weight":"quick","shelf":"craft","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/udcZqVcqYh0/mqdefault.jpg","url":"https://www.youtube.com/watch?v=udcZqVcqYh0","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"jTRnBwCXptI","medium":"video","title":"The cure to feeling lost in life","channel":"Verse Creates","duration":420,"views":192795,"weight":"quick","shelf":"mind","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/jTRnBwCXptI/mqdefault.jpg","url":"https://www.youtube.com/watch?v=jTRnBwCXptI","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"gnLYNrSPIwg","medium":"video","title":"The Fear of Living a Mediocre Life","channel":"Malik Peace","duration":2660,"views":403909,"weight":"deep","shelf":"momentum","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/gnLYNrSPIwg/mqdefault.jpg","url":"https://www.youtube.com/watch?v=gnLYNrSPIwg","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"AZkjFXQnPdg","medium":"video","title":"just exist bro","channel":"Ryan Robinson and Donked","duration":579,"views":4248528,"weight":"quick","shelf":"philosophy","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/AZkjFXQnPdg/mqdefault.jpg","url":"https://www.youtube.com/watch?v=AZkjFXQnPdg","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"33MAxhphsvg","medium":"video","title":"let it all burn.","channel":"the zurkie show","duration":1739,"views":38857,"weight":"standard","shelf":"momentum","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/33MAxhphsvg/mqdefault.jpg","url":"https://www.youtube.com/watch?v=33MAxhphsvg","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"3SiQiHl2YyI","medium":"video","title":"Why Gen Z Subconsciously Yearns To Be Medieval Pilgrims","channel":"ThinkingWest","duration":852,"views":75421,"weight":"quick","shelf":"culture","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/3SiQiHl2YyI/mqdefault.jpg","url":"https://www.youtube.com/watch?v=3SiQiHl2YyI","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"pEMgTk5tLD0","medium":"video","title":"Pythagoras | The Most Mysterious Pre-Socratic Philosopher","channel":"Let's Talk Philosophy","duration":521,"views":1325,"weight":"quick","shelf":"philosophy","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/pEMgTk5tLD0/mqdefault.jpg","url":"https://www.youtube.com/watch?v=pEMgTk5tLD0","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"M-ZNKFE4TCo","medium":"video","title":"Who Are You When No One Is Watching?","channel":"Voided Thoughts","duration":590,"views":1008464,"weight":"quick","shelf":"mind","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/M-ZNKFE4TCo/mqdefault.jpg","url":"https://www.youtube.com/watch?v=M-ZNKFE4TCo","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"VP4uRJtIQEM","medium":"video","title":"Why Creative People Can't Stick To One Thing","channel":"David Epstein","duration":1213,"views":366735,"weight":"standard","shelf":"craft","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/VP4uRJtIQEM/mqdefault.jpg","url":"https://www.youtube.com/watch?v=VP4uRJtIQEM","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"nBsHI2bjv6c","medium":"video","title":"The Mind of a Winner","channel":"Bygone Philosophy","duration":550,"views":129372,"weight":"quick","shelf":"momentum","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/nBsHI2bjv6c/mqdefault.jpg","url":"https://www.youtube.com/watch?v=nBsHI2bjv6c","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"sGwNmbdy4fI","medium":"video","title":"Why You Don't Understand What You Read","channel":"Closed Stacks","duration":498,"views":729758,"weight":"quick","shelf":"craft","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/sGwNmbdy4fI/mqdefault.jpg","url":"https://www.youtube.com/watch?v=sGwNmbdy4fI","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"TVpkgokw4YI","medium":"video","title":"you can just do stuff","channel":"Daniel Dalen","duration":4436,"views":147078,"weight":"deep","shelf":"momentum","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/TVpkgokw4YI/mqdefault.jpg","url":"https://www.youtube.com/watch?v=TVpkgokw4YI","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"mHtMvXYy3mU","medium":"video","title":"The most profitable skill of the 21st century (not AI)","channel":"Estelle Richter","duration":561,"views":6437,"weight":"quick","shelf":"money","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/mHtMvXYy3mU/mqdefault.jpg","url":"https://www.youtube.com/watch?v=mHtMvXYy3mU","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"KPR3-cU3IaA","medium":"video","title":"Why We Must Learn to Begin Badly","channel":"Rushal Kadam","duration":253,"views":1780,"weight":"quick","shelf":"momentum","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/KPR3-cU3IaA/mqdefault.jpg","url":"https://www.youtube.com/watch?v=KPR3-cU3IaA","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"Eop2hHoN9qI","medium":"video","title":"coping mechanism: surfing & camping","channel":"mainstone.","duration":976,"views":125100,"weight":"standard","shelf":"philosophy","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/Eop2hHoN9qI/mqdefault.jpg","url":"https://www.youtube.com/watch?v=Eop2hHoN9qI","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"Pk8Sn2JRup8","medium":"video","title":"The Price of Becoming Exceptional (And Why It’s Worth It)","channel":"Val","duration":1534,"views":366932,"weight":"standard","shelf":"momentum","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/Pk8Sn2JRup8/mqdefault.jpg","url":"https://www.youtube.com/watch?v=Pk8Sn2JRup8","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"orQKfIXMiA8","medium":"video","title":"You Need to Be Bored. Here's Why.","channel":"Harvard Business Review and Dr. Arthur Brooks","duration":350,"views":16313198,"weight":"quick","shelf":"mind","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/orQKfIXMiA8/mqdefault.jpg","url":"https://www.youtube.com/watch?v=orQKfIXMiA8","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"0aOrIZrY8XA","medium":"video","title":"How A True Polymath Learns.","channel":"Nic Munoz","duration":1333,"views":335720,"weight":"standard","shelf":"craft","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/0aOrIZrY8XA/mqdefault.jpg","url":"https://www.youtube.com/watch?v=0aOrIZrY8XA","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"VbBW_LEQa5E","medium":"video","title":"how to use neuroplasticity to rewire your brain to do hard things","channel":"jazmrah","duration":1451,"views":43672,"weight":"standard","shelf":"mind","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/VbBW_LEQa5E/mqdefault.jpg","url":"https://www.youtube.com/watch?v=VbBW_LEQa5E","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"EJf_WW53vgg","medium":"video","title":"22 Things to do instead of doomscrolling","channel":"Olga Freckles","duration":788,"views":2142,"weight":"quick","shelf":"mind","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/EJf_WW53vgg/mqdefault.jpg","url":"https://www.youtube.com/watch?v=EJf_WW53vgg","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"myXMKiGjv9o","medium":"video","title":"doomscrolling on top of a mountain","channel":"Bunch of Friends","duration":1209,"views":924045,"weight":"standard","shelf":"mind","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/myXMKiGjv9o/mqdefault.jpg","url":"https://www.youtube.com/watch?v=myXMKiGjv9o","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"Bp0dsuBvw4E","medium":"video","title":"How to Stop Doomscrolling (And What to Do Instead!)","channel":"Psych2Go","duration":317,"views":277492,"weight":"quick","shelf":"mind","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/Bp0dsuBvw4E/mqdefault.jpg","url":"https://www.youtube.com/watch?v=Bp0dsuBvw4E","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"failylROnrY","medium":"video","title":"Stereotype Threat: A Conversation with Claude Steele","channel":"Not In Our School","duration":499,"views":330876,"weight":"quick","shelf":"mind","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/failylROnrY/mqdefault.jpg","url":"https://www.youtube.com/watch?v=failylROnrY","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"Xn0apiHpVtQ","medium":"video","title":"I Invested $45,000 In Alex Hormozi's \"VAM\" Workshop","channel":"Dickie Bush","duration":3404,"views":62017,"weight":"deep","shelf":"money","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/Xn0apiHpVtQ/mqdefault.jpg","url":"https://www.youtube.com/watch?v=Xn0apiHpVtQ","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"JfyXb-TdzQY","medium":"video","title":"The Quiet Grief Of Outgrowing Your Old Self","channel":"Primal Priestess","duration":393,"views":0,"weight":"quick","shelf":"mind","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/JfyXb-TdzQY/mqdefault.jpg","url":"https://www.youtube.com/watch?v=JfyXb-TdzQY","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"-QyTua_Mrhk","medium":"video","title":"How to Stop Assuming and Start Understanding 🌿✨","channel":"Jo Morton-Brown","duration":345,"views":786,"weight":"quick","shelf":"mind","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/-QyTua_Mrhk/mqdefault.jpg","url":"https://www.youtube.com/watch?v=-QyTua_Mrhk","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"dx50rpbhdsA","medium":"video","title":"The 5-hour rule: How to turn a wasted day into a successful one","channel":"EL ASSER","duration":1178,"views":3,"weight":"standard","shelf":"momentum","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/dx50rpbhdsA/mqdefault.jpg","url":"https://www.youtube.com/watch?v=dx50rpbhdsA","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"okHkUIW46ks","medium":"video","title":"How to Remember Everything You Read","channel":"Justin Sung","duration":1572,"views":9861467,"weight":"standard","shelf":"craft","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/okHkUIW46ks/mqdefault.jpg","url":"https://www.youtube.com/watch?v=okHkUIW46ks","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"gKpZnbY8FdM","medium":"video","title":"Why 'good enough' isn't good enough anymore","channel":"Angelo","duration":1416,"views":38185,"weight":"standard","shelf":"momentum","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/gKpZnbY8FdM/mqdefault.jpg","url":"https://www.youtube.com/watch?v=gKpZnbY8FdM","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"2sjVdMW80mo","medium":"video","title":"Let go of your misery","channel":"Accepting the Universe","duration":1446,"views":108234,"weight":"standard","shelf":"mind","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/2sjVdMW80mo/mqdefault.jpg","url":"https://www.youtube.com/watch?v=2sjVdMW80mo","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"ARwUS8Lnn98","medium":"video","title":"When You Stop Explaining Yourself, Everything Changes – Carl Jung","channel":"Psyphoria","duration":1743,"views":1373707,"weight":"standard","shelf":"philosophy","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/ARwUS8Lnn98/mqdefault.jpg","url":"https://www.youtube.com/watch?v=ARwUS8Lnn98","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"13yIfxczLpc","medium":"video","title":"stop being an audience member of your own life","channel":"Ottilie","duration":595,"views":2182331,"weight":"quick","shelf":"momentum","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/13yIfxczLpc/mqdefault.jpg","url":"https://www.youtube.com/watch?v=13yIfxczLpc","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"AgBaU9mmceQ","medium":"video","title":"No Effort is Wasted","channel":"Hank Green","duration":1586,"views":612777,"weight":"standard","shelf":"philosophy","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/AgBaU9mmceQ/mqdefault.jpg","url":"https://www.youtube.com/watch?v=AgBaU9mmceQ","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"1YtG4QmvTkE","medium":"video","title":"you let your mind ruin it","channel":"the zurkie show","duration":1675,"views":47646,"weight":"standard","shelf":"mind","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/1YtG4QmvTkE/mqdefault.jpg","url":"https://www.youtube.com/watch?v=1YtG4QmvTkE","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"yt24N1Awu9E","medium":"video","title":"The Unabomber, Explained","channel":"Horses ","duration":837,"views":2722323,"weight":"quick","shelf":"culture","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/yt24N1Awu9E/mqdefault.jpg","url":"https://www.youtube.com/watch?v=yt24N1Awu9E","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"--3Qi0Z0ASU","medium":"video","title":"One Must Imagine Sisyphus Happy","channel":"vlogbrothers","duration":308,"views":272541,"weight":"quick","shelf":"philosophy","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/--3Qi0Z0ASU/mqdefault.jpg","url":"https://www.youtube.com/watch?v=--3Qi0Z0ASU","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"CztCRRqfFAg","medium":"video","title":"\"The Power Of Knowing What You Want!\"","channel":"YouAreCreators","duration":618,"views":20735,"weight":"quick","shelf":"momentum","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/CztCRRqfFAg/mqdefault.jpg","url":"https://www.youtube.com/watch?v=CztCRRqfFAg","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"OafygLZHOjM","medium":"video","title":"There are no shortcuts to a TRUE transformation","channel":"Coach Michelle Moore","duration":292,"views":64,"weight":"quick","shelf":"momentum","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/OafygLZHOjM/mqdefault.jpg","url":"https://www.youtube.com/watch?v=OafygLZHOjM","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"nKhQLb7HxDw","medium":"video","title":"The privilege of failure","channel":"Verse Creates","duration":481,"views":396568,"weight":"quick","shelf":"momentum","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/nKhQLb7HxDw/mqdefault.jpg","url":"https://www.youtube.com/watch?v=nKhQLb7HxDw","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"7RttMEyYp9s","medium":"video","title":"build a life worth waking up for","channel":"the zurkie show","duration":1928,"views":130283,"weight":"standard","shelf":"momentum","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/7RttMEyYp9s/mqdefault.jpg","url":"https://www.youtube.com/watch?v=7RttMEyYp9s","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"GrdWK-0USDM","medium":"video","title":"The Day You Stop Romanticizing People — Carl Jung","channel":"Jung Thoughts","duration":1350,"views":1399948,"weight":"standard","shelf":"philosophy","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/GrdWK-0USDM/mqdefault.jpg","url":"https://www.youtube.com/watch?v=GrdWK-0USDM","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"vAAO4wN_TSg","medium":"video","title":"How to replace your dopamine addictions with creativity","channel":"Josh Czuba","duration":1069,"views":58894,"weight":"standard","shelf":"mind","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/vAAO4wN_TSg/mqdefault.jpg","url":"https://www.youtube.com/watch?v=vAAO4wN_TSg","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"_kyK3-GRJVQ","medium":"video","title":"Why Good Will Hunting Still Matters","channel":"Broken Glass","duration":853,"views":51590,"weight":"quick","shelf":"culture","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/_kyK3-GRJVQ/mqdefault.jpg","url":"https://www.youtube.com/watch?v=_kyK3-GRJVQ","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"o7TcCr3uRkg","medium":"video","title":"Are You Willing to Pay the Price of Greatness?","channel":"bridges","duration":655,"views":1067582,"weight":"quick","shelf":"momentum","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/o7TcCr3uRkg/mqdefault.jpg","url":"https://www.youtube.com/watch?v=o7TcCr3uRkg","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"BLl3xREFEsY","medium":"video","title":"The fear of being average","channel":"Verse Creates","duration":697,"views":2613442,"weight":"quick","shelf":"momentum","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/BLl3xREFEsY/mqdefault.jpg","url":"https://www.youtube.com/watch?v=BLl3xREFEsY","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"VOjpFa_irgM","medium":"video","title":"Why do you postpone yourself?","channel":"Accepting the Universe","duration":668,"views":1443749,"weight":"quick","shelf":"mind","charge":"confront","why":null,"thumb":"https://i.ytimg.com/vi/VOjpFa_irgM/mqdefault.jpg","url":"https://www.youtube.com/watch?v=VOjpFa_irgM","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"LXvv6CbGg8A","medium":"video","title":"Two Astrophysicists Debate Free Will","channel":"StarTalk","duration":919,"views":5422377,"weight":"standard","shelf":"world","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/LXvv6CbGg8A/mqdefault.jpg","url":"https://www.youtube.com/watch?v=LXvv6CbGg8A","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"O7QRlDrjZvc","medium":"video","title":"How Micro-Adventures May Save Your Creativity & Drive","channel":"Weekend Friend","duration":555,"views":1591226,"weight":"quick","shelf":"craft","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/O7QRlDrjZvc/mqdefault.jpg","url":"https://www.youtube.com/watch?v=O7QRlDrjZvc","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"LfAdmvGgCjQ","medium":"video","title":"Brainrot Isn’t New — History Shows Us How to Beat It","channel":"ThinkingWest","duration":727,"views":391507,"weight":"quick","shelf":"culture","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/LfAdmvGgCjQ/mqdefault.jpg","url":"https://www.youtube.com/watch?v=LfAdmvGgCjQ","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"2sb1fXYMQW0","medium":"video","title":"it’s time to start participating in your own life.","channel":"The Ash Files","duration":657,"views":525316,"weight":"quick","shelf":"momentum","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/2sb1fXYMQW0/mqdefault.jpg","url":"https://www.youtube.com/watch?v=2sb1fXYMQW0","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"GTqLuu5aTLE","medium":"video","title":"The Beauty of Losing Yourself","channel":"Final Somow","duration":1369,"views":562165,"weight":"standard","shelf":"philosophy","charge":"calm","why":null,"thumb":"https://i.ytimg.com/vi/GTqLuu5aTLE/mqdefault.jpg","url":"https://www.youtube.com/watch?v=GTqLuu5aTLE","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"zTsnCOH87Cc","medium":"video","title":"how to become unrecognizable in 180 days (full blueprint)","channel":"Daniel Barada","duration":2252,"views":788226,"weight":"standard","shelf":"momentum","charge":"fuel","why":null,"thumb":"https://i.ytimg.com/vi/zTsnCOH87Cc/mqdefault.jpg","url":"https://www.youtube.com/watch?v=zTsnCOH87Cc","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-neuroscience-of-meaning","medium":"article","title":"The Neuroscience of Meaning: How Meaning Can Change Our Relationship With Anxiety and Depression","channel":"Dr. Rice (Psychologist & Psychoanalyst)","duration":720,"views":null,"weight":"quick","shelf":"mind","charge":"calm","why":"Meaning as a mechanism, not a mood. Written by a practicing analyst.","thumb":"https://substackcdn.com/image/fetch/$s_!iqTm!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F2711c533-eb73-4da9-a5d6-56bb2513d9f0_1200x630.png","url":"https://neurosciencewellness.substack.com/p/the-neuroscience-of-meaning-how-meaning","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-happy-monday","medium":"article","title":"Happy Monday","channel":"Scott's Newsletter","duration":300,"views":null,"weight":"quick","shelf":"momentum","charge":"fuel","why":"One idea, one quote, one question. Weekly reset format.","thumb":"https://substackcdn.com/image/fetch/$s_!-4JS!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F5a1a0dd3-f10d-4b60-9080-370a119d1060_1672x941.png","url":"https://newsletter.scottdclary.com/p/happy-monday-158","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-wasting-your-potential","medium":"article","title":"The art of wasting your potential.","channel":"Better You","duration":480,"views":null,"weight":"quick","shelf":"momentum","charge":"confront","why":"A thousand articles on becoming your best self. This is not one of them.","thumb":"https://substackcdn.com/image/fetch/$s_!8fA-!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F74faf5ac-156b-4969-8051-9c2e934012cc_1200x630.png","url":"https://betteryounotes.substack.com/p/the-art-of-wasting-your-potential","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-the-neuroscience-of-overconsumption-why-more-is-","medium":"article","title":"The Neuroscience of Overconsumption: Why “More” Is Most Often Not Better","channel":"Neuroscience & Wellness","duration":300,"views":0,"weight":"quick","shelf":"mind","charge":"confront","why":"In a world that constantly tells us to buy more, eat more, scroll more, and do more, overconsumption has become the norm.","thumb":"https://substackcdn.com/image/fetch/$s_!ql8n!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F489aaaee-66f2-4d62-a693-ba6d553adb55_736x944.jpeg","url":"https://neurosciencewellness.substack.com/p/the-neuroscience-of-overconsumption","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-how-to-study-like-a-peak-human-the-neuroscience-","medium":"article","title":"How to Study Like a Peak Human: The Neuroscience of Learning","channel":"ixcarus","duration":1140,"views":0,"weight":"standard","shelf":"mind","charge":"fuel","why":"How to exploit your brain's natural learning mechanisms for maximum retention","thumb":"https://substackcdn.com/image/fetch/$s_!K3VU!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F53fbe759-0c6c-4330-ad9a-64f5b1bd5fb9_735x604.jpeg","url":"https://ixcarus.substack.com/p/how-to-study-like-a-peak-human-the","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-the-art-of-a-good-friendship","medium":"article","title":"The Art Of A Good Friendship","channel":"ixcarus","duration":900,"views":0,"weight":"standard","shelf":"mind","charge":"calm","why":"A real friend physically rewires your brain, tells you the truths you don't want to hear, and slowly turns you into a different person without you ever noticing the moment it…","thumb":"https://substackcdn.com/image/fetch/$s_!mO_p!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F4874d8aa-39b9-484d-bece-5cb82ae65496_1681x777.png","url":"https://ixcarus.substack.com/p/the-art-of-a-good-friendship","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-aah-the-machinations-of-life","medium":"article","title":"Aah, the Machinations of Life","channel":"Chris Arnade","duration":1380,"views":0,"weight":"standard","shelf":"philosophy","charge":"calm","why":"Life has been, and always will be, hard, but it is still meaningful, and beautiful","thumb":"https://substackcdn.com/image/fetch/$s_!AZYz!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F78faa5df-3cef-45f5-8f46-8a1bce2805dd_2714x3030.jpeg","url":"https://walkingtheworld.substack.com/p/aah-the-machinations-of-life","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-how-to-write-so-well-people-feel-like-you-re-rea","medium":"article","title":"How to Write So Well People Feel Like You’re Reading Their Mind","channel":"The Solopreneur Blueprint","duration":360,"views":0,"weight":"quick","shelf":"craft","charge":"fuel","why":"The exact structure, hooks, rhythm, and emotional triggers that make readers stay glued to every sentence in 2026.","thumb":"https://substackcdn.com/image/fetch/$s_!kGk4!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Feeb53d07-963a-44e8-be62-672ce1723880_720x480.webp","url":"https://thesolopreneurblueprint.substack.com/p/how-to-make-readers-obsessed-with","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-stop-posting-notes-start-posting-worldview-manif","medium":"article","title":"Stop Posting Notes. Start Posting \"Worldview Manifestos\"","channel":"Tracy Friedlander","duration":480,"views":0,"weight":"quick","shelf":"craft","charge":"fuel","why":"I know it sounds dramatic! But this is how you stand out not just for more views, to build true fans.","thumb":"https://images.unsplash.com/photo-1457369804613-52c61a468e7d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzMDAzMzh8MHwxfHNlYXJjaHwyfHxib29rfGVufDB8fHx8MTc2ODkxNDQwNHww&ixlib=rb-4.1.0&q=80&w=1080","url":"https://secondactstrategist.substack.com/p/stop-posting-notes-start-posting","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-78-free-mit-courses-for-when-you-re-craving-libr","medium":"article","title":"78 Free MIT Courses for When You’re Craving Libraries, Lectures, and Big Ideas","channel":"Kel Rakowski","duration":600,"views":0,"weight":"quick","shelf":"craft","charge":"fuel","why":"summer school is in session and it is free","thumb":"https://substackcdn.com/image/fetch/$s_!zC7U!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fdb2b9f96-6507-468f-9660-7628088edf95_1458x1048.png","url":"https://rakowwwski.substack.com/p/78-free-mit-courses-for-when-youre","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-the-dreadful-delight-of-being-in-your-20s","medium":"article","title":"the dreadful delight of being in your 20s","channel":"janelle☆","duration":180,"views":0,"weight":"quick","shelf":"philosophy","charge":"calm","why":"… be brave enough to let life reveal the answers itself by living fiercely, passionately, fully.","thumb":"https://substackcdn.com/image/fetch/$s_!brA_!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fbec29c02-66f5-474c-b492-8d740bb10434_736x444.jpeg","url":"https://janelledodo.substack.com/p/the-dreadful-delight-of-being-in","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-the-essence-of-the-zettelkasten-method-demystifi","medium":"article","title":"The essence of the Zettelkasten method, demystified.","channel":"Fei-Ling Tseng","duration":420,"views":0,"weight":"quick","shelf":"craft","charge":"fuel","why":"And the reason behind the name of my newsletter","thumb":"https://substackcdn.com/image/fetch/$s_!Bo7O!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F94f0fe75-fbe7-4921-a93e-465aa9022503_1032x567.png","url":"https://feeei.substack.com/p/the-essence-of-the-zettelkasten-method","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-finding-the-best-free-resources-for-your-2025-se","medium":"article","title":"Finding the Best (free) Resources for Your 2025 Self-Study Goals","channel":"Sarah Rae Draws","duration":300,"views":0,"weight":"quick","shelf":"craft","charge":"fuel","why":"A guide to finding the best free online resources for self-studying any subject. How to set learning objectives and find free books, articles, journals, lectures and more.","thumb":"https://substackcdn.com/image/fetch/$s_!AJqN!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fd2e74a27-db20-4c59-9fcd-7eb09456888a_3285x2197.jpeg","url":"https://sarahraedraws.substack.com/p/finding-the-best-free-resources-for","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-resources-i-learn-by-note-taking","medium":"article","title":"Resources I Learn By: Note-Taking","channel":"Jacob Alcott","duration":420,"views":0,"weight":"quick","shelf":"craft","charge":"fuel","why":"A Compilation of resources I’ve used over the years to hone in my note-taking","thumb":"https://images.unsplash.com/photo-1751004865826-58b1d504388c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzMDAzMzh8MHwxfHNlYXJjaHwyNHx8bm90ZSUyMHRha2luZyUyMG9pbCUyMHBhaW50aW5nfGVufDB8fHx8MTc4MTMwNTc3N3ww&ixlib=rb-4.1.0&q=80&w=1080","url":"https://jakealcott.substack.com/p/resources-i-learn-by-note-taking","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-how-to-become-outrageously-sharp-noteswnat-brain","medium":"article","title":"How to Become Outrageously Sharp - NoteswNat | Brain Notes","channel":"Nat","duration":420,"views":0,"weight":"quick","shelf":"mind","charge":"fuel","why":"30 Hobbies and Habits for Thinking Clearly and Making Decisions Confidently","thumb":"https://substackcdn.com/image/fetch/$s_!EYRn!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F9e5149ca-bc3c-49f4-b72f-4eb0ef2b0af2_1456x1048.jpeg","url":"https://noteswnat.substack.com/p/how-to-become-outrageously-sharp","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-the-myth-of-automated-learning","medium":"article","title":"The Myth of Automated Learning","channel":"Nicholas Carr","duration":540,"views":0,"weight":"quick","shelf":"culture","charge":"confront","why":"AI's real threat to education.","thumb":"https://substackcdn.com/image/fetch/$s_!E1AR!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F20a45140-f2a8-44d1-a32c-08aaf26c7257_2236x1318.heic","url":"https://www.newcartographies.com/p/the-myth-of-automated-learning","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-empathy-vs-reciprocity","medium":"article","title":"empathy vs reciprocity","channel":"el gato malo","duration":660,"views":0,"weight":"quick","shelf":"philosophy","charge":"confront","why":"reciprocity's alkahest and the cycle of civilization","thumb":"https://substackcdn.com/image/fetch/$s_!GSEG!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F7959479f-0b37-493b-b094-de20f8555f12_1448x1086.png","url":"https://boriquagato.substack.com/p/empathy-vs-reciprocity","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-how-to-crave-doing-hard-things","medium":"article","title":"how to crave doing hard things","channel":"celine","duration":600,"views":0,"weight":"quick","shelf":"mind","charge":"fuel","why":"the neuroscience of wanting what's difficult, and how to train it","thumb":"https://substackcdn.com/image/fetch/$s_!st30!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F4a6ef7e1-b1fa-42c7-bbf6-c089218cf051_1920x1080.png","url":"https://celinesnotes.substack.com/p/how-to-crave-doing-hard-things","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-how-i-self-study-new-subjects-the-modern-autodid","medium":"article","title":"How I Self-Study New Subjects: The Modern Autodidact System","channel":"Sam Rinko","duration":1440,"views":0,"weight":"standard","shelf":"mind","charge":"fuel","why":"Learn the 7-step process for gaining foundational knowledge in new fields of study, outside of school","thumb":"https://substackcdn.com/image/fetch/$s_!48wG!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F2a745460-8993-4b45-a906-69fcfbe9cff7_2560x1440.jpeg","url":"https://samuelrinko.substack.com/p/how-i-self-study-new-subjects-the","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-how-to-research-anything","medium":"article","title":"How to Research Anything","channel":"Mar","duration":300,"views":0,"weight":"quick","shelf":"craft","charge":"fuel","why":"Most people know how to search. Few know how to investigate.","thumb":"https://substackcdn.com/image/fetch/$s_!nXiw!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F820f068b-17de-4d9f-b333-4ba84a29383c_1920x1080.png","url":"https://queenragmar.substack.com/p/how-to-research-anything","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-15-habits-of-people-who-always-have-something-in","medium":"article","title":"15 Habits of People Who Always Have Something Interesting to Say","channel":"Nat","duration":600,"views":0,"weight":"quick","shelf":"mind","charge":"fuel","why":"The neuroscience of original thought and how to create the conditions for it","thumb":"https://substackcdn.com/image/fetch/$s_!xa53!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F0a007246-2476-46aa-afa4-facf1a795b55_1456x1048.png","url":"https://noteswnat.substack.com/p/15-ways-to-have-more-original-thoughts","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-the-fourth-door","medium":"article","title":"The Fourth Door","channel":"R.S.T.","duration":300,"views":0,"weight":"quick","shelf":"philosophy","charge":"calm","why":"The house advertises no vacancy.","thumb":"https://substackcdn.com/image/fetch/$s_!u4n1!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F8063f9da-419c-4858-b64c-6107bdf3c317_752x1360.jpeg","url":"https://thequietsignall.substack.com/p/the-fourth-door","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-the-busy-person-s-guide-to-a-personal-curriculum","medium":"article","title":"The busy person's guide to a personal curriculum","channel":"Meaghan Green","duration":60,"views":0,"weight":"quick","shelf":"craft","charge":"fuel","why":"Using books you actually want to read and a guided Notion template","thumb":"https://substackcdn.com/image/fetch/$s_!w8DI!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Ff2fb6885-eeee-4fdb-9979-c53164637762_1448x1086.png","url":"https://meaghangreen.substack.com/p/the-busy-persons-guide-to-a-personal","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-tyler-cowen-ai-isn-t-conscious-neither-are-we","medium":"article","title":"Tyler Cowen: AI Isn’t Conscious. Neither Are We.","channel":"Tyler Cowen","duration":180,"views":0,"weight":"quick","shelf":"philosophy","charge":"confront","why":"To understand artificial intelligence, we need to be honest with ourselves: We don’t control—or perceive—very much of what we do.","thumb":"https://substackcdn.com/image/fetch/$s_!hm1t!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fafd3600a-7ee4-464d-9a8c-395845c16da8_1867x2521.jpeg","url":"https://www.thefp.com/p/tyler-cowen-ai-consciousness-myth","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-why-don-t-you-commit-suicide","medium":"article","title":"Why don't you commit suicide?","channel":"Omar Najjarine","duration":480,"views":0,"weight":"quick","shelf":"philosophy","charge":"confront","why":"How to come alive","thumb":"https://substackcdn.com/image/fetch/$s_!sFLg!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F234f2e27-4186-4e4d-ae0d-5b1c6105d45e_936x482.jpeg","url":"https://omarnajjarine.substack.com/p/why-dont-you-commit-suicide","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-this-will-convince-you-to-have-radical-self-beli","medium":"article","title":"this will convince you to have radical self belief","channel":"Erifili Gounari","duration":240,"views":0,"weight":"quick","shelf":"mind","charge":"fuel","why":"exactly how shooting my shot changed my life","thumb":"https://substackcdn.com/image/fetch/$s_!jyOo!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fdaf0963c-27fd-4baa-b66c-a46e50b37fde_1649x1099.png","url":"https://erifili.substack.com/p/this-will-convince-you-to-have-radical","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-the-simple-practice-of-not-making-it-worse","medium":"article","title":"The Simple Practice of Not Making It Worse","channel":"Stoic Journal","duration":420,"views":0,"weight":"quick","shelf":"philosophy","charge":"calm","why":"How Stoicism teaches us to protect the moment before the mind adds more pain to it","thumb":"https://substackcdn.com/image/fetch/$s_!6dTk!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F387751e5-df34-4751-9980-a9edebbf7ff1_1672x941.png","url":"https://drstoicwisdom.substack.com/p/the-simple-practice-of-not-making","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-how-to-create-habits-without-forcing-yourself-ev","medium":"article","title":"How to create habits without forcing yourself - evermuse","channel":"evermuse","duration":300,"views":0,"weight":"quick","shelf":"mind","charge":"fuel","why":"What if the secret to consistency isn't better habits, but more meaningful rituals?","thumb":"https://substackcdn.com/image/fetch/$s_!6M6R!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F08a45470-7250-4ca9-96b1-bd33dd20f5fd_3750x2500.heic","url":"https://evermuse.substack.com/p/how-to-create-habits-without-forcing","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-literally-just-do-things","medium":"article","title":"literally just do things","channel":"Erifili Gounari","duration":360,"views":0,"weight":"quick","shelf":"momentum","charge":"fuel","why":"there will never be a perfect time","thumb":"https://substackcdn.com/image/fetch/$s_!rgcO!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Faaafbb9f-3daa-44b5-842f-a91faaf1ac26_736x500.jpeg","url":"https://erifili.substack.com/p/literally-just-do-things","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-what-would-you-do-if-you-believed-in-yourself-mo","medium":"article","title":"what would you do if you believed in yourself more?","channel":"Erifili Gounari","duration":480,"views":0,"weight":"quick","shelf":"momentum","charge":"fuel","why":"self-belief and personal agency matter more than just about anything else you can cultivate","thumb":"https://substackcdn.com/image/fetch/$s_!rL4d!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F5736e4e1-b018-4b08-b972-0dba62af72d9_1499x999.png","url":"https://erifili.substack.com/p/what-would-you-do-if-you-believed","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-how-to-break-away-from-doomscrolling-without-qui","medium":"article","title":"How to Break Away From Doomscrolling Without Quitting Social Media","channel":"Mapu","duration":360,"views":0,"weight":"quick","shelf":"mind","charge":"fuel","why":"How I managed to reduce my screen time to be more mindful with my life, both on and offline.","thumb":"https://substackcdn.com/image/fetch/$s_!w1wt!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F9d4936dd-5f96-4377-ba78-37cf77229a23_960x1398.jpeg","url":"https://mapuc.substack.com/p/how-to-break-away-from-doomscrolling","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-on-doomscrolling-hobbies-and-choice-paralysis","medium":"article","title":"on doomscrolling, hobbies, and choice paralysis","channel":"ari eclipse","duration":300,"views":0,"weight":"quick","shelf":"mind","charge":"calm","why":"In The Bell Jar there is a section wherein the novel’s narrator relates her many desires to a fruitful fig tree.","thumb":"https://substackcdn.com/image/fetch/$s_!vCo1!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F65a83085-ed26-42e8-a05c-6318b89a68ce_736x736.jpeg","url":"https://musingsoftherainwetearth.substack.com/p/on-doomscrolling-hobbies-and-choice","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}},{"id":"art-how-to-balance-life-while-still-being-human","medium":"article","title":"how to balance life while still being human","channel":"ayushi thakkar","duration":360,"views":0,"weight":"quick","shelf":"philosophy","charge":"calm","why":"balance is usually presented as a matter of arranging life correctly, as though the right calendar could finally persuade work, family, health and personal ambition to take turns.","thumb":"https://substackcdn.com/image/fetch/$s_!4J52!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F35b7ac03-5f7c-4ee0-8c3a-7e7b7da55d80_1199x818.jpeg","url":"https://ayushithakkar.substack.com/p/how-to-balance-life-while-still-being","watched":false,"progress":0,"journal":{"learned":"","matters":"","use":""}}];
+window.DAILY_IDS = ["art-the-art-of-a-good-friendship", "art-finding-the-best-free-resources-for-your-2025-se", "p8c0EX3nOgY"];
+window.DAILY = window.DAILY_IDS
+  .map(id => window.ITEMS.find(v => v.id === id))
+  .filter(Boolean);
+
+/* Journal autosave. Debounced, fire and forget, no-ops when opened as a
+   file:// mockup with no server behind it. */
+(function () {
+  const pending = new Map();
+  window.saveEntry = function (id, journal) {
+    clearTimeout(pending.get(id));
+    pending.set(id, setTimeout(() => {
+      fetch("/api/entry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, journal })
+      }).catch(() => {});
+      const item = window.ITEMS.find(v => v.id === id);
+      if (item) item.journal = Object.assign({}, item.journal, journal);
+    }, 600));
+  };
+})();
+</script>
+<!-- library:data:end -->
+<!-- library:quiz:start -->
+<script>
+/* After-watch check. Generated by quiz.py, do not hand-edit.
+   The design layer renders this and supplies no content of its own. */
+(function () {
+  var BANK = {"mind": [["Name it before you scroll", "When you reach for your phone out of habit", "say out loud what you are actually looking for", 7, "Most scrolling is unnamed. Naming it ends about half of it."], ["One boring walk", "After you finish work for the day", "walk 15 minutes with no phone, no music, no podcast", 7, "Boredom is where the thinking you have been outsourcing comes back."], ["Write the thought down", "When the same worry loops a third time", "write it on paper in one sentence and put the pen down", 14, "A loop runs because it is never finished. Writing finishes it."]], "momentum": [["The two minute start", "When you catch yourself about to postpone", "do two minutes of the thing, then decide", 7, "Starting is the part you are avoiding, not the work."], ["One uncomfortable ask a week", "Every Monday morning", "send one message you would normally talk yourself out of", 30, "The ceiling on most lives is the number of asks made, not talent."], ["Close the day out loud", "Before you shut the laptop", "say the one thing you moved forward today", 14, "Progress you do not notice does not compound into belief."]], "philosophy": [["Ten minutes of nothing", "After you wake up, before any screen", "sit for ten minutes with no input at all", 14, "Most people have never heard themselves think without a feed running."], ["The evening question", "When you get into bed", "ask what you did today that you would defend to someone you respect", 7, "A day you cannot defend is a day you drifted through."], ["Read it twice", "When a paragraph actually lands", "stop and read it again before moving on", 7, "You are not short on material. You are short on second passes."]], "culture": [["Audit the feed", "Every Sunday", "unfollow three accounts that made you feel worse this week", 30, "The feed is a diet. Nobody edits it and everyone complains about it."], ["Consume one thing on purpose", "Before you open any app", "decide the one thing you came for and leave after it", 7, "Intent is the only thing separating using it from being used by it."], ["Say it in your own words", "After finishing anything you liked", "explain it to someone in two sentences", 14, "If you cannot say it plainly you did not take it in, you just enjoyed it."]], "craft": [["One rep a day", "Right after your first coffee", "do 20 minutes on the skill before anything else touches you", 30, "Skill is the most patient thing you own. It only asks for frequency."], ["Keep a mistakes page", "When something you made does not work", "write the mistake and what you would try next", 14, "The notes on failures are worth more than the notes on wins."], ["Copy something good", "Once a week", "reproduce a piece of work you admire, exactly, then note what was hard", 30, "Copying reveals the decisions you cannot see from the outside."]], "world": [["Follow one thread", "When a story catches you", "read the primary source instead of the summary", 14, "Summaries are someone else's judgement wearing the clothes of fact."], ["Explain it to yourself", "After reading anything about how the world works", "write the causal chain in five steps", 7, "If you cannot chain it, you learned a headline and not a mechanism."]], "money": [["Look at the number", "Every Friday", "open the account and look at the real balance for 60 seconds", 30, "Avoidance is the expensive part. The number is rarely the problem."], ["Name the next dollar", "When money comes in", "assign it a job before it sits in the account", 14, "Unassigned money leaves. Assigned money stays."]], "articles": [["One line you keep", "When you finish a piece", "copy out the single sentence you want to keep, by hand", 14, "Highlighting is a way of feeling like you read. Copying is reading."], ["Read it before saving it", "When you want to save something for later", "read the first two paragraphs first, then decide", 7, "A saved list you never open is just a way of postponing the decision."]]};
+  var QUESTIONS = {"steelman": {"confront": "State the strongest version of what this argued, in one sentence, without repeating the speaker's phrasing.", "fuel": "Strip the motivation out. What is the actual claim underneath, stated flatly?", "calm": "Say what this argued in one sentence a skeptic would still agree is a fair summary."}, "evidence": {"confront": "What would you have to see in your own life for this to be true? What would you have to see for it to be false?", "fuel": "This tells you to do something. What evidence is offered that it works, and how good is it?", "calm": "What is this resting on: evidence, an argument, or a mood? Be specific about which."}, "counter-case": {"confront": "Name a real person this advice would actively harm. Who is it wrong for?", "fuel": "Where does this break? Describe the situation where following it makes things worse.", "calm": "What is the strongest objection someone smarter than you would raise here?"}, "self-application": {"confront": "Where is this already true about you and you have been working around it?", "fuel": "Where in your week does this actually fit? Name the day and the hour, not the intention.", "calm": "What in your life does this reframe, and what does it leave exactly as it was?"}, "cost": {"confront": "What does acting on this cost you? Name it in hours, money, or a relationship.", "fuel": "What are you going to stop doing to make room for this? Something has to go.", "calm": "If you took this seriously for a month, what would you lose that you currently like?"}};
+  var SELF_Q = {"self-application": "You wrote \"{q}\". What would have to be true for that to be wrong?", "cost": "You wrote \"{q}\". What is the first week of actually doing that going to cost you?"};
+  var FRAMES = ["steelman", "evidence", "counter-case", "self-application", "cost"];
+  var KEY = "library.quiz.v1";
+
+  var store = {};
+  try { store = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) {}
+
+  var listeners = [];
+  function emit() { listeners.forEach(function (f) { try { f(); } catch (e) {} }); }
+  function persist() {
+    try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {}
+  }
+
+  function hash(s) {
+    var h = 0;
+    /* >>> 0 keeps this unsigned. Plain & yields a SIGNED 32 bit int in JS, which
+       produced a negative index and an undefined habit. */
+    for (var i = 0; i < (s || "").length; i++) {
+      h = ((h * 31 + s.charCodeAt(i)) & 0xFFFFFFFF) >>> 0;
+    }
+    return h >>> 0;
+  }
+
+  function item(id) {
+    return (window.ITEMS || []).filter(function (v) { return v.id === id; })[0];
+  }
+
+  function rec(id) {
+    if (!store[id]) store[id] = { answers: {}, habitAccepted: null };
+    return store[id];
+  }
+
+  var Q = {
+    frames: FRAMES,
+
+    forItem: function (id) {
+      var it = item(id);
+      if (!it) return null;
+      var shelf = it.medium === "article" ? "articles" : (it.shelf || "mind");
+      var pool = BANK[shelf] || BANK.mind;
+      if (!pool || !pool.length) pool = BANK.mind;
+      var hb = pool[hash(id) % pool.length];
+      if (!hb) hb = pool[0];
+
+      var charge = it.charge || "calm";
+      var j = (it.journal || {});
+      var questions = FRAMES.map(function (frame, i) {
+        var text = (QUESTIONS[frame] || {})[charge] || (QUESTIONS[frame] || {}).calm;
+        /* If they have already written something, turn their own line back on
+           them. That beats anything generic. */
+        var self = SELF_Q[frame];
+        if (self) {
+          var src = frame === "cost" ? j.use : j.matters;
+          if (src && src.trim().length > 12) {
+            text = self.replace("{q}", src.trim().slice(0, 110));
+          }
+        }
+        return { n: i + 1, frame: frame, text: text.replace("{t}", it.title) };
+      });
+
+      return {
+        habit: {
+          title: hb[0], trigger: hb[1], action: hb[2], days: hb[3], why: hb[4]
+        },
+        questions: questions
+      };
+    },
+
+    get: function (id) {
+      var r = rec(id);
+      var n = 0;
+      for (var k in r.answers) if ((r.answers[k] || "").trim()) n++;
+      return {
+        habitAccepted: r.habitAccepted,
+        answers: r.answers,
+        answered: n,
+        done: n === FRAMES.length
+      };
+    },
+
+    acceptHabit: function (id) { rec(id).habitAccepted = true; persist(); emit(); },
+    skipHabit: function (id) { rec(id).habitAccepted = false; persist(); emit(); },
+
+    answer: function (id, n, text) {
+      rec(id).answers[n] = text;
+      persist();
+      emit();
+    },
+
+    stats: function () {
+      var watched = 0, answered = 0, accepted = 0;
+      var byShelf = {}, byFrame = {};
+      FRAMES.forEach(function (f) { byFrame[f] = 0; });
+
+      (window.ITEMS || []).forEach(function (v) {
+        var r = store[v.id];
+        if (!r) return;
+        var any = false;
+        FRAMES.forEach(function (f, i) {
+          if ((r.answers[i + 1] || "").trim()) { byFrame[f]++; answered++; any = true; }
+        });
+        if (any) {
+          watched++;
+          byShelf[v.shelf] = (byShelf[v.shelf] || 0) + 1;
+        }
+        if (r.habitAccepted) accepted++;
+      });
+
+      var weakest = null, low = Infinity;
+      FRAMES.forEach(function (f) {
+        if (byFrame[f] < low) { low = byFrame[f]; weakest = f; }
+      });
+
+      return {
+        watched: watched,
+        answered: answered,
+        skipped: Math.max(0, watched * FRAMES.length - answered),
+        habitsAccepted: accepted,
+        byShelf: byShelf,
+        byFrame: byFrame,
+        weakestFrame: watched ? weakest : null
+      };
+    },
+
+    onChange: function (cb) { if (typeof cb === "function") listeners.push(cb); }
+  };
+
+  window.Quiz = Q;
+})();
+</script>
+<!-- library:quiz:end -->
+<!-- library:sound:start -->
+<script>
+/* Soundtrack engine. Generated by sound.py, do not hand-edit.
+   The design layer renders UI against window.Sound and never touches a media
+   element itself. Two players crossfade so a section change never cuts. */
+(function () {
+  var TRACKS = [{"id": "try", "key": "mind", "title": "Try", "artist": "EndOfApril", "shelf": "mind", "confidence": "guess", "available": true, "placeholder": false, "src": "../sounds/mind.m4a", "tiktok": "https://www.tiktok.com/music/Try-7533289206400027394"}, {"id": "biting-bullets", "key": "momentum", "title": "biting bullets", "artist": "ridgeclub", "shelf": "momentum", "confidence": "confident", "available": true, "placeholder": false, "src": "../sounds/momentum.m4a", "tiktok": "https://www.tiktok.com/music/biting-bullets-7657072140283643921"}, {"id": "blueberry", "key": "philosophy", "title": "My Blueberry Life", "artist": "Current Joys", "shelf": "philosophy", "confidence": "confident", "available": true, "placeholder": false, "src": "../sounds/philosophy.m4a", "tiktok": "https://www.tiktok.com/music/My-Blueberry-Life-7028970690499381250"}, {"id": "outro", "key": "craft", "title": "Outro", "artist": "Circa 40", "shelf": "craft", "confidence": "guess", "available": true, "placeholder": false, "src": "../sounds/craft.m4a", "tiktok": "https://www.tiktok.com/music/Outro-7522739442303109136"}, {"id": "blckstvr", "key": "world", "title": "original sound", "artist": "Blckstvr", "shelf": "world", "confidence": "chosen", "available": true, "placeholder": false, "src": "../sounds/world.mp3", "tiktok": "https://www.tiktok.com/music/original-sound-Blckstvr-7660702472322910994"}, {"id": "san", "key": "articles", "title": "original sound", "artist": "san", "shelf": "articles", "confidence": "chosen", "available": true, "placeholder": false, "src": "../sounds/articles.mp3", "tiktok": "https://www.tiktok.com/music/original-sound-7614310177965394691"}, {"id": "cheer", "key": "culture", "title": "original sound", "artist": "cheer", "shelf": "culture", "confidence": "guess", "available": true, "placeholder": false, "src": "../sounds/culture.mp3", "tiktok": "https://www.tiktok.com/music/original-sound-7653535707205503766"}];
+  var SHELVES = ["mind", "momentum", "philosophy", "culture", "craft", "world", "money", "articles"];
+  var KEY = "library.sound.v1";
+
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) {}
+  if (saved.assign) {
+    TRACKS.forEach(function (t) {
+      if (saved.assign[t.id] && SHELVES.indexOf(saved.assign[t.id]) >= 0) {
+        t.shelf = saved.assign[t.id];
+      }
+    });
+  }
+
+  var listeners = [];
+  var FADE = 700;              /* ms, long enough to feel like a room change */
+  var players = [mk(), mk()];  /* two elements so we can crossfade */
+  var active = 0;
+  var ramp = null;
+
+  function mk() {
+    var a = new Audio();
+    a.loop = true;
+    a.preload = "none";
+    a.volume = 0;
+    return a;
+  }
+
+  var S = {
+    tracks: TRACKS,
+    shelves: SHELVES,
+    state: {
+      armed: false,
+      playing: false,
+      current: null,
+      volume: typeof saved.volume === "number" ? saved.volume : 0.35,
+      muted: !!saved.muted,
+      follow: true
+    },
+    onChange: function (cb) { if (typeof cb === "function") listeners.push(cb); }
+  };
+
+  function persist() {
+    var assign = {};
+    TRACKS.forEach(function (t) { assign[t.id] = t.shelf; });
+    try {
+      localStorage.setItem(KEY, JSON.stringify({
+        assign: assign, volume: S.state.volume, muted: S.state.muted
+      }));
+    } catch (e) {}
+  }
+
+  function emit() { listeners.forEach(function (cb) { try { cb(S.state); } catch (e) {} }); }
+
+  function target() { return S.state.muted ? 0 : S.state.volume; }
+
+  function byId(id) {
+    for (var i = 0; i < TRACKS.length; i++) if (TRACKS[i].id === id) return TRACKS[i];
+    return null;
+  }
+
+  /* Ramp both players toward their goals on one timer. Volume only, so this
+     stays cheap and never fights the compositor. */
+  function fadeTo(nextIdx, goal) {
+    if (ramp) cancelAnimationFrame(ramp);
+    var from = [players[0].volume, players[1].volume];
+    var to = [0, 0];
+    to[nextIdx] = goal;
+    var t0 = performance.now();
+
+    (function step(now) {
+      var k = Math.min(1, (now - t0) / FADE);
+      for (var i = 0; i < 2; i++) {
+        var v = from[i] + (to[i] - from[i]) * k;
+        players[i].volume = Math.max(0, Math.min(1, v));
+      }
+      if (k < 1) { ramp = requestAnimationFrame(step); return; }
+      ramp = null;
+      for (var j = 0; j < 2; j++) {
+        if (j !== nextIdx && players[j].volume === 0) {
+          players[j].pause();
+        }
+      }
+    })(t0);
+  }
+
+  function start(track) {
+    if (!track || !track.available || !track.src) return;
+    if (S.state.current === track.id && S.state.playing) return;
+
+    var next = 1 - active;
+    var p = players[next];
+    if (p.getAttribute("data-src") !== track.src) {
+      p.src = track.src;
+      p.setAttribute("data-src", track.src);
+    }
+    p.volume = 0;
+    var go = p.play();
+    if (go && go.catch) {
+      go.catch(function () {
+        /* Blocked because we are not armed yet. Surface it rather than
+           pretending it played. */
+        S.state.playing = false;
+        S.state.armed = false;
+        emit();
+      });
+    }
+    fadeTo(next, target());
+    active = next;
+    S.state.current = track.id;
+    S.state.playing = true;
+    emit();
+  }
+
+  /* 0.05s of silence. Playing a real (silent) buffer during the click is what
+     actually unlocks the element for later programmatic play. Calling play()
+     on an element with no src does not unlock anything and leaves it in a
+     half-started state. */
+  var SILENCE = "data:audio/wav;base64,UklGRjIAAABXQVZFZm10IBAAAAABAAEARKwAAIhY" +
+                "AQACABAAZGF0YQ4AAAAAAAAAAAAAAAAAAAAAAA==";
+
+  /* Pick the track for a shelf name, tolerating the design layer's "__" prefix
+     on its non-shelf sections. */
+  function trackForShelf(shelf) {
+    shelf = String(shelf || "").replace(/^_+/, "");
+    for (var i = 0; i < TRACKS.length; i++) {
+      if (TRACKS[i].shelf === shelf && TRACKS[i].available) return TRACKS[i];
+    }
+    return null;
+  }
+
+  S.arm = function () {
+    if (S.state.armed) return;
+    players.forEach(function (p) {
+      try {
+        if (!p.getAttribute("data-src")) p.src = SILENCE;
+        var go = p.play();
+        if (go && go.then) {
+          go.then(function () {
+            /* Only silence the unlock buffer. If a real track was started in
+               the same gesture, this callback must not stop it. */
+            if (p.src === SILENCE) {
+              p.pause();
+              p.currentTime = 0;
+            }
+          }).catch(function () {});
+        }
+      } catch (e) {}
+    });
+    S.state.armed = true;
+
+    /* Unlocking the elements is not the same as playing something. Without
+       this, arming left playing=false, and S.onSection returns early on
+       !playing, so scrolling never started a track and the whole soundtrack
+       was silent no matter how far you scrolled.
+
+       Start here, inside the same user gesture, which is also the only moment
+       the browser will reliably allow it. */
+    var t = trackForShelf(S._lastShelf) || firstAvailable();
+    if (t) start(t);
+
+    /* _lastShelf can be stale — opening the sound panel is a modal and moves
+       what owns the middle of the viewport, so arming from the top of the page
+       would otherwise start the Articles track. Re-pick now that playing is
+       true, which corrects it to the shelf actually on screen. */
+    if (S._pick) { try { S._pick(); } catch (e) {} }
+
+    emit();
+  };
+
+  function firstAvailable() {
+    for (var i = 0; i < TRACKS.length; i++) {
+      if (TRACKS[i].available) return TRACKS[i];
+    }
+    return null;
+  }
+
+  S.preview = function (id) {
+    var t = byId(id);
+    if (!t) return;
+    S.state.armed = true;
+    start(t);
+  };
+
+  S.stop = function () {
+    if (ramp) cancelAnimationFrame(ramp);
+    ramp = null;
+    players.forEach(function (p) { p.pause(); p.volume = 0; });
+    S.state.playing = false;
+    S.state.current = null;
+    emit();
+  };
+
+  S.assign = function (id, shelf) {
+    var t = byId(id);
+    if (!t || SHELVES.indexOf(shelf) < 0) return;
+    t.shelf = shelf;
+    persist();
+    emit();
+  };
+
+  S.setVolume = function (v) {
+    v = Math.max(0, Math.min(1, Number(v) || 0));
+    S.state.volume = v;
+    if (S.state.muted && v > 0) S.state.muted = false;
+    players[active].volume = target();
+    persist();
+    emit();
+  };
+
+  S.toggleMute = function () {
+    S.state.muted = !S.state.muted;
+    players[active].volume = target();
+    persist();
+    emit();
+  };
+
+  /* Section following. The design layer marks each section with
+     data-shelf; we watch which one owns the middle of the viewport. */
+  S.onSection = function (shelf) {
+    if (!S.state.follow || !S.state.playing) return;
+    /* trackForShelf strips the design layer's "__" prefix on its non-shelf
+       sections, so an assignment of "articles" still lands on "__articles". */
+    var t = trackForShelf(shelf);
+    /* No sound assigned to this section: hold the current one rather than
+       dropping into silence, which reads as a bug. */
+    if (t && t.id !== S.state.current) start(t);
+  };
+
+  S.observe = function (root) {
+    if (!("IntersectionObserver" in window)) return;
+    if (S._io) { S._io.disconnect(); S._io = null; }
+
+    /* data-shelf may sit on a small header button rather than the section box.
+       Watch the enclosing section when there is one, so the crossfade tracks
+       the block you are actually reading and not a 30px header. */
+    var seen = [];
+    var marked = (root || document).querySelectorAll("[data-shelf]");
+    for (var i = 0; i < marked.length; i++) {
+      var node = marked[i];
+      var box = node.closest ? (node.closest("section") || node) : node;
+      var shelf = node.getAttribute("data-shelf");
+      if (!shelf) continue;
+      var dup = false;
+      for (var j = 0; j < seen.length; j++) {
+        if (seen[j].box === box) { dup = true; break; }
+      }
+      if (!dup) seen.push({ box: box, shelf: shelf });
+    }
+    if (!seen.length) return;
+
+    /* A fixed centre band cannot work: the page runs out of scroll before the
+       last section reaches the middle, so Articles could never win and would
+       never get its own sound. Instead the focus line travels down the
+       viewport as you scroll, from near the top at the start to near the
+       bottom at the end, which makes both the first and last section
+       reachable. */
+    function pick() {
+      var vh = window.innerHeight;
+      var max = Math.max(0, document.documentElement.scrollHeight - vh);
+      var y = window.scrollY;
+
+      var boxes = [];
+      for (var i = 0; i < seen.length; i++) {
+        var r = seen[i].box.getBoundingClientRect();
+        if (r.height > 0 && r.bottom > 0 && r.top < vh) {
+          boxes.push({ s: seen[i], r: r });
+        }
+      }
+      if (!boxes.length) return;
+
+      var win;
+      if (max > 0 && y >= max - 4) {
+        /* Bottom of the page. The last sections can never reach the centre,
+           so the last visible one is what you are actually looking at. */
+        win = boxes[boxes.length - 1].s;
+      } else if (y <= 4) {
+        win = boxes[0].s;
+      } else {
+        /* Normal case: whoever owns the middle of the viewport, falling back
+           to the largest slice of it. */
+        var mid = vh * 0.5, hit = null, bestArea = -1, biggest = null;
+        for (var j = 0; j < boxes.length; j++) {
+          var b = boxes[j].r;
+          if (b.top <= mid && b.bottom >= mid) { hit = boxes[j].s; break; }
+          var area = Math.min(b.bottom, vh) - Math.max(b.top, 0);
+          if (area > bestArea) { bestArea = area; biggest = boxes[j].s; }
+        }
+        win = hit || biggest;
+      }
+
+      if (win && win.shelf !== S._lastShelf) {
+        S._lastShelf = win.shelf;
+        S.onSection(win.shelf);
+      }
+    }
+
+    var queued = false;
+    function schedule() {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(function () { queued = false; pick(); });
+    }
+
+    var io = new IntersectionObserver(schedule, { threshold: [0, 0.5, 1] });
+    seen.forEach(function (s) { io.observe(s.box); });
+
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
+
+    S._io = io;
+    S._pick = pick;
+    S._watching = seen.length;
+    schedule();
+  };
+
+  S._players = players;   /* introspection hook for the headless tests */
+  window.Sound = S;
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", function () { S.observe(); });
+  } else {
+    S.observe();
+  }
+})();
+</script>
+<!-- library:sound:end -->
+</head>
+<body>
+
+<section class="screen on" id="screen-today" aria-label="Today">
+  <div class="wrap">
+    <div class="glow"></div>
+    <div class="today-head">
+      <div>
+        <div class="kicker">The Library</div>
+        <h1 class="h1" id="today-greeting">Today&rsquo;s three</h1>
+        <div class="sub" id="today-date"></div>
+      </div>
+      <div id="sound-slot"></div>
+    </div>
+    <div id="today-cards"></div>
+    <div id="today-fin"></div>
+  </div>
+</section>
+
+<section class="screen" id="screen-browse" aria-label="Browse">
+  <div class="wrap">
+    <div class="kicker">The Library</div>
+    <h1 class="h1">The shelves</h1>
+    <div class="sub" id="browse-sub"></div>
+    <div class="axis-label brass">How should it hit?</div>
+    <div class="charge-grid" id="charge-grid"></div>
+    <div class="axis-label">How long have you got?</div>
+    <div class="chip-grid" id="weight-grid"></div>
+    <div class="axis-label">Format</div>
+    <div class="chip-grid" id="medium-grid"></div>
+    <div class="resultline">
+      <span class="rcount" id="result-count"></span>
+      <button class="clearbtn" id="clear-filters" data-action="clear-filters" hidden>Clear filters</button>
+    </div>
+    <div id="browse-results"></div>
+  </div>
+</section>
+
+<section class="screen" id="screen-journal" aria-label="Journal">
+  <div class="wrap">
+    <div class="kicker">The Library</div>
+    <h1 class="h1">The record</h1>
+    <div class="sub">What you finished, and what you left on the page.</div>
+    <div id="journal-body"></div>
+  </div>
+</section>
+
+<nav id="tabbar" aria-label="Sections">
+  <button class="tab on" data-action="tab" data-tab="today" aria-label="Today">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H12v16H6.5A2.5 2.5 0 0 0 4 21z"/>
+      <path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H12v16h5.5a2.5 2.5 0 0 1 2.5 2z"/>
+    </svg>
+    <span>Today</span>
+  </button>
+  <button class="tab" data-action="tab" data-tab="browse" aria-label="Browse">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M4 4v16M9 4v16M14 4v16"/><path d="M17.5 5l3.2 14.6"/><path d="M3 20.5h18"/>
+    </svg>
+    <span>Browse</span>
+  </button>
+  <button class="tab" data-action="tab" data-tab="journal" aria-label="Journal">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M16.5 3.5l4 4L8.5 19.5 3 21l1.5-5.5z"/><path d="M14 6l4 4"/>
+    </svg>
+    <span>Journal</span>
+  </button>
+</nav>
+
+<div id="paper" role="dialog" aria-modal="true" aria-label="Reading view">
+  <div id="paper-scroll">
+    <div class="paperbar">
+      <span class="paper-label" id="paper-kind"></span>
+      <span id="save-ind">Saved.</span>
+      <button class="close-btn" data-action="close-paper">Done</button>
+    </div>
+    <div class="notebook" id="paper-body"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ------------------------------------------------------------------ */
+  /* state                                                                */
+  /* ------------------------------------------------------------------ */
+  var UI = {
+    tab: "today",
+    charge: null, weight: null, medium: null,
+    openShelves: {},
+    paperId: null,
+    journalAll: false
+  };
+
+  var SHELF_ORDER = ["mind", "momentum", "philosophy", "craft", "culture", "world", "money", "unsorted"];
+  var SHELF_CAP = 4;
+  var PAGE_CAP = 8;
+
+  var CHARGES = {
+    calm:     { name: "Calm",     hint: "settle the mind" },
+    confront: { name: "Confront", hint: "face something" },
+    fuel:     { name: "Fuel",     hint: "get moving" }
+  };
+  var WEIGHTS = {
+    quick:    { name: "Quick",    hint: "under 15m" },
+    standard: { name: "Standard", hint: "15–40m" },
+    deep:     { name: "Deep",     hint: "40m and up" }
+  };
+  var MEDIUMS = {
+    "":        { name: "Everything", hint: "both kinds" },
+    "video":   { name: "Video",      hint: "watch" },
+    "article": { name: "Article",    hint: "read" }
+  };
+
+  /* ------------------------------------------------------------------ */
+  /* helpers                                                              */
+  /* ------------------------------------------------------------------ */
+  function $(sel, root) { return (root || document).querySelector(sel); }
+  function items() { return window.ITEMS || []; }
+  function byId(id) {
+    var a = items();
+    for (var i = 0; i < a.length; i++) if (a[i].id === id) return a[i];
+    return null;
+  }
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+  function toHtml(s) { return esc(s).replace(/\n/g, "<br>"); }
+
+  function fmtDur(sec) {
+    sec = sec || 0;
+    var h = Math.floor(sec / 3600), m = Math.round((sec % 3600) / 60);
+    if (h > 0) return h + "h" + (m ? " " + m + "m" : "");
+    return Math.max(1, m) + " min";
+  }
+  function fmtDurShort(sec) {
+    sec = sec || 0;
+    var h = Math.floor(sec / 3600), m = Math.round((sec % 3600) / 60);
+    if (h > 0) return h + "h " + (m ? m + "m" : "");
+    return Math.max(1, m) + "m";
+  }
+  function fmtTotal(sec) {
+    var h = Math.floor(sec / 3600), m = Math.round((sec % 3600) / 60);
+    if (h > 0) return h + "h " + m + "m";
+    return m + "m";
+  }
+  function fmtViews(n) {
+    if (!n) return "";
+    if (n >= 1e6) return (Math.round(n / 1e5) / 10) + "M views";
+    if (n >= 1e3) return Math.round(n / 1e3) + "K views";
+    return n + " views";
+  }
+  function fmtDate(iso) {
+    if (!iso) return "";
+    var d = new Date(iso);
+    if (isNaN(d)) return "";
+    return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  }
+  function hasJournal(v) {
+    var j = v.journal || {};
+    return !!((j.learned || "").trim() || (j.matters || "").trim() || (j.use || "").trim());
+  }
+
+  function thumbHtml(v, cls, glyphOnly) {
+    var glyph = v.medium === "article" ? "¶" : "▸";
+    var inner = "";
+    var box = "thumbbox " + (cls || "");
+    if (v.thumb && !glyphOnly) {
+      inner = '<img src="' + esc(v.thumb) + '" alt="" loading="lazy" ' +
+              'onerror="this.parentNode.classList.add(\'noimg\')">';
+    } else {
+      box += " nothumb";
+    }
+    var badge = v.medium === "article"
+      ? '<span class="badge">' + esc(fmtDurShort(v.duration)) + " read</span>"
+      : '<span class="badge">' + esc(fmtDurShort(v.duration)) + "</span>";
+    var check = v.watched ? '<span class="check">✓</span>' : "";
+    return '<span class="' + box + '">' + inner +
+           '<span class="tglyph">' + glyph + "</span>" + badge + check + "</span>";
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* daily picks: deterministic per calendar day. No reroll anywhere.     */
+  /* ------------------------------------------------------------------ */
+  function fnv(s) {
+    var h = 2166136261;
+    for (var i = 0; i < s.length; i++) {
+      h ^= s.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return h >>> 0;
+  }
+  function todayKey() {
+    var d = new Date();
+    return d.getFullYear() + "-" +
+      String(d.getMonth() + 1).padStart(2, "0") + "-" +
+      String(d.getDate()).padStart(2, "0");
+  }
+  function dailyPicks() {
+    var all = items();
+    /* If the splice layer provided the picks, they are the picks. */
+    if (window.DAILY && window.DAILY.length) {
+      var out = [];
+      for (var i = 0; i < window.DAILY.length; i++) {
+        var d = window.DAILY[i];
+        var id = typeof d === "string" ? d : (d && d.id);
+        var it = byId(id);
+        if (it) out.push(it);
+      }
+      if (out.length) return out.slice(0, 3);
+    }
+    /* Fallback: hash each id against today's date, take the lowest three
+       with distinct shelves and charges, relaxing if the pool is thin. */
+    var key = todayKey();
+    var pool = all.filter(function (v) { return !v.watched; });
+    if (!pool.length) pool = all.slice();
+    var scored = pool.map(function (v) { return { v: v, s: fnv(key + "|" + v.id) }; });
+    scored.sort(function (a, b) { return a.s - b.s || (a.v.id < b.v.id ? -1 : 1); });
+
+    var picks = [], shelves = {}, charges = {};
+    [1, 2, 3].forEach(function (pass) {
+      scored.forEach(function (e) {
+        if (picks.length >= 3 || picks.indexOf(e.v) >= 0) return;
+        if (pass === 1 && (shelves[e.v.shelf] || charges[e.v.charge])) return;
+        if (pass === 2 && shelves[e.v.shelf]) return;
+        picks.push(e.v);
+        shelves[e.v.shelf] = 1;
+        charges[e.v.charge] = 1;
+      });
+    });
+    return picks;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* server writes                                                        */
+  /* ------------------------------------------------------------------ */
+  /* Static build: no server. Persist to the device instead.
+     Kept API-shaped (a promise resolving to a boolean) so callers are
+     unchanged. Entries written here live only on this phone. */
+  var LOCAL_KEY = "library.entries.v1";
+  function localAll() {
+    try { return JSON.parse(localStorage.getItem(LOCAL_KEY) || "{}"); }
+    catch (e) { return {}; }
+  }
+  function postEntry(id, extra) {
+    var all = localAll();
+    var cur = all[id] || {};
+    Object.keys(extra || {}).forEach(function (k) {
+      if (k === "journal") {
+        cur.journal = Object.assign({}, cur.journal, extra.journal);
+      } else {
+        cur[k] = extra[k];
+      }
+    });
+    cur.updated = new Date().toISOString().slice(0, 19);
+    all[id] = cur;
+    try { localStorage.setItem(LOCAL_KEY, JSON.stringify(all)); }
+    catch (e) { return Promise.resolve(false); }
+    var v = byId(id);
+    if (v) Object.assign(v, cur);
+    return Promise.resolve(true);
+  }
+  /* Replay saved entries over the baked catalog on every load, or the phone
+     would show blank journals for things already written on it. */
+  (function () {
+    var all = localAll();
+    (window.ITEMS || []).forEach(function (v) {
+      if (all[v.id]) Object.assign(v, all[v.id]);
+    });
+  })();
+
+  var saveTimer = null, saveHideTimer = null;
+  function queueJournal() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(flushJournal, 800);
+  }
+  function flushJournal() {
+    clearTimeout(saveTimer);
+    saveTimer = null;
+    var id = UI.paperId;
+    if (!id) return;
+    var j = {};
+    ["learned", "matters", "use"].forEach(function (f) {
+      var el = $('.sheet-line[data-field="' + f + '"]');
+      if (el) j[f] = el.innerText.replace(/\u00a0/g, " ").replace(/\n+$/, "");
+    });
+    var v = byId(id);
+    if (v) v.journal = Object.assign({}, v.journal, j);
+    postEntry(id, { journal: j }).then(function (ok) { if (ok) showSaved(); });
+  }
+  function showSaved() {
+    var el = $("#save-ind");
+    if (!el) return;
+    el.style.opacity = "1";
+    clearTimeout(saveHideTimer);
+    saveHideTimer = setTimeout(function () { el.style.opacity = "0"; }, 1600);
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Today                                                                */
+  /* ------------------------------------------------------------------ */
+  function renderToday() {
+    var h = new Date().getHours();
+    $("#today-greeting").textContent =
+      h < 12 ? "This morning’s three" : h < 18 ? "Today’s three" : "Tonight’s three";
+    $("#today-date").textContent = new Date().toLocaleDateString(undefined,
+      { weekday: "long", month: "long", day: "numeric" });
+
+    var picks = dailyPicks();
+    var html = picks.map(function (v) {
+      return '' +
+      '<button class="dcard' + (v.watched ? " finished" : "") + '" data-action="open" data-id="' + esc(v.id) + '">' +
+        '<span class="cbar cbar-' + esc(v.charge) + '"></span>' +
+        thumbHtml(v, "dthumb") +
+        '<span class="dbody">' +
+          '<span class="metarow">' +
+            '<span class="pill pill-' + esc(v.charge) + '">' + esc(v.charge) + "</span>" +
+            '<span class="mmeta">' + esc(v.shelf) + "</span>" +
+            '<span class="mmeta">' + esc(fmtDur(v.duration)) +
+              (v.medium === "article" ? " read" : "") + "</span>" +
+          "</span>" +
+          '<span class="dtitle">' + esc(v.title) + "</span>" +
+          '<span class="dchan">' + esc(v.channel || "") + "</span>" +
+          (v.why ? '<span class="dwhy">' + esc(v.why) + "</span>" : "") +
+        "</span>" +
+      "</button>";
+    }).join("");
+    $("#today-cards").innerHTML = html;
+
+    var done = picks.filter(function (v) { return v.watched; }).length;
+    $("#today-fin").innerHTML =
+      '<div class="fin">' +
+        '<div class="fin-orn">❦</div>' +
+        '<div class="fin-rule"></div>' +
+        '<div class="fin-text">' +
+          (done >= picks.length && picks.length
+            ? "All three finished. Close the app — the shelf restocks at midnight."
+            : "That’s the whole shelf for today.<br>No more after these. It restocks at midnight.") +
+        "</div>" +
+      "</div>";
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Browse                                                               */
+  /* ------------------------------------------------------------------ */
+  function matchesAxes(v, skip) {
+    if (skip !== "charge" && UI.charge && v.charge !== UI.charge) return false;
+    if (skip !== "weight" && UI.weight && v.weight !== UI.weight) return false;
+    if (skip !== "medium" && UI.medium && v.medium !== UI.medium) return false;
+    return true;
+  }
+
+  function renderBrowse() {
+    var all = items();
+    $("#browse-sub").textContent = all.length + " items, chosen by hand. Nothing endless here.";
+
+    /* charge selector: the featured axis */
+    $("#charge-grid").innerHTML = Object.keys(CHARGES).map(function (c) {
+      var n = all.filter(function (v) { return v.charge === c && matchesAxes(v, "charge"); }).length;
+      var on = UI.charge === c;
+      return '<button class="charge-btn' + (on ? " on-" + c : "") + '" data-action="filter-charge" data-value="' + c + '">' +
+        '<span class="cname"><span class="cdot cdot-' + c + '"></span>' + CHARGES[c].name + "</span>" +
+        '<span class="chint">' + CHARGES[c].hint + "</span>" +
+        '<span class="ccount">' + n + "</span>" +
+      "</button>";
+    }).join("");
+
+    $("#weight-grid").innerHTML = Object.keys(WEIGHTS).map(function (w) {
+      var on = UI.weight === w;
+      return '<button class="fchip' + (on ? " on" : "") + '" data-action="filter-weight" data-value="' + w + '">' +
+        '<span class="fname">' + WEIGHTS[w].name + "</span>" +
+        '<span class="fhint">' + WEIGHTS[w].hint + "</span>" +
+      "</button>";
+    }).join("");
+
+    $("#medium-grid").innerHTML = Object.keys(MEDIUMS).map(function (m) {
+      var on = (UI.medium || "") === m;
+      return '<button class="fchip' + (on ? " on" : "") + '" data-action="filter-medium" data-value="' + m + '">' +
+        '<span class="fname">' + MEDIUMS[m].name + "</span>" +
+        '<span class="fhint">' + MEDIUMS[m].hint + "</span>" +
+      "</button>";
+    }).join("");
+
+    var filtered = all.filter(function (v) { return matchesAxes(v); });
+    var total = filtered.reduce(function (s, v) { return s + (v.duration || 0); }, 0);
+    var parts = [];
+    if (UI.charge) parts.push(CHARGES[UI.charge].name.toLowerCase());
+    if (UI.weight) parts.push(WEIGHTS[UI.weight].name.toLowerCase());
+    if (UI.medium) parts.push(UI.medium + (UI.medium === "article" ? "s" : "s"));
+    $("#result-count").textContent = filtered.length + " item" + (filtered.length === 1 ? "" : "s") +
+      " · " + fmtTotal(total) + (parts.length ? " · " + parts.join(", ") : "");
+    $("#clear-filters").hidden = !(UI.charge || UI.weight || UI.medium);
+
+    if (!filtered.length) {
+      $("#browse-results").innerHTML =
+        '<div class="noresult">Nothing on the shelves hits that way.<br>Loosen a filter.</div>';
+      return;
+    }
+
+    var html = "";
+    SHELF_ORDER.forEach(function (shelf) {
+      var group = filtered.filter(function (v) { return (v.shelf || "unsorted") === shelf; });
+      if (!group.length) return;
+      var open = !!UI.openShelves[shelf];
+      var shown = open ? group : group.slice(0, SHELF_CAP);
+      html += '<div class="shelf" data-shelf="' + esc(shelf) + '">' +
+        '<div class="shelf-head">' +
+          '<span class="shelf-name">' + esc(shelf) + "</span>" +
+          '<span class="shelf-count">' + group.length + "</span>" +
+          '<span class="shelf-rule"></span>' +
+        "</div>" +
+        shown.map(rowHtml).join("") +
+        (group.length > SHELF_CAP
+          ? '<button class="morebtn" data-action="shelf-more" data-shelf="' + esc(shelf) + '">' +
+              (open ? "Show fewer" : "All " + group.length + " on this shelf") +
+            "</button>"
+          : "") +
+      "</div>";
+    });
+    $("#browse-results").innerHTML = html;
+
+    /* soundtrack follows the shelf in view, when the engine is spliced in */
+    if (window.Sound && typeof window.Sound.observe === "function") {
+      try { window.Sound.observe(document.getElementById("screen-browse")); } catch (e) {}
+    }
+  }
+
+  function rowHtml(v) {
+    return '<button class="row' + (v.watched ? " finished" : "") + '" data-action="open" data-id="' + esc(v.id) + '">' +
+      thumbHtml(v, "rthumb") +
+      '<span class="rbody">' +
+        '<span class="rtitle clamp2">' + esc(v.title) + "</span>" +
+        '<span class="rmeta">' +
+          '<span class="pill pill-' + esc(v.charge) + '">' + esc(v.charge) + "</span>" +
+          '<span class="rsub">' + esc(fmtDurShort(v.duration)) +
+            (v.medium === "article" ? " read" : "") + "</span>" +
+          '<span class="rsub">' + esc(v.channel || "") + "</span>" +
+        "</span>" +
+      "</span>" +
+    "</button>";
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Journal / progress                                                   */
+  /* ------------------------------------------------------------------ */
+  function renderJournal() {
+    var all = items();
+    var watched = all.filter(function (v) { return v.watched; });
+    var pages = all.filter(hasJournal);
+    var minutes = Math.round(watched.reduce(function (s, v) { return s + (v.duration || 0); }, 0) / 60);
+
+    var html =
+      '<div class="stat-grid">' +
+        '<div class="stat"><div class="stat-n">' + watched.length + '</div><div class="stat-l">Finished</div></div>' +
+        '<div class="stat"><div class="stat-n">' + pages.length + '</div><div class="stat-l">Pages written</div></div>' +
+        '<div class="stat"><div class="stat-n">' + minutes + '</div><div class="stat-l">Minutes taken in</div></div>' +
+      "</div>";
+
+    /* last two weeks, honestly: a filled square is a day something got finished */
+    var hits = {};
+    watched.forEach(function (v) {
+      if (v.watched_at) hits[String(v.watched_at).slice(0, 10)] = true;
+    });
+    var strip = "", today = new Date();
+    for (var i = 13; i >= 0; i--) {
+      var d = new Date(today.getFullYear(), today.getMonth(), today.getDate() - i);
+      var key = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" +
+                String(d.getDate()).padStart(2, "0");
+      strip += '<span class="day' + (hits[key] ? " hit" : "") + (i === 0 ? " today" : "") + '"></span>';
+    }
+    html += '<div class="axis-label">The last two weeks</div>' +
+            '<div class="daystrip">' + strip + "</div>" +
+            '<div class="honesty">A filled square is a day something actually got finished. No grace given.</div>';
+
+    /* the check engine's read on you, when it is spliced in */
+    if (window.Quiz && typeof window.Quiz.stats === "function") {
+      try {
+        var st = window.Quiz.stats();
+        if (st && st.watched > 0) {
+          html += '<div class="quizline">' + st.answered + " answers across " + st.watched +
+            " check" + (st.watched === 1 ? "" : "s") +
+            (st.weakestFrame ? " · you skip <b>" + esc(st.weakestFrame) + "</b> the most" : "") +
+            (st.habitsAccepted ? " · " + st.habitsAccepted + " habit" +
+              (st.habitsAccepted === 1 ? "" : "s") + " taken" : "") +
+            "</div>";
+        }
+      } catch (e) {}
+    }
+
+    var unwritten = watched.filter(function (v) { return !hasJournal(v); }).length;
+    if (unwritten > 0) {
+      html += '<div class="nudge">' + unwritten + " finished without a page. The page is the point.</div>";
+    }
+
+    if (!watched.length && !pages.length) {
+      html += '<div class="j-empty">' +
+        '<div class="fin-orn">❦</div>' +
+        '<div class="fin-text">Nothing in the record yet.<br>Finish one of today’s three and leave a page behind.</div>' +
+      "</div>";
+      $("#journal-body").innerHTML = html;
+      return;
+    }
+
+    if (pages.length) {
+      html += '<div class="axis-label brass" style="margin-top:28px">Pages</div>';
+      var sorted = pages.slice().sort(function (a, b) {
+        return String(b.updated || b.watched_at || "").localeCompare(String(a.updated || a.watched_at || ""));
+      });
+      var shown = UI.journalAll ? sorted : sorted.slice(0, PAGE_CAP);
+      html += shown.map(function (v) {
+        var j = v.journal || {};
+        var snip = (j.learned || j.matters || j.use || "").trim().slice(0, 110);
+        return '<button class="pagecard" data-action="open" data-id="' + esc(v.id) + '">' +
+          '<span class="pg-title">' + esc(v.title) + "</span>" +
+          (snip ? '<span class="pg-snip">“' + esc(snip) + '”</span>' : "") +
+          '<span class="pg-meta">' + esc(v.shelf) + " · " + esc(v.charge) +
+            (v.watched_at ? " · finished " + esc(fmtDate(v.watched_at)) : "") + "</span>" +
+        "</button>";
+      }).join("");
+      if (sorted.length > PAGE_CAP) {
+        html += '<button class="morebtn" data-action="journal-all">' +
+          (UI.journalAll ? "Show fewer" : "All " + sorted.length + " pages") + "</button>";
+      }
+    }
+
+    $("#journal-body").innerHTML = html;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Paper: full-screen reading / watching view                           */
+  /* ------------------------------------------------------------------ */
+  function openPaper(id) {
+    var v = byId(id);
+    if (!v) return;
+    UI.paperId = id;
+
+    $("#paper-kind").textContent =
+      (v.medium === "article" ? "Article" : "Video") + " · " + fmtDur(v.duration) +
+      " · " + (v.shelf || "");
+
+    var html = "";
+    if (v.medium === "video" && v.id) {
+      html += '<div class="stage"><iframe src="https://www.youtube-nocookie.com/embed/' +
+        encodeURIComponent(v.id) + '?rel=0&modestbranding=1&playsinline=1" ' +
+        'title="' + esc(v.title) + '" ' +
+        'allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>';
+    } else {
+      if (v.thumb) html += thumbHtml(v, "arthero", false);
+      html += '<a class="open-art" href="' + esc(v.url) + '" target="_blank" rel="noopener">Open the article ↗</a>';
+    }
+
+    html += '<div class="nb-title">' + esc(v.title) + "</div>";
+    var meta = [];
+    if (v.channel) meta.push(esc(v.channel));
+    var vw = fmtViews(v.views);
+    if (vw) meta.push(esc(vw));
+    if (meta.length) html += '<div class="nb-meta">' + meta.join(" · ") + "</div>";
+    html += '<div class="nb-tags">' +
+      '<span class="pill pill-' + esc(v.charge) + '">' + esc(v.charge) + "</span>" +
+      '<span class="nb-tag">' + esc(v.shelf || "") + "</span>" +
+      '<span class="nb-tag">' + esc(v.weight || "") + "</span>" +
+    "</div>";
+    if (v.why) html += '<div class="nb-why">' + esc(v.why) + "</div>";
+
+    html += '<button class="finish' + (v.watched ? " done" : "") + '" data-action="finish">' +
+      finishLabel(v) + "</button>";
+
+    html += quizHtml(v);
+
+    /* the page: one sheet of ruled paper, headings pre-printed */
+    var j = v.journal || {};
+    html += '<div class="nb-label">The page</div>' +
+      '<div class="sheet">' +
+        '<h2 class="sheet-h">What I learned</h2>' +
+        '<div class="sheet-line" contenteditable="true" data-field="learned" ' +
+          'data-ph="Write it in your own words.">' + toHtml(j.learned || "") + "</div>" +
+        '<h2 class="sheet-h">Why it matters</h2>' +
+        '<div class="sheet-line" contenteditable="true" data-field="matters" ' +
+          'data-ph="Tie it to something you are building.">' + toHtml(j.matters || "") + "</div>" +
+        '<h2 class="sheet-h">How I’ll use it</h2>' +
+        '<div class="sheet-line" contenteditable="true" data-field="use" ' +
+          'data-ph="One concrete action, with a date.">' + toHtml(j.use || "") + "</div>" +
+      "</div>";
+
+    $("#paper-body").innerHTML = html;
+    $("#paper-scroll").scrollTop = 0;
+    $("#paper").classList.add("open");
+  }
+
+  function finishLabel(v) {
+    if (!v.watched) return v.medium === "article" ? "Mark it read" : "Mark it finished";
+    return "✓ Finished" + (v.watched_at ? " · " + esc(fmtDate(v.watched_at)) : "");
+  }
+
+  function quizHtml(v) {
+    if (!window.Quiz || typeof window.Quiz.forItem !== "function") return "";
+    var q, state;
+    try {
+      q = window.Quiz.forItem(v.id);
+      state = window.Quiz.get(v.id);
+    } catch (e) { return ""; }
+    if (!q) return "";
+
+    var html = '<div class="nb-label">The check</div>';
+    html += '<div class="habit">' +
+      '<div class="q-frame">A habit to walk out with</div>' +
+      '<div class="habit-title">' + esc(q.habit.title) + "</div>" +
+      '<div class="habit-line">' + esc(q.habit.trigger) + " <span class=\"arrow\">→</span> " +
+        esc(q.habit.action) + "</div>" +
+      '<div class="habit-days">for ' + esc(String(q.habit.days)) + " days</div>" +
+      '<div class="habit-why">' + esc(q.habit.why) + "</div>" +
+      '<div id="habit-foot">' + habitFootHtml(state) + "</div>" +
+    "</div>";
+
+    var answers = (state && state.answers) || {};
+    html += q.questions.map(function (question) {
+      return '<div class="q-block">' +
+        '<div class="q-frame"><span class="qn">' + question.n + "</span>" + esc(question.frame) + "</div>" +
+        '<div class="q-text">' + esc(question.text) + "</div>" +
+        '<div class="ruled" contenteditable="true" data-quiz-n="' + question.n + '" ' +
+          'data-ph="Think on the page.">' + toHtml(answers[question.n] || "") + "</div>" +
+      "</div>";
+    }).join("");
+    html += '<div class="q-progress" id="quiz-progress">' + quizProgressText(state) + "</div>";
+    return html;
+  }
+
+  function habitFootHtml(state) {
+    if (state && state.habitAccepted === true) {
+      return '<span class="habit-mark">✓ Taken</span>';
+    }
+    if (state && state.habitAccepted === false) {
+      return '<div class="habit-btns">' +
+        '<button class="hbtn take" data-action="habit-take">Take it after all</button>' +
+      "</div>";
+    }
+    return '<div class="habit-btns">' +
+      '<button class="hbtn take" data-action="habit-take">Take it</button>' +
+      '<button class="hbtn" data-action="habit-skip">Not this one</button>' +
+    "</div>";
+  }
+
+  function quizProgressText(state) {
+    var n = (state && state.answered) || 0;
+    if (n === 0) return "Five questions. The ones you skip are the signal.";
+    if (n >= 5) return "All five answered.";
+    return n + " of 5 answered.";
+  }
+
+  function refreshQuizChrome() {
+    if (!window.Quiz || !UI.paperId) return;
+    var state;
+    try { state = window.Quiz.get(UI.paperId); } catch (e) { return; }
+    var foot = $("#habit-foot");
+    if (foot) foot.innerHTML = habitFootHtml(state);
+    var prog = $("#quiz-progress");
+    if (prog) prog.textContent = quizProgressText(state);
+  }
+
+  function closePaper() {
+    if (saveTimer) flushJournal();          /* never lose ink on the way out */
+    UI.paperId = null;
+    var p = $("#paper");
+    p.classList.remove("open");
+    setTimeout(function () {
+      if (!p.classList.contains("open")) $("#paper-body").innerHTML = "";
+    }, 350);                                 /* clearing kills the embed audio */
+    renderToday();
+    renderJournal();
+    if (UI.tab === "browse") renderBrowse();
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* soundtrack toggle, only when the engine is spliced in                */
+  /* ------------------------------------------------------------------ */
+  function soundHook() {
+    if (!window.Sound) return;
+    var slot = $("#sound-slot");
+    if (!slot) return;
+    slot.innerHTML = '<button class="sound-btn" data-action="sound-toggle" aria-label="Ambient sound">' +
+      '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" ' +
+      'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<path d="M11 5 6.5 9H3v6h3.5L11 19z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg></button>';
+    function paint() {
+      var b = $(".sound-btn");
+      if (b) b.classList.toggle("on", !!(window.Sound.state && window.Sound.state.playing));
+    }
+    if (typeof window.Sound.onChange === "function") window.Sound.onChange(paint);
+    paint();
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* events: one delegated handler                                        */
+  /* ------------------------------------------------------------------ */
+  function showTab(tab) {
+    UI.tab = tab;
+    ["today", "browse", "journal"].forEach(function (t) {
+      var scr = $("#screen-" + t);
+      if (scr) scr.classList.toggle("on", t === tab);
+    });
+    document.querySelectorAll("#tabbar .tab").forEach(function (b) {
+      b.classList.toggle("on", b.getAttribute("data-tab") === tab);
+    });
+    if (tab === "journal") renderJournal();  /* stats stay honest */
+  }
+
+  document.addEventListener("click", function (e) {
+    var el = e.target.closest ? e.target.closest("[data-action]") : null;
+    if (!el) return;
+    var action = el.getAttribute("data-action");
+
+    if (action === "tab") { showTab(el.getAttribute("data-tab")); return; }
+    if (action === "open") { openPaper(el.getAttribute("data-id")); return; }
+    if (action === "close-paper") { closePaper(); return; }
+
+    if (action === "finish") {
+      var v = byId(UI.paperId);
+      if (!v) return;
+      v.watched = !v.watched;
+      v.watched_at = v.watched ? new Date().toISOString().slice(0, 19) : null;
+      el.classList.toggle("done", v.watched);
+      el.innerHTML = finishLabel(v);
+      postEntry(v.id, { watched: v.watched }).then(function (ok) {
+        if (ok) {
+          var fresh = byId(UI.paperId);
+          if (fresh && el.isConnected) {
+            el.classList.toggle("done", fresh.watched);
+            el.innerHTML = finishLabel(fresh);
+          }
+          showSaved();
+        }
+      });
+      return;
+    }
+
+    if (action === "filter-charge") {
+      var c = el.getAttribute("data-value");
+      UI.charge = UI.charge === c ? null : c;
+      renderBrowse();
+      return;
+    }
+    if (action === "filter-weight") {
+      var w = el.getAttribute("data-value");
+      UI.weight = UI.weight === w ? null : w;
+      renderBrowse();
+      return;
+    }
+    if (action === "filter-medium") {
+      UI.medium = el.getAttribute("data-value") || null;
+      renderBrowse();
+      return;
+    }
+    if (action === "clear-filters") {
+      UI.charge = UI.weight = UI.medium = null;
+      renderBrowse();
+      return;
+    }
+    if (action === "shelf-more") {
+      var shelf = el.getAttribute("data-shelf");
+      UI.openShelves[shelf] = !UI.openShelves[shelf];
+      renderBrowse();
+      return;
+    }
+    if (action === "journal-all") {
+      UI.journalAll = !UI.journalAll;
+      renderJournal();
+      return;
+    }
+
+    if (action === "habit-take" && window.Quiz && UI.paperId) {
+      try { window.Quiz.acceptHabit(UI.paperId); } catch (err) {}
+      refreshQuizChrome();
+      return;
+    }
+    if (action === "habit-skip" && window.Quiz && UI.paperId) {
+      try { window.Quiz.skipHabit(UI.paperId); } catch (err) {}
+      refreshQuizChrome();
+      return;
+    }
+
+    if (action === "sound-toggle" && window.Sound) {
+      try {
+        if (window.Sound.state && window.Sound.state.playing) window.Sound.stop();
+        else window.Sound.arm();
+      } catch (err) {}
+      return;
+    }
+  });
+
+  /* writing surfaces */
+  var quizTimers = {};
+  document.addEventListener("input", function (e) {
+    var t = e.target;
+    if (!t || !t.closest) return;
+    if (t.closest(".sheet-line")) { queueJournal(); return; }
+    var q = t.closest("[data-quiz-n]");
+    if (q && window.Quiz && UI.paperId) {
+      var n = q.getAttribute("data-quiz-n");
+      var id = UI.paperId;
+      clearTimeout(quizTimers[n]);
+      quizTimers[n] = setTimeout(function () {
+        try { window.Quiz.answer(id, n, q.innerText.trim()); } catch (err) {}
+        refreshQuizChrome();
+      }, 500);
+    }
+  });
+
+  /* paste as plain text so the sheet never inherits foreign markup */
+  document.addEventListener("paste", function (e) {
+    var t = e.target && e.target.closest ? e.target.closest("[contenteditable]") : null;
+    if (!t) return;
+    e.preventDefault();
+    var txt = (e.clipboardData || window.clipboardData).getData("text/plain");
+    document.execCommand("insertText", false, txt);
+  });
+
+  /* ------------------------------------------------------------------ */
+  /* boot                                                                 */
+  /* ------------------------------------------------------------------ */
+  function init() {
+    renderToday();
+    renderBrowse();
+    renderJournal();
+    soundHook();
+    if (window.Quiz && typeof window.Quiz.onChange === "function") {
+      window.Quiz.onChange(function () {
+        if (UI.tab === "journal" && !UI.paperId) renderJournal();
+      });
+    }
+  }
+
+  function boot() {
+    fetch("/api/library")
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        window.ITEMS = (d && d.videos) || [];
+        init();
+      })
+      .catch(function () {
+        /* offline: run on whatever the splice layer left behind */
+        if (window.ITEMS && window.ITEMS.length) { init(); return; }
+        $("#today-cards").innerHTML =
+          '<div class="offline">The library is closed — no server and no cached shelf.<br>' +
+          "Start it with <b>python3 server.py</b> and reopen.</div>";
+      });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot);
+  } else {
+    boot();
+  }
+
+  /* offline shell, when a worker exists to install one */
+  if ("serviceWorker" in navigator) {
+    fetch("sw.js", { method: "HEAD" })
+      .then(function (r) {
+        if (r.ok) navigator.serviceWorker.register("sw.js").catch(function () {});
+      })
+      .catch(function () {});
+  }
+})();
+</script>
+</body>
+</html>
