@@ -9,7 +9,7 @@
    none. Everything else is cache first.
 
    Bump CACHE on every deploy. The activate step drops anything older. */
-const CACHE = "fitness-os-v2";
+const CACHE = "fitness-os-v3";
 const CORE = [
   "./",
   "./index.html",

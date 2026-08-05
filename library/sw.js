@@ -2,7 +2,7 @@
    CACHE is stamped from the build content, so it changes whenever the app
    does. Bumping it by hand was the step everyone forgets, and forgetting it
    means the phone silently keeps serving the old app. */
-const CACHE = "library-static-7cf583ee94";
+const CACHE = "library-static-86b10cd36a";
 const SHELL = ["./", "./index.html", "./manifest.webmanifest",
                "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
 

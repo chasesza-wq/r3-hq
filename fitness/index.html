@@ -154,8 +154,10 @@ nav .dot{position:absolute;transform:translate(14px,-3px);width:6px;height:6px;b
 
 /* ---------- sheets ---------- */
 .sheet{position:absolute;inset:0;z-index:50;background:var(--bg);display:flex;flex-direction:column;
-  transform:translateY(100%);transition:transform .3s cubic-bezier(.2,.85,.3,1);visibility:hidden}
-.sheet.on{transform:none;visibility:visible}
+  transform:translateY(100%);visibility:hidden;
+  transition:transform .42s cubic-bezier(.26,1.14,.34,1),visibility 0s linear .42s}
+.sheet.on{transform:none;visibility:visible;
+  transition:transform .42s cubic-bezier(.26,1.14,.34,1),visibility 0s}
 .sheet .grab{width:36px;height:4px;border-radius:3px;background:var(--surf3);margin:10px auto 0;flex:none}
 .sx{position:absolute;top:calc(env(safe-area-inset-top,0px) + 16px);right:16px;z-index:5;width:34px;height:34px;
   border-radius:50%;background:rgba(11,12,13,.62);backdrop-filter:blur(9px);color:var(--ink);

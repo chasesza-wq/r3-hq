@@ -36,6 +36,10 @@
     position:fixed;top:0;left:0;right:0;
     bottom:calc(60px + env(safe-area-inset-bottom,0px));
     overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+    /* Must be explicit. Setting only overflow-y makes CSS compute overflow-x to
+       `auto`, not `visible`, so the 430px .glow inside a 390px pane made the
+       whole screen pan 20px sideways — the page drifting out of focus. */
+    overflow-x:hidden;
     visibility:hidden;
   }
   .screen.on{visibility:visible}
@@ -81,9 +85,239 @@
   .check{position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:9999px;background:rgba(9,9,11,.8);color:#fbbf24;display:flex;align-items:center;justify-content:center;font-size:12px;z-index:2}
 
   /* ---- Today ----------------------------------------------------------- */
-  .glow{position:absolute;top:-130px;left:50%;transform:translateX(-50%);width:430px;height:300px;
-        background:radial-gradient(closest-side,rgba(245,158,11,.07),transparent);pointer-events:none}
+  /* No fixed width: a 430px box inside a 390px pane leaks into the pane's
+     scrollable overflow even under overflow-x:hidden. Span the wrap instead. */
+  .glow{position:absolute;top:-130px;left:0;right:0;height:300px;
+        background:radial-gradient(closest-side at 50% 50%,rgba(245,158,11,.08),transparent);pointer-events:none}
   #screen-today .wrap{position:relative}
+
+  /* ---- Today: the sections below the three ----------------------------- */
+  .sect{margin-top:34px}
+  .sect-head{display:flex;align-items:baseline;gap:9px;margin-bottom:12px}
+  .sect-h{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+          color:#a8a29e;margin:0}
+  .sect-n{font-size:11px;color:#57575e;font-variant-numeric:tabular-nums}
+  .sect-note{font-family:Georgia,"Times New Roman",serif;font-style:italic;
+             font-size:12.5px;color:#6b6b73;margin:-4px 0 12px}
+
+  /* The one place sideways movement is intentional. Everything else is
+     clipped, because an accidental 20px drift is what made this screen feel
+     broken in the first place. */
+  .rail{display:flex;gap:11px;overflow-x:auto;overflow-y:hidden;
+        scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+        overscroll-behavior-x:contain;padding-bottom:4px;scrollbar-width:none}
+  .rail::-webkit-scrollbar{display:none}
+  .rail>*{scroll-snap-align:start;flex:0 0 auto}
+  .qcard{width:170px;background:#131316;border:1px solid #27272a;border-radius:13px;
+         overflow:hidden;text-align:left;padding:0;color:inherit;display:block}
+  .qthumb{aspect-ratio:16/9;width:100%;display:block}
+  .qbody{padding:9px 11px 12px;display:block}
+  .qtitle{font-family:Georgia,"Times New Roman",serif;font-size:13.5px;line-height:1.32;
+          font-weight:700;color:#e8dfcd;display:-webkit-box;-webkit-line-clamp:2;
+          -webkit-box-orient:vertical;overflow:hidden}
+  .qmeta{display:flex;align-items:center;gap:7px;margin-top:7px}
+
+  /* The last thing he wrote, quoted back. The strongest reason to return. */
+  .quote{border-left:2px solid rgba(201,168,106,.5);padding:2px 0 2px 15px;
+         font-family:Georgia,"Times New Roman",serif;font-size:15px;line-height:1.55;
+         color:#d8c8a6;font-style:italic}
+  .quote-src{display:block;margin-top:9px;font-style:normal;font-size:11.5px;
+             color:#6b6b73}
+
+  /* Honest, small, and never congratulatory when nothing happened. */
+  .week{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+  .wcell{background:#131316;border:1px solid #27272a;border-radius:12px;padding:13px 12px}
+  .wnum{font-size:23px;font-weight:300;color:#e8dfcd;line-height:1;
+        font-variant-numeric:tabular-nums}
+  .wlab{font-size:10px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;
+        color:#6b6b73;margin-top:7px}
+
+  /* ---- press feedback: most of what makes a web app feel native -------- */
+  /* Asymmetric on purpose. A native control compresses fast (~90ms, ease-in)
+     and releases slow with a little overshoot (~380ms). Using one symmetric
+     duration for both halves is the clearest tell that something is a web
+     page pretending to be an app. */
+  .dcard,.row,.qcard,.pagecard,.charge-btn,.fchip,.peek-btn,.hbtn,
+  .finish,.close-btn,.sound-btn,.morebtn,.clearbtn,.open-art{
+    transition:transform .38s cubic-bezier(.16,1.02,.32,1),
+               border-color .3s ease,background .3s ease,opacity .3s ease}
+  .dcard:active,.row:active,.qcard:active,.pagecard:active,.charge-btn:active,
+  .fchip:active,.peek-btn:active,.hbtn:active,.finish:active,.close-btn:active,
+  .sound-btn:active,.morebtn:active,.clearbtn:active,.open-art:active{
+    transition:transform .09s cubic-bezier(.4,0,.6,1),
+               border-color .09s ease,background .09s ease,opacity .09s ease}
+  .dcard:active,.row:active,.pagecard:active{transform:scale(.977)}
+  .qcard:active{transform:scale(.958)}
+  .charge-btn:active,.fchip:active,.peek-btn:active,.hbtn:active,
+  .finish:active,.close-btn:active,.sound-btn:active{transform:scale(.952)}
+  .dcard:active,.qcard:active{border-color:#3f3f46}
+
+  /* A touch-origin bloom on the primary action. The highlight starts where
+     the thumb actually landed, which is why it reads as a response rather
+     than a decoration. --px/--py are written by the touch handler. */
+  .peek-btn.primary,.open-art,.finish{position:relative;overflow:hidden;isolation:isolate}
+  .peek-btn.primary::after,.open-art::after,.finish::after{
+    content:"";position:absolute;left:var(--px,50%);top:var(--py,50%);
+    width:220px;height:220px;margin:-110px 0 0 -110px;border-radius:9999px;
+    background:radial-gradient(closest-side,rgba(252,211,77,.30),transparent);
+    opacity:0;transform:scale(.2);pointer-events:none;z-index:-1}
+  .peek-btn.primary.bloom::after,.open-art.bloom::after,.finish.bloom::after{
+    animation:bloom .62s cubic-bezier(.22,.85,.3,1) forwards}
+  @keyframes bloom{
+    0%{opacity:.85;transform:scale(.2)}
+    100%{opacity:0;transform:scale(1)}}
+
+  /* ---- peek sheet ------------------------------------------------------ */
+  #peek{position:fixed;inset:0;z-index:120;visibility:hidden;pointer-events:none}
+  #peek.on{visibility:visible;pointer-events:auto}
+  #peek-scrim{position:absolute;inset:0;background:rgba(6,6,8,.72);opacity:0;
+              transition:opacity .3s ease;-webkit-backdrop-filter:blur(3px);
+              backdrop-filter:blur(3px)}
+  #peek.on #peek-scrim{opacity:1}
+  #peek-sheet{position:absolute;left:0;right:0;bottom:0;
+    background:linear-gradient(#151418,#0e0e10);
+    border-top:1px solid #2e2a24;border-radius:20px 20px 0 0;
+    padding:0 0 calc(env(safe-area-inset-bottom,0px) + 18px);
+    box-shadow:0 -22px 60px rgba(0,0,0,.6);
+    transform:translateY(100%);
+    /* transform only. Animating height or layout here drops frames. */
+    transition:transform .38s cubic-bezier(.32,.72,.28,1);
+    max-height:88dvh;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain}
+  #peek.on #peek-sheet{transform:translateY(0)}
+  #peek-grab{display:block;width:100%;min-height:44px;border:none;
+             background:transparent;padding:11px 0 7px}
+  #peek-grab::before{content:"";display:block;width:38px;height:4px;border-radius:2px;
+                     background:#3f3f46;margin:0 auto}
+  #peek-stage{background:#000}
+  #peek-stage iframe{display:block;width:100%;aspect-ratio:16/9;border:0}
+  #peek-stage img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
+  #peek-body{padding:16px 18px 4px}
+  .peek-title{font-family:Georgia,"Times New Roman",serif;font-size:19px;line-height:1.28;
+              font-weight:700;color:#e8dfcd}
+  .peek-chan{font-size:12.5px;color:#a8a29e;margin-top:5px}
+  .peek-why{font-family:Georgia,"Times New Roman",serif;font-style:italic;font-size:14px;
+            line-height:1.5;color:rgba(214,197,163,.62);margin-top:11px}
+  .peek-acts{display:flex;gap:9px;margin-top:17px}
+  .peek-btn{flex:1;min-height:48px;border-radius:12px;font-size:14.5px;font-weight:700;
+            border:1px solid #3f3f46;background:rgba(24,24,27,.85);color:#e4e4e7;
+            display:flex;align-items:center;justify-content:center;gap:7px;
+            text-decoration:none;transition:transform .16s cubic-bezier(.32,.72,.28,1)}
+  .peek-btn:active{transform:scale(.97)}
+  .peek-btn.primary{border-color:rgba(245,158,11,.45);background:rgba(245,158,11,.14);
+                    color:#fcd34d}
+
+  /* ---- toast ----------------------------------------------------------- */
+  #toast{position:fixed;left:16px;right:16px;z-index:200;
+         bottom:calc(72px + env(safe-area-inset-bottom,0px));
+         background:rgba(24,22,18,.97);border:1px solid #3f3f46;border-radius:12px;
+         color:#e8dfcd;font-size:13.5px;line-height:1.45;padding:12px 15px;
+         box-shadow:0 14px 40px rgba(0,0,0,.55);
+         opacity:0;transform:translateY(10px);pointer-events:none;
+         transition:opacity .26s ease,transform .26s cubic-bezier(.32,.72,.28,1)}
+  #toast.on{opacity:1;transform:none}
+
+  /* ---- entrance choreography ------------------------------------------ */
+  /* One mechanism covers both the load sequence and scroll reveals: anything
+     marked .reveal starts hidden and animates when it crosses into view. What
+     is already on screen at boot animates immediately with a stagger, which
+     is the load sequence; everything below the fold waits for the scroll.
+     Previously every .sect ran the same animation at t=0, so the whole page
+     twitched once and then never responded to scrolling again. */
+  @keyframes rise{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:none}}
+  .reveal{opacity:0}
+  .reveal.in{animation:rise .55s cubic-bezier(.22,.85,.3,1) both;
+             animation-delay:var(--d,0ms)}
+
+  /* ---- collapsing title bar ------------------------------------------- */
+  /* The large title scrolls away and a compact one takes over. This is what
+     every first-party iOS app does, and its absence is why the screen read as
+     a web page no matter how good the cards looked. */
+  .topbar{
+    position:fixed;top:0;left:0;right:0;z-index:35;
+    display:flex;align-items:center;justify-content:center;
+    padding:calc(env(safe-area-inset-top,0px) + 10px) 54px 10px;
+    background:rgba(11,11,12,.72);
+    -webkit-backdrop-filter:blur(18px) saturate(150%);
+    backdrop-filter:blur(18px) saturate(150%);
+    border-bottom:1px solid rgba(28,28,31,0);
+    opacity:0;transform:translateY(-8px);pointer-events:none;
+    transition:opacity .24s ease,transform .28s cubic-bezier(.32,.72,.28,1),
+               border-bottom-color .24s ease}
+  .topbar.on{opacity:1;transform:none;border-bottom-color:#1c1c1f}
+  .topbar-t{font-family:Georgia,"Times New Roman",serif;font-size:15px;
+            font-weight:700;color:#e8dfcd;white-space:nowrap;
+            overflow:hidden;text-overflow:ellipsis}
+
+  /* ---- rails: fade the edge that still has content -------------------- */
+  .rail{
+    -webkit-mask-image:linear-gradient(to right,#000 0,#000 100%);
+    mask-image:linear-gradient(to right,#000 0,#000 100%)}
+  .rail.more-right{
+    -webkit-mask-image:linear-gradient(to right,#000 0,#000 calc(100% - 30px),transparent 100%);
+    mask-image:linear-gradient(to right,#000 0,#000 calc(100% - 30px),transparent 100%)}
+  .rail.more-left{
+    -webkit-mask-image:linear-gradient(to right,transparent 0,#000 30px,#000 100%);
+    mask-image:linear-gradient(to right,transparent 0,#000 30px,#000 100%)}
+  .rail.more-left.more-right{
+    -webkit-mask-image:linear-gradient(to right,transparent 0,#000 30px,#000 calc(100% - 30px),transparent 100%);
+    mask-image:linear-gradient(to right,transparent 0,#000 30px,#000 calc(100% - 30px),transparent 100%)}
+
+  /* ---- images settle in, they do not pop ------------------------------ */
+  .thumbbox img{
+    opacity:0;transform:scale(1.045);
+    transition:opacity .45s ease,transform .8s cubic-bezier(.22,.85,.3,1)}
+  .thumbbox img.ld{opacity:1;transform:none}
+
+  /* ---- first-paint skeletons ------------------------------------------ */
+  @keyframes shimmer{to{background-position:-200% 0}}
+  .skel{background:linear-gradient(90deg,#131316 0%,#1c1c21 45%,#131316 90%);
+        background-size:200% 100%;animation:shimmer 1.5s linear infinite;
+        border-radius:13px;border:1px solid #1c1c1f}
+  .skel-card{height:196px;margin-top:16px}
+  .skel-line{height:13px;border-radius:6px;margin-top:10px}
+
+  /* ---- tab change ------------------------------------------------------ */
+  /* Content arrives from the side you travelled, so the tab bar reads as a
+     position in a row rather than three unrelated pages. */
+  .screen{opacity:0}
+  .screen.on{opacity:1}
+  @keyframes tab-l{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+  @keyframes tab-r{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+  .screen.on.from-l .wrap{animation:tab-l .3s cubic-bezier(.22,.85,.3,1) both}
+  .screen.on.from-r .wrap{animation:tab-r .3s cubic-bezier(.22,.85,.3,1) both}
+
+  /* ---- depth behind a sheet ------------------------------------------- */
+  /* The page underneath recedes. Sheets that sit on a flat, unchanged
+     background read as overlays; sheets with a receding parent read as a
+     stack, which is the whole reason iOS presentation feels physical. */
+  /* Scaled on .screen, not .wrap. .screen is fixed and viewport-sized, so it
+     scales about the centre of what you are actually looking at; scaling the
+     inner .wrap pivots around the top of the document, which throws content
+     sideways the moment the page is scrolled at all. */
+  .screen{transform-origin:50% 50%;
+          transition:opacity .18s ease,transform .36s cubic-bezier(.32,.72,.28,1)}
+  body.peeking .screen.on{transform:scale(.984);opacity:.74}
+  body.papered .screen.on{transform:scale(.955);opacity:.45}
+  body.papered #tabbar{transform:translateY(100%)}
+  #tabbar{transition:transform .34s cubic-bezier(.32,.72,.28,1)}
+
+  /* ---- reading progress ------------------------------------------------ */
+  #paper-prog{position:absolute;left:0;bottom:-1px;height:2px;width:0;
+    background:linear-gradient(90deg,rgba(245,158,11,.45),#fcd34d);
+    border-radius:0 2px 2px 0;transition:width .09s linear;pointer-events:none}
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal{opacity:1}
+    .reveal.in{animation:none}
+    .skel{animation:none}
+    .thumbbox img{opacity:1;transform:none;transition:none}
+    .screen.on.from-l .wrap,.screen.on.from-r .wrap{animation:none}
+    body.peeking .screen.on,body.papered .screen.on{transform:none;opacity:1}
+    #peek-sheet,#peek-scrim,.dcard,.row,.qcard,.pagecard,.peek-btn,.screen{transition:none}
+    .dcard:active,.row:active,.qcard:active,.pagecard:active,.peek-btn:active{transform:none}
+    .peek-btn.primary.bloom::after,.open-art.bloom::after,.finish.bloom::after{animation:none}
+  }
+
   .today-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
   #sound-slot:empty{display:none}
   .sound-btn{width:44px;height:44px;border-radius:10px;border:1px solid #27272a;background:rgba(19,19,22,.7);
@@ -94,9 +328,10 @@
   .dcard{
     display:block;width:100%;text-align:left;margin-top:16px;padding:0;cursor:pointer;
     background:#131316;border:1px solid #1f1f23;border-radius:14px;overflow:hidden;
-    transition:transform .12s ease,background .12s ease;
   }
-  .dcard:active{transform:scale(.985);background:#18181b}
+  /* transform stays on the shared press rule above — repeating it here with a
+     different duration silently overrode the asymmetric timing. */
+  .dcard:active{background:#18181b}
   .dcard > span{display:block}
   .cbar{height:2px}
   .cbar-calm{background:rgba(125,211,252,.5)}
@@ -173,7 +408,9 @@
   .rbody{flex:1;min-width:0}
   .rtitle{font-family:Georgia,"Times New Roman",serif;font-size:14px;line-height:1.35;font-weight:700;color:#e7e0d0}
   .rmeta{display:flex;align-items:center;gap:7px;margin-top:4px;flex-wrap:wrap}
-  .rsub{font-size:11px;color:#78716c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:14ch}
+  /* No ellipsis clipping: a clipped span still reports scrollWidth > clientWidth,
+     which is exactly the drift signature we gate on. Truncate in JS instead. */
+  .rsub{font-size:11px;color:#78716c}
   .row.finished .rtitle{color:#78716c}
 
   .morebtn{
@@ -509,7 +746,25 @@ window.DAILY = window.DAILY_IDS
     a.loop = true;
     a.preload = "none";
     a.volume = 0;
+    /* iOS refuses to play an audio element it considers "inline video" unless
+       this is set. Harmless everywhere else. */
+    a.playsInline = true;
+    a.setAttribute("playsinline", "");
     return a;
+  }
+
+  /* On iPhone the hardware silent switch mutes HTML5 audio, and there is no
+     way to detect that from JS — play() resolves, currentTime advances, and
+     you hear nothing. It is indistinguishable from working, which is exactly
+     how it wasted a whole debugging session.
+
+     navigator.audioSession (iOS 16.4+) is the only lever: declaring
+     "playback" tells iOS this is deliberate media rather than an incidental
+     bleep, and it then ignores the ringer switch. */
+  function claimAudioSession() {
+    try {
+      if (navigator.audioSession) navigator.audioSession.type = "playback";
+    } catch (e) {}
   }
 
   var S = {
@@ -583,14 +838,26 @@ window.DAILY = window.DAILY_IDS
     p.volume = 0;
     var go = p.play();
     if (go && go.catch) {
-      go.catch(function () {
+      go.catch(function (err) {
         /* Blocked because we are not armed yet. Surface it rather than
            pretending it played. */
         S.state.playing = false;
         S.state.armed = false;
+        /* Carry the reason. A silent failure here cost a whole session of
+           "the sound still does not work" with nothing to go on. */
+        S.state.error = (err && err.name) || "blocked";
         emit();
       });
     }
+    /* A media error means the file did not load — a wrong path 404s and the
+       HTML error page decodes as "format error", which reads like a codec
+       problem and points nowhere near the real cause. Name it properly. */
+    p.onerror = function () {
+      S.state.error = "missing:" + String(track.src).split("/").pop();
+      S.state.playing = false;
+      emit();
+    };
+    S.state.error = null;
     fadeTo(next, target());
     active = next;
     S.state.current = track.id;
@@ -617,6 +884,8 @@ window.DAILY = window.DAILY_IDS
 
   S.arm = function () {
     if (S.state.armed) return;
+    /* Must happen inside the gesture, before any play() call. */
+    claimAudioSession();
     players.forEach(function (p) {
       try {
         if (!p.getAttribute("data-src")) p.src = SILENCE;
@@ -801,6 +1070,40 @@ window.DAILY = window.DAILY_IDS
   };
 
   S._players = players;   /* introspection hook for the headless tests */
+
+  /* The audio elements are created with `new Audio()` and never attached to
+     the document, so nothing can find them by querying the DOM. That is why
+     two rounds of "the sound works" were argued from state.playing alone --
+     a flag the code sets itself, which is not evidence of anything.
+     diag() reports what the media elements are actually doing. */
+  S.diag = function () {
+    return {
+      playing: S.state.playing,
+      error: S.state.error || null,
+      current: S.state.current,
+      players: players.map(function (p) {
+        return {
+          src: (p.currentSrc || p.src || "").split("/").pop(),
+          t: p.currentTime,
+          paused: p.paused,
+          vol: p.volume,
+          ready: p.readyState,
+          err: p.error ? p.error.code : null
+        };
+      })
+    };
+  };
+
+  /* True only if a media element is unpaused, audible and past zero. The
+     one claim that is worth making to the user. */
+  S.isAudible = function () {
+    for (var i = 0; i < players.length; i++) {
+      var p = players[i];
+      if (!p.paused && p.currentTime > 0 && p.volume > 0.001 && !p.error) return true;
+    }
+    return false;
+  };
+
   window.Sound = S;
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", function () { S.observe(); });
@@ -813,6 +1116,10 @@ window.DAILY = window.DAILY_IDS
 </head>
 <body>
 
+<!-- One shared collapsing title bar. Only one screen is visible at a time, so
+     a single bar that retitles itself is both lighter and always in sync. -->
+<div class="topbar" id="topbar" aria-hidden="true"><span class="topbar-t" id="topbar-t"></span></div>
+
 <section class="screen on" id="screen-today" aria-label="Today">
   <div class="wrap">
     <div class="glow"></div>
@@ -824,7 +1131,16 @@ window.DAILY = window.DAILY_IDS
       </div>
       <div id="sound-slot"></div>
     </div>
-    <div id="today-cards"></div>
+    <!-- Static skeletons so the first frame has structure instead of a void.
+         renderToday() replaces this wholesale; it costs no JS and no request. -->
+    <div id="today-cards"><div class="skel skel-card"></div><div class="skel skel-card"></div></div>
+    <!-- Depth below the three, but every section terminates. The product is
+         deliberate choosing; an endless home screen would undo the whole point. -->
+    <div id="today-continue"></div>
+    <div id="today-quick"></div>
+    <div id="today-shelf"></div>
+    <div id="today-page"></div>
+    <div id="today-week"></div>
     <div id="today-fin"></div>
   </div>
 </section>
@@ -885,8 +1201,22 @@ window.DAILY = window.DAILY_IDS
       <span class="paper-label" id="paper-kind"></span>
       <span id="save-ind">Saved.</span>
       <button class="close-btn" data-action="close-paper">Done</button>
+      <div id="paper-prog"></div>
     </div>
     <div class="notebook" id="paper-body"></div>
+  </div>
+</div>
+
+<!-- Peek sheet: watch first, commit second. Tapping a card raises this instead
+     of dropping straight into the full reading view, so glancing at something
+     costs nothing. The iframe is built on open and destroyed on close — leaving
+     it in the DOM keeps the audio playing behind a dismissed sheet. -->
+<div id="peek" role="dialog" aria-modal="true" aria-label="Preview" aria-hidden="true">
+  <div id="peek-scrim" data-action="close-peek"></div>
+  <div id="peek-sheet">
+    <button id="peek-grab" data-action="close-peek" aria-label="Dismiss"></button>
+    <div id="peek-stage"></div>
+    <div id="peek-body"></div>
   </div>
 </div>
 
@@ -1245,7 +1575,7 @@ window.DAILY = window.DAILY_IDS
     var picks = dailyPicks();
     var html = picks.map(function (v) {
       return '' +
-      '<button class="dcard' + (v.watched ? " finished" : "") + '" data-action="open" data-id="' + esc(v.id) + '">' +
+      '<button class="dcard' + (v.watched ? " finished" : "") + '" data-action="peek" data-id="' + esc(v.id) + '">' +
         '<span class="cbar cbar-' + esc(v.charge) + '"></span>' +
         thumbHtml(v, "dthumb") +
         '<span class="dbody">' +
@@ -1263,6 +1593,8 @@ window.DAILY = window.DAILY_IDS
     }).join("");
     $("#today-cards").innerHTML = html;
 
+    renderTodayDepth(picks);
+
     var done = picks.filter(function (v) { return v.watched; }).length;
     $("#today-fin").innerHTML =
       '<div class="fin">' +
@@ -1274,6 +1606,187 @@ window.DAILY = window.DAILY_IDS
             : "That’s the whole shelf for today.<br>No more after these. It restocks at midnight.") +
         "</div>" +
       "</div>";
+  }
+
+  /* ---- Today, below the three ---------------------------------------- */
+  /* Depth, not endlessness. Each section is capped and terminates; none of
+     them loads more on scroll. An infinite home screen would rebuild exactly
+     the habit this app exists to replace. */
+
+  function sect(title, count, note, inner) {
+    return '<div class="sect"><div class="sect-head"><h2 class="sect-h">' + esc(title) +
+      "</h2>" + (count != null ? '<span class="sect-n">' + count + "</span>" : "") +
+      "</div>" + (note ? '<p class="sect-note">' + esc(note) + "</p>" : "") + inner + "</div>";
+  }
+
+  function qcardHtml(v) {
+    return '<button class="qcard" data-action="peek" data-id="' + esc(v.id) + '">' +
+      thumbHtml(v, "qthumb") +
+      '<span class="qbody"><span class="qtitle">' + esc(v.title) + "</span>" +
+      '<span class="qmeta"><span class="pill pill-' + esc(v.charge) + '">' +
+      esc(v.charge) + "</span>" +
+      '<span class="rsub">' + esc(fmtDurShort(v.duration)) + "</span></span></span></button>";
+  }
+
+  /* Anything opened but not finished. This is the highest-intent thing on the
+     screen: he already chose it once. */
+  function renderContinue() {
+    var open = items().filter(function (v) {
+      return !v.watched && (v.progress > 0 || hasJournal(v));
+    }).slice(0, 3);
+    $("#today-continue").innerHTML = open.length
+      ? sect("Still open", open.length, null,
+             open.map(function (v) { return rowHtml(v, "open"); }).join(""))
+      : "";
+  }
+
+  function hasJournal(v) {
+    var j = v.journal || {};
+    return !!((j.learned || "").trim() || (j.matters || "").trim() || (j.use || "").trim());
+  }
+
+  /* "I have ten minutes." Quick, unwatched, deterministic for the day so the
+     row does not reshuffle every time he opens the app. */
+  function renderQuick() {
+    var pickIds = dailyPicks().map(function (v) { return v.id; });
+    var quick = items().filter(function (v) {
+      return v.weight === "quick" && !v.watched && pickIds.indexOf(v.id) < 0;
+    });
+    quick = seededOrder(quick, "quick").slice(0, 8);
+    $("#today-quick").innerHTML = quick.length
+      ? sect("Ten minutes", null, "When that is honestly all you have.",
+             '<div class="rail">' + quick.map(qcardHtml).join("") + "</div>")
+      : "";
+  }
+
+  /* One shelf a day, in rotation. Gives the catalog a way to surface without
+     turning into a recommendation engine. */
+  function renderShelfOfDay() {
+    var shelves = ["mind", "momentum", "philosophy", "craft", "culture", "world", "money"];
+    var day = Math.floor(Date.parse(todayKey() + "T00:00:00") / 86400000);
+    var shelf = shelves[((day % shelves.length) + shelves.length) % shelves.length];
+    var pool = items().filter(function (v) { return v.shelf === shelf && !v.watched; });
+    var few = seededOrder(pool, "shelf").slice(0, 4);
+    $("#today-shelf").innerHTML = few.length
+      ? '<div data-shelf="' + esc(shelf) + '">' +
+        sect("Tonight’s shelf · " + shelf, pool.length, null,
+             few.map(rowHtml).join("")) + "</div>"
+      : "";
+  }
+
+  /* His own words, quoted back. Nothing else on this screen earns a return
+     visit the way this does. */
+  function renderLastPage() {
+    var written = items().filter(hasJournal).sort(function (a, b) {
+      return String(b.updated || "").localeCompare(String(a.updated || ""));
+    });
+    if (!written.length) { $("#today-page").innerHTML = ""; return; }
+    var v = written[0], j = v.journal || {};
+    var line = (j.use || j.matters || j.learned || "").trim();
+    if (line.length > 190) line = line.slice(0, 190).replace(/\s+\S*$/, "") + "…";
+    $("#today-page").innerHTML = sect("You wrote", null, null,
+      '<button class="pagecard" data-action="open" data-id="' + esc(v.id) + '" ' +
+      'style="display:block;width:100%;text-align:left;background:transparent;' +
+      'border:none;padding:0;color:inherit">' +
+      '<span class="quote">' + esc(line) +
+      '<span class="quote-src">on ' + esc(v.title) + "</span></span></button>");
+  }
+
+  /* Seven days, counted plainly. No streaks and no praise for a blank week. */
+  function renderWeek() {
+    var since = Date.now() - 7 * 86400000;
+    var all = items();
+    var fin = all.filter(function (v) {
+      return v.watched && v.watched_at && Date.parse(v.watched_at) >= since;
+    });
+    var mins = Math.round(fin.reduce(function (s, v) { return s + (v.duration || 0); }, 0) / 60);
+    var pages = all.filter(hasJournal).length;
+    $("#today-week").innerHTML = sect("Last seven days", null, null,
+      '<div class="week">' +
+        '<div class="wcell"><div class="wnum">' + fin.length + '</div>' +
+          '<div class="wlab">Finished</div></div>' +
+        '<div class="wcell"><div class="wnum">' + mins + '</div>' +
+          '<div class="wlab">Minutes</div></div>' +
+        '<div class="wcell"><div class="wnum">' + pages + '</div>' +
+          '<div class="wlab">Pages</div></div>' +
+      "</div>");
+  }
+
+  /* Stable per-day ordering. Same seed idea as dailyPicks: the home screen
+     must not reshuffle between opens, or it becomes a slot machine. */
+  function seededOrder(list, salt) {
+    var key = todayKey() + salt;
+    var h = 2166136261;
+    for (var i = 0; i < key.length; i++) {
+      h ^= key.charCodeAt(i); h = (h * 16777619) >>> 0;
+    }
+    return list.map(function (v, i) {
+      var x = (h ^ (i * 2654435761)) >>> 0;
+      return { v: v, k: x };
+    }).sort(function (a, b) { return a.k - b.k; })
+      .map(function (o) { return o.v; });
+  }
+
+  function todayKey() { return new Date().toISOString().slice(0, 10); }
+
+  function renderTodayDepth(picks) {
+    renderContinue();
+    renderQuick();
+    renderShelfOfDay();
+    renderLastPage();
+    renderWeek();
+    /* Re-arm section following so the soundtrack tracks the new shelf block. */
+    if (window.Sound && window.Sound.observe) {
+      try { window.Sound.observe(document.getElementById("screen-today")); } catch (e) {}
+    }
+  }
+
+  /* ---- peek sheet ----------------------------------------------------- */
+  /* Watch first, commit second. The full reading view is a bigger promise
+     than "is this worth my time", and that question deserves one tap. */
+  function openPeek(id) {
+    var v = byId(id);
+    if (!v) return;
+    UI.peekId = id;
+
+    var stage = $("#peek-stage");
+    stage.innerHTML = v.medium === "video" && v.id
+      ? '<iframe src="https://www.youtube-nocookie.com/embed/' +
+        encodeURIComponent(v.id) + '?rel=0&modestbranding=1&playsinline=1&autoplay=1" ' +
+        'title="' + esc(v.title) + '" allow="autoplay; encrypted-media; ' +
+        'picture-in-picture; fullscreen" allowfullscreen></iframe>'
+      : (v.thumb ? '<img src="' + esc(v.thumb) + '" alt="" referrerpolicy="no-referrer">' : "");
+
+    $("#peek-body").innerHTML =
+      '<div class="peek-title">' + esc(v.title) + "</div>" +
+      '<div class="peek-chan">' + esc(v.channel || "") + " · " +
+        esc(fmtDur(v.duration)) + (v.medium === "article" ? " read" : "") + "</div>" +
+      (v.why ? '<div class="peek-why">' + esc(v.why) + "</div>" : "") +
+      '<div class="peek-acts">' +
+        (v.medium === "article"
+          ? '<a class="peek-btn" href="' + esc(v.url) + '" target="_blank" ' +
+            'rel="noopener">Read it ↗</a>'
+          : "") +
+        '<button class="peek-btn primary" data-action="peek-full" data-id="' +
+          esc(v.id) + '">Open the page</button>' +
+      "</div>";
+
+    $("#peek").classList.add("on");
+    $("#peek").setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closePeek() {
+    var p = $("#peek");
+    if (!p.classList.contains("on")) return;
+    p.classList.remove("on");
+    p.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+    /* Destroy the iframe or the audio keeps playing behind a dismissed sheet.
+       Wait for the slide-out so it does not visibly blank mid-animation. */
+    setTimeout(function () {
+      if (!$("#peek").classList.contains("on")) $("#peek-stage").innerHTML = "";
+    }, 400);
   }
 
   /* ------------------------------------------------------------------ */
@@ -1361,8 +1874,12 @@ window.DAILY = window.DAILY_IDS
     }
   }
 
-  function rowHtml(v) {
-    return '<button class="row' + (v.watched ? " finished" : "") + '" data-action="open" data-id="' + esc(v.id) + '">' +
+  /* Default is peek: "is this worth my time" is the common question, and it
+     deserves one tap. Continuation lists pass "open" to skip straight to the
+     page, because that choice was already made. */
+  function rowHtml(v, action) {
+    return '<button class="row' + (v.watched ? " finished" : "") + '" data-action="' +
+      (action || "peek") + '" data-id="' + esc(v.id) + '">' +
       thumbHtml(v, "rthumb") +
       '<span class="rbody">' +
         '<span class="rtitle clamp2">' + esc(v.title) + "</span>" +
@@ -1640,6 +2157,64 @@ window.DAILY = window.DAILY_IDS
     if (tab === "journal") renderJournal();  /* stats stay honest */
   }
 
+  /* Swipe the sheet down to dismiss. Tracked on the sheet itself and only
+     when it is already scrolled to the top, so the gesture never fights the
+     sheet's own scrolling.
+
+     Distance alone is the wrong dismissal test. A real sheet also honours a
+     fast flick: 30px thrown quickly should close, 80px dragged slowly should
+     not. So we track velocity over the last frame and dismiss on either. Drag
+     past the resting position gets rubber-banded, and the scrim fades with
+     the drag so the page behind is visibly coming back. */
+  (function () {
+    var sheet = document.getElementById("peek-sheet");
+    var scrim = document.getElementById("peek-scrim");
+    if (!sheet) return;
+    var y0 = null, dy = 0, lastY = 0, lastT = 0, vel = 0;
+
+    sheet.addEventListener("touchstart", function (e) {
+      y0 = sheet.scrollTop <= 0 ? e.touches[0].clientY : null;
+      dy = 0; vel = 0;
+      lastY = e.touches[0].clientY; lastT = Date.now();
+      if (y0 !== null) {
+        sheet.style.transition = "none";
+        if (scrim) scrim.style.transition = "none";
+      }
+    }, { passive: true });
+
+    sheet.addEventListener("touchmove", function (e) {
+      if (y0 === null) return;
+      var y = e.touches[0].clientY, now = Date.now();
+      var dt = now - lastT;
+      if (dt > 0) vel = (y - lastY) / dt;      /* px per ms, + is downward */
+      lastY = y; lastT = now;
+
+      var raw = y - y0;
+      /* Upward drag is resisted to a third — the sheet is already home, so it
+         should feel anchored rather than loose. */
+      dy = raw >= 0 ? raw : raw / 3;
+      sheet.style.transform = "translateY(" + dy + "px)";
+      if (scrim && dy > 0) {
+        scrim.style.opacity = String(Math.max(0, 1 - (dy / (sheet.offsetHeight || 400)) * 1.3));
+      }
+    }, { passive: true });
+
+    sheet.addEventListener("touchend", function () {
+      if (y0 === null) return;
+      sheet.style.transition = "";
+      sheet.style.transform = "";
+      if (scrim) { scrim.style.transition = ""; scrim.style.opacity = ""; }
+      /* Either a committed drag or a decisive flick. */
+      if (dy > 90 || (vel > 0.55 && dy > 18)) closePeek();
+      y0 = null;
+    });
+  })();
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    if (document.getElementById("peek").classList.contains("on")) closePeek();
+  });
+
   document.addEventListener("click", function (e) {
     var el = e.target.closest ? e.target.closest("[data-action]") : null;
     if (!el) return;
@@ -1648,6 +2223,16 @@ window.DAILY = window.DAILY_IDS
     if (action === "tab") { showTab(el.getAttribute("data-tab")); return; }
     if (action === "open") { openPaper(el.getAttribute("data-id")); return; }
     if (action === "close-paper") { closePaper(); return; }
+    if (action === "peek") { openPeek(el.getAttribute("data-id")); return; }
+    if (action === "close-peek") { closePeek(); return; }
+    if (action === "peek-full") {
+      var pid = el.getAttribute("data-id");
+      closePeek();
+      /* Let the sheet finish leaving before the reading view arrives, or the
+         two transforms fight and both look cheap. */
+      setTimeout(function () { openPaper(pid); }, 220);
+      return;
+    }
 
     if (action === "finish") {
       var v = byId(UI.paperId);
@@ -1717,11 +2302,57 @@ window.DAILY = window.DAILY_IDS
     if (action === "sound-toggle" && window.Sound) {
       try {
         if (window.Sound.state && window.Sound.state.playing) window.Sound.stop();
-        else window.Sound.arm();
-      } catch (err) {}
+        else {
+          window.Sound.arm();
+          /* Report what happened. This failed invisibly for two rounds: the
+             button looked identical whether the track was playing, blocked,
+             or 404ing. Give it a beat for play() to settle, then say so. */
+          setTimeout(function () {
+            var st = window.Sound.state || {};
+            var d = typeof window.Sound.diag === "function" ? window.Sound.diag() : null;
+            var audible = typeof window.Sound.isAudible === "function"
+              ? window.Sound.isAudible() : !!st.playing;
+
+            if (st.error && String(st.error).indexOf("missing:") === 0) {
+              toast("Sound file missing — " + String(st.error).slice(8));
+            } else if (d && d.players.length && d.players.some(function (p) { return p.err; })) {
+              var e = d.players.filter(function (p) { return p.err; })[0];
+              toast("Audio failed to decode (" + e.src + ", code " + e.err + ").");
+            } else if (!st.playing) {
+              toast("Sound was blocked by the browser. Try again.");
+            } else if (!audible) {
+              /* state says playing but no element is advancing: the track is
+                 stalled, not muted. A different problem with a different fix,
+                 and worth saying out loud rather than blaming the switch. */
+              toast("Sound started but stalled — tap once more.");
+            } else {
+              /* Genuinely advancing. If it is still silent, the cause is
+                 outside anything JS can see: on iPhone the ringer switch
+                 mutes HTML5 audio with no detectable signal at all. */
+              toast("Sound on. If you hear nothing, check the side switch.");
+            }
+          }, 1400);
+        }
+      } catch (err) { toast("Sound failed to start."); }
       return;
     }
   });
+
+  /* Small transient message. Deliberately not an alert: this reports state,
+     it does not need a decision. */
+  var toastTimer = null;
+  function toast(msg) {
+    var el = document.getElementById("toast");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "toast";
+      document.body.appendChild(el);
+    }
+    el.textContent = msg;
+    el.classList.add("on");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.classList.remove("on"); }, 4200);
+  }
 
   /* writing surfaces */
   var quizTimers = {};
@@ -1765,20 +2396,15 @@ window.DAILY = window.DAILY_IDS
     }
   }
 
+  /* Static build: the catalog is spliced into this page at build time, so
+     there is nothing to fetch and nothing that can fail. The dev server's
+     version of boot() asked /api/library first; here that is a guaranteed
+     404 before the first paint on every launch. */
   function boot() {
-    fetch("/api/library")
-      .then(function (r) { return r.json(); })
-      .then(function (d) {
-        window.ITEMS = (d && d.videos) || [];
-        init();
-      })
-      .catch(function () {
-        /* offline: run on whatever the splice layer left behind */
-        if (window.ITEMS && window.ITEMS.length) { init(); return; }
-        $("#today-cards").innerHTML =
-          '<div class="offline">The library is closed — no server and no cached shelf.<br>' +
-          "Start it with <b>python3 server.py</b> and reopen.</div>";
-      });
+    if (window.ITEMS && window.ITEMS.length) { init(); return; }
+    document.getElementById("today-cards").innerHTML =
+      '<div class="offline">This build shipped without a catalog.<br>' +
+      "Rebuild with <b>python3 deploy_phone.py</b>.</div>";
   }
 
   if (document.readyState === "loading") {
@@ -1797,5 +2423,286 @@ window.DAILY = window.DAILY_IDS
   }
 })();
 </script>
+
+<!-- library:feel:start -->
+<script>
+/* ====================================================================== */
+/* Feel — the layer that decides whether this reads as an app or a page.   */
+/*                                                                        */
+/* Deliberately self-contained: it hooks the DOM through observers and     */
+/* delegated events rather than the renderers, so it keeps working after   */
+/* every re-render without any renderer knowing it exists.                 */
+/* ====================================================================== */
+(function () {
+  "use strict";
+
+  var RM = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
+  function reduced() { return !!(RM && RM.matches); }
+
+  /* iOS only evaluates :active on elements in a document that has a touch
+     listener. One empty listener is the whole fix, and without it every
+     press state below silently does nothing on an iPhone. */
+  document.addEventListener("touchstart", function () {}, { passive: true });
+
+  /* Vibration is a no-op on iOS Safari — the API does not exist there and no
+     amount of guarding changes that. It is here for Android and for a future
+     iOS that ships it; it must never be the only feedback for an action. */
+  function haptic(ms) {
+    try { if (navigator.vibrate && !reduced()) navigator.vibrate(ms || 8); } catch (e) {}
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* reveal on entry — doubles as the load sequence                     */
+  /* ---------------------------------------------------------------- */
+  /* Parents only. Marking a section and its rows both would run two nested
+     animations on the same pixels. */
+  var REVEAL_SEL = ".sect,#today-cards .dcard,.shelf,.stat-grid,.charge-grid," +
+                   ".chip-grid,.fin,.j-empty,.quizline";
+  var io = null;
+
+  if ("IntersectionObserver" in window) {
+    io = new IntersectionObserver(function (entries) {
+      var n = 0;
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        /* Stagger within a batch, capped so a long list never becomes a slow
+           wave the user has to sit through. */
+        e.target.style.setProperty("--d", Math.min(n * 55, 220) + "ms");
+        e.target.classList.add("in");
+        io.unobserve(e.target);
+        n++;
+      });
+    }, { rootMargin: "0px 0px -6% 0px", threshold: 0.01 });
+  }
+
+  function markReveals() {
+    if (!io || reduced()) return;
+    var list = document.querySelectorAll(REVEAL_SEL);
+    for (var i = 0; i < list.length; i++) {
+      var el = list[i];
+      if (el.getAttribute("data-rev")) continue;
+      if (el.closest(".reveal")) continue;          /* never nest reveals */
+      el.setAttribute("data-rev", "1");
+      el.classList.add("reveal");
+      io.observe(el);
+    }
+  }
+
+  /* Hard safety net. .reveal starts at opacity:0, so any path where the
+     observer never fires would leave the app blank. Nothing about a motion
+     nicety is worth that risk. */
+  function unhideAll() {
+    var list = document.querySelectorAll(".reveal:not(.in)");
+    for (var i = 0; i < list.length; i++) list[i].classList.add("in");
+  }
+  setInterval(function () {
+    /* Anything still hidden well after it was marked gets shown. */
+    var list = document.querySelectorAll(".reveal:not(.in)");
+    for (var i = 0; i < list.length; i++) {
+      var el = list[i], t = +(el.getAttribute("data-revt") || 0);
+      if (!t) { el.setAttribute("data-revt", String(Date.now())); continue; }
+      if (Date.now() - t > 2500) el.classList.add("in");
+    }
+  }, 1200);
+  window.addEventListener("pagehide", unhideAll);
+
+  /* ---------------------------------------------------------------- */
+  /* images settle rather than pop                                      */
+  /* ---------------------------------------------------------------- */
+  /* `load` does not bubble, so this listens in the capture phase. */
+  document.addEventListener("load", function (e) {
+    var t = e.target;
+    if (t && t.tagName === "IMG" && t.closest && t.closest(".thumbbox")) t.classList.add("ld");
+  }, true);
+
+  function markLoaded() {
+    var list = document.querySelectorAll(".thumbbox img:not(.ld)");
+    for (var i = 0; i < list.length; i++) {
+      /* Cached images finish before the listener is ever attached. */
+      if (list[i].complete && list[i].naturalWidth) list[i].classList.add("ld");
+    }
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* rails fade only on the side that still has content                 */
+  /* ---------------------------------------------------------------- */
+  function railEdges(r) {
+    var max = r.scrollWidth - r.clientWidth;
+    r.classList.toggle("more-left", r.scrollLeft > 4);
+    r.classList.toggle("more-right", r.scrollLeft < max - 4);
+  }
+  function wireRails() {
+    var list = document.querySelectorAll(".rail");
+    for (var i = 0; i < list.length; i++) {
+      var r = list[i];
+      if (!r.getAttribute("data-rail")) {
+        r.setAttribute("data-rail", "1");
+        (function (rail) {
+          rail.addEventListener("scroll", function () { railEdges(rail); }, { passive: true });
+        })(r);
+      }
+      railEdges(r);
+    }
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* collapsing title bar                                               */
+  /* ---------------------------------------------------------------- */
+  var TITLES = { today: "Today’s three", browse: "The shelves", journal: "The record" };
+  var bar = document.getElementById("topbar");
+  var barT = document.getElementById("topbar-t");
+
+  function syncBar() {
+    var s = document.querySelector(".screen.on");
+    if (!s || !bar) return;
+    var key = s.id.replace("screen-", "");
+    var title = TITLES[key] || "";
+    if (barT && barT.textContent !== title) barT.textContent = title;
+    bar.classList.toggle("on", s.scrollTop > 64);
+  }
+
+  var barTick = false;
+  function wireScreens() {
+    var list = document.querySelectorAll(".screen");
+    for (var i = 0; i < list.length; i++) {
+      var s = list[i];
+      if (s.getAttribute("data-sc")) continue;
+      s.setAttribute("data-sc", "1");
+      s.addEventListener("scroll", function () {
+        if (barTick) return;
+        barTick = true;
+        requestAnimationFrame(function () { barTick = false; syncBar(); });
+      }, { passive: true });
+    }
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* tab travel has a direction                                         */
+  /* ---------------------------------------------------------------- */
+  var ORDER = ["today", "browse", "journal"];
+  var lastTab = "today";
+
+  /* Capture phase, so the direction class is in place before the app adds
+     .on — the animation is keyed off the two together. */
+  document.addEventListener("click", function (e) {
+    var el = e.target.closest ? e.target.closest('[data-action="tab"]') : null;
+    if (!el) return;
+    var next = el.getAttribute("data-tab");
+    haptic(6);
+    if (next === lastTab) {
+      /* Second tap on the tab you are already on scrolls to top, the way a
+         native tab bar does. */
+      var cur = document.querySelector(".screen.on");
+      if (cur) cur.scrollTo({ top: 0, behavior: reduced() ? "auto" : "smooth" });
+      return;
+    }
+    var scr = document.getElementById("screen-" + next);
+    if (scr && !reduced()) {
+      var dir = ORDER.indexOf(next) > ORDER.indexOf(lastTab) ? "from-r" : "from-l";
+      scr.classList.remove("from-l", "from-r");
+      void scr.offsetWidth;                          /* restart the animation */
+      scr.classList.add(dir);
+    }
+    lastTab = next;
+    requestAnimationFrame(syncBar);
+  }, true);
+
+  /* ---------------------------------------------------------------- */
+  /* depth behind sheets                                                */
+  /* ---------------------------------------------------------------- */
+  /* Watching the class rather than patching openPeek/closePaper keeps this
+     module independent of the app's internals. */
+  function watchOverlay(id, bodyClass) {
+    var el = document.getElementById(id);
+    if (!el || !window.MutationObserver) return;
+    new MutationObserver(function () {
+      var open = el.classList.contains("on") || el.classList.contains("open");
+      document.body.classList.toggle(bodyClass, open);
+      if (open) haptic(10);
+    }).observe(el, { attributes: true, attributeFilter: ["class"] });
+  }
+  watchOverlay("peek", "peeking");
+  watchOverlay("paper", "papered");
+
+  /* ---------------------------------------------------------------- */
+  /* reading progress                                                   */
+  /* ---------------------------------------------------------------- */
+  var ps = document.getElementById("paper-scroll");
+  var prog = document.getElementById("paper-prog");
+  if (ps && prog) {
+    var pTick = false;
+    ps.addEventListener("scroll", function () {
+      if (pTick) return;
+      pTick = true;
+      requestAnimationFrame(function () {
+        pTick = false;
+        var max = ps.scrollHeight - ps.clientHeight;
+        var pct = max > 40 ? Math.min(100, (ps.scrollTop / max) * 100) : 0;
+        prog.style.width = pct + "%";
+      });
+    }, { passive: true });
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* primary actions bloom from where the thumb landed                  */
+  /* ---------------------------------------------------------------- */
+  var BLOOM_SEL = ".peek-btn.primary,.open-art,.finish";
+
+  document.addEventListener("touchstart", function (e) {
+    var el = e.target.closest ? e.target.closest(BLOOM_SEL) : null;
+    if (!el || !e.touches[0]) return;
+    var r = el.getBoundingClientRect();
+    el.style.setProperty("--px", (e.touches[0].clientX - r.left) + "px");
+    el.style.setProperty("--py", (e.touches[0].clientY - r.top) + "px");
+  }, { passive: true });
+
+  document.addEventListener("click", function (e) {
+    var el = e.target.closest ? e.target.closest(BLOOM_SEL) : null;
+    if (!el) return;
+    haptic(11);
+    if (reduced()) return;
+    el.classList.remove("bloom");
+    void el.offsetWidth;
+    el.classList.add("bloom");
+  }, true);
+
+  /* A shorter tick for anything that just changes a filter or opens a card. */
+  document.addEventListener("click", function (e) {
+    var el = e.target.closest ? e.target.closest("[data-action]") : null;
+    if (!el) return;
+    var a = el.getAttribute("data-action");
+    if (a === "peek" || a === "open" || a === "filter-charge" ||
+        a === "filter-weight" || a === "filter-medium") haptic(7);
+  }, true);
+
+  /* ---------------------------------------------------------------- */
+  /* rescan whenever the app renders                                    */
+  /* ---------------------------------------------------------------- */
+  function scan() { markReveals(); markLoaded(); wireRails(); wireScreens(); syncBar(); }
+
+  if (window.MutationObserver) {
+    var pending = false;
+    var mo = new MutationObserver(function () {
+      if (pending) return;
+      pending = true;
+      requestAnimationFrame(function () { pending = false; scan(); });
+    });
+    /* childList only. The scan itself sets classes and attributes, so
+       observing those would make it retrigger itself forever. */
+    ORDER.forEach(function (t) {
+      var el = document.getElementById("screen-" + t);
+      if (el) mo.observe(el, { childList: true, subtree: true });
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", scan);
+  } else {
+    scan();
+  }
+  window.addEventListener("load", scan);
+})();
+</script>
+<!-- library:feel:end -->
 </body>
 </html>
