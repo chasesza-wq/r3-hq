@@ -711,25 +711,44 @@
                transition:opacity .3s ease;-webkit-backdrop-filter:blur(3px);
                backdrop-filter:blur(3px)}
   #sound.on #sound-scrim{opacity:1}
+  /* The track list scrolls, the sheet does not. With fifteen sounds and only
+     eight shelves the rows outgrew the sheet, and when the whole sheet was the
+     scroller the volume slider and the off switch sat below the fold — you had
+     to scroll past every track to turn the music down. Head and footer are
+     pinned; only .snd-list moves. */
   .sound-sheet{position:absolute;left:0;right:0;bottom:0;
     border-radius:20px 20px 0 0;
     padding:0 0 calc(env(safe-area-inset-bottom,0px) + 18px);
     transform:translateY(100%);
     transition:transform .38s cubic-bezier(.32,.72,.28,1);
-    max-height:86dvh;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain}
+    max-height:86dvh;display:flex;flex-direction:column;
+    overflow:hidden;overscroll-behavior:contain}
   #sound.on .sound-sheet{transform:translateY(0)}
-  #sound-grab{display:block;width:100%;min-height:44px;border:none;
+  #sound-grab{display:block;width:100%;min-height:44px;border:none;flex:0 0 auto;
               background:transparent;padding:11px 0 7px}
   #sound-grab::before{content:"";display:block;width:38px;height:4px;border-radius:2px;
                       background:#3f3f46;margin:0 auto}
-  #sound-body{padding:4px 18px 4px}
+  #sound-body{padding:4px 18px 4px;display:flex;flex-direction:column;
+              flex:1 1 auto;min-height:0}
+  /* min-height:0 on both this and #sound-body, or the flex item refuses to
+     shrink below its content and the scroller never engages. */
+  .snd-list{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;
+            margin:0 -4px;padding:0 4px}
+  .snd-grp{font-family:Georgia,"Times New Roman",serif;font-size:10px;
+           letter-spacing:.22em;text-transform:uppercase;color:#57575e;
+           padding:12px 12px 6px;position:sticky;top:0;z-index:1;
+           background:linear-gradient(180deg,rgba(17,17,19,.97),rgba(17,17,19,.86))}
+  .snd-list > .snd-grp:first-child{padding-top:2px}
 
-  .snd-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:4px}
+  /* flex:0 0 auto on all three, or the column shares the squeeze with them and
+     the note goes elliptical instead of the list scrolling. */
+  .snd-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+            margin-bottom:4px;flex:0 0 auto}
   .snd-kick{font-family:Georgia,"Times New Roman",serif;font-size:11px;letter-spacing:.26em;
             text-transform:uppercase;color:#c9a86a}
   .snd-state{font-size:11px;color:#71717a;font-variant-numeric:tabular-nums}
   .snd-note{font-family:Georgia,"Times New Roman",serif;font-style:italic;font-size:12.5px;
-            color:#6b6b73;margin:2px 0 14px;line-height:1.5}
+            color:#6b6b73;margin:2px 0 10px;line-height:1.5;flex:0 0 auto}
 
   .trk{display:flex;align-items:center;gap:12px;width:100%;text-align:left;
        padding:11px 12px;border-radius:13px;border:1px solid transparent;
@@ -763,7 +782,7 @@
   .trk-missing .trk-t{color:#57575e}
 
   .snd-foot{display:flex;align-items:center;gap:12px;margin-top:14px;padding-top:14px;
-            border-top:1px solid #1c1c1f}
+            border-top:1px solid #1c1c1f;flex:0 0 auto}
   #snd-vol{flex:1 1 auto;-webkit-appearance:none;appearance:none;height:26px;background:transparent}
   #snd-vol::-webkit-slider-runnable-track{height:4px;border-radius:2px;
     background:linear-gradient(90deg,#c9a86a var(--pct,35%),#2a2a2e var(--pct,35%))}
@@ -1050,7 +1069,7 @@ window.DAILY = window.DAILY_IDS
    The design layer renders UI against window.Sound and never touches a media
    element itself. Two players crossfade so a section change never cuts. */
 (function () {
-  var TRACKS = [{"id": "try", "key": "mind", "title": "Try", "artist": "EndOfApril", "shelf": "mind", "confidence": "guess", "available": true, "placeholder": false, "src": "sounds/mind.m4a", "tiktok": "https://www.tiktok.com/music/Try-7533289206400027394"}, {"id": "biting-bullets", "key": "momentum", "title": "biting bullets", "artist": "ridgeclub", "shelf": "momentum", "confidence": "confident", "available": true, "placeholder": false, "src": "sounds/momentum.m4a", "tiktok": "https://www.tiktok.com/music/biting-bullets-7657072140283643921"}, {"id": "blueberry", "key": "philosophy", "title": "My Blueberry Life", "artist": "Current Joys", "shelf": "philosophy", "confidence": "confident", "available": true, "placeholder": false, "src": "sounds/philosophy.m4a", "tiktok": "https://www.tiktok.com/music/My-Blueberry-Life-7028970690499381250"}, {"id": "outro", "key": "craft", "title": "Outro", "artist": "Circa 40", "shelf": "craft", "confidence": "guess", "available": true, "placeholder": false, "src": "sounds/craft.m4a", "tiktok": "https://www.tiktok.com/music/Outro-7522739442303109136"}, {"id": "blckstvr", "key": "world", "title": "original sound", "artist": "Blckstvr", "shelf": "world", "confidence": "chosen", "available": true, "placeholder": false, "src": "sounds/world.mp3", "tiktok": "https://www.tiktok.com/music/original-sound-Blckstvr-7660702472322910994"}, {"id": "san", "key": "articles", "title": "original sound", "artist": "san", "shelf": "articles", "confidence": "chosen", "available": true, "placeholder": false, "src": "sounds/articles.mp3", "tiktok": "https://www.tiktok.com/music/original-sound-7614310177965394691"}, {"id": "cheer", "key": "culture", "title": "original sound", "artist": "cheer", "shelf": "culture", "confidence": "guess", "available": true, "placeholder": false, "src": "sounds/culture.mp3", "tiktok": "https://www.tiktok.com/music/original-sound-7653535707205503766"}, {"id": "sail-away", "key": "money", "title": "Sail away", "artist": "Chris Heyn Jr.", "shelf": "money", "confidence": "chosen", "available": true, "placeholder": false, "src": "sounds/money.mp3", "tiktok": "https://www.tiktok.com/music/original-sound-chrisheynjr-7652469475187706655"}];
+  var TRACKS = [{"id": "try", "key": "mind", "title": "Try", "artist": "EndOfApril", "shelf": "mind", "confidence": "guess", "available": true, "placeholder": false, "src": "sounds/mind.m4a", "tiktok": "https://www.tiktok.com/music/Try-7533289206400027394"}, {"id": "biting-bullets", "key": "momentum", "title": "biting bullets", "artist": "ridgeclub", "shelf": "momentum", "confidence": "confident", "available": true, "placeholder": false, "src": "sounds/momentum.m4a", "tiktok": "https://www.tiktok.com/music/biting-bullets-7657072140283643921"}, {"id": "blueberry", "key": "philosophy", "title": "My Blueberry Life", "artist": "Current Joys", "shelf": "philosophy", "confidence": "confident", "available": true, "placeholder": false, "src": "sounds/philosophy.m4a", "tiktok": "https://www.tiktok.com/music/My-Blueberry-Life-7028970690499381250"}, {"id": "outro", "key": "craft", "title": "Outro", "artist": "Circa 40", "shelf": "craft", "confidence": "guess", "available": true, "placeholder": false, "src": "sounds/craft.m4a", "tiktok": "https://www.tiktok.com/music/Outro-7522739442303109136"}, {"id": "blckstvr", "key": "world", "title": "original sound", "artist": "Blckstvr", "shelf": "world", "confidence": "chosen", "available": true, "placeholder": false, "src": "sounds/world.mp3", "tiktok": "https://www.tiktok.com/music/original-sound-Blckstvr-7660702472322910994"}, {"id": "san", "key": "articles", "title": "original sound", "artist": "san", "shelf": "articles", "confidence": "chosen", "available": true, "placeholder": false, "src": "sounds/articles.mp3", "tiktok": "https://www.tiktok.com/music/original-sound-7614310177965394691"}, {"id": "cheer", "key": "culture", "title": "original sound", "artist": "cheer", "shelf": "culture", "confidence": "guess", "available": true, "placeholder": false, "src": "sounds/culture.mp3", "tiktok": "https://www.tiktok.com/music/original-sound-7653535707205503766"}, {"id": "sail-away", "key": "money", "title": "Sail away", "artist": "Chris Heyn Jr.", "shelf": "money", "confidence": "chosen", "available": true, "placeholder": false, "src": "sounds/money.mp3", "tiktok": "https://www.tiktok.com/music/original-sound-chrisheynjr-7652469475187706655"}, {"id": "hit-da-flo", "key": "hitdaflo", "title": "Hit da flo", "artist": "boohavinn", "shelf": null, "confidence": "chosen", "available": true, "placeholder": false, "src": "sounds/hitdaflo.mp3", "tiktok": "https://www.tiktok.com/music/Hit-da-flo-7655862224816196366"}, {"id": "fever", "key": "fever", "title": "Fever", "artist": "Buckshot & fakemink", "shelf": null, "confidence": "chosen", "available": true, "placeholder": false, "src": "sounds/fever.mp3", "tiktok": "https://www.tiktok.com/music/Fever-7541188890432407568"}, {"id": "tesla", "key": "tesla", "title": "tesla (slowed electro mix)", "artist": "fixupboy", "shelf": null, "confidence": "chosen", "available": true, "placeholder": false, "src": "sounds/tesla.mp3", "tiktok": "https://www.tiktok.com/music/tesla-slowed-electro-mix-7650155932039187207"}, {"id": "trendformusic", "key": "trendformusic", "title": "original sound", "artist": "Trendformusic", "shelf": null, "confidence": "chosen", "available": true, "placeholder": false, "src": "sounds/trendformusic.mp3", "tiktok": "https://www.tiktok.com/music/son-original-Trendformusic-7500983113040857911"}, {"id": "aizen", "key": "aizen", "title": "original sound", "artist": "AIZEN", "shelf": null, "confidence": "chosen", "available": true, "placeholder": false, "src": "sounds/aizen.mp3", "tiktok": "https://www.tiktok.com/music/som-original-7649845203892734740"}, {"id": "tejaz", "key": "tejaz", "title": "original sound", "artist": "TEJAZ", "shelf": null, "confidence": "chosen", "available": true, "placeholder": false, "src": "sounds/tejaz.mp3", "tiktok": "https://www.tiktok.com/music/original-sound-7572956118251539222"}, {"id": "bscp", "key": "bscp", "title": "original sound", "artist": "All About SCP", "shelf": null, "confidence": "chosen", "available": true, "placeholder": false, "src": "sounds/bscp.mp3", "tiktok": "https://www.tiktok.com/music/original-sound-7644154124955470612"}];
   var SHELVES = ["mind", "momentum", "philosophy", "culture", "craft", "world", "money", "articles"];
   var KEY = "library.sound.v1";
 
@@ -1058,9 +1077,12 @@ window.DAILY = window.DAILY_IDS
   try { saved = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) {}
   if (saved.assign) {
     TRACKS.forEach(function (t) {
-      if (saved.assign[t.id] && SHELVES.indexOf(saved.assign[t.id]) >= 0) {
-        t.shelf = saved.assign[t.id];
-      }
+      var s = saved.assign[t.id];
+      /* "" is a deliberate unassign, not an absent key. Without telling those
+         two apart, taking a track off a shelf never survived a reload: the
+         blank read as "nothing saved" and the built-in shelf came back. */
+      if (s === "") { t.shelf = null; return; }
+      if (s && SHELVES.indexOf(s) >= 0) t.shelf = s;
     });
   }
 
@@ -1112,7 +1134,7 @@ window.DAILY = window.DAILY_IDS
 
   function persist() {
     var assign = {};
-    TRACKS.forEach(function (t) { assign[t.id] = t.shelf; });
+    TRACKS.forEach(function (t) { assign[t.id] = t.shelf || ""; });
     try {
       localStorage.setItem(KEY, JSON.stringify({
         assign: assign, volume: S.state.volume, muted: S.state.muted
@@ -1311,10 +1333,15 @@ window.DAILY = window.DAILY_IDS
     emit();
   };
 
+  /* Blank shelf means "off every shelf" — the track stays in the picker and
+     stays hand-playable, it just stops being what scrolling reaches for.
+     There are more tracks than shelves now, so that is an ordinary state. */
   S.assign = function (id, shelf) {
     var t = byId(id);
-    if (!t || SHELVES.indexOf(shelf) < 0) return;
-    t.shelf = shelf;
+    if (!t) return;
+    if (!shelf) t.shelf = null;
+    else if (SHELVES.indexOf(shelf) >= 0) t.shelf = shelf;
+    else return;
     persist();
     emit();
   };
@@ -1899,7 +1926,7 @@ window.DAILY = window.DAILY_IDS
     });
   })();
   /* ---- build identity ------------------------------------------------ */
-  window.BUILD = "f1447516e8";
+  window.BUILD = "24f023e267";
   (function () {
     if (!("serviceWorker" in navigator)) return;
     /* A new worker taking control means newer files are now being served, but
@@ -2661,7 +2688,7 @@ window.DAILY = window.DAILY_IDS
       : '<p class="snd-note">Sound stays off until you ask for it once. ' +
         "Tap any track to start.</p>";
 
-    var rows = tracks.map(function (t) {
+    function row(t) {
       var cur = st.current === t.id;
       var cls = "trk" + (cur ? " on" : "") + (cur && live ? " live" : "") +
                 (t.available ? "" : " trk-missing");
@@ -2676,7 +2703,25 @@ window.DAILY = window.DAILY_IDS
         "</span>" +
         '<span class="trk-shelf">' + esc(t.shelf || "") + "</span>" +
       "</button>";
-    }).join("");
+    }
+
+    /* There are more sounds than shelves, so one flat list would put a shelf
+       badge on some rows and a blank on the rest with nothing saying why.
+       Split them.
+       Unshelved first, and not because they are the new ones. Fifteen rows do
+       not fit the sheet, so whichever group is second is behind a scroll — and
+       these are the only tracks a tap is the *sole* way to reach. The shelved
+       eight get chosen for you by scrolling the page; burying the ones that
+       cannot would be exactly backwards. */
+    var onShelf = tracks.filter(function (t) { return !!t.shelf; });
+    var loose = tracks.filter(function (t) { return !t.shelf; });
+
+    var rows = '<div class="snd-list">' +
+      (loose.length ? '<div class="snd-grp">Tap to play</div>' +
+                      loose.map(row).join("") : "") +
+      (onShelf.length ? '<div class="snd-grp">Follows the page</div>' +
+                        onShelf.map(row).join("") : "") +
+    "</div>";
 
     var pct = Math.round((st.muted ? 0 : (st.volume == null ? 0.35 : st.volume)) * 100);
     var foot = '<div class="snd-foot">' +
