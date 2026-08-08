@@ -1679,7 +1679,8 @@ window.DAILY = window.DAILY_IDS
     savedOnly: false,
     openShelves: {},
     paperId: null,
-    journalAll: false
+    journalAll: false,
+    waitingAll: false
   };
 
   var SHELF_ORDER = ["mind", "momentum", "philosophy", "craft", "culture", "world", "money", "unsorted"];
@@ -1926,7 +1927,7 @@ window.DAILY = window.DAILY_IDS
     });
   })();
   /* ---- build identity ------------------------------------------------ */
-  window.BUILD = "24f023e267";
+  window.BUILD = "dd55426f52";
   (function () {
     if (!("serviceWorker" in navigator)) return;
     /* A new worker taking control means newer files are now being served, but
@@ -2441,9 +2442,28 @@ window.DAILY = window.DAILY_IDS
       } catch (e) {}
     }
 
-    var unwritten = watched.filter(function (v) { return !hasJournal(v); }).length;
-    if (unwritten > 0) {
-      html += '<div class="nudge">' + unwritten + " finished without a page. The page is the point.</div>";
+    /* Finished, not yet written up.
+       This used to be a count and nothing else. The screen said "7 finished
+       without a page. The page is the point." and then offered no way to reach
+       any of the seven — so The record, the one screen that exists for
+       journalling, was the one screen a finished video could not be opened
+       from. The nudge named the problem and dead-ended on it.
+       They open straight to the paper rather than the peek: whether it was
+       worth watching is a settled question by the time it is in here. */
+    var unwritten = watched.filter(function (v) { return !hasJournal(v); });
+    if (unwritten.length) {
+      var waiting = unwritten.slice().sort(function (a, b) {
+        return String(b.watched_at || "").localeCompare(String(a.watched_at || ""));
+      });
+      html += '<div class="axis-label brass" style="margin-top:28px">Waiting for a page</div>' +
+              '<div class="nudge">' + waiting.length +
+              " finished without a page. The page is the point.</div>";
+      html += (UI.waitingAll ? waiting : waiting.slice(0, PAGE_CAP))
+        .map(function (v) { return rowHtml(v, "open"); }).join("");
+      if (waiting.length > PAGE_CAP) {
+        html += '<button class="morebtn" data-action="waiting-all">' +
+          (UI.waitingAll ? "Show fewer" : "All " + waiting.length + " waiting") + "</button>";
+      }
     }
 
     if (!watched.length && !pages.length) {
@@ -2990,6 +3010,12 @@ window.DAILY = window.DAILY_IDS
     }
     if (action === "journal-all") {
       UI.journalAll = !UI.journalAll;
+      renderJournal();
+      return;
+    }
+
+    if (action === "waiting-all") {
+      UI.waitingAll = !UI.waitingAll;
       renderJournal();
       return;
     }
