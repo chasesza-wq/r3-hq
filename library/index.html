@@ -477,6 +477,22 @@
   .j-empty{text-align:center;margin-top:44px}
   .nudge{font-size:12px;color:#78716c;margin-top:14px;font-style:italic;font-family:Georgia,"Times New Roman",serif}
 
+  /* ---- habits taken ---------------------------------------------------- */
+  .hrow{
+    display:block;width:100%;text-align:left;cursor:pointer;margin-top:9px;
+    background:linear-gradient(160deg,#151310,#191612);
+    border:1px solid rgba(245,158,11,.26);border-radius:12px;padding:13px 14px;
+  }
+  .hrow:active{opacity:.82}
+  .hrow > span{display:block}
+  .hrow.done{border-color:#2e2a24;opacity:.62}
+  .hr-title{font-family:Georgia,"Times New Roman",serif;font-size:15px;line-height:1.3;
+            font-weight:700;color:#e8dfcd}
+  .hr-line{font-size:13px;line-height:1.55;color:#d6cdb8;margin-top:6px}
+  .hr-line .arrow{color:rgba(245,158,11,.7)}
+  .hr-meta{font-size:10.5px;font-weight:700;color:rgba(245,158,11,.75);margin-top:8px}
+  .hrow.done .hr-meta{color:#78716c}
+
   /* ---- the Watched shelf ----------------------------------------------
      Two across, thumbnail first. Everywhere else in the app an item is a
      picture; this screen used to turn it into a line of text the moment it
@@ -1233,7 +1249,43 @@ window.DAILY = window.DAILY_IDS
       };
     },
 
-    acceptHabit: function (id) { rec(id).habitAccepted = true; persist(); emit(); },
+    /* The date rides along. A habit is a commitment for N days and without a
+       start date there is no way to say whether the N days are up -- which
+       made "which habits have I taken" unanswerable even on the device that
+       held the answer. Kept on re-accept so toggling does not reset the run. */
+    acceptHabit: function (id) {
+      var r = rec(id);
+      r.habitAccepted = true;
+      if (!r.habitAt) r.habitAt = new Date().toISOString().slice(0, 10);
+      persist(); emit();
+    },
+
+    /* Every habit taken, newest first, with the item it came from and how far
+       into its run it is. The app knew this and never showed it: the Watched
+       screen reported a count and nothing else, so the single most actionable
+       output of the whole system existed only as a number. */
+    habits: function () {
+      var out = [];
+      (window.ITEMS || []).forEach(function (v) {
+        var r = store[v.id];
+        if (!r || r.habitAccepted !== true) return;
+        var q = null;
+        try { q = Q.forItem(v.id); } catch (e) { return; }
+        if (!q || !q.habit) return;
+        var started = dayNum(r.habitAt);
+        out.push({
+          id: v.id,
+          title: v.title,
+          habit: q.habit,
+          at: r.habitAt || null,
+          /* null when it predates the timestamp, rather than a guessed zero. */
+          day: started === null ? null : Math.min(q.habit.days, today() - started + 1),
+          done: started !== null && (today() - started + 1) > q.habit.days
+        });
+      });
+      out.sort(function (a, b) { return String(b.at || "").localeCompare(String(a.at || "")); });
+      return out;
+    },
     skipHabit: function (id) { rec(id).habitAccepted = false; persist(); emit(); },
 
     /* ---- multiple choice ---------------------------------------------- */
@@ -2315,7 +2367,7 @@ window.DAILY = window.DAILY_IDS
     });
   })();
   /* ---- build identity ------------------------------------------------ */
-  window.BUILD = "5dfb277b25";
+  window.BUILD = "e184f8e592";
   (function () {
     if (!("serviceWorker" in navigator)) return;
     /* A new worker taking control means newer files are now being served, but
@@ -2871,6 +2923,10 @@ window.DAILY = window.DAILY_IDS
       } catch (e) {}
     }
 
+    /* Habits taken. Above the shelf on purpose: these are the only things in
+       the app that are supposed to be happening away from the app. */
+    html += habitsHtml();
+
     if (!watched.length) {
       html += '<div class="j-empty">' +
         '<div class="fin-orn">❦</div>' +
@@ -2913,6 +2969,35 @@ window.DAILY = window.DAILY_IDS
     }
 
     $("#journal-body").innerHTML = html;
+  }
+
+  function habitsHtml() {
+    if (!window.Quiz || typeof window.Quiz.habits !== "function") return "";
+    var list;
+    try { list = window.Quiz.habits(); } catch (e) { return ""; }
+    if (!list || !list.length) return "";
+
+    var running = list.filter(function (h) { return !h.done; });
+    return '<div class="axis-label brass" style="margin-top:30px">Habits taken</div>' +
+      '<div class="nudge">' + running.length + " still inside " +
+      (running.length === 1 ? "its" : "their") + " run" +
+      (list.length > running.length
+        ? ", " + (list.length - running.length) + " finished"
+        : "") + ".</div>" +
+      list.map(function (h) {
+        var run = h.day === null
+          ? "taken before this was tracked"
+          : h.done ? "run complete · " + h.habit.days + " days"
+                   : "day " + h.day + " of " + h.habit.days;
+        return '<button class="hrow' + (h.done ? " done" : "") +
+          '" data-action="open-check" data-id="' + esc(h.id) + '">' +
+          '<span class="hr-title">' + esc(h.habit.title) + "</span>" +
+          '<span class="hr-line">' + esc(h.habit.trigger) +
+            ' <span class="arrow">→</span> ' + esc(h.habit.action) + "</span>" +
+          '<span class="hr-meta">' + esc(run) + " · from “" +
+            esc(h.title.slice(0, 46)) + (h.title.length > 46 ? "…" : "") + "”</span>" +
+        "</button>";
+      }).join("");
   }
 
   /* How far through the check an item is. One place, because the tile, the

@@ -14,7 +14,7 @@
    Everything else stays cache-first: the audio is ~5MB and immutable per
    build, and paying the network for it on every launch is the reason to have
    a service worker in the first place. */
-const CACHE = "library-static-5dfb277b25";
+const CACHE = "library-static-e184f8e592";
 const SHELL = ["./", "./index.html", "./manifest.webmanifest",
                "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
 
@@ -43,8 +43,8 @@ self.addEventListener("message", (e) => {
   /* Reply down the transferred port when there is one; fall back to the client
      itself, because a worker that took over via clients.claim() can be asked
      before the page has wired a channel. */
-  if (e.ports && e.ports[0]) e.ports[0].postMessage({ stamp: "5dfb277b25" });
-  else if (e.source) e.source.postMessage({ stamp: "5dfb277b25" });
+  if (e.ports && e.ports[0]) e.ports[0].postMessage({ stamp: "e184f8e592" });
+  else if (e.source) e.source.postMessage({ stamp: "e184f8e592" });
 });
 
 self.addEventListener("fetch", (e) => {
