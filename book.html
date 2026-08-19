@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book your 15-minute leak audit · RecoverRevenue</title>
+<meta name="description" content="Pick a time. Fifteen minutes, no deck. We find where your calls, clicks and reviews are leaking and tell you the honest number — even if it's 'you don't need us.'">
+<meta name="robots" content="index,follow">
+<link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="preconnect" href="https://assets.calendly.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,700,800&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   RecoverRevenue · Booking page
+   Same ink as the flagship. One job: pick a time.
+   ============================================================ */
+:root{
+  --paper:#f4f7fc; --surface:#fdfdff; --ink:#0e1726; --muted:#5c6a80;
+  --accent:#17419b; --accent-deep:#102e70;
+  --line:rgba(14,23,38,.09); --line-soft:rgba(14,23,38,.055);
+  --r:18px; --e:cubic-bezier(.22,.61,.25,1); --pos:#12b866;
+  --display:'Cabinet Grotesk',Avenir,'Helvetica Neue',sans-serif;
+  --body:'Satoshi',Avenir,'Helvetica Neue',sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);
+  font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit;text-decoration:none}
+.wrap{width:min(1180px,92vw);margin-inline:auto}
+
+/* ---------- nav ---------- */
+.nav{position:sticky;top:0;z-index:60;background:rgba(253,253,255,.86);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line-soft)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:70px}
+.logo{font-family:var(--display);font-weight:500;font-size:1.12rem;letter-spacing:-.02em}
+.logo b{font-weight:800;color:var(--accent)}
+.back{font-size:.92rem;color:var(--muted);display:inline-flex;align-items:center;gap:8px;transition:color .25s var(--e)}
+.back:hover{color:var(--accent)}
+.back span{transition:transform .3s var(--e)}
+.back:hover span{transform:translateX(-3px)}
+
+/* ---------- head ---------- */
+.bhead{padding:60px 0 8px;text-align:center}
+.eyebrow{display:inline-flex;align-items:center;gap:11px;font-size:.74rem;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 20px}
+.eyebrow::before{content:"";width:26px;height:1px;background:var(--accent);opacity:.7}
+.bhead h1{font-family:var(--display);font-weight:800;letter-spacing:-.032em;line-height:1.04;
+  font-size:clamp(2.2rem,5.2vw,3.6rem);margin:0 0 20px}
+.bhead h1 em{font-style:normal;color:var(--accent)}
+.bhead .lede{color:var(--muted);max-width:34em;margin:0 auto;font-size:1.03rem;line-height:1.66}
+
+/* ---------- layout ---------- */
+.split{display:grid;grid-template-columns:340px minmax(0,1fr);gap:34px;
+  align-items:start;padding:44px 0 80px}
+
+/* ---------- left rail ---------- */
+.rail{position:sticky;top:100px;display:flex;flex-direction:column;gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:26px 24px}
+.card h2{font-family:var(--display);font-size:1.06rem;letter-spacing:-.01em;margin:0 0 16px}
+.plist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:15px}
+.plist li{display:flex;gap:11px;font-size:.93rem;line-height:1.55;color:var(--muted)}
+.plist b{color:var(--ink);font-weight:700}
+.plist i{width:17px;height:17px;border-radius:50%;background:var(--pos);display:grid;place-items:center;flex:none;margin-top:3px}
+.plist i::after{content:"";width:6px;height:3px;border-left:1.6px solid #fff;border-bottom:1.6px solid #fff;transform:rotate(-45deg) translate(1px,-1px)}
+.meta{display:flex;flex-direction:column;gap:11px}
+.meta div{display:flex;align-items:baseline;justify-content:space-between;gap:14px;font-size:.9rem;
+  padding-bottom:11px;border-bottom:1px solid var(--line-soft)}
+.meta div:last-child{border-bottom:0;padding-bottom:0}
+.meta dt{color:var(--muted)}
+.meta dd{margin:0;font-weight:700;font-variant-numeric:tabular-nums}
+.nudge{background:var(--accent);color:#fff;border-radius:var(--r);padding:24px}
+.nudge p{margin:0;font-size:.93rem;line-height:1.6;color:rgba(255,255,255,.9)}
+.nudge p b{color:#fff}
+.nudge a{color:#fff;font-weight:700;border-bottom:1px solid rgba(255,255,255,.4);padding-bottom:1px}
+
+/* ---------- calendar ---------- */
+.calwrap{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+  overflow:hidden;min-height:720px;position:relative}
+.calbar{display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:16px 22px;border-bottom:1px solid var(--line-soft);background:var(--paper)}
+.calbar .t{font-family:var(--display);font-weight:700;font-size:.95rem;letter-spacing:-.01em}
+.calbar .pip{display:inline-flex;align-items:center;gap:8px;font-size:.72rem;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--pos)}
+.calbar .pip::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--pos);animation:pip 1.9s infinite}
+@keyframes pip{0%,100%{opacity:1}50%{opacity:.35}}
+.calendly-inline-widget{min-width:320px;height:700px}
+.calfall{position:absolute;inset:auto 0 0 0;top:57px;display:grid;place-items:center;
+  text-align:center;padding:40px;color:var(--muted);font-size:.95rem}
+.calfall a{color:var(--accent);font-weight:700;border-bottom:1px solid var(--line)}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line-soft);padding:38px 0 52px}
+.foot{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
+  color:var(--muted);font-size:.85rem}
+.foot .logo{font-size:.98rem}
+
+@media (max-width:940px){
+  .split{grid-template-columns:1fr;gap:22px;padding-top:32px}
+  .rail{position:static;flex-direction:column}
+  .bhead{padding-top:40px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="logo" href="index.html">Recover<b>Revenue</b></a>
+    <a class="back" href="index.html"><span>&larr;</span> Back to the site</a>
+  </div>
+</header>
+
+<div class="wrap bhead">
+  <p class="eyebrow">One call. Fifteen minutes.</p>
+  <h1>Find out what you are <em>leaking.</em></h1>
+  <p class="lede">Pick a time below. We look at your current call flow together and tell you, plainly, what it is costing you. If we are not the right fit, you leave with the number anyway.</p>
+</div>
+
+<div class="wrap split">
+
+  <aside class="rail">
+    <div class="card">
+      <h2>What happens on the call</h2>
+      <ul class="plist">
+        <li><i></i><span><b>We find the leak.</b> Where your calls, clicks and reviews are going today &mdash; with real numbers, not a pitch.</span></li>
+        <li><i></i><span><b>You hear the AI.</b> Ask and we will ring the receptionist together, live, on the call.</span></li>
+        <li><i></i><span><b>You get the honest answer.</b> Including &ldquo;you do not need us,&rdquo; if that is the answer.</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>The details</h2>
+      <dl class="meta">
+        <div><dt>Length</dt><dd id="mLen">15 minutes</dd></div>
+        <div><dt>Where</dt><dd>Phone or Google Meet</dd></div>
+        <div><dt>Cost</dt><dd>Free</dd></div>
+        <div><dt>Deck</dt><dd>None</dd></div>
+      </dl>
+    </div>
+
+    <div class="nudge">
+      <p><b>Nothing open that works?</b> Email <a href="mailto:chase@recoverrevenue.co?subject=Booking%20a%20time">chase@recoverrevenue.co</a> and we will find a slot around your day.</p>
+    </div>
+  </aside>
+
+  <main class="calwrap">
+    <div class="calbar">
+      <span class="t">Pick a time</span>
+      <span class="pip">Live calendar</span>
+    </div>
+    <div class="calfall" id="calfall">
+      Loading the calendar&hellip; if it does not appear,
+      <a id="calDirect" href="https://calendly.com/chase-sza/30min" target="_blank" rel="noopener">open it in a new tab</a>.
+    </div>
+    <div id="calmount"></div>
+  </main>
+
+</div>
+
+<footer>
+  <div class="wrap foot">
+    <span class="logo">Recover<b>Revenue</b></span>
+    <span>Websites and AI phone systems for local service businesses. Tampa Bay, FL.</span>
+    <span>&copy; 2026</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  /* ------------------------------------------------------------
+     ONE PLACE TO CHANGE THE EVENT.
+     Swap the slug when the 15-minute event type exists in Calendly.
+     ------------------------------------------------------------ */
+  var CAL_USER  = "chase-sza";
+  var CAL_EVENT = "30min";          /* -> "15min" once created */
+
+  var base = "https://calendly.com/" + CAL_USER + "/" + CAL_EVENT;
+  var params = "?hide_gdpr_banner=1&hide_landing_page_details=1&primary_color=17419b";
+  var qs = new URLSearchParams(location.search);
+  ["utm_source","utm_medium","utm_campaign","utm_content","utm_term"].forEach(function(k){
+    if(qs.get(k)) params += "&" + k + "=" + encodeURIComponent(qs.get(k));
+  });
+
+  document.getElementById("calDirect").href = base;
+  document.getElementById("mLen").textContent = CAL_EVENT === "15min" ? "15 minutes" : "15 minutes";
+
+  var mount = document.getElementById("calmount");
+  var w = document.createElement("div");
+  w.className = "calendly-inline-widget";
+  w.setAttribute("data-url", base + params);
+  w.setAttribute("data-resize", "true");
+  mount.appendChild(w);
+
+  var s = document.createElement("script");
+  s.src = "https://assets.calendly.com/assets/external/widget.js";
+  s.async = true;
+  s.onload = function(){
+    setTimeout(function(){
+      var fall = document.getElementById("calfall");
+      if(w.querySelector("iframe") && fall) fall.style.display = "none";
+    }, 900);
+  };
+  document.head.appendChild(s);
+})();
+</script>
+</body>
+</html>

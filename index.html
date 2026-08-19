@@ -332,66 +332,6 @@ html.js .frame.in img{transform:scale(1)}
   .seg .ls{display:inline}
 }
 
-/* ---------- the system, live (dashboard demo) ---------- */
-.live .h2{max-width:15em}
-.live-panel{
-  margin-top:clamp(40px,5vw,64px);border-radius:22px;overflow:hidden;color:#fff;
-  background:linear-gradient(158deg,#0e1726 0%,#14285e 62%,#17419b 128%);
-  box-shadow:0 2px 4px rgba(14,23,38,.06),0 44px 110px rgba(14,23,38,.30);
-}
-.live-top{display:flex;align-items:center;justify-content:space-between;gap:12px;
-  padding:17px 26px;border-bottom:1px solid rgba(255,255,255,.09)}
-.live-brand{display:flex;align-items:center;gap:11px;font-weight:700;font-size:.92rem;letter-spacing:.01em}
-.live-pip{width:9px;height:9px;border-radius:50%;background:var(--pos);flex:none;animation:pip 1.9s infinite}
-@keyframes pip{0%{box-shadow:0 0 0 0 rgba(18,184,102,.55)}70%{box-shadow:0 0 0 9px rgba(18,184,102,0)}100%{box-shadow:0 0 0 0 rgba(18,184,102,0)}}
-.live-badge{font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
-  color:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:5px 12px;white-space:nowrap}
-.live-body{display:grid;grid-template-columns:1.08fr 1fr}
-.live-left{padding:clamp(26px,3.4vw,44px);border-right:1px solid rgba(255,255,255,.09)}
-.live-cap{font-size:.73rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.55)}
-.live-total{font-family:var(--display);font-weight:800;letter-spacing:-.03em;line-height:1;
-  font-size:clamp(3.2rem,7.4vw,5.1rem);margin-top:12px;font-variant-numeric:tabular-nums}
-.live-total .cur{color:#7fb1ff;font-size:.5em;vertical-align:.34em;margin-right:.05em}
-.live-delta{color:var(--pos);font-weight:700;font-size:.98rem;margin-top:12px;font-variant-numeric:tabular-nums;
-  display:inline-flex;align-items:center;gap:6px}
-.bars{display:flex;align-items:flex-end;gap:6px;height:88px;margin-top:30px}
-.bars span{flex:1;height:calc(var(--h,10)*1%);border-radius:5px 5px 0 0;
-  background:linear-gradient(180deg,#7fb1ff,#2a63c9);
-  transform:scaleY(.02);transform-origin:bottom;transition:transform .8s var(--eo)}
-.live-panel.in .bars span{transform:scaleY(1)}
-.bars span:nth-child(1){transition-delay:.04s}.bars span:nth-child(2){transition-delay:.09s}
-.bars span:nth-child(3){transition-delay:.14s}.bars span:nth-child(4){transition-delay:.19s}
-.bars span:nth-child(5){transition-delay:.24s}.bars span:nth-child(6){transition-delay:.29s}
-.bars span:nth-child(7){transition-delay:.34s}.bars span:nth-child(8){transition-delay:.39s}
-.bars span:nth-child(9){transition-delay:.44s}.bars span:nth-child(10){transition-delay:.49s}
-.bars span:last-child{background:linear-gradient(180deg,#8ff0bd,var(--pos))}
-.live-stats{display:flex;gap:26px;margin-top:30px;flex-wrap:wrap}
-.live-stats>div{min-width:0}
-.live-stats b{display:block;font-family:var(--display);font-weight:800;font-size:1.75rem;
-  letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-.live-stats span{font-size:.78rem;color:rgba(255,255,255,.55)}
-.live-right{padding:clamp(20px,2.6vw,28px) clamp(22px,2.8vw,30px)}
-.feed-head{font-size:.72rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
-  color:rgba(255,255,255,.55);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
-.feed-head .flive{color:var(--pos);display:inline-flex;align-items:center;gap:7px;font-size:.68rem}
-.feed-head .flive::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--pos);animation:pip 1.9s infinite}
-.feed{display:flex;flex-direction:column;position:relative}
-.feed-row{display:flex;align-items:center;justify-content:space-between;gap:14px;
-  padding:14px 2px;border-bottom:1px solid rgba(255,255,255,.08)}
-.feed-row:last-child{border-bottom:0}
-.feed-row.fresh{animation:feedin .55s var(--eo)}
-@keyframes feedin{0%{opacity:0;transform:translateY(-14px)}100%{opacity:1;transform:none}}
-.feed-row .fl{min-width:0}
-.feed-row .ft{font-size:.9rem;font-weight:600;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.feed-row .fd{font-size:.76rem;color:rgba(255,255,255,.5);margin-top:2px}
-.feed-row .fv{font-family:var(--display);font-weight:800;color:var(--pos);font-variant-numeric:tabular-nums;white-space:nowrap;flex:none}
-.live-note{color:var(--muted);font-size:.9rem;margin-top:34px;max-width:52em}
-.live-note b{color:var(--ink);font-weight:700}
-@media (max-width:820px){
-  .live-body{grid-template-columns:1fr}
-  .live-left{border-right:0;border-bottom:1px solid rgba(255,255,255,.09)}
-}
-
 /* ---------- final cta (blue band) ---------- */
 .final{background:var(--accent);color:#fff;text-align:center;position:relative;overflow:hidden}
 .final .eyebrow{color:rgba(255,255,255,.75);justify-content:center}
@@ -402,6 +342,40 @@ html.js .frame.in img{transform:scale(1)}
 .final .btn{margin-top:46px}
 .final-mail{margin-top:26px;font-size:.92rem;color:rgba(255,255,255,.8)}
 .final-mail a{color:#fff;font-weight:700;border-bottom:1px solid var(--band-line);padding-bottom:2px}
+
+/* ---------- how it works ---------- */
+.how{background:var(--paper)}
+.how .h2{max-width:14em}
+.how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:54px}
+.how-step{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:34px 30px 30px;position:relative;overflow:hidden}
+.how-step::before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--accent);transform:scaleY(0);transform-origin:top;transition:transform .7s var(--e)}
+.how-step.in::before{transform:scaleY(1)}
+.how-n{font-family:var(--display);font-size:.82rem;font-weight:800;letter-spacing:.1em;color:var(--accent);display:block;margin-bottom:16px}
+.how-step h3{font-family:var(--display);font-size:1.28rem;line-height:1.25;letter-spacing:-.01em;margin:0 0 12px}
+.how-step p{color:var(--muted);font-size:.97rem;line-height:1.62;margin:0}
+.how-chk{display:flex;align-items:center;gap:9px;margin-top:22px;padding-top:18px;border-top:1px solid var(--line-soft);font-size:.86rem;font-weight:700;color:var(--ink)}
+.how-chk i{width:17px;height:17px;border-radius:50%;background:var(--pos);display:grid;place-items:center;flex:none}
+.how-chk i::after{content:"";width:6px;height:3px;border-left:1.6px solid #fff;border-bottom:1.6px solid #fff;transform:rotate(-45deg) translate(1px,-1px)}
+.how-foot{margin-top:34px;color:var(--muted);font-size:.92rem;text-align:center}
+.how-foot b{color:var(--ink)}
+@media (max-width:900px){.how-grid{grid-template-columns:1fr;gap:16px}}
+
+/* ---------- faq ---------- */
+.faq-sec{background:var(--surface);border-top:1px solid var(--line-soft)}
+.faq-head{text-align:center;margin-bottom:46px}
+.faq-head .eyebrow{justify-content:center}
+.faq-head .h2{max-width:16em;margin-inline:auto}
+.faq-list{max-width:800px;margin:0 auto;border-top:1px solid var(--line)}
+.faq-list details{border-bottom:1px solid var(--line)}
+.faq-list summary{list-style:none;cursor:pointer;padding:24px 44px 24px 0;position:relative;font-family:var(--display);font-size:1.08rem;font-weight:700;letter-spacing:-.01em;color:var(--ink);transition:color .25s var(--e)}
+.faq-list summary::-webkit-details-marker{display:none}
+.faq-list summary:hover{color:var(--accent)}
+.faq-list summary::after{content:"";position:absolute;right:8px;top:50%;width:11px;height:11px;border-right:2px solid var(--accent);border-bottom:2px solid var(--accent);transform:translateY(-70%) rotate(45deg);transition:transform .32s var(--e)}
+.faq-list details[open] summary::after{transform:translateY(-25%) rotate(225deg)}
+.faq-list .a{padding:0 44px 26px 0;color:var(--muted);font-size:.98rem;line-height:1.68;max-width:64ch;animation:faqIn .38s var(--e) both}
+@keyframes faqIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.faq-note{text-align:center;margin-top:40px;color:var(--muted);font-size:.9rem}
+@media (max-width:640px){.faq-list summary{font-size:1rem;padding-right:36px}}
 
 /* ---------- footer ---------- */
 footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
@@ -421,7 +395,9 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
       <a href="#what">What we build</a>
       <a href="#portal">The portal</a>
       <a href="#pricing">Pricing</a>
-      <a class="nav-cta" href="#book">Book a call</a>
+      <a href="#process">How it works</a>
+      <a href="#faq">FAQ</a>
+      <a class="nav-cta" href="book.html">Book a call</a>
     </nav>
   </div>
 </header>
@@ -438,7 +414,7 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
     </h1>
     <p class="hero-sub rv" style="--d:.55s">We build calm, fast websites with an AI receptionist behind them. Every call answered in under 30 seconds, every booking kept, every recovered dollar visible in your own portal.</p>
     <div class="hero-ctas rv" style="--d:.7s">
-      <a class="btn btn-primary magnetic" href="#book">Book a 15-minute call <span class="arr">&rarr;</span></a>
+      <a class="btn btn-primary magnetic" href="book.html">Book a 15-minute call <span class="arr">&rarr;</span></a>
       <a class="btn btn-ghost" href="#pricing">See public pricing</a>
     </div>
   </div>
@@ -607,7 +583,7 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
           <li>Click-to-call on every phone screen</li>
           <li>Monthly performance report</li>
         </ul>
-        <a class="tier-cta" href="#book">Start with Launch</a>
+        <a class="tier-cta" href="book.html">Start with Launch</a>
       </article>
 
       <article class="tier hot rv" data-tier="1" style="--d:.1s">
@@ -624,7 +600,7 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
           <li>No-show reminders and instant rebooking</li>
           <li>Client portal, recovered revenue front and center</li>
         </ul>
-        <a class="tier-cta" href="#book">Book a 15-minute call</a>
+        <a class="tier-cta" href="book.html">Book a 15-minute call</a>
       </article>
 
       <article class="tier rv" data-tier="2" style="--d:.2s">
@@ -640,7 +616,7 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
           <li>Reporting dashboard</li>
           <li>Monthly strategy call</li>
         </ul>
-        <a class="tier-cta" href="#book">Talk through Partner</a>
+        <a class="tier-cta" href="book.html">Talk through Partner</a>
       </article>
     </div>
 
@@ -648,53 +624,84 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
   </div>
 </section>
 
-<!-- ================= THE SYSTEM, LIVE (dashboard demo) ================= -->
-<section class="live" id="proof">
+<!-- ================= HOW IT WORKS ================= -->
+<section class="how" id="process">
   <div class="wrap">
-    <p class="eyebrow rv">The system, live</p>
-    <h2 class="h2 rv" style="--d:.06s">While you are at dinner, this is your 9 PM.</h2>
-    <p class="lede rv" style="--d:.12s">Not a screenshot. A working feed: every answered call and saved no-show, adding up in real time. This is the dashboard your account comes with.</p>
+    <p class="eyebrow rv">How it works</p>
+    <h2 class="h2 rv" style="--d:.06s">One week. Three steps.<br>Zero homework for you.</h2>
 
-    <div class="live-panel rv" style="--d:.14s" id="livePanel">
-      <div class="live-top">
-        <span class="live-brand"><span class="live-pip"></span> RecoverRevenue live desk</span>
-        <span class="live-badge">Demo data</span>
+    <div class="how-grid">
+      <div class="how-step rv">
+        <span class="how-n">01</span>
+        <h3>15-minute call</h3>
+        <p>We find the leak: where your calls, clicks and reviews are going today. You get the honest number &mdash; even if it is &ldquo;you do not need us.&rdquo;</p>
+        <div class="how-chk"><i></i>Leak audit delivered</div>
       </div>
-      <div class="live-body">
-        <div class="live-left">
-          <span class="live-cap">Recovered this month</span>
-          <div class="live-total"><span class="cur">$</span><span class="num" id="liveTotal" data-count="12840">0</span></div>
-          <div class="live-delta">&#9650; <span class="num" data-count="18">0</span>% vs last month</div>
-          <div class="bars" aria-hidden="true">
-            <span style="--h:32"></span><span style="--h:39"></span><span style="--h:36"></span>
-            <span style="--h:50"></span><span style="--h:58"></span><span style="--h:55"></span>
-            <span style="--h:70"></span><span style="--h:86"></span><span style="--h:100"></span>
-          </div>
-          <div class="live-stats">
-            <div><b class="num" data-count="184">0</b><span>calls answered</span></div>
-            <div><b class="num" data-count="9">0</b><span>sec avg pickup</span></div>
-            <div><b class="num" data-count="27">0</b><span>no-shows saved</span></div>
-          </div>
-        </div>
-        <div class="live-right">
-          <div class="feed-head">Live activity <span class="flive">streaming</span></div>
-          <div class="feed" id="feed" aria-live="polite"></div>
-        </div>
+      <div class="how-step rv" style="--d:.1s">
+        <span class="how-n">02</span>
+        <h3>We build. You work.</h3>
+        <p>Website, phone system, review engine &mdash; built and wired to your calendar in 7 business days. You approve it on a screen share, we flip it live.</p>
+        <div class="how-chk"><i></i>Live in 7 business days</div>
+      </div>
+      <div class="how-step rv" style="--d:.2s">
+        <span class="how-n">03</span>
+        <h3>Watch the portal</h3>
+        <p>Revenue recovered, calls answered, reviews earned &mdash; in one live dashboard. 90-day commitment, then month to month. We earn our stay.</p>
+        <div class="how-chk"><i></i>Reported in dollars</div>
       </div>
     </div>
 
-    <p class="live-note rv">Illustrative demo data. Your real numbers replace these the week we go live. And every build ships verified before you ever see it: <b>zero console errors, tested at four screen widths, no exceptions.</b></p>
+    <p class="how-foot rv">Every build ships verified before you ever see it: <b>zero console errors, tested at four screen widths, no exceptions.</b></p>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section class="faq-sec" id="faq">
+  <div class="wrap">
+    <div class="faq-head">
+      <p class="eyebrow rv">Before you ask</p>
+      <h2 class="h2 rv" style="--d:.06s">The questions everyone asks on the call.</h2>
+    </div>
+
+    <div class="faq-list rv" style="--d:.12s">
+      <details>
+        <summary>What if it doesn&rsquo;t make me money?</summary>
+        <div class="a">You will see it in the portal &mdash; we report conservatively-attributed dollars, not vanity clicks. After the first 90 days you are month to month; if the numbers do not clear your cost, fire us. That risk is ours on purpose.</div>
+      </details>
+      <details>
+        <summary>Does the AI actually sound human?</summary>
+        <div class="a">Yes &mdash; and you will hear it yourself: ask on your audit call and we will ring it together. It knows your services and prices, asks the questions your best front-desk person asks, and hands complicated calls to you with a text summary.</div>
+      </details>
+      <details>
+        <summary>Seven business days &mdash; really?</summary>
+        <div class="a">Really. Day 1 is the kickoff call; by day 7 you approve it on a screen share and we flip it live. We can move that fast because we only build for local service businesses, on a system we have refined build after build.</div>
+      </details>
+      <details>
+        <summary>Do I own the website?</summary>
+        <div class="a">Yes &mdash; stay 12 months on any plan and the site is 100% yours: code, domain, content. Leave before 12 months and there is a one-time $997 buy-out if you want to take it with you. Either way, no hostage hosting &mdash; nothing breaks if we part ways.</div>
+      </details>
+      <details>
+        <summary>What does the setup fee cover?</summary>
+        <div class="a">The actual build &mdash; your website designed and launched, your Google profile rebuilt, your tracking number wired in, and on the bigger plans your AI receptionist trained on your services and prices. You pay for that work once. The monthly covers everything after: hosting, maintenance, monitoring, edits and reporting. No surprise invoices, no hourly billing.</div>
+      </details>
+      <details>
+        <summary>What if it doesn&rsquo;t fit neatly &mdash; I run a gym, salon or med spa?</summary>
+        <div class="a">Same plans, same prices &mdash; the build is what changes. Repeat-visit businesses get booking flows, reminders and no-show recovery wired in; job-call businesses get dispatch-style call handling and reactivation campaigns. Tell us what you run on the audit call and we configure your plan around it.</div>
+      </details>
+    </div>
+
+    <p class="faq-note rv">Still unsure? That is what the fifteen minutes are for.</p>
   </div>
 </section>
 
 <!-- ================= FINAL CTA ================= -->
 <section class="final" id="book">
   <div class="wrap">
-    <p class="eyebrow rv">Fifteen minutes, no deck</p>
-    <h2 class="rv" style="--d:.08s">When was the last time your website booked you a job?</h2>
-    <p class="rv" style="--d:.16s">We look at your current call flow together and tell you, plainly, what it is leaking. If we are not the right fit, you leave with the number anyway.</p>
-    <a class="btn btn-paper magnetic rv" style="--d:.24s" href="https://calendly.com/chase-sza/30min?utm_source=recoverrevenue&amp;utm_medium=site&amp;utm_content=book" target="_blank" rel="noopener">Book a 15-minute call <span class="arr">&rarr;</span></a>
-    <p class="final-mail rv" style="--d:.32s">Prefer writing? <a href="mailto:szarekch@gmail.com">szarekch@gmail.com</a></p>
+    <p class="eyebrow rv">One call. Fifteen minutes.</p>
+    <h2 class="rv" style="--d:.08s">Find out what you are leaking.</h2>
+    <p class="rv" style="--d:.16s">We will tell you exactly where the money is going and what catching it costs. If the answer is &ldquo;you are fine&rdquo; &mdash; we will say that too.</p>
+    <a class="btn btn-paper magnetic rv" style="--d:.24s" href="book.html">Book the 15-minute leak audit <span class="arr">&rarr;</span></a>
+    <p class="final-mail rv" style="--d:.32s">Prefer writing? <a href="mailto:chase@recoverrevenue.co">chase@recoverrevenue.co</a></p>
   </div>
 </section>
 
@@ -879,72 +886,6 @@ if(HAS_GSAP && FINE && !RM){
   document.addEventListener("visibilitychange", function(){
     if(document.hidden){ running = false; } else { running = true; }
   });
-})();
-
-/* ---------- live desk: streaming feed + ticking total ---------- */
-(function(){
-  var panel = document.getElementById("livePanel");
-  var feed = document.getElementById("feed");
-  var totalEl = document.getElementById("liveTotal");
-  if(!panel || !feed || !totalEl) return;
-
-  var EVENTS = [
-    { t:"After-hours call booked",  d:"Answered in 9s, Thu 10:00 AM",  v:420 },
-    { t:"Cancellation refilled",    d:"Waitlist backfill, 2:15 PM",    v:260 },
-    { t:"AC estimate scheduled",    d:"Two-zone replacement",          v:1800 },
-    { t:"No-show reminder kept",    d:"Confirmed by text",             v:190 },
-    { t:"Missed-call text-back",    d:"Converted in 41 seconds",       v:540 },
-    { t:"New patient booked",       d:"Cleaning and exam",             v:320 },
-    { t:"Reservation captured",     d:"Party of six, Friday",          v:280 },
-    { t:"Quote request answered",   d:"Roof inspection, Sat AM",       v:900 }
-  ];
-  var MAX = 6;
-
-  function money(n){ return "+$" + Math.round(n).toLocaleString("en-US"); }
-  function rowEl(ev, fresh){
-    var row = document.createElement("div");
-    row.className = "feed-row" + (fresh ? " fresh" : "");
-    row.innerHTML = '<div class="fl"><div class="ft"></div><div class="fd"></div></div><div class="fv"></div>';
-    row.querySelector(".ft").textContent = ev.t;
-    row.querySelector(".fd").textContent = ev.d;
-    row.querySelector(".fv").textContent = money(ev.v);
-    return row;
-  }
-  function seed(){
-    [3, 0, 5, 1].forEach(function(i){ feed.appendChild(rowEl(EVENTS[i], false)); });
-  }
-
-  var liveTotal = parseInt(totalEl.dataset.count, 10) || 0;
-  function bump(v){
-    liveTotal += v;
-    if(!HAS_GSAP || RM){ totalEl.textContent = liveTotal.toLocaleString("en-US"); return; }
-    var from = parseInt((totalEl.textContent || "0").replace(/[^0-9]/g, ""), 10);
-    if(isNaN(from)) from = liveTotal - v;
-    var o = { n: from };
-    gsap.to(o, { n: liveTotal, duration: 0.7, ease: "power2.out",
-      onUpdate: function(){ totalEl.textContent = Math.round(o.n).toLocaleString("en-US"); } });
-  }
-
-  var idx = 2;
-  function tick(){
-    if(document.hidden) return;
-    var ev = EVENTS[idx++ % EVENTS.length];
-    feed.insertBefore(rowEl(ev, true), feed.firstChild);
-    while(feed.children.length > MAX){ feed.removeChild(feed.lastChild); }
-    bump(ev.v);
-  }
-
-  var started = false;
-  function start(){
-    if(started) return; started = true;
-    seed();
-    if(RM) return;
-    window.setTimeout(function(){ window.setInterval(tick, 2800); }, 2600);
-  }
-
-  if("IntersectionObserver" in window){
-    new IntersectionObserver(function(en){ if(en[0].isIntersecting){ start(); } }, { threshold: 0.3 }).observe(panel);
-  }else{ start(); }
 })();
 
 /* ---------- pricing vertical switcher ---------- */
