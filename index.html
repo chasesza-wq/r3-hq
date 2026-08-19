@@ -8,6 +8,8 @@
 <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+<link rel="preload" as="style" href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,700,800&f[]=satoshi@400,500,700&display=swap">
 <link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,700,800&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
@@ -31,8 +33,8 @@
   --e2:cubic-bezier(.19,.66,.22,1);
   --eo:cubic-bezier(.2,.72,.2,1.04);
   --pos:#12b866;
-  --display:'Cabinet Grotesk',Avenir,'Helvetica Neue',sans-serif;
-  --body:'Satoshi',Avenir,'Helvetica Neue',sans-serif;
+  --display:'Cabinet Grotesk','Helvetica Neue',Helvetica,Arial,sans-serif;
+  --body:'Satoshi','Helvetica Neue',Helvetica,Arial,sans-serif;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -332,33 +334,45 @@ html.js .frame.in img{transform:scale(1)}
   .seg .ls{display:inline}
 }
 
-/* ---------- final cta (blue band) ---------- */
-.final{background:var(--accent);color:#fff;text-align:center;position:relative;overflow:hidden}
-.final .eyebrow{color:rgba(255,255,255,.75);justify-content:center}
-.final .eyebrow::before,.final .eyebrow::after{background:rgba(255,255,255,.75);content:""}
-.final .eyebrow::after{width:26px;height:1px;opacity:.7}
-.final h2{font-size:clamp(2.1rem,5vw,3.7rem);max-width:16em;margin-inline:auto;color:#fff}
-.final p{color:rgba(255,255,255,.85);max-width:32em;margin:26px auto 0}
-.final .btn{margin-top:46px}
-.final-mail{margin-top:26px;font-size:.92rem;color:rgba(255,255,255,.8)}
-.final-mail a{color:#fff;font-weight:700;border-bottom:1px solid var(--band-line);padding-bottom:2px}
+/* ---------- final cta (white, minimal) ---------- */
+.final{background:var(--paper);border-top:1px solid var(--line);text-align:center;position:relative}
+.final .eyebrow{justify-content:center}
+.final .eyebrow::after{content:"";width:26px;height:1px;background:var(--accent);opacity:.55;flex:none}
+.final h2{font-family:var(--display);font-weight:800;letter-spacing:-.025em;line-height:1.06;
+  font-size:clamp(2.1rem,5vw,3.5rem);max-width:14em;margin:20px auto 0;color:var(--ink)}
+.final p{color:var(--muted);max-width:34em;margin:24px auto 0;font-size:1.02rem;line-height:1.66}
+.final .btn{margin-top:42px}
+.final-mail{margin-top:24px;font-size:.92rem;color:var(--muted)}
+.final-mail a{color:var(--ink);font-weight:700;border-bottom:1px solid var(--line);padding-bottom:2px;
+  transition:color .25s var(--e),border-color .25s var(--e)}
+.final-mail a:hover{color:var(--accent);border-color:var(--accent)}
 
 /* ---------- how it works ---------- */
 .how{background:var(--paper)}
-.how .h2{max-width:14em}
-.how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:54px}
-.how-step{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:34px 30px 30px;position:relative;overflow:hidden}
-.how-step::before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--accent);transform:scaleY(0);transform-origin:top;transition:transform .7s var(--e)}
-.how-step.in::before{transform:scaleY(1)}
-.how-n{font-family:var(--display);font-size:.82rem;font-weight:800;letter-spacing:.1em;color:var(--accent);display:block;margin-bottom:16px}
-.how-step h3{font-family:var(--display);font-size:1.28rem;line-height:1.25;letter-spacing:-.01em;margin:0 0 12px}
-.how-step p{color:var(--muted);font-size:.97rem;line-height:1.62;margin:0}
-.how-chk{display:flex;align-items:center;gap:9px;margin-top:22px;padding-top:18px;border-top:1px solid var(--line-soft);font-size:.86rem;font-weight:700;color:var(--ink)}
-.how-chk i{width:17px;height:17px;border-radius:50%;background:var(--pos);display:grid;place-items:center;flex:none}
-.how-chk i::after{content:"";width:6px;height:3px;border-left:1.6px solid #fff;border-bottom:1.6px solid #fff;transform:rotate(-45deg) translate(1px,-1px)}
-.how-foot{margin-top:34px;color:var(--muted);font-size:.92rem;text-align:center}
-.how-foot b{color:var(--ink)}
-@media (max-width:900px){.how-grid{grid-template-columns:1fr;gap:16px}}
+.how .h2{max-width:13em}
+.proc{display:grid;grid-template-columns:repeat(3,1fr);gap:46px;margin-top:66px}
+.proc .step{border-top:2px solid var(--ink);padding-top:24px}
+.proc .step .num{display:block;font-family:var(--display);font-size:3.4rem;font-weight:800;line-height:1;
+  letter-spacing:-.03em;color:transparent;-webkit-text-stroke:1.5px var(--ink)}
+.proc .step h3{font-family:var(--display);font-size:1.18rem;font-weight:700;letter-spacing:-.012em;
+  line-height:1.3;margin:18px 0 10px;color:var(--ink)}
+.proc .step p{color:var(--muted);font-size:.95rem;line-height:1.68;margin:0;max-width:34ch}
+.chk{display:flex;align-items:center;gap:10px;margin-top:22px;font-size:.86rem;font-weight:700;color:var(--ink)}
+.chk .box{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--line);background:var(--surface);
+  display:grid;place-items:center;flex:none;transition:background .25s var(--e),border-color .25s var(--e)}
+.chk svg{width:12px;height:12px;stroke:#fff;stroke-width:3.4;fill:none;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:22;stroke-dashoffset:22;transition:stroke-dashoffset .35s .1s}
+.chk.done .box{background:var(--accent);border-color:var(--accent);animation:chkpop .35s cubic-bezier(.34,1.56,.64,1)}
+.chk.done svg{stroke-dashoffset:0}
+@keyframes chkpop{0%{transform:scale(1)}45%{transform:scale(1.16)}100%{transform:scale(1)}}
+.how-foot{margin-top:58px;padding-top:26px;border-top:1px solid var(--line-soft);
+  color:var(--muted);font-size:.92rem;text-align:center}
+.how-foot b{color:var(--ink);font-weight:700}
+@media (max-width:900px){.proc{grid-template-columns:1fr;gap:36px;margin-top:50px}.proc .step p{max-width:none}}
+@media (prefers-reduced-motion:reduce){
+  .chk .box,.chk svg{transition:none}
+  .chk.done .box{animation:none}
+}
 
 /* ---------- faq ---------- */
 .faq-sec{background:var(--surface);border-top:1px solid var(--line-soft)}
@@ -630,24 +644,24 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
     <p class="eyebrow rv">How it works</p>
     <h2 class="h2 rv" style="--d:.06s">One week. Three steps.<br>Zero homework for you.</h2>
 
-    <div class="how-grid">
-      <div class="how-step rv">
-        <span class="how-n">01</span>
+    <div class="proc">
+      <div class="step rv">
+        <span class="num">01</span>
         <h3>15-minute call</h3>
         <p>We find the leak: where your calls, clicks and reviews are going today. You get the honest number &mdash; even if it is &ldquo;you do not need us.&rdquo;</p>
-        <div class="how-chk"><i></i>Leak audit delivered</div>
+        <div class="chk" data-step="0"><span class="box"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg></span>Leak audit delivered</div>
       </div>
-      <div class="how-step rv" style="--d:.1s">
-        <span class="how-n">02</span>
+      <div class="step rv" style="--d:.1s">
+        <span class="num">02</span>
         <h3>We build. You work.</h3>
         <p>Website, phone system, review engine &mdash; built and wired to your calendar in 7 business days. You approve it on a screen share, we flip it live.</p>
-        <div class="how-chk"><i></i>Live in 7 business days</div>
+        <div class="chk" data-step="1"><span class="box"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg></span>Live in 7 business days</div>
       </div>
-      <div class="how-step rv" style="--d:.2s">
-        <span class="how-n">03</span>
+      <div class="step rv" style="--d:.2s">
+        <span class="num">03</span>
         <h3>Watch the portal</h3>
         <p>Revenue recovered, calls answered, reviews earned &mdash; in one live dashboard. 90-day commitment, then month to month. We earn our stay.</p>
-        <div class="how-chk"><i></i>Reported in dollars</div>
+        <div class="chk" data-step="2"><span class="box"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg></span>Reported in dollars</div>
       </div>
     </div>
 
@@ -700,7 +714,7 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
     <p class="eyebrow rv">One call. Fifteen minutes.</p>
     <h2 class="rv" style="--d:.08s">Find out what you are leaking.</h2>
     <p class="rv" style="--d:.16s">We will tell you exactly where the money is going and what catching it costs. If the answer is &ldquo;you are fine&rdquo; &mdash; we will say that too.</p>
-    <a class="btn btn-paper magnetic rv" style="--d:.24s" href="book.html">Book the 15-minute leak audit <span class="arr">&rarr;</span></a>
+    <a class="btn btn-primary magnetic rv" style="--d:.24s" href="book.html">Book the 15-minute leak audit <span class="arr">&rarr;</span></a>
     <p class="final-mail rv" style="--d:.32s">Prefer writing? <a href="mailto:chase@recoverrevenue.co">chase@recoverrevenue.co</a></p>
   </div>
 </section>
@@ -958,6 +972,22 @@ Array.prototype.forEach.call(segBtns, function(btn){
     }, 240);
   });
 });
+})();
+/* ---------- how-it-works: checkboxes tick as the steps arrive ---------- */
+(function(){
+  var chks = Array.prototype.slice.call(document.querySelectorAll(".chk[data-step]"));
+  if(!chks.length) return;
+  function done(c){ c.classList.add("done"); }
+  if(!("IntersectionObserver" in window)){ chks.forEach(done); return; }
+  var chkIO = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(!en.isIntersecting) return;
+      var c = en.target;
+      window.setTimeout(function(){ done(c); }, 400 + (+c.dataset.step) * 300);
+      chkIO.unobserve(c);
+    });
+  }, { threshold: 0.5 });
+  chks.forEach(function(c){ chkIO.observe(c); });
 })();
 </script>
 </body>
