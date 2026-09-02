@@ -2674,11 +2674,31 @@ function exportResults(){
       business_name:l.business_name, phone:l.phone, category:l.category,
       kill:results[key(l)].kill, note:results[key(l)].killNote })),
     leads:leads.map(l=>({...l, result:results[key(l)]||null})), meetings};
+  const name="sales-hq-"+new Date().toISOString().slice(0,10)+".json";
+  const json=JSON.stringify(out,null,2);
+  const blob=new Blob([json],{type:"application/json"});
+  const done=()=>toast(out.corrections.length+" corrections in the export");
+
+  // iOS Safari ignores <a download> on a blob, so the day's calls would be
+  // stranded on the phone. Share sheet first, anchor only as the desktop path.
+  try{
+    const f=new File([blob],name,{type:"application/json"});
+    if(navigator.canShare && navigator.canShare({files:[f]})){
+      navigator.share({files:[f],title:name})
+        .then(done)
+        .catch(err=>{ if(err && err.name!=="AbortError") anchorDownload(blob,name,done); });
+      return;
+    }
+  }catch(_){}
+  anchorDownload(blob,name,done);
+}
+function anchorDownload(blob,name,done){
+  const url=URL.createObjectURL(blob);
   const a=document.createElement("a");
-  a.href=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)],{type:"application/json"}));
-  a.download="sales-hq-"+new Date().toISOString().slice(0,10)+".json";
-  a.click();
-  toast(out.corrections.length+" corrections in the export");
+  a.href=url; a.download=name; a.rel="noopener";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),4000);
+  if(done) done();
 }
 $("fileIn").addEventListener("change",e=>{
   const f=e.target.files[0]; if(!f) return;
