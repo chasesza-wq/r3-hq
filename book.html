@@ -154,7 +154,7 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px}
     </div>
     <div class="calfall" id="calfall">
       Loading the calendar&hellip; if it does not appear,
-      <a id="calDirect" href="https://calendly.com/chase-sza/30min" target="_blank" rel="noopener">open it in a new tab</a>.
+      <a id="calDirect" href="https://calendly.com/chase-sza/15min" target="_blank" rel="noopener">open it in a new tab</a>.
     </div>
     <div id="calmount"></div>
   </main>
@@ -177,7 +177,7 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px}
      Swap the slug when the 15-minute event type exists in Calendly.
      ------------------------------------------------------------ */
   var CAL_USER  = "chase-sza";
-  var CAL_EVENT = "30min";          /* -> "15min" once created */
+  var CAL_EVENT = "15min";
 
   var base = "https://calendly.com/" + CAL_USER + "/" + CAL_EVENT;
   var params = "?hide_gdpr_banner=1&hide_landing_page_details=1&primary_color=17419b";
@@ -187,7 +187,7 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px}
   });
 
   document.getElementById("calDirect").href = base;
-  document.getElementById("mLen").textContent = CAL_EVENT === "15min" ? "15 minutes" : "15 minutes";
+  document.getElementById("mLen").textContent = CAL_EVENT.replace("min", " minutes");
 
   var mount = document.getElementById("calmount");
   var w = document.createElement("div");
