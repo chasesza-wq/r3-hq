@@ -3,24 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Book your 15-minute leak audit · RecoverRevenue</title>
-<meta name="description" content="Pick a time. Fifteen minutes, no deck. We find where your calls, clicks and reviews are leaking and tell you the honest number — even if it's 'you don't need us.'">
+<title>Free Revenue Leak Audit · RecoverRevenue</title>
+<meta name="description" content="Calculate what your missed calls, unread DMs, and after-hours delays are costing you. 60-second diagnostic audit — delivered straight to your inbox or DM. Zero sales calls.">
 <meta name="robots" content="index,follow">
 <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
-<link rel="preconnect" href="https://assets.calendly.com" crossorigin>
 <link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,700,800&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
-   RecoverRevenue · Booking page
-   Same ink as the flagship. One job: pick a time.
+   RecoverRevenue · Faceless Qualifying Audit Engine
+   Clean, interactive 4-question intake. Zero call friction.
    ============================================================ */
 :root{
   --paper:#f4f7fc; --surface:#fdfdff; --ink:#0e1726; --muted:#5c6a80;
-  --accent:#17419b; --accent-deep:#102e70;
+  --accent:#17419b; --accent-deep:#102e70; --accent-light:#e9f0ff;
   --line:rgba(14,23,38,.09); --line-soft:rgba(14,23,38,.055);
-  --r:18px; --e:cubic-bezier(.22,.61,.25,1); --pos:#12b866;
+  --r:18px; --e:cubic-bezier(.22,.61,.25,1); --pos:#12b866; --pos-bg:#e8f9f0;
+  --warn:#e65100; --warn-bg:#fff3e0;
   --display:'Cabinet Grotesk',Avenir,'Helvetica Neue',sans-serif;
   --body:'Satoshi',Avenir,'Helvetica Neue',sans-serif;
 }
@@ -32,7 +32,7 @@ a{color:inherit;text-decoration:none}
 .wrap{width:min(1180px,92vw);margin-inline:auto}
 
 /* ---------- nav ---------- */
-.nav{position:sticky;top:0;z-index:60;background:rgba(253,253,255,.86);backdrop-filter:blur(14px);
+.nav{position:sticky;top:0;z-index:60;background:rgba(253,253,255,.88);backdrop-filter:blur(14px);
   border-bottom:1px solid var(--line-soft)}
 .nav-in{display:flex;align-items:center;justify-content:space-between;height:70px}
 .logo{font-family:var(--display);font-weight:500;font-size:1.12rem;letter-spacing:-.02em}
@@ -43,64 +43,119 @@ a{color:inherit;text-decoration:none}
 .back:hover span{transform:translateX(-3px)}
 
 /* ---------- head ---------- */
-.bhead{padding:60px 0 8px;text-align:center}
+.bhead{padding:54px 0 8px;text-align:center}
 .eyebrow{display:inline-flex;align-items:center;gap:11px;font-size:.74rem;font-weight:700;
-  letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 20px}
+  letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 16px}
 .eyebrow::before{content:"";width:26px;height:1px;background:var(--accent);opacity:.7}
-.bhead h1{font-family:var(--display);font-weight:800;letter-spacing:-.032em;line-height:1.04;
-  font-size:clamp(2.2rem,5.2vw,3.6rem);margin:0 0 20px}
+.bhead h1{font-family:var(--display);font-weight:800;letter-spacing:-.032em;line-height:1.06;
+  font-size:clamp(2.2rem,5vw,3.4rem);margin:0 0 16px}
 .bhead h1 em{font-style:normal;color:var(--accent)}
-.bhead .lede{color:var(--muted);max-width:34em;margin:0 auto;font-size:1.03rem;line-height:1.66}
+.bhead .lede{color:var(--muted);max-width:36em;margin:0 auto;font-size:1.05rem;line-height:1.64}
 
 /* ---------- layout ---------- */
-.split{display:grid;grid-template-columns:340px minmax(0,1fr);gap:34px;
-  align-items:start;padding:44px 0 80px}
+.split{display:grid;grid-template-columns:350px minmax(0,1fr);gap:34px;
+  align-items:start;padding:40px 0 80px}
 
 /* ---------- left rail ---------- */
-.rail{position:sticky;top:100px;display:flex;flex-direction:column;gap:16px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:26px 24px}
-.card h2{font-family:var(--display);font-size:1.06rem;letter-spacing:-.01em;margin:0 0 16px}
-.plist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:15px}
-.plist li{display:flex;gap:11px;font-size:.93rem;line-height:1.55;color:var(--muted)}
+.rail{position:sticky;top:94px;display:flex;flex-direction:column;gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:26px 24px;box-shadow:0 2px 8px rgba(14,23,38,.02)}
+.card h2{font-family:var(--display);font-size:1.08rem;letter-spacing:-.01em;margin:0 0 16px}
+.plist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:16px}
+.plist li{display:flex;gap:12px;font-size:.92rem;line-height:1.55;color:var(--muted)}
 .plist b{color:var(--ink);font-weight:700}
-.plist i{width:17px;height:17px;border-radius:50%;background:var(--pos);display:grid;place-items:center;flex:none;margin-top:3px}
-.plist i::after{content:"";width:6px;height:3px;border-left:1.6px solid #fff;border-bottom:1.6px solid #fff;transform:rotate(-45deg) translate(1px,-1px)}
+.plist i{width:18px;height:18px;border-radius:50%;background:var(--pos);display:grid;place-items:center;flex:none;margin-top:2px}
+.plist i::after{content:"";width:6px;height:3px;border-left:1.8px solid #fff;border-bottom:1.8px solid #fff;transform:rotate(-45deg) translate(1px,-1px)}
 .meta{display:flex;flex-direction:column;gap:11px}
 .meta div{display:flex;align-items:baseline;justify-content:space-between;gap:14px;font-size:.9rem;
   padding-bottom:11px;border-bottom:1px solid var(--line-soft)}
 .meta div:last-child{border-bottom:0;padding-bottom:0}
 .meta dt{color:var(--muted)}
-.meta dd{margin:0;font-weight:700;font-variant-numeric:tabular-nums}
-.nudge{background:var(--accent);color:#fff;border-radius:var(--r);padding:24px}
-.nudge p{margin:0;font-size:.93rem;line-height:1.6;color:rgba(255,255,255,.9)}
+.meta dd{margin:0;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink)}
+.meta dd.green{color:var(--pos)}
+.nudge{background:linear-gradient(135deg,var(--accent) 0%,var(--accent-deep) 100%);color:#fff;border-radius:var(--r);padding:24px;box-shadow:0 8px 24px rgba(23,65,155,.18)}
+.nudge h3{margin:0 0 8px;font-family:var(--display);font-size:1.02rem}
+.nudge p{margin:0;font-size:.9rem;line-height:1.55;color:rgba(255,255,255,.9)}
 .nudge p b{color:#fff}
-.nudge a{color:#fff;font-weight:700;border-bottom:1px solid rgba(255,255,255,.4);padding-bottom:1px}
 
-/* ---------- calendar ---------- */
-.calwrap{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
-  overflow:hidden;min-height:720px;position:relative}
-.calbar{display:flex;align-items:center;justify-content:space-between;gap:14px;
-  padding:16px 22px;border-bottom:1px solid var(--line-soft);background:var(--paper)}
-.calbar .t{font-family:var(--display);font-weight:700;font-size:.95rem;letter-spacing:-.01em}
-.calbar .pip{display:inline-flex;align-items:center;gap:8px;font-size:.72rem;font-weight:700;
-  letter-spacing:.12em;text-transform:uppercase;color:var(--pos)}
-.calbar .pip::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--pos);animation:pip 1.9s infinite}
-@keyframes pip{0%,100%{opacity:1}50%{opacity:.35}}
-.calendly-inline-widget{min-width:320px;height:700px}
-.calfall{position:absolute;inset:auto 0 0 0;top:57px;display:grid;place-items:center;
-  text-align:center;padding:40px;color:var(--muted);font-size:.95rem}
-.calfall a{color:var(--accent);font-weight:700;border-bottom:1px solid var(--line)}
+/* ---------- form engine ---------- */
+.form-wrap{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+  overflow:hidden;box-shadow:0 4px 20px rgba(14,23,38,.04)}
+.form-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:16px 24px;border-bottom:1px solid var(--line-soft);background:var(--paper)}
+.form-bar .t{font-family:var(--display);font-weight:700;font-size:.95rem;letter-spacing:-.01em}
+.form-bar .step-pill{display:inline-flex;align-items:center;gap:6px;font-size:.76rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--accent);background:var(--accent-light);padding:4px 10px;border-radius:20px}
+.progress-bar{height:4px;width:100%;background:var(--line-soft);position:relative}
+.progress-fill{height:100%;background:var(--accent);width:25%;transition:width .4s var(--e)}
+
+.form-body{padding:32px 30px}
+.step-pane{display:none;animation:fadeIn .3s var(--e)}
+.step-pane.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.q-label{font-family:var(--display);font-size:1.32rem;font-weight:800;letter-spacing:-.02em;margin:0 0 8px;color:var(--ink)}
+.q-sub{font-size:.95rem;color:var(--muted);margin:0 0 24px;line-height:1.5}
+
+.input-field{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.input-field label{font-size:.84rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.input-field input, .input-field select{padding:13px 16px;border:1.5px solid var(--line);border-radius:12px;
+  font-family:var(--body);font-size:1rem;background:var(--paper);color:var(--ink);transition:border-color .2s, background .2s}
+.input-field input:focus, .input-field select:focus{outline:none;border-color:var(--accent);background:#fff}
+
+/* Chip / Card selectors */
+.chip-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:12px;margin-bottom:24px}
+.chip{padding:16px 18px;border:1.5px solid var(--line);border-radius:12px;background:var(--paper);cursor:pointer;
+  transition:all .2s var(--e);display:flex;flex-direction:column;gap:4px;user-select:none}
+.chip:hover{border-color:rgba(23,65,155,.4);background:#fff;transform:translateY(-1px)}
+.chip.selected{border-color:var(--accent);background:var(--accent-light);box-shadow:0 0 0 1px var(--accent)}
+.chip-title{font-weight:700;font-size:.98rem;color:var(--ink)}
+.chip-sub{font-size:.82rem;color:var(--muted)}
+
+/* Dynamic Live Leak Meter */
+.leak-box{background:linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);border:1.5px solid #fed7aa;border-radius:14px;
+  padding:20px;margin:24px 0;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.leak-box-left{display:flex;flex-direction:column;gap:4px}
+.leak-tag{font-size:.74rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--warn)}
+.leak-desc{font-size:.88rem;color:#7c2d12}
+.leak-val{font-family:var(--display);font-size:2rem;font-weight:800;color:var(--warn);white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* Slider controls */
+.range-group{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
+.range-header{display:flex;justify-content:space-between;align-items:baseline}
+.range-header label{font-size:.88rem;font-weight:700;color:var(--ink)}
+.range-header .val{font-family:var(--display);font-weight:800;color:var(--accent);font-size:1.15rem}
+input[type=range]{-webkit-appearance:none;width:100%;height:8px;border-radius:4px;background:var(--line);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 2px 6px rgba(23,65,155,.3)}
+
+/* Form navigation buttons */
+.btn-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:32px;padding-top:20px;border-top:1px solid var(--line-soft)}
+.btn{padding:14px 26px;border-radius:12px;font-family:var(--body);font-size:.96rem;font-weight:700;cursor:pointer;transition:all .2s var(--e);border:none}
+.btn-back{background:transparent;color:var(--muted);padding-left:0}
+.btn-back:hover{color:var(--ink)}
+.btn-next{background:var(--accent);color:#fff;margin-left:auto;display:inline-flex;align-items:center;gap:8px}
+.btn-next:hover{background:var(--accent-deep);transform:translateY(-1px);box-shadow:0 4px 14px rgba(23,65,155,.24)}
+.btn-next:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+/* Success screen */
+.success-pane{text-align:center;padding:48px 24px;display:none}
+.success-icon{width:64px;height:64px;border-radius:50%;background:var(--pos-bg);color:var(--pos);display:grid;place-items:center;margin:0 auto 20px;font-size:28px}
+.success-title{font-family:var(--display);font-size:1.8rem;font-weight:800;letter-spacing:-.02em;margin:0 0 10px}
+.success-sub{color:var(--muted);font-size:1.02rem;max-width:32em;margin:0 auto 26px;line-height:1.6}
+.success-leak{display:inline-block;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px 28px;margin-bottom:28px}
+.success-leak-label{font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.success-leak-amt{font-family:var(--display);font-size:2.4rem;font-weight:800;color:var(--warn)}
 
 /* ---------- footer ---------- */
-footer{border-top:1px solid var(--line-soft);padding:38px 0 52px}
-.foot{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
-  color:var(--muted);font-size:.85rem}
+footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(--surface)}
+.foot{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;color:var(--muted);font-size:.85rem}
 .foot .logo{font-size:.98rem}
 
 @media (max-width:940px){
-  .split{grid-template-columns:1fr;gap:22px;padding-top:32px}
-  .rail{position:static;flex-direction:column}
-  .bhead{padding-top:40px}
+  .split{grid-template-columns:1fr;gap:26px;padding-top:24px}
+  .rail{position:static}
+  .bhead{padding-top:36px}
+  .form-body{padding:24px 18px}
+  .chip-grid{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -115,48 +170,225 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px}
 </header>
 
 <div class="wrap bhead">
-  <p class="eyebrow">One call. Fifteen minutes.</p>
-  <h1>Find out what you are <em>leaking.</em></h1>
-  <p class="lede">Pick a time below. We look at your current call flow together and tell you, plainly, what it is costing you. If we are not the right fit, you leave with the number anyway.</p>
+  <p class="eyebrow">60-Second Diagnostic · No Sales Calls</p>
+  <h1>Calculate your revenue <em>leak.</em></h1>
+  <p class="lede">Answer four quick questions. We inspect your site response, after-hours latency, and missed inbound volume — and deliver a comprehensive diagnostic dossier straight to your inbox or DM.</p>
 </div>
 
 <div class="wrap split">
 
+  <!-- Left Rail: Proof & What's In The Audit -->
   <aside class="rail">
     <div class="card">
-      <h2>What happens on the call</h2>
+      <h2>What's inside your audit</h2>
       <ul class="plist">
-        <li><i></i><span><b>We find the leak.</b> Where your calls, clicks and reviews are going today &mdash; with real numbers, not a pitch.</span></li>
-        <li><i></i><span><b>You hear the AI.</b> Ask and we will ring the receptionist together, live, on the call.</span></li>
-        <li><i></i><span><b>You get the honest answer.</b> Including &ldquo;you do not need us,&rdquo; if that is the answer.</span></li>
+        <li><i></i><span><b>After-Hours Speed Test.</b> Exactly how many minutes (or days) your inquiries sit unanswered after 5:00 PM and on weekends.</span></li>
+        <li><i></i><span><b>Mathematical Revenue Leak.</b> Your self-declared miss rate &times; average ticket = the annualized cash leaving through the back door.</span></li>
+        <li><i></i><span><b>Zero-Friction Intake Blueprint.</b> The exact software logic to turn 100% of missed calls and after-hours visitors into scheduled bookings.</span></li>
       </ul>
     </div>
 
     <div class="card">
-      <h2>The details</h2>
+      <h2>Audit Parameters</h2>
       <dl class="meta">
-        <div><dt>Length</dt><dd id="mLen">15 minutes</dd></div>
-        <div><dt>Where</dt><dd>Phone or Google Meet</dd></div>
-        <div><dt>Cost</dt><dd>Free</dd></div>
-        <div><dt>Deck</dt><dd>None</dd></div>
+        <div><dt>Format</dt><dd>PDF Teardown + Video</dd></div>
+        <div><dt>Delivery</dt><dd>Email or Instagram DM</dd></div>
+        <div><dt>Turnaround</dt><dd class="green">Under 2 hours</dd></div>
+        <div><dt>Sales Pitch</dt><dd class="green">None (Zero calls)</dd></div>
+        <div><dt>Cost</dt><dd class="green">$0 (Free)</dd></div>
       </dl>
     </div>
 
     <div class="nudge">
-      <p><b>Nothing open that works?</b> Email <a href="mailto:chase@recoverrevenue.co?subject=Booking%20a%20time">chase@recoverrevenue.co</a> and we will find a slot around your day.</p>
+      <h3>Faceless &amp; Asynchronous</h3>
+      <p>We respect your time. No calendar links, no 30-minute slide deck meetings. Just clear diagnostic intelligence delivered straight to you.</p>
     </div>
   </aside>
 
-  <main class="calwrap">
-    <div class="calbar">
-      <span class="t">Pick a time</span>
-      <span class="pip">Live calendar</span>
+  <!-- Right Rail: The 4-Question Qualifying Form Engine -->
+  <main class="form-wrap">
+    <div class="form-bar">
+      <span class="t" id="barTitle">Step 1 of 4: Business &amp; Authority</span>
+      <span class="step-pill" id="stepPill">Question 1</span>
     </div>
-    <div class="calfall" id="calfall">
-      Loading the calendar&hellip; if it does not appear,
-      <a id="calDirect" href="https://calendly.com/chase-sza/15min" target="_blank" rel="noopener">open it in a new tab</a>.
+    <div class="progress-bar">
+      <div class="progress-fill" id="pFill"></div>
     </div>
-    <div id="calmount"></div>
+
+    <form id="auditForm" class="form-body" onsubmit="return false;">
+
+      <!-- STEP 1: Authority & Identity -->
+      <div class="step-pane active" id="pane1">
+        <h2 class="q-label">Where should we run the diagnostic?</h2>
+        <p class="q-sub">Tell us about your business so we test the correct front-door and phone lines.</p>
+
+        <div class="input-field">
+          <label for="bizName">Business Name</label>
+          <input type="text" id="bizName" placeholder="e.g. Apex Health &amp; Aesthetics" required autocomplete="organization">
+        </div>
+
+        <div class="input-field">
+          <label for="bizUrl">Website URL or Instagram Profile</label>
+          <input type="text" id="bizUrl" placeholder="e.g. apexhealth.com or @apexhealth" required>
+        </div>
+
+        <div class="input-field">
+          <label>Your Role in the Company</label>
+          <div class="chip-grid" id="roleGrid">
+            <div class="chip selected" data-role="owner">
+              <span class="chip-title">Founder / Owner</span>
+              <span class="chip-sub">Direct equity decision maker</span>
+            </div>
+            <div class="chip" data-role="partner">
+              <span class="chip-title">Managing Partner / Exec</span>
+              <span class="chip-sub">Operations or leadership</span>
+            </div>
+            <div class="chip" data-role="operator">
+              <span class="chip-title">General Manager</span>
+              <span class="chip-sub">Daily facility operations</span>
+            </div>
+            <div class="chip" data-role="staff">
+              <span class="chip-title">Staff / Front Desk</span>
+              <span class="chip-sub">Administrative support</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn-next" onclick="goToStep(2)">Continue to Scale &rarr;</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Annual Revenue Bracket -->
+      <div class="step-pane" id="pane2">
+        <h2 class="q-label">Roughly what does the business do in annual revenue?</h2>
+        <p class="q-sub">This benchmarks your inquiry volume against industry medians.</p>
+
+        <div class="chip-grid" id="revGrid" style="grid-template-columns:1fr 1fr;">
+          <div class="chip" data-rev="sub250">
+            <span class="chip-title">Under $250k / year</span>
+            <span class="chip-sub">Early stage / single practitioner</span>
+          </div>
+          <div class="chip selected" data-rev="250to1m">
+            <span class="chip-title">$250k &ndash; $1M / year</span>
+            <span class="chip-sub">Growing local business</span>
+          </div>
+          <div class="chip" data-rev="1mto5m">
+            <span class="chip-title">$1M &ndash; $5M / year</span>
+            <span class="chip-sub">Established multi-staff practice</span>
+          </div>
+          <div class="chip" data-rev="5mplus">
+            <span class="chip-title">$5M+ / year</span>
+            <span class="chip-sub">High-volume enterprise</span>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn-back" onclick="goToStep(1)">&larr; Back</button>
+          <button type="button" class="btn btn-next" onclick="goToStep(3)">Continue to Inbound Leak &rarr;</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: Inbound Volume & Dynamic Leak Calculation -->
+      <div class="step-pane" id="pane3">
+        <h2 class="q-label">How many inquiries slip through in a typical week?</h2>
+        <p class="q-sub">Estimate missed calls, unread DMs, or forms that wait more than 30 minutes for a response.</p>
+
+        <div class="range-group">
+          <div class="range-header">
+            <label for="missedSlider">Estimated Missed Inbound per Week</label>
+            <span class="val" id="missedVal">8 inquiries / wk</span>
+          </div>
+          <input type="range" id="missedSlider" min="1" max="40" value="8" oninput="updateLeakMath()">
+        </div>
+
+        <div class="range-group">
+          <div class="range-header">
+            <label for="ticketSlider">Average Customer / Job Value</label>
+            <span class="val" id="ticketVal">$1,200 avg ticket</span>
+          </div>
+          <input type="range" id="ticketSlider" min="100" max="10000" step="100" value="1200" oninput="updateLeakMath()">
+        </div>
+
+        <!-- Real-Time Dynamic Leak Meter -->
+        <div class="leak-box">
+          <div class="leak-box-left">
+            <span class="leak-tag">&bull; Estimated Annual Revenue At Risk</span>
+            <span class="leak-desc">Calculated at a conservative 25% close rate on uncaptured inquiries</span>
+          </div>
+          <div class="leak-val" id="liveLeakDisplay">$124,800/yr</div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn-back" onclick="goToStep(2)">&larr; Back</button>
+          <button type="button" class="btn btn-next" onclick="goToStep(4)">Continue to Consequence &rarr;</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: Consequence & Delivery Destination -->
+      <div class="step-pane" id="pane4">
+        <h2 class="q-label">If this leak continues for 6 months, what does that cost you?</h2>
+        <p class="q-sub">Anchor the consequence so our diagnostic measures the highest-leverage areas.</p>
+
+        <div class="chip-grid" id="costGrid" style="grid-template-columns:1fr 1fr; margin-bottom:28px">
+          <div class="chip" data-cost="under25k">
+            <span class="chip-title">Under $25k</span>
+            <span class="chip-sub">Manageable inconvenience</span>
+          </div>
+          <div class="chip selected" data-cost="25kto100k">
+            <span class="chip-title">$25k &ndash; $100k</span>
+            <span class="chip-sub">Significant lost growth</span>
+          </div>
+          <div class="chip" data-cost="100kto300k">
+            <span class="chip-title">$100k &ndash; $300k</span>
+            <span class="chip-sub">Critical profit hemorrhage</span>
+          </div>
+          <div class="chip" data-cost="300kplus">
+            <span class="chip-title">$300k+</span>
+            <span class="chip-sub">Major enterprise barrier</span>
+          </div>
+        </div>
+
+        <h3 style="font-family:var(--display); font-size:1.15rem; margin:0 0 14px; letter-spacing:-.01em;">Where should we send your completed audit?</h3>
+
+        <div class="input-field">
+          <label for="leadEmail">Work Email Address (Required)</label>
+          <input type="email" id="leadEmail" placeholder="you@company.com" required autocomplete="email">
+        </div>
+
+        <div class="input-field">
+          <label for="leadIg">Instagram Handle (Optional &mdash; for instant DM delivery)</label>
+          <input type="text" id="leadIg" placeholder="@yourhandle">
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn-back" onclick="goToStep(3)">&larr; Back</button>
+          <button type="button" class="btn btn-next" id="submitBtn" onclick="submitAudit()">
+            <span>Generate My Audit Report</span> &rarr;
+          </button>
+        </div>
+      </div>
+
+    </form>
+
+    <!-- SUCCESS / AUDIT QUEUED STATE -->
+    <div class="success-pane" id="successPane">
+      <div class="success-icon">&check;</div>
+      <h2 class="success-title">Diagnostic Dossier Queued.</h2>
+      <p class="success-sub">Our automated systems are now testing your digital channels, measuring after-hours latency, and generating your custom Revenue Leak Report.</p>
+      
+      <div class="success-leak">
+        <div class="success-leak-label">Your Estimated Annualized Opportunity</div>
+        <div class="success-leak-amt" id="finalLeakAmt">$124,800/yr</div>
+      </div>
+
+      <p style="font-size:.92rem; color:var(--muted); max-width:34em; margin:0 auto 20px;">
+        Your audit is being dispatched to <b id="destEmail" style="color:var(--ink)">your email</b>. Zero calls required &mdash; you will receive the full findings, latency timestamps, and fix roadmap directly.
+      </p>
+
+      <a href="index.html" class="btn btn-next" style="display:inline-flex; margin:0 auto;">Return to Homepage</a>
+    </div>
+
   </main>
 
 </div>
@@ -164,7 +396,7 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px}
 <footer>
   <div class="wrap foot">
     <span class="logo">Recover<b>Revenue</b></span>
-    <span>Websites and AI phone systems for local service businesses. Tampa Bay, FL.</span>
+    <span>Faceless AI systems &amp; revenue recovery diagnostics for high-ticket service businesses.</span>
     <span>&copy; 2026</span>
   </div>
 </footer>
@@ -172,40 +404,132 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px}
 <script>
 (function(){
   "use strict";
-  /* ------------------------------------------------------------
-     ONE PLACE TO CHANGE THE EVENT.
-     Swap the slug when the 15-minute event type exists in Calendly.
-     ------------------------------------------------------------ */
-  var CAL_USER  = "chase-sza";
-  var CAL_EVENT = "15min";
 
-  var base = "https://calendly.com/" + CAL_USER + "/" + CAL_EVENT;
-  var params = "?hide_gdpr_banner=1&hide_landing_page_details=1&primary_color=17419b";
-  var qs = new URLSearchParams(location.search);
-  ["utm_source","utm_medium","utm_campaign","utm_content","utm_term"].forEach(function(k){
-    if(qs.get(k)) params += "&" + k + "=" + encodeURIComponent(qs.get(k));
-  });
+  var currentStep = 1;
+  var selectedRole = "owner";
+  var selectedRev = "250to1m";
+  var selectedCost = "25kto100k";
 
-  document.getElementById("calDirect").href = base;
-  document.getElementById("mLen").textContent = CAL_EVENT.replace("min", " minutes");
+  // Chip selection logic
+  function setupChips(containerId, callback){
+    var cont = document.getElementById(containerId);
+    if(!cont) return;
+    cont.addEventListener("click", function(e){
+      var chip = e.target.closest(".chip");
+      if(!chip) return;
+      cont.querySelectorAll(".chip").forEach(function(c){ c.classList.remove("selected"); });
+      chip.classList.add("selected");
+      callback(chip);
+    });
+  }
 
-  var mount = document.getElementById("calmount");
-  var w = document.createElement("div");
-  w.className = "calendly-inline-widget";
-  w.setAttribute("data-url", base + params);
-  w.setAttribute("data-resize", "true");
-  mount.appendChild(w);
+  setupChips("roleGrid", function(chip){ selectedRole = chip.getAttribute("data-role"); });
+  setupChips("revGrid", function(chip){ selectedRev = chip.getAttribute("data-rev"); });
+  setupChips("costGrid", function(chip){ selectedCost = chip.getAttribute("data-cost"); });
 
-  var s = document.createElement("script");
-  s.src = "https://assets.calendly.com/assets/external/widget.js";
-  s.async = true;
-  s.onload = function(){
-    setTimeout(function(){
-      var fall = document.getElementById("calfall");
-      if(w.querySelector("iframe") && fall) fall.style.display = "none";
-    }, 900);
+  // Navigation between steps
+  window.goToStep = function(step){
+    if(step > currentStep){
+      // Validate Step 1
+      if(currentStep === 1){
+        var biz = document.getElementById("bizName").value.trim();
+        var url = document.getElementById("bizUrl").value.trim();
+        if(!biz || !url){
+          alert("Please provide your business name and website or Instagram handle.");
+          return;
+        }
+      }
+    }
+
+    currentStep = step;
+    document.querySelectorAll(".step-pane").forEach(function(p){ p.classList.remove("active"); });
+    var target = document.getElementById("pane" + step);
+    if(target) target.classList.add("active");
+
+    // Update bar & progress fill
+    var pFill = document.getElementById("pFill");
+    var stepPill = document.getElementById("stepPill");
+    var barTitle = document.getElementById("barTitle");
+
+    pFill.style.width = (step * 25) + "%";
+    stepPill.textContent = "Question " + step + " of 4";
+
+    if(step === 1) barTitle.textContent = "Step 1 of 4: Business & Authority";
+    else if(step === 2) barTitle.textContent = "Step 2 of 4: Annual Revenue";
+    else if(step === 3) barTitle.textContent = "Step 3 of 4: Inbound Leak";
+    else if(step === 4) barTitle.textContent = "Step 4 of 4: Delivery Destination";
+
+    window.scrollTo({ top: document.querySelector(".form-wrap").offsetTop - 80, behavior: 'smooth' });
   };
-  document.head.appendChild(s);
+
+  // Dynamic leak math calculation
+  window.updateLeakMath = function(){
+    var missed = parseInt(document.getElementById("missedSlider").value, 10);
+    var ticket = parseInt(document.getElementById("ticketSlider").value, 10);
+
+    document.getElementById("missedVal").textContent = missed + " inquiries / wk";
+    document.getElementById("ticketVal").textContent = "$" + ticket.toLocaleString() + " avg ticket";
+
+    // Formula: (missed_per_week * 52 weeks) * 25% conservative conversion rate * ticket
+    var annualLost = Math.round((missed * 52) * 0.25 * ticket);
+    document.getElementById("liveLeakDisplay").textContent = "$" + annualLost.toLocaleString() + "/yr";
+  };
+
+  // Form submission & lead persistence
+  window.submitAudit = function(){
+    var email = document.getElementById("leadEmail").value.trim();
+    if(!email || !email.includes("@")){
+      alert("Please enter a valid work email address so we can deliver your audit.");
+      return;
+    }
+
+    var submitBtn = document.getElementById("submitBtn");
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = "<span>Analyzing &amp; Queuing...</span>";
+
+    var missed = parseInt(document.getElementById("missedSlider").value, 10);
+    var ticket = parseInt(document.getElementById("ticketSlider").value, 10);
+    var annualLost = Math.round((missed * 52) * 0.25 * ticket);
+
+    var leadRecord = {
+      timestamp: new Date().toISOString(),
+      business_name: document.getElementById("bizName").value.trim(),
+      website: document.getElementById("bizUrl").value.trim(),
+      role: selectedRole,
+      revenue_bracket: selectedRev,
+      weekly_missed: missed,
+      avg_ticket: ticket,
+      annual_leak_estimate: annualLost,
+      inaction_cost_6mo: selectedCost,
+      email: email,
+      instagram: document.getElementById("leadIg").value.trim(),
+      status: "audit_queued"
+    };
+
+    // Store in localStorage for client persistence
+    try {
+      var existing = JSON.parse(localStorage.getItem("rr_leads") || "[]");
+      existing.push(leadRecord);
+      localStorage.setItem("rr_leads", JSON.stringify(existing));
+    } catch(e){}
+
+    setTimeout(function(){
+      document.getElementById("auditForm").style.display = "none";
+      document.getElementById("barTitle").textContent = "Diagnostic Complete";
+      document.getElementById("stepPill").textContent = "Success";
+      document.getElementById("pFill").style.width = "100%";
+      document.getElementById("pFill").style.background = "var(--pos)";
+
+      document.getElementById("destEmail").textContent = email;
+      document.getElementById("finalLeakAmt").textContent = "$" + annualLost.toLocaleString() + "/yr";
+      document.getElementById("successPane").style.display = "block";
+
+      window.scrollTo({ top: document.querySelector(".form-wrap").offsetTop - 80, behavior: 'smooth' });
+    }, 850);
+  };
+
+  // Init math
+  updateLeakMath();
 })();
 </script>
 </body>
