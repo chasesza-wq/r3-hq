@@ -366,7 +366,11 @@
 
   const isProspect  = !!get('name');
   // A prospect page may only show review content that came from their real profile.
-  const hasRealRevs = !!(get('r1') || get('rating') || get('reviews'));
+  // Review TEXT is the only thing that decides whether the review grid is real.
+  // Gating on rating/reviews too was the bug: teardown.py passes those but not
+  // r1..r3, which switched the honest placeholder cards OFF and rendered three
+  // empty boxes to a prospect watching over FaceTime.
+  const hasRealRevs = !!get('r1');
   const phMode      = isProspect && !hasRealRevs;
 
   const phoneRaw = (get('phone') || '').replace(/\D/g, '');

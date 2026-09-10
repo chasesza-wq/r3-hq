@@ -4168,12 +4168,8 @@ function dialStats(){
 }
 function pushDial(){
   try{
-    // The aggregate says how many. `results` says which lead and what happened —
-    // without it a booking can never be traced back to the demo that earned it,
-    // and clearing site data erases the only copy that exists.
-    const body=JSON.stringify(Object.assign(dialStats(),{results}));
     fetch(DIAL_SINK,{method:"POST",headers:{"Content-Type":"application/json"},
-      body,keepalive:true}).catch(()=>{});
+      body:JSON.stringify(dialStats()),keepalive:true}).catch(()=>{});
   }catch(_){}
 }
 function saveQueue(){ localStorage.setItem("rr_queue",JSON.stringify(queue)); }
