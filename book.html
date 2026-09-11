@@ -31,6 +31,16 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);
 a{color:inherit;text-decoration:none}
 .wrap{width:min(1180px,92vw);margin-inline:auto}
 
+/* ---------- post-submit booking step ---------- */
+.book-step{background:var(--accent-light);border:1px solid rgba(23,65,155,.18);
+  border-radius:var(--r);padding:26px 24px;margin:0 auto 18px;max-width:34em}
+.book-step h3{font-family:var(--display);font-weight:700;font-size:1.18rem;
+  letter-spacing:-.015em;margin:0 0 8px;color:#102e70}
+.book-step p{font-size:.92rem;line-height:1.6;color:#28407a;margin:0 0 18px}
+.back-link{display:inline-block;font-size:.88rem;color:var(--muted);
+  text-decoration:underline;text-underline-offset:3px}
+.back-link:hover{color:var(--accent)}
+
 /* ---------- sms consent ---------- */
 .consent{display:flex;gap:12px;align-items:flex-start;margin:6px 0 4px;padding:16px 18px;
   background:var(--accent-light);border:1px solid rgba(23,65,155,.16);border-radius:14px;
@@ -170,7 +180,15 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(
 .foot .logo{font-size:.98rem}
 
 @media (max-width:940px){
+  /* Social traffic lands here from a phone. With the rail first in source order
+     the visitor scrolls roughly a screen and a half of preamble before question
+     one — the pitch is already what got them to tap the ad. Form first; the
+     supporting cards still sit underneath for anyone who wants them. */
   .split{grid-template-columns:1fr;gap:26px;padding-top:24px}
+  .split .form-wrap{order:-1}
+  .bhead{padding-top:22px}
+  .bhead h1{font-size:clamp(1.7rem,7vw,2.2rem)}
+  .bhead .lede{font-size:.96rem}
   .rail{position:static}
   .bhead{padding-top:36px}
   .form-body{padding:24px 18px}
@@ -191,7 +209,7 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(
 <div class="wrap bhead">
   <p class="eyebrow">60-Second Diagnostic · No Sales Calls</p>
   <h1>Calculate your revenue <em>leak.</em></h1>
-  <p class="lede">Answer four quick questions. We inspect your site response, after-hours latency, and missed inbound volume — and deliver a comprehensive diagnostic dossier straight to your inbox or DM.</p>
+  <p class="lede">Answer three quick questions. We inspect your site response, after-hours latency, and missed inbound volume — and deliver a comprehensive diagnostic dossier straight to your inbox or DM.</p>
 </div>
 
 <div class="wrap split">
@@ -213,21 +231,21 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(
         <div><dt>Format</dt><dd>PDF Teardown + Video</dd></div>
         <div><dt>Delivery</dt><dd>Email or Instagram DM</dd></div>
         <div><dt>Turnaround</dt><dd class="green">Under 2 hours</dd></div>
-        <div><dt>Sales Pitch</dt><dd class="green">None (Zero calls)</dd></div>
+        <div><dt>Sales Pitch</dt><dd class="green">None. Ever.</dd></div>
         <div><dt>Cost</dt><dd class="green">$0 (Free)</dd></div>
       </dl>
     </div>
 
     <div class="nudge">
-      <h3>Faceless &amp; Asynchronous</h3>
-      <p>We respect your time. No calendar links, no 30-minute slide deck meetings. Just clear diagnostic intelligence delivered straight to you.</p>
+      <h3>The Audit Costs You Nothing</h3>
+      <p>No 30-minute slide deck meeting. The findings land in your inbox on their own. If you want them walked through, that is 15 minutes and entirely your call.</p>
     </div>
   </aside>
 
   <!-- Right Rail: The 4-Question Qualifying Form Engine -->
   <main class="form-wrap">
     <div class="form-bar">
-      <span class="t" id="barTitle">Step 1 of 4: Business &amp; Authority</span>
+      <span class="t" id="barTitle">Step 1 of 3: Your Business</span>
       <span class="step-pill" id="stepPill">Question 1</span>
     </div>
     <div class="progress-bar">
@@ -340,35 +358,14 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(
 
         <div class="btn-row">
           <button type="button" class="btn btn-back" onclick="goToStep(2)">&larr; Back</button>
-          <button type="button" class="btn btn-next" onclick="goToStep(4)">Continue to Consequence &rarr;</button>
+          <button type="button" class="btn btn-next" onclick="goToStep(4)">Continue &rarr;</button>
         </div>
       </div>
 
       <!-- STEP 4: Consequence & Delivery Destination -->
       <div class="step-pane" id="pane4">
-        <h2 class="q-label">If this leak continues for 6 months, what does that cost you?</h2>
-        <p class="q-sub">Anchor the consequence so our diagnostic measures the highest-leverage areas.</p>
-
-        <div class="chip-grid" id="costGrid" style="grid-template-columns:1fr 1fr; margin-bottom:28px">
-          <div class="chip" data-cost="under25k">
-            <span class="chip-title">Under $25k</span>
-            <span class="chip-sub">Manageable inconvenience</span>
-          </div>
-          <div class="chip selected" data-cost="25kto100k">
-            <span class="chip-title">$25k &ndash; $100k</span>
-            <span class="chip-sub">Significant lost growth</span>
-          </div>
-          <div class="chip" data-cost="100kto300k">
-            <span class="chip-title">$100k &ndash; $300k</span>
-            <span class="chip-sub">Critical profit hemorrhage</span>
-          </div>
-          <div class="chip" data-cost="300kplus">
-            <span class="chip-title">$300k+</span>
-            <span class="chip-sub">Major enterprise barrier</span>
-          </div>
-        </div>
-
-        <h3 style="font-family:var(--display); font-size:1.15rem; margin:0 0 14px; letter-spacing:-.01em;">Where should we send your completed audit?</h3>
+        <h2 class="q-label">Where should we send it?</h2>
+        <p class="q-sub">Your audit lands in under 2 hours.</p>
 
         <div class="input-field">
           <label for="leadEmail">Work Email Address (Required)</label>
@@ -421,11 +418,20 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(
         <div class="success-leak-amt" id="finalLeakAmt">$124,800/yr</div>
       </div>
 
-      <p style="font-size:.92rem; color:var(--muted); max-width:34em; margin:0 auto 20px;">
-        Your audit is being dispatched to <b id="destEmail" style="color:var(--ink)">your email</b>. Zero calls required &mdash; you will receive the full findings, latency timestamps, and fix roadmap directly.
+      <p style="font-size:.92rem; color:var(--muted); max-width:34em; margin:0 auto 22px;">
+        Your audit is being dispatched to <b id="destEmail" style="color:var(--ink)">your email</b> &mdash; full findings, latency timestamps, and fix roadmap. That arrives whether or not you do anything else.
       </p>
 
-      <a href="index.html" class="btn btn-next" style="display:inline-flex; margin:0 auto;">Return to Homepage</a>
+      <div class="book-step">
+        <h3>Want me to walk you through it?</h3>
+        <p>15 minutes, on the phone, going through your three biggest leaks and what each one costs. Optional &mdash; the audit is yours either way.</p>
+        <a href="https://calendly.com/chase-sza/15min" target="_blank" rel="noopener"
+           class="btn btn-next" id="bookBtn" style="display:inline-flex; margin:0 auto;">
+          Book the 15-minute walkthrough &rarr;
+        </a>
+      </div>
+
+      <a href="index.html" class="back-link">No thanks &mdash; just send the audit</a>
     </div>
 
   </main>
@@ -459,7 +465,16 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(
   var currentStep = 1;
   var selectedRole = "owner";
   var selectedRev = "250to1m";
-  var selectedCost = "25kto100k";
+  /* Was a fourth question. The calculator already produced the annualised leak,
+     so asking the visitor to restate half of it was a decision placed directly
+     in front of the contact fields — the highest-abandon point in the form. */
+  function inactionCost(annualLost){
+    var half = annualLost / 2;
+    if(half < 25000)  return "sub25k";
+    if(half < 100000) return "25kto100k";
+    if(half < 300000) return "100kto300k";
+    return "300kplus";
+  }
 
   // Chip selection logic
   function setupChips(containerId, callback){
@@ -476,7 +491,6 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(
 
   setupChips("roleGrid", function(chip){ selectedRole = chip.getAttribute("data-role"); });
   setupChips("revGrid", function(chip){ selectedRev = chip.getAttribute("data-rev"); });
-  setupChips("costGrid", function(chip){ selectedCost = chip.getAttribute("data-cost"); });
 
   // Navigation between steps
   window.goToStep = function(step){
@@ -505,10 +519,10 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(
     pFill.style.width = (step * 25) + "%";
     stepPill.textContent = "Question " + step + " of 4";
 
-    if(step === 1) barTitle.textContent = "Step 1 of 4: Business & Authority";
-    else if(step === 2) barTitle.textContent = "Step 2 of 4: Annual Revenue";
-    else if(step === 3) barTitle.textContent = "Step 3 of 4: Inbound Leak";
-    else if(step === 4) barTitle.textContent = "Step 4 of 4: Delivery Destination";
+    if(step === 1) barTitle.textContent = "Step 1 of 3: Your Business";
+    else if(step === 2) barTitle.textContent = "Step 2 of 3: Annual Revenue";
+    else if(step === 3) barTitle.textContent = "Step 3 of 3: Inbound Leak";
+    else if(step === 4) barTitle.textContent = "Where to send it";
 
     window.scrollTo({ top: document.querySelector(".form-wrap").offsetTop - 80, behavior: 'smooth' });
   };
@@ -566,7 +580,7 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(
       weekly_missed: missed,
       avg_ticket: ticket,
       annual_leak_estimate: annualLost,
-      inaction_cost_6mo: selectedCost,
+      inaction_cost_6mo: inactionCost(annualLost),
       email: email,
       instagram: document.getElementById("leadIg").value.trim(),
       phone: "+1" + digits,
