@@ -281,7 +281,7 @@ html.js .frame.in img{transform:scale(1)}
 }
 .seg-note{color:var(--muted);font-size:.9rem;margin-top:18px;text-align:center;min-height:1.6em}
 .tiers{
-  display:grid;grid-template-columns:1fr 1.16fr 1fr;gap:22px;align-items:center;
+  display:grid;grid-template-columns:1fr 1.2fr;gap:24px;align-items:center;
   margin-top:clamp(40px,5vw,60px);transition:opacity .28s ease;
 }
 .tiers.fade{opacity:0}
@@ -318,6 +318,17 @@ html.js .frame.in img{transform:scale(1)}
 }
 .tier.hot .tier-cta{background:var(--accent);color:var(--paper);border-color:var(--accent)}
 .tier.hot .tier-cta:hover{background:var(--accent-deep);border-color:var(--accent-deep)}
+/* the guarantee ribbon, the whole reason the right-hand card exists */
+.guar{
+  display:inline-flex;align-items:center;gap:9px;margin-top:18px;
+  font-size:.76rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--accent);background:rgba(23,65,155,.08);
+  border:1px solid rgba(23,65,155,.2);border-radius:999px;padding:7px 15px;
+}
+.guar i{width:6px;height:6px;border-radius:50%;background:var(--accent);flex:none}
+.tier-terms{margin-top:20px;padding-top:18px;border-top:1px solid var(--line-soft);
+  font-size:.85rem;color:var(--muted);line-height:1.62}
+.tier-terms b{color:var(--ink);font-weight:700}
 .pricing-foot{text-align:center;color:var(--muted);font-size:.92rem;margin-top:44px}
 .pricing-foot b{color:var(--ink)}
 @media (max-width:960px){
@@ -411,7 +422,7 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
       <a href="#pricing">Pricing</a>
       <a href="#process">How it works</a>
       <a href="#faq">FAQ</a>
-      <a class="nav-cta" href="book.html">Get free audit</a>
+      <a class="nav-cta" href="start/">Book a call</a>
     </nav>
   </div>
 </header>
@@ -424,11 +435,11 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
     <h1>
       <span class="hl"><span class="rv rv-mask" style="--d:.12s">Your website should</span></span>
       <span class="hl"><span class="rv rv-mask" style="--d:.24s">make you money.</span></span>
-      <span class="hl"><span class="rv rv-mask" style="--d:.36s">Ours do. <em class="acc">Provably.</em></span></span>
+      <span class="hl"><span class="rv rv-mask" style="--d:.36s">Ours do, <em class="acc">or you don't pay.</em></span></span>
     </h1>
-    <p class="hero-sub rv" style="--d:.55s">We build calm, fast websites with an AI receptionist behind them. Every call answered in under 30 seconds, every booking kept, every recovered dollar visible in your own portal.</p>
+    <p class="hero-sub rv" style="--d:.55s">We build calm, fast websites with an AI receptionist behind them, then re-book the customers already in your records. <b>15 new jobs in 60 days or your card is never charged</b> &mdash; and you keep the website either way.</p>
     <div class="hero-ctas rv" style="--d:.7s">
-      <a class="btn btn-primary magnetic" href="book.html">Get your free leak audit <span class="arr">&rarr;</span></a>
+      <a class="btn btn-primary magnetic" href="start/">Book the 15-minute call <span class="arr">&rarr;</span></a>
       <a class="btn btn-ghost" href="#pricing">See public pricing</a>
     </div>
   </div>
@@ -573,8 +584,8 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
   <div class="wrap">
     <div class="pricing-head">
       <p class="eyebrow rv">Pricing, public on purpose</p>
-      <h2 class="h2 rv" style="--d:.08s">Pick your business. See the price.</h2>
-      <p class="lede rv" style="--d:.16s">No "book a call to find out." Every plan is built to pay for itself inside the first 30 days.</p>
+      <h2 class="h2 rv" style="--d:.08s">Two plans. You don't pay for the big one unless it works.</h2>
+      <p class="lede rv" style="--d:.16s">No "book a call to find out." The number is on the page, and on the guaranteed plan your card is not charged until day 61 &mdash; and only if the system booked you 15 jobs.</p>
       <div class="seg rv" style="--d:.24s" role="group" aria-label="Choose your vertical">
         <button type="button" data-v="home" aria-pressed="true"><span class="lf">Home Services</span><span class="ls">Home</span></button>
         <button type="button" data-v="dental" aria-pressed="false"><span class="lf">Dental &amp; Medical</span><span class="ls">Dental</span></button>
@@ -585,56 +596,44 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
 
     <div class="tiers rv" style="--d:.2s" id="tiers">
       <article class="tier rv" data-tier="0">
-        <h3 class="tier-name">Launch</h3>
-        <p class="tier-blurb">The website, rebuilt to book.</p>
+        <h3 class="tier-name">Visibility</h3>
+        <p class="tier-blurb">Get found. Stop losing the calls you already earn.</p>
         <div class="tier-price">
-          <span class="mo num">$149<small> /month</small></span>
-          <span class="setup num">$497 one-time setup</span>
+          <span class="mo num">$497<small> /month</small></span>
+          <span class="setup num">$0 setup &middot; month to month</span>
         </div>
         <ul>
-          <li>Fast website built to convert</li>
+          <li>Booking website, built to convert, yours to keep</li>
+          <li>Google Business Profile claimed, rebuilt and posted to</li>
           <li>Missed-call text-back within 60 seconds</li>
-          <li>Click-to-call on every phone screen</li>
-          <li>Monthly performance report</li>
+          <li>Automated review requests after every job</li>
+          <li>Tracking number, so "where did that job come from" has an answer</li>
         </ul>
-        <a class="tier-cta" href="book.html">Start with Launch</a>
+        <p class="tier-terms">For businesses without a past-customer list yet. <b>No guarantee on this plan</b> &mdash; without the list, promising a number would be a guess.</p>
+        <a class="tier-cta" href="start/">Start with Visibility</a>
       </article>
 
       <article class="tier hot rv" data-tier="1" style="--d:.1s">
-        <h3 class="tier-name">Growth <span class="badge">Recommended</span></h3>
-        <p class="tier-blurb">The phones answered. The leak closed.</p>
+        <h3 class="tier-name">Recovery Engine <span class="badge">Guaranteed</span></h3>
+        <p class="tier-blurb">Everything above, plus the outbound engine that produces the jobs.</p>
         <div class="tier-price">
-          <span class="mo num">$249<small> /month</small></span>
-          <span class="setup num">$997 one-time setup</span>
+          <span class="mo num">$1,497<small> /month</small></span>
+          <span class="setup num">$0 setup &middot; first charge day 61</span>
         </div>
+        <span class="guar"><i></i>15 jobs in 60 days or you don't pay</span>
         <ul>
-          <li>Everything in Launch</li>
-          <li>AI receptionist on every call, 24/7, pickup under 30 seconds</li>
-          <li>Real bookings straight into your calendar</li>
-          <li>No-show reminders and instant rebooking</li>
-          <li>Client portal, recovered revenue front and center</li>
+          <li>Everything in Visibility</li>
+          <li>Past-customer reactivation, texted on a real campaign</li>
+          <li>AI receptionist on after-hours and overflow calls, 24/7</li>
+          <li>Speed-to-lead: every form and missed call answered in 60 seconds</li>
+          <li>Lead dashboard: who called, who booked, who went cold</li>
         </ul>
-        <a class="tier-cta" href="book.html">Get free leak audit</a>
-      </article>
-
-      <article class="tier rv" data-tier="2" style="--d:.2s">
-        <h3 class="tier-name">Partner</h3>
-        <p class="tier-blurb">For established, multi-crew operators.</p>
-        <div class="tier-price">
-          <span class="mo num">$397<small> /month</small></span>
-          <span class="setup num">$1,997 one-time setup</span>
-        </div>
-        <ul>
-          <li>Everything in Growth</li>
-          <li>All six recovery workflows</li>
-          <li>Reporting dashboard</li>
-          <li>Monthly strategy call</li>
-        </ul>
-        <a class="tier-cta" href="book.html">Talk through Partner</a>
+        <p class="tier-terms">Card on file at signing, <b>charged for the first time on day 61</b> and only if the system booked 15+ jobs. Miss it and you are never charged, we part ways, and the website is yours. Requires 200+ past customers with phone numbers.</p>
+        <a class="tier-cta" href="start/">Book the 15-minute call</a>
       </article>
     </div>
 
-    <p class="pricing-foot rv">Setup once, then monthly. Month to month after your first 90 days. <b>The website stays yours.</b></p>
+    <p class="pricing-foot rv">The 60-day clock starts when the phone carriers approve your text campaign, not the day you sign &mdash; nothing outbound can legally send before that. <b>The website stays yours either way.</b></p>
   </div>
 </section>
 
@@ -680,7 +679,7 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
     <div class="faq-list rv" style="--d:.12s">
       <details>
         <summary>What if it doesn&rsquo;t make me money?</summary>
-        <div class="a">You will see it in the portal &mdash; we report conservatively-attributed dollars, not vanity clicks. After the first 90 days you are month to month; if the numbers do not clear your cost, fire us. That risk is ours on purpose.</div>
+        <div class="a">You will see it in the portal &mdash; we report conservatively-attributed dollars, not vanity clicks. On Recovery Engine you are not charged at all until day 61, and only if the system booked you 15 jobs; miss it and you are never charged and you keep the website. That risk is ours on purpose.</div>
       </details>
       <details>
         <summary>Does the AI actually sound human?</summary>
@@ -695,12 +694,12 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
         <div class="a">Yes &mdash; stay 12 months on any plan and the site is 100% yours: code, domain, content. Leave before 12 months and there is a one-time $997 buy-out if you want to take it with you. Either way, no hostage hosting &mdash; nothing breaks if we part ways.</div>
       </details>
       <details>
-        <summary>What does the setup fee cover?</summary>
-        <div class="a">The actual build &mdash; your website designed and launched, your Google profile rebuilt, your tracking number wired in, and on the bigger plans your AI receptionist trained on your services and prices. You pay for that work once. The monthly covers everything after: hosting, maintenance, monitoring, edits and reporting. No surprise invoices, no hourly billing.</div>
+        <summary>Is there a setup fee?</summary>
+        <div class="a">No. There used to be and we killed it. The build &mdash; your website, your Google profile, your tracking number, your AI receptionist trained on your services and prices &mdash; is included, and on Recovery Engine it is done before you have paid anything at all. The monthly covers everything after: hosting, maintenance, monitoring, edits and reporting. No surprise invoices, no hourly billing.</div>
       </details>
       <details>
         <summary>What if it doesn&rsquo;t fit neatly &mdash; I run a gym, salon or med spa?</summary>
-        <div class="a">Same plans, same prices &mdash; the build is what changes. Repeat-visit businesses get booking flows, reminders and no-show recovery wired in; job-call businesses get dispatch-style call handling and reactivation campaigns. Tell us what you run on the audit call and we configure your plan around it.</div>
+        <div class="a">Same two plans, same prices &mdash; the build is what changes. Repeat-visit businesses get booking flows, reminders and no-show recovery wired in; job-call businesses get dispatch-style call handling and reactivation campaigns. Tell us what you run on the call and we configure your plan around it.</div>
       </details>
     </div>
 
@@ -711,10 +710,10 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
 <!-- ================= FINAL CTA ================= -->
 <section class="final" id="book">
   <div class="wrap">
-    <p class="eyebrow rv">60-Second Diagnostic · Zero Calls Required</p>
-    <h2 class="rv" style="--d:.08s">Calculate what you are leaking.</h2>
-    <p class="rv" style="--d:.16s">We will test your response times and show you exactly where the money is going &mdash; delivered straight to your inbox or DM.</p>
-    <a class="btn btn-primary magnetic rv" style="--d:.24s" href="book.html">Run the 60-second leak audit <span class="arr">&rarr;</span></a>
+    <p class="eyebrow rv">15 minutes &middot; on the phone &middot; no slide deck</p>
+    <h2 class="rv" style="--d:.08s">15 new jobs in 60 days, or you don't pay.</h2>
+    <p class="rv" style="--d:.16s">Tell me what an average job is worth to you and how many calls a week you miss. I will tell you what it costs you a year, and whether your list is long enough to carry the guarantee.</p>
+    <a class="btn btn-primary magnetic rv" style="--d:.24s" href="start/">Book the 15-minute call <span class="arr">&rarr;</span></a>
     <p class="final-mail rv" style="--d:.32s">Prefer writing? <a href="mailto:chase@recoverrevenue.co">chase@recoverrevenue.co</a></p>
   </div>
 </section>
@@ -905,36 +904,66 @@ if(HAS_GSAP && FINE && !RM){
 /* ---------- pricing vertical switcher ---------- */
 var PRICING = {
   home: {
-    note: "HVAC, plumbing, electrical, landscaping, roofing",
+    note: "HVAC, plumbing, electrical, roofing, landscaping, tree, towing, detailing",
     tiers: [
-      { blurb: "The website, rebuilt to book.", mo: "$149", setup: "$497 one-time setup",
-        feats: ["Fast website built to convert", "Missed-call text-back within 60 seconds", "Click-to-call on every phone screen", "Monthly performance report"] },
-      { blurb: "The phones answered. The leak closed.", mo: "$249", setup: "$997 one-time setup",
-        feats: ["Everything in Launch", "AI receptionist on every call, 24/7, pickup under 30 seconds", "Real bookings straight into your calendar", "No-show reminders and instant rebooking", "Client portal, recovered revenue front and center"] },
-      { blurb: "For established, multi-crew operators.", mo: "$397", setup: "$1,997 one-time setup",
-        feats: ["Everything in Growth", "All six recovery workflows", "Reporting dashboard", "Monthly strategy call"] }
+      { blurb: "Get found. Stop losing the calls you already earn.",
+        mo: "$497", setup: "$0 setup \u00b7 month to month",
+        terms: "For businesses without a past-customer list yet. <b>No guarantee on this plan</b> \u2014 without the list, promising a number would be a guess.",
+        feats: ["Booking website, built to convert, yours to keep",
+                "Google Business Profile claimed, rebuilt and posted to",
+                "Missed-call text-back within 60 seconds",
+                "Automated review requests after every job",
+                "Tracking number, so \u201cwhere did that job come from\u201d has an answer"] },
+      { blurb: "Everything above, plus the outbound engine that produces the jobs.",
+        mo: "$1,497", setup: "$0 setup \u00b7 first charge day 61",
+        terms: "Card on file at signing, <b>charged for the first time on day 61</b> and only if the system booked 15+ jobs. Miss it and you are never charged, we part ways, and the website is yours. Requires 200+ past customers with phone numbers.",
+        feats: ["Everything in Visibility",
+                "Past-customer reactivation, texted on a real campaign",
+                "AI receptionist on after-hours and overflow calls, 24/7",
+                "Speed-to-lead: every form and missed call answered in 60 seconds",
+                "Lead dashboard: who called, who booked, who went cold"] }
     ]
   },
   dental: {
-    note: "Dental, orthodontics, med spa, private practice",
+    note: "Dental, orthodontics, med spa, chiropractic, private practice",
     tiers: [
-      { blurb: "A front door worthy of the practice.", mo: "$297", setup: "$997 one-time setup",
-        feats: ["AI voice receptionist, 24/7, answers under 30 seconds", "Books appointments, knows your services and pricing", "New-patient pages that fill the form", "Monthly performance report"] },
-      { blurb: "Recalls kept. Chairs stay full.", mo: "$397", setup: "$1,497 one-time setup",
-        feats: ["Everything in Launch", "No-show recovery, 24-hour and 2-hour reminders", "Hygiene waitlist backfill on cancellations", "Client portal, recovered revenue front and center"] },
-      { blurb: "For groups and multi-practice owners.", mo: "$597", setup: "$2,497 one-time setup",
-        feats: ["Everything in Growth", "Past-client reactivation campaigns", "Review funneler, 3 to 5x review velocity", "Monthly strategy call"] }
+      { blurb: "A front door worthy of the practice, and a phone that gets answered.",
+        mo: "$497", setup: "$0 setup \u00b7 month to month",
+        terms: "For practices without a reachable recall list yet. <b>No guarantee on this plan</b> \u2014 without the list, promising a number would be a guess.",
+        feats: ["New-patient site built to fill the form, yours to keep",
+                "Google Business Profile claimed, rebuilt and posted to",
+                "Missed-call text-back within 60 seconds",
+                "Review requests after every visit",
+                "Tracking number and call attribution"] },
+      { blurb: "Everything above, plus recall, no-show recovery and the front desk after hours.",
+        mo: "$1,497", setup: "$0 setup \u00b7 first charge day 61",
+        terms: "Card on file at signing, <b>charged for the first time on day 61</b> and only if the system booked 15+ appointments. Miss it and you are never charged, we part ways, and the site is yours. Requires 200+ past patients with phone numbers.",
+        feats: ["Everything in Visibility",
+                "Lapsed-patient recall campaigns, texted, not called",
+                "AI receptionist on after-hours and overflow calls, 24/7",
+                "No-show recovery and hygiene waitlist backfill",
+                "Lead dashboard: who called, who booked, who went cold"] }
     ]
   },
   resto: {
     note: "Restaurants, cafes, bars, catering operations",
     tiers: [
-      { blurb: "Menu-first, phone-first, fast.", mo: "$1,200", setup: "$2,500 one-time setup",
-        feats: ["AI reservation capture on every call", "Confirmation and reminder texts", "Hours, directions and waitlist up front", "Review follow-up after every visit"] },
-      { blurb: "Every reservation call, taken.", mo: "$2,000", setup: "$4,500 one-time setup",
-        feats: ["Everything in Launch", "Waitlist management and backfill", "Special-occasion and catering capture", "Monthly revenue reporting"] },
-      { blurb: "For groups and multi-location owners.", mo: "$3,000", setup: "$7,500 one-time setup",
-        feats: ["Everything in Growth", "Custom-branded mobile app", "Loyalty and push notifications", "Quarterly review with your cover counts"] }
+      { blurb: "Menu first, phone first, fast. Every reservation call taken.",
+        mo: "$497", setup: "$0 setup \u00b7 month to month",
+        terms: "For rooms without a guest list yet. <b>No guarantee on this plan</b> \u2014 without the list, promising a number would be a guess.",
+        feats: ["Menu-first site with hours, directions and reservations up front",
+                "Google Business Profile claimed, rebuilt and posted to",
+                "Missed-call text-back within 60 seconds",
+                "Review follow-up after every visit",
+                "Tracking number and call attribution"] },
+      { blurb: "Everything above, plus the guest list worked and the phone covered at service.",
+        mo: "$1,497", setup: "$0 setup \u00b7 first charge day 61",
+        terms: "Card on file at signing, <b>charged for the first time on day 61</b> and only if the system booked 15+ covers or events. Miss it and you are never charged, we part ways, and the site is yours. Requires 200+ past guests with phone numbers.",
+        feats: ["Everything in Visibility",
+                "Past-guest campaigns for slow nights and private events",
+                "AI reservation capture on every call, 24/7",
+                "Confirmation, reminder and waitlist backfill texts",
+                "Booking dashboard: who called, who booked, who went cold"] }
     ]
   }
 };
@@ -952,6 +981,8 @@ function applyVertical(key){
     card.querySelector(".tier-blurb").textContent = t.blurb;
     card.querySelector(".tier-price .mo").innerHTML = t.mo + "<small> /month</small>";
     card.querySelector(".tier-price .setup").textContent = t.setup;
+    var terms = card.querySelector(".tier-terms");
+    if(terms && t.terms) terms.innerHTML = t.terms;
     var ul = card.querySelector("ul");
     ul.innerHTML = "";
     t.feats.forEach(function(f){
