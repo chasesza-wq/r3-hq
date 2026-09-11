@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{BUSINESS_NAME}} — Mobile Auto Detailing, {{CITY}} FL</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230d1113'/%3E%3Ctext x='50' y='70' font-size='58' text-anchor='middle' fill='%232ec5b6' font-family='Helvetica,Arial,sans-serif' font-weight='700'%3ED%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -13,8 +14,11 @@
     --bg: #0e1113; --bg2: #14181b; --ink: #f0f3f4; --dim: #8d979c;
     --line: rgba(240,243,244,.1); --teal: #2ec5b6; --teal-ink: #04211e;
     --display: 'Bricolage Grotesque', sans-serif; --body: 'Inter', sans-serif;
+    /* aliases the shared hero engine reads — see forge/hero-scrub.css */
+    --accent: #2ec5b6; --stage-bg: #07090a;
+    --stage-light: #f4f5f7; --ink-dark: #0d1113; --dim-dark: #5c6670; --nav-h: 66px;
   }
-  html { scroll-behavior: smooth; }
+  html {}
   body { font-family: var(--body); background: var(--bg); color: var(--ink); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
   ::selection { background: var(--teal); color: var(--teal-ink); }
   a { color: inherit; }
@@ -35,33 +39,72 @@
   .nav-cta { background: var(--teal); color: var(--teal-ink); font-weight: 700; font-size: .86rem; text-decoration: none; padding: 11px 20px; border-radius: 9px; white-space: nowrap; transition: filter .25s ease; }
   .nav-cta:hover { filter: brightness(1.1); }
 
-  /* ---------- hero ---------- */
-  .hero { position: relative; min-height: 100svh; display: flex; align-items: center; padding: 140px 0 80px; overflow: hidden; }
-  .hero .wrap { display: grid; grid-template-columns: 1.05fr .95fr; gap: 56px; align-items: center; width: 100%; }
-  .hero-badge { display: inline-flex; align-items: center; gap: 8px; font-size: .8rem; font-weight: 600; background: rgba(46,197,182,.08); border: 1px solid rgba(46,197,182,.3); color: var(--ink); padding: 7px 14px; border-radius: 999px; margin-bottom: 24px; }
+  /* ---------- full-bleed hero scrub stage (jahforge pattern) ---------- */
+  .hero-vignette { position: absolute; inset: 0;
+    background: radial-gradient(circle at center, rgba(14,17,19,.2) 0%, rgba(14,17,19,.75) 100%),
+               linear-gradient(180deg, rgba(14,17,19,.85) 0%, rgba(14,17,19,.1) 30%, rgba(14,17,19,.1) 65%, rgba(14,17,19,.95) 100%);
+    pointer-events: none; z-index: 2; }
+
+  /* environmental scene typography */
+  .hero-overlay { position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center; padding: 90px 24px 40px;
+    pointer-events: none; transition: opacity .15s ease-out, transform .15s ease-out; }
+  .hero-overlay > * { pointer-events: auto; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; font-size: .8rem; font-weight: 600;
+    background: rgba(46,197,182,.12); border: 1px solid rgba(46,197,182,.4); color: #fff;
+    padding: 7px 18px; border-radius: 999px; margin-bottom: 22px; backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(46,197,182,.2); }
   .hero-badge b { color: var(--teal); }
-  .hero h1 { font-size: clamp(2.6rem, 6.2vw, 4.6rem); margin-bottom: 22px; }
-  .hero h1 em { font-style: normal; color: var(--teal); }
-  .h-line { display: block; overflow: hidden; padding-bottom: .05em; }
-  .h-line > span { display: inline-block; }
-  .hero-sub { color: var(--dim); font-size: 1.05rem; max-width: 470px; margin-bottom: 34px; }
-  .hero-sub strong { color: var(--ink); font-weight: 600; }
-  .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-bottom: 42px; }
-  .btn-main { background: var(--teal); color: var(--teal-ink); font-weight: 700; font-size: 1rem; text-decoration: none; padding: 16px 30px; border-radius: 11px; transition: transform .25s ease, box-shadow .25s ease; }
-  .btn-main:hover { transform: translateY(-2px); box-shadow: 0 14px 34px rgba(46,197,182,.25); }
-  .btn-ghost { color: var(--ink); font-weight: 600; font-size: .95rem; text-decoration: none; padding: 16px 24px; border: 1px solid var(--line); border-radius: 11px; transition: border-color .25s ease; }
-  .btn-ghost:hover { border-color: var(--teal); }
-  .hero-stats { display: flex; gap: 34px; flex-wrap: wrap; }
-  .hs b { font-family: var(--display); font-weight: 800; font-size: 1.7rem; display: block; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .hero-jumbo { font-size: clamp(3rem, 7.8vw, 6.4rem); line-height: .95; color: #fff;
+    text-shadow: 0 6px 30px rgba(0,0,0,.9), 0 2px 10px rgba(0,0,0,.95); margin-bottom: 22px;
+    max-width: 980px; letter-spacing: -.01em; }
+  .hero-jumbo em { font-style: normal; color: var(--teal); display: block; }
+  .hero-sub-text { font-size: clamp(1.02rem, 1.6vw, 1.22rem); line-height: 1.5; color: rgba(255,255,255,.9);
+    text-shadow: 0 2px 12px rgba(0,0,0,.9); max-width: 580px; margin: 0 auto 30px; }
+  .hero-sub-text strong { color: #fff; display: block; font-weight: 700; margin-bottom: 4px; }
+  .hero-ctas-row { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-bottom: 28px; }
+  .btn-main { background: var(--teal); color: var(--teal-ink); font-weight: 800; font-size: 1.05rem;
+    text-decoration: none; padding: 16px 34px; border-radius: 11px;
+    transition: transform .25s ease, box-shadow .25s ease; box-shadow: 0 10px 30px rgba(46,197,182,.35); }
+  .btn-main:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(46,197,182,.5); }
+  .btn-ghost { color: #fff; font-weight: 600; font-size: .98rem; text-decoration: none;
+    padding: 16px 28px; border: 1px solid rgba(255,255,255,.3); border-radius: 11px;
+    background: rgba(255,255,255,.08); backdrop-filter: blur(10px); transition: all .25s ease; }
+  .btn-ghost:hover { border-color: var(--teal); background: rgba(46,197,182,.12); color: var(--teal); }
+
+  .scroll-hint { display: inline-flex; align-items: center; gap: 10px; font-family: var(--display);
+    font-weight: 700; font-size: .82rem; letter-spacing: .1em; color: rgba(255,255,255,.78);
+    text-transform: uppercase; background: rgba(0,0,0,.55); padding: 8px 18px; border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.15); backdrop-filter: blur(8px); }
+  .mouse-icon { width: 14px; height: 22px; border: 2px solid rgba(255,255,255,.85); border-radius: 999px; position: relative; }
+  .mouse-wheel { width: 2px; height: 5px; background: var(--teal); position: absolute; top: 3px; left: 50%;
+    transform: translateX(-50%); border-radius: 1px; animation: wheelScroll 1.6s infinite ease-in-out; }
+
+  /* HUD micro-status pill */
+  .hud-pill { position: absolute; left: 50%; transform: translateX(-50%); bottom: 24px;
+    background: rgba(14,17,19,.88); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--line); border-radius: 999px; padding: 10px 24px;
+    display: flex; align-items: center; gap: 20px; color: var(--ink); z-index: 20;
+    box-shadow: 0 10px 30px rgba(0,0,0,.5); max-width: 92vw; }
+  .hud-left { display: flex; align-items: center; gap: 8px; font-family: var(--display); font-weight: 700;
+    font-size: .84rem; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+  .hud-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 10px var(--teal); animation: blink 2.4s infinite; }
+  .hud-center { display: flex; align-items: center; gap: 12px; }
+  .hud-track { width: 120px; height: 4px; background: rgba(255,255,255,.16); border-radius: 2px; overflow: hidden; }
+  .hud-fill { width: 0%; height: 100%; background: var(--teal); transition: width .04s linear; }
+  .hud-pct { font-family: var(--display); font-weight: 800; font-size: .95rem; color: var(--teal); font-variant-numeric: tabular-nums; }
+
+  /* stats bar immediately below hero */
+  .hero-stats-band { background: var(--bg2); border-bottom: 1px solid var(--line); padding: 32px 0; position: relative; z-index: 30; }
+  .hero-stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; text-align: center; }
+  .hs b { font-family: var(--display); font-weight: 800; font-size: clamp(1.8rem, 3.2vw, 2.6rem); display: block; line-height: 1.1; font-variant-numeric: tabular-nums; color: var(--ink); }
   .hs b i { font-style: normal; color: var(--teal); }
-  .hs span { font-size: .76rem; color: var(--dim); }
-  .hero-photo { position: relative; border-radius: 20px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 30px 80px rgba(0,0,0,.5); aspect-ratio: 4/4.6; }
-  .hero-photo img { width: 100%; height: 100%; object-fit: cover; }
-  .hero-photo .chip { position: absolute; left: 18px; bottom: 18px; right: 18px; background: rgba(14,17,19,.78); backdrop-filter: blur(12px); border: 1px solid var(--line); border-radius: 13px; padding: 14px 18px; display: flex; align-items: center; gap: 12px; }
-  .hero-photo .chip .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--teal); flex-shrink: 0; animation: blink 2.4s infinite; }
-  @keyframes blink { 50% { opacity: .35; } }
-  .hero-photo .chip p { font-size: .82rem; color: var(--ink); line-height: 1.45; }
-  .hero-photo .chip p b { color: var(--teal); }
+  .hs span { font-size: .82rem; color: var(--dim); margin-top: 4px; display: block; }
+  @media (max-width: 800px) {
+    .hero-stats-row { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+    .hud-pill { padding: 8px 16px; gap: 12px; }
+    .hud-track { width: 70px; }
+  }
 
   /* ---------- services ---------- */
   .svc-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 46px; flex-wrap: wrap; }
@@ -215,6 +258,194 @@
   @media (max-width: 560px) { .svc-grid { grid-template-columns: 1fr; } }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 </style>
+
+<!-- HERO-SCRUB:CSS -->
+<style>
+/* forge/hero-scrub.css — the stage the canonical engine expects.
+ *
+ * Installed between the HERO-SCRUB markers by forge/install_engine.py. Colours
+ * come from each demo's own custom properties, so this file never picks a
+ * palette — it only owns geometry, the load state, and the phone layout.
+ */
+
+/* ── the runway ──────────────────────────────────────────────────── */
+.hero-scrub-wrap { position: relative; width: 100%; height: 240vh; background: var(--stage-bg, #07090a); }
+.hero-sticky-stage { position: sticky; top: 0; left: 0; width: 100%; height: 100vh; overflow: hidden; background: var(--stage-bg, #000); }
+#heroCanvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+/* 100vw on the wrap is what pushes a scrollbar-bearing desktop into horizontal
+   overflow; the sticky child is already full-bleed at width:100% because the
+   wrap has no horizontal padding. */
+
+/* ── preload state ───────────────────────────────────────────────── */
+.hero-loader {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 2px;
+  background: rgba(255,255,255,.10); z-index: 40;
+  transition: opacity .5s ease .25s;
+}
+.hero-loader.done { opacity: 0; }
+
+/* Both meters fill by transform, not width. They are driven from JS at the two
+   worst moments on the page — the loader once per decoded frame while 68 images
+   are decoding, the HUD once per scroll update — and animating width lays out
+   on every one of those. scaleX composites instead. */
+#heroLoadBar {
+  height: 100%; width: 100%;
+  transform: scaleX(0); transform-origin: left center;
+  background: var(--accent, #2ec5b6);
+  transition: transform .18s linear;
+  will-change: transform;
+}
+.hud-fill {
+  width: 100%;
+  transform: scaleX(0); transform-origin: left center;
+  transition: transform .04s linear;
+  will-change: transform;
+}
+
+/* ── phone: full-width frame up top, copy strictly underneath ────── */
+@media (max-width: 900px) {
+  .hero-scrub-wrap { height: 200vh; }
+
+  /* Cover-fitting a 16:9 frame into a 390x844 viewport shows 26% of the image
+     — a headlight where a car was supposed to be. The engine contains it to the
+     full width instead and publishes its bottom edge as --hero-img-bottom, so
+     the copy starts under the subject at any aspect ratio. */
+  .hero-overlay {
+    justify-content: flex-start;
+    padding: calc(var(--hero-img-bottom, 42vh) + 18px) 18px 120px;
+    text-align: center;
+  }
+  .hero-vignette { display: none; }
+
+  /* Everything below the frame gets an opaque floor, so the copy reads as
+     layout rather than as text dropped onto a photograph. */
+  .hero-sticky-stage::after {
+    content: ""; position: absolute; left: 0; right: 0;
+    top: calc(var(--hero-img-bottom, 42vh) - 1px); bottom: 0;
+    background: var(--stage-bg, #07090a); z-index: 5; pointer-events: none;
+  }
+  .hero-overlay { z-index: 10; }
+
+  /* The stack only fits once the display type stops behaving like desktop
+     display type: four 48px lines plus two stacked buttons overran an 844px
+     phone and put the headline back on top of the car. */
+  .hero-jumbo { font-size: clamp(1.9rem, 8.2vw, 2.5rem); line-height: 1.02; margin-bottom: 14px; }
+  .hero-sub-text { font-size: .93rem; margin-bottom: 20px; }
+  .hero-badge { margin-bottom: 14px; font-size: .72rem; padding: 6px 12px; }
+  .hero-ctas-row { gap: 10px; margin-bottom: 0; }
+  .hero-ctas-row a { padding: 13px 20px; font-size: .93rem; }
+  .scroll-hint { display: none; }
+
+  /* the pill sat half off-screen at 390px and collided with the sticky call bar */
+  .hud-pill {
+    left: 12px; right: 12px; bottom: calc(env(safe-area-inset-bottom, 0px) + 70px);
+    transform: none; width: auto; max-width: none; justify-content: space-between;
+    padding: 9px 14px; gap: 10px; z-index: 20;
+  }
+  .hud-left { font-size: .72rem; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .hud-center { gap: 8px; flex: 0 0 auto; }
+  .hud-track { width: 40px; }
+  .hud-pct { font-size: .82rem; white-space: nowrap; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-scrub-wrap { height: 100vh; }
+  .hero-overlay { opacity: 1 !important; transform: none !important; }
+}
+
+/* ── light product-shot stage ─────────────────────────────────────
+   Set data-hero="light" on .hero-scrub-wrap. For heroes whose frames are
+   studio product photography on white rather than an environmental scene:
+   the vignette and the white display type that make a dark scene readable
+   turn a white studio into grey mud and invisible copy. Palette still comes
+   from the demo — this only inverts what the stage itself paints. */
+.hero-scrub-wrap[data-hero="light"] { background: var(--stage-light, #f5f6f8); }
+.hero-scrub-wrap[data-hero="light"] .hero-sticky-stage { background: var(--stage-light, #f5f6f8); }
+.hero-scrub-wrap[data-hero="light"] .hero-vignette { display: none; }
+
+/* The copy owns a fixed band above the subject (`topBand` in the engine
+   config) and must actually FIT it. On a dark scene the copy floats over the
+   photograph and length costs nothing; here every extra line pushes the CTAs
+   onto the van's bodywork, where grey body text on black paint is unreadable.
+   So the light stack is deliberately short: badge, headline, one line, buttons. */
+.hero-scrub-wrap[data-hero="light"] .hero-overlay {
+  justify-content: flex-start;
+  padding: calc(var(--nav-h, 66px) + 18px) 24px 0;
+}
+.hero-scrub-wrap[data-hero="light"] .hero-jumbo {
+  color: var(--ink-dark, #0d1113);
+  text-shadow: none;
+  font-size: clamp(2.2rem, 4.4vw, 3.5rem);
+  line-height: 1.0;
+  margin-bottom: 12px;
+}
+.hero-scrub-wrap[data-hero="light"] .hero-sub-text {
+  color: var(--dim-dark, #5c6670);
+  text-shadow: none;
+  font-size: clamp(.94rem, 1.1vw, 1.02rem);
+  max-width: 640px;
+  margin-bottom: 18px;
+}
+/* the trailing clause is the part that overflows the band — it survives on
+   mobile, where the copy has the whole lower half to itself */
+.hero-scrub-wrap[data-hero="light"] .hero-sub-text [data-sub-years] { display: none; }
+.hero-scrub-wrap[data-hero="light"] .hero-badge { margin-bottom: 14px; }
+.hero-scrub-wrap[data-hero="light"] .hero-sub-text strong { color: var(--ink-dark, #0d1113); }
+.hero-scrub-wrap[data-hero="light"] .hero-badge {
+  color: var(--ink-dark, #0d1113);
+  background: #fff;
+  border: 1px solid rgba(13,17,19,.12);
+  box-shadow: 0 1px 3px rgba(13,17,19,.06);
+  backdrop-filter: none;
+}
+.hero-scrub-wrap[data-hero="light"] .btn-ghost {
+  color: var(--ink-dark, #0d1113);
+  background: #fff;
+  border-color: rgba(13,17,19,.16);
+  backdrop-filter: none;
+}
+.hero-scrub-wrap[data-hero="light"] .scroll-hint {
+  color: var(--dim-dark, #5c6670);
+  background: #fff;
+  border-color: rgba(13,17,19,.12);
+  backdrop-filter: none;
+}
+.hero-scrub-wrap[data-hero="light"] .mouse-icon { border-color: rgba(13,17,19,.5); }
+/* The copy has a fixed band above the subject; a scroll hint is one element too
+   many for it and pushes the CTAs onto the bodywork. The HUD already says the
+   page responds to the wheel. */
+.hero-scrub-wrap[data-hero="light"] .scroll-hint { display: none; }
+.hero-scrub-wrap[data-hero="light"] .hero-ctas-row { margin-bottom: 0; }
+
+.hero-scrub-wrap[data-hero="light"] .hud-pill {
+  background: rgba(255,255,255,.92);
+  border: 1px solid rgba(13,17,19,.10);
+  box-shadow: 0 6px 24px rgba(13,17,19,.10);
+  color: var(--ink-dark, #0d1113);
+  backdrop-filter: blur(10px);
+}
+.hero-scrub-wrap[data-hero="light"] .hud-track { background: rgba(13,17,19,.12); }
+.hero-scrub-wrap[data-hero="light"] .hero-loader { background: rgba(13,17,19,.08); }
+
+/* On a phone the copy sits under the frame, so it needs the light floor too. */
+@media (max-width: 900px) {
+  .hero-scrub-wrap[data-hero="light"] .hero-sticky-stage::after {
+    background: var(--stage-light, #f5f6f8);
+  }
+  /* The clause is hidden on desktop because it overflows the reserved band.
+     Here the copy owns the whole lower half, and it carries the personalised
+     years-in-trade — the one line in the hero that is about this business
+     rather than about the category. Put it back. */
+  .hero-scrub-wrap[data-hero="light"] .hero-sub-text [data-sub-years] { display: inline; }
+  .hero-scrub-wrap[data-hero="light"] .hero-overlay {
+    justify-content: flex-start;
+    padding: calc(var(--hero-img-bottom, 42vh) + 18px) 18px 120px;
+  }
+}
+</style>
+<!-- /HERO-SCRUB:CSS -->
+
 </head>
 <body>
 
@@ -231,31 +462,58 @@
   </div>
 </nav>
 
-<header class="hero">
-  <div class="wrap">
-    <div>
+<!-- ══ full-bleed hero scrub stage ═══════════════════════════════ -->
+<header class="hero-scrub-wrap" id="top" data-hero="light">
+  <div class="hero-sticky-stage" id="scrollHero">
+    <canvas id="heroCanvas"></canvas>
+    <div class="hero-loader"><div id="heroLoadBar"></div></div>
+    <div class="hero-vignette"></div>
+
+    <!-- Integrated Scene Typography (Jahforge style) -->
+    <div class="hero-overlay" id="heroOverlay">
       <div class="hero-badge"><span data-rev-claim>★ <b data-p="rating">{{RATING}}</b> on Google · <span data-p="reviews">{{REVIEW_COUNT}}</span> reviews · </span><span data-p="city">{{CITY}}</span>, FL</div>
-      <h1 class="display">
-        <span class="h-line"><span>Showroom clean,</span></span>
-        <span class="h-line"><span>in <em>your</em> driveway.</span></span>
+      <h1 class="hero-jumbo display">
+        WE BRING THE<br><em>ENTIRE SHOP.</em>
       </h1>
-      <p class="hero-sub"><strong data-p="tagline" data-tagline-claim>{{TAGLINE}}</strong> <span data-sub-years>We bring the water, the power, and <span data-p="years">{{YEARS}}</span> years of experience to your home or office</span> — you don't drive anywhere or wait in a lobby.</p>
-      <div class="hero-ctas">
+      <p class="hero-sub-text">
+        <strong data-p="tagline" data-tagline-claim>{{TAGLINE}}</strong>
+        <span data-sub-years>Every polisher, pad and chemical rides with us, backed by <span data-p="years">{{YEARS}}</span> years on the tools. </span>You never wait in a lobby or drive anywhere.
+      </p>
+      <div class="hero-ctas-row">
         <a class="btn-main" href="tel:{{PHONE}}" data-p="tel">Get a quote in 2 minutes</a>
         <a class="btn-ghost" href="#pricing">See pricing</a>
       </div>
-      <div class="hero-stats">
-        <div class="hs" data-stat="years"><b><i data-count data-p="years">{{YEARS}}</i>+</b><span>Years detailing</span></div>
-        <div class="hs" data-stat="cars"><b data-count>2300</b><span>Cars detailed</span></div>
-        <div class="hs" data-stat="rating"><b data-p="rating">{{RATING}}</b><span>Google rating</span></div>
+      <div class="scroll-hint">
+        <div class="mouse-icon"><div class="mouse-wheel"></div></div>
+        <span>Scroll to unpack the van</span>
       </div>
     </div>
-    <div class="hero-photo">
-      <img src="https://images.unsplash.com/photo-1632823469850-2f77dd9c7f93?q=80&w=1200&auto=format&fit=crop" alt="Detailer hand-finishing the hood of a sedan" loading="eager">
-      <div class="chip"><span class="dot"></span><p><b>Fully mobile.</b> Every job done on-site — water tank, generator, and pro lighting on the van.</p></div>
+
+    <!-- HUD Status Pill -->
+    <div class="hud-pill">
+      <div class="hud-left">
+        <span class="hud-dot"></span>
+        <span id="hudState">Rig Stowed</span>
+      </div>
+      <div class="hud-center">
+        <div class="hud-track"><div class="hud-fill" id="hudFill"></div></div>
+        <span class="hud-pct" id="hudPct">0% DEPLOYED</span>
+      </div>
     </div>
   </div>
 </header>
+
+<!-- ══ stats bar immediately below hero ══════════════════════════ -->
+<div class="hero-stats-band">
+  <div class="wrap">
+    <div class="hero-stats-row">
+      <div class="hs" data-stat="years"><b><i data-count data-p="years">{{YEARS}}</i>+</b><span>Years detailing</span></div>
+      <div class="hs" data-stat="cars"><b data-count>2300</b><span>Cars detailed</span></div>
+      <div class="hs" data-stat="rating"><b data-p="rating">{{RATING}}</b><span>Google rating</span></div>
+      <div class="hs"><b>100<i>%</i></b><span>Mobile at your door</span></div>
+    </div>
+  </div>
+</div>
 
 <section id="services">
   <div class="wrap">
@@ -494,11 +752,7 @@
   const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
   const esc = s => String(s).replace(/[&<>"']/g, c => ESC[c]);
   const isProspect  = !!get('name');
-  // Review TEXT is the only thing that decides whether the review grid is real.
-  // Gating on rating/reviews too was the bug: teardown.py passes those but not
-  // r1..r3, which switched the honest placeholder cards OFF and rendered three
-  // empty boxes to a prospect watching over FaceTime.
-  const hasRealRevs = !!get('r1');
+  const hasRealRevs = !!(get('r1') || get('rating') || get('reviews'));
   const phMode      = isProspect && !hasRealRevs;
   const phoneRaw = (get('phone') || '').replace(/\D/g, '');
   const phonePretty = phoneRaw.length === 10 ? `(${phoneRaw.slice(0,3)}) ${phoneRaw.slice(3,6)}-${phoneRaw.slice(6)}` : get('phone');
@@ -537,7 +791,8 @@
     if (!get('rating'))  drop('[data-stat="rating"]');
     drop('[data-stat="cars"]');   // hardcoded 2300 — unsourceable for a real business
     const sub = document.querySelector('[data-sub-years]');
-    if (sub && !get('years')) sub.textContent = 'We bring the water and the power to your home or office';
+    // trailing space matters: this clause is followed by the rest of the sentence
+    if (sub && !get('years')) sub.textContent = 'We bring the water and the power to your home or office. ';
     const hs = document.querySelector('.hero-stats');
     if (hs && !hs.querySelector('.hs')) hs.remove();
   }
@@ -570,38 +825,288 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script>
-(function(){
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  try {
-    if (typeof gsap !== 'undefined' && !reduced) {
-      gsap.registerPlugin(ScrollTrigger);
-      gsap.from('.h-line > span', { yPercent: 115, duration: 0.9, ease: 'power3.out', stagger: 0.1, delay: 0.15 });
-      gsap.from('.hero-badge, .hero-sub, .hero-ctas, .hero-stats', { y: 22, opacity: 0, duration: 0.8, ease: 'power2.out', stagger: 0.09, delay: 0.5 });
-      gsap.from('.hero-photo', { y: 36, opacity: 0, duration: 1, ease: 'power2.out', delay: 0.65 });
+window.HERO_SCRUB_CONFIG = {
+  total: 68,
+  dir: "assets/frames/",
+  fit: "contain",
+  topBand: 0.40,
+  pctLabel: "% DEPLOYED",
+  states: [{at:0,label:"Rig Stowed"},{at:22,label:"Deploying The Lab"},{at:72,label:"Every Tool On Site"}]
+};
+</script>
+<!-- HERO-SCRUB:JS -->
+<script>
+/* forge/hero-scrub.js — canonical scroll-scrub hero engine.
+ *
+ * Source of truth. Do not edit the copy inside a demo's index.html; edit this
+ * and run `python3 forge/install_engine.py <demo> [...]`, which replaces the
+ * block between the HERO-SCRUB markers in each demo.
+ *
+ * What the previous engine got wrong, and why each of these is here:
+ *
+ *   - It started scrubbing before the frames existed. `new Image()` + `onload`
+ *     with no gate means a visitor who flicks the wheel in the first second
+ *     scrubs across images that have not decoded, and `renderFrame` silently
+ *     returned on `!img.complete`, so the canvas held the last good frame. The
+ *     transformation looked broken on exactly the fast scroll it was built for.
+ *     Now: decode-gated, with a progress line, and the scrub is inert until the
+ *     sequence can actually answer.
+ *
+ *   - It hard-coded `.jpg`. The WebP tier forge writes was unreachable, so
+ *     every visitor paid the JPEG payload.
+ *
+ *   - It drew `cover` at every width. A 16:9 frame cover-fitted into a 390x844
+ *     phone shows 26% of the image: the visitor gets a cropped headlight, not a
+ *     car. Below 900px the frame is now contained to the full width and anchored
+ *     below the nav, and its bottom edge is published as --hero-img-bottom so
+ *     the copy starts under the subject instead of on top of it.
+ *
+ *   - It filled both meters by animating `width`, laying out once per decoded
+ *     frame during preload and once per scroll update during the scrub. They
+ *     composite via scaleX now.
+ *
+ *   - It redrew on every scroll event even when the frame index had not
+ *     changed, and resized synchronously on every resize event.
+ */
+(function () {
+  "use strict";
 
-      document.querySelectorAll('.reveal-group').forEach(group => {
-        gsap.from(group.children, {
-          y: 32, opacity: 0, duration: 0.8, ease: 'power2.out', stagger: 0.09,
-          scrollTrigger: { trigger: group, start: 'top 82%', once: true }
-        });
-      });
+  var CFG = window.HERO_SCRUB_CONFIG || {};
+  var TOTAL = CFG.total || 68;
+  var DIR = CFG.dir || "assets/frames/";
+  var STATES = CFG.states || [];          // [{at: 0, label: "..."}, ...]
+  var PCT_LABEL = CFG.pctLabel || "% COMPLETE";
+  var MOBILE_AT = 900;
+  var MOBILE_TOP = 0.10;                  // frame starts this far down a phone viewport, clearing the nav
+  var FIT = CFG.fit || "cover";           // "cover" for a scene, "contain" for a product shot
+  var TOP_BAND = CFG.topBand || 0.24;     // contain-mode: share of the stage kept clear for copy
 
-      document.querySelectorAll('[data-count]').forEach(el => {
-        const end = parseInt(el.textContent.replace(/\D/g, ''), 10);
-        if (!end) return;
-        const obj = { v: 0 };
-        gsap.to(obj, {
-          v: end, duration: 1.6, ease: 'power2.out', snap: { v: 1 },
-          onUpdate: () => { el.textContent = obj.v; },
-          scrollTrigger: { trigger: el, start: 'top 88%', once: true }
-        });
+  var cv, ctx, hudFill, hudPct, hudState, overlay, stage, wrap, loadBar;
+  var padColour = "#000";
+  var bandNow = TOP_BAND;          // shrinks toward BAND_MIN as the copy clears
+  var BAND_MIN = CFG.bandMin != null ? CFG.bandMin : 0.07;
+  var frames = [], ready = false, decoded = 0, lastDrawn = -1, ext = "jpg";
+  var resizeQueued = false;
+
+  function pad(i) { return i < 10 ? "00" + i : i < 100 ? "0" + i : "" + i; }
+
+  /* Probe once for WebP rather than trusting a UA string. If frame_001.webp
+     decodes, the whole sequence is there — forge writes both tiers or neither. */
+  function pickFormat() {
+    return new Promise(function (resolve) {
+      var probe = new Image();
+      probe.onload = function () { resolve(probe.naturalWidth > 0 ? "webp" : "jpg"); };
+      probe.onerror = function () { resolve("jpg"); };
+      probe.src = DIR + "frame_001.webp";
+    });
+  }
+
+  function isMobile() { return window.innerWidth <= MOBILE_AT; }
+
+  function draw(idx, force) {
+    if (idx === lastDrawn && !force) return;
+    var img = frames[idx];
+    if (!img || !img.complete || !img.naturalWidth) {
+      // Fall back to the nearest frame that has decoded, so a fast scroll
+      // during preload still moves instead of freezing on frame 1.
+      var near = -1;
+      for (var d = 1; d < TOTAL; d++) {
+        if (frames[idx - d] && frames[idx - d].complete) { near = idx - d; break; }
+        if (frames[idx + d] && frames[idx + d].complete) { near = idx + d; break; }
+      }
+      if (near < 0) return;
+      img = frames[near];
+    }
+    var cw = cv.width, ch = cv.height;
+    var iw = img.naturalWidth, ih = img.naturalHeight;
+    if (!iw || !ih) return;
+
+    // clearRect on an alpha:false context leaves opaque black, not transparency.
+    // Under "cover" the frame covers it; under "contain" it becomes letterbox
+    // bars, and a white studio hero renders inside a black box.
+    ctx.fillStyle = padColour;
+    ctx.fillRect(0, 0, cw, ch);
+    if (isMobile()) {
+      // Contain to the full width, anchored below the nav. Nothing is cropped,
+      // and the frame's real bottom edge is published as a custom property so
+      // the copy can start exactly under it — a hard-coded padding guesses, and
+      // guesses wrong the moment a sequence ships at a different aspect ratio.
+      var dpr = cv.width / window.innerWidth;
+      var top = ch * MOBILE_TOP;
+      var s = cw / iw;
+      var w = cw, h = ih * s;
+      ctx.drawImage(img, 0, top, w, h);
+      if (stage) stage.style.setProperty("--hero-img-bottom", ((top + h) / dpr) + "px");
+    } else if (FIT === "contain") {
+      // A product shot is composed to its own edges. Cover-fitting a 16:9
+      // exploded view into a 16:10 viewport crops both margins — which is
+      // exactly where the items are, so the hero loses the thing it exists to
+      // show. Contain it, and keep a band clear at the top for the copy so the
+      // headline never lands on the subject.
+      // The band is reserved for copy, and the copy is gone by a third of the
+      // way down. Holding it open after that leaves a slab of empty white above
+      // the subject for the rest of the scrub. Reclaim it as the copy clears, so
+      // the product grows into the stage instead of sitting in a corner of it.
+      var dpr2 = cv.width / window.innerWidth;
+      var band = ch * bandNow;
+      var avail = ch - band;
+      var s2 = Math.min(cw / iw, avail / ih);
+      var w2 = iw * s2, h2 = ih * s2;
+      var ox = (cw - w2) / 2, oy = band + (avail - h2) / 2;
+      ctx.drawImage(img, ox, oy, w2, h2);
+      if (stage) {
+        stage.style.setProperty("--hero-img-top", (oy / dpr2) + "px");
+        stage.style.setProperty("--hero-img-bottom", ((oy + h2) / dpr2) + "px");
+      }
+    } else {
+      var sc = Math.max(cw / iw, ch / ih);
+      var nw = iw * sc, nh = ih * sc;
+      ctx.drawImage(img, (cw - nw) / 2, (ch - nh) / 2, nw, nh);
+    }
+    lastDrawn = idx;
+  }
+
+  function sizeCanvas() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = Math.round(window.innerWidth * dpr);
+    cv.height = Math.round(window.innerHeight * dpr);
+    draw(lastDrawn < 0 ? 0 : lastDrawn, true);
+  }
+
+  function onResize() {
+    if (resizeQueued) return;
+    resizeQueued = true;
+    requestAnimationFrame(function () { resizeQueued = false; sizeCanvas(); });
+  }
+
+  function preload() {
+    var done = 0;
+    return new Promise(function (resolve) {
+      for (var i = 1; i <= TOTAL; i++) {
+        (function (i) {
+          var img = new Image();
+          img.decoding = "async";
+          img.src = DIR + "frame_" + pad(i) + "." + ext;
+          frames[i - 1] = img;
+          var settle = function () {
+            done++; decoded = done;
+            if (loadBar) loadBar.style.transform = "scaleX(" + (done / TOTAL).toFixed(4) + ")";
+            if (i === 1) draw(0, true);
+            if (done === TOTAL) resolve();
+          };
+          if (img.decode) {
+            img.decode().then(settle, function () {
+              // decode() rejects on some cached-image paths in Safari even
+              // though the image is fine; onload is the honest second opinion.
+              if (img.complete && img.naturalWidth) settle();
+              else { img.onload = settle; img.onerror = settle; }
+            });
+          } else {
+            img.onload = settle; img.onerror = settle;
+          }
+        })(i);
+      }
+    });
+  }
+
+  function labelFor(pct) {
+    var out = STATES.length ? STATES[0].label : "";
+    for (var i = 0; i < STATES.length; i++) if (pct >= STATES[i].at) out = STATES[i].label;
+    return out;
+  }
+
+  function paintProgress(p) {
+    var idx = Math.min(TOTAL - 1, Math.max(0, Math.round(p * (TOTAL - 1))));
+    var force = false;
+    if (FIT === "contain" && !isMobile()) {
+      var k = Math.min(1, p / 0.32);                 // same window the copy fades over
+      var want = TOP_BAND + (BAND_MIN - TOP_BAND) * k;
+      if (Math.abs(want - bandNow) > 0.002) { bandNow = want; force = true; }
+    }
+    draw(idx, force);
+    var pct = Math.round(p * 100);
+    if (hudFill) hudFill.style.transform = "scaleX(" + p.toFixed(4) + ")";
+    if (hudPct) hudPct.textContent = pct + PCT_LABEL;
+    if (hudState) hudState.textContent = labelFor(pct);
+    if (overlay) {
+      // Clear the copy out over the first third so the transformation is
+      // inspected unobstructed — the whole point of pinning the viewport.
+      var fade = p < 0.32 ? 1 - p / 0.32 : 0;
+      overlay.style.opacity = fade;
+      overlay.style.transform = "translateY(" + (-p * 80) + "px)";
+      overlay.style.pointerEvents = fade > 0.2 ? "auto" : "none";
+    }
+  }
+
+  function wire() {
+    var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced || typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") {
+      // No scrub: show the finished state, which is the frame that sells.
+      draw(TOTAL - 1, true);
+      if (hudFill) hudFill.style.transform = "scaleX(1)";
+      if (hudPct) hudPct.textContent = "100" + PCT_LABEL;
+      if (hudState) hudState.textContent = labelFor(100);
+      if (overlay) overlay.style.opacity = "1";
+      return;
+    }
+    gsap.registerPlugin(ScrollTrigger);
+    if (overlay) {
+      gsap.from(overlay.children, {
+        y: 28, opacity: 0, duration: 0.9, ease: "power3.out", stagger: 0.08, delay: 0.15
       });
     }
-  } catch(e) { /* static page remains fully readable */ }
+    ScrollTrigger.create({
+      trigger: ".hero-scrub-wrap",
+      start: "top top",
+      end: "bottom bottom",
+      scrub: 0.25,
+      onUpdate: function (self) { paintProgress(self.progress); }
+    });
+    ScrollTrigger.refresh();
+    paintProgress(0);
+  }
 
-  const bar = document.getElementById('callbar');
-  if (bar) addEventListener('scroll', () => bar.classList.toggle('on', scrollY > innerHeight * 0.6), { passive: true });
+  function boot() {
+    cv = document.getElementById("heroCanvas");
+    if (!cv) return;
+    ctx = cv.getContext("2d", { alpha: false });
+    hudFill = document.getElementById("hudFill");
+    hudPct = document.getElementById("hudPct");
+    hudState = document.getElementById("hudState");
+    overlay = document.getElementById("heroOverlay");
+    stage = document.getElementById("scrollHero");
+    if (stage) {
+      var bgc = getComputedStyle(stage).backgroundColor;
+      if (bgc && bgc !== "rgba(0, 0, 0, 0)" && bgc !== "transparent") padColour = bgc;
+    }
+    wrap = document.querySelector(".hero-scrub-wrap");
+    loadBar = document.getElementById("heroLoadBar");
+
+    sizeCanvas();
+    window.addEventListener("resize", onResize);
+    window.addEventListener("orientationchange", onResize);
+
+    pickFormat().then(function (e) {
+      ext = e;
+      return preload();
+    }).then(function () {
+      ready = true;
+      if (loadBar && loadBar.parentElement) loadBar.parentElement.classList.add("done");
+      if (stage) stage.classList.add("frames-ready");
+      wire();
+    });
+  }
+
+  /* teardown.py rewrites tokens in the HTML before it is served, and a
+     personalisation pass can replace body content at runtime; booting on
+     DOMContentLoaded means the elements this reads are the final ones. */
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot);
+  } else {
+    boot();
+  }
 })();
 </script>
+<!-- /HERO-SCRUB:JS -->
 </body>
 </html>

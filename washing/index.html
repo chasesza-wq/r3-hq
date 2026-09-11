@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{BUSINESS_NAME}} — Pressure Washing, {{CITY}} FL</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%231a1c1e'/%3E%3Ctext x='50' y='70' font-size='58' text-anchor='middle' fill='%23c6f24e' font-family='Helvetica,Arial,sans-serif' font-weight='700'%3EP%3C/text%3E%3C/svg%3E">
+<meta name="description" content="Soft wash and surface cleaning for driveways, siding, roofs and decks in {{CITY}}, Florida. Free quote in two minutes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#EAECE8; --dim:#8D96A3; --faint:#5A6270;
+  --base:#0E1116; --panel:#151A22; --panel2:#1B212B; --line:#242C38;
+  --acid:#C6F24E; --acid-dk:#9FC933; --wet:#4FB3D9;
+  --display:"Syne",system-ui,sans-serif;
+  --body:"Manrope",system-ui,-apple-system,sans-serif;
+  --r:14px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--base); color:var(--ink);
+  font:400 16px/1.6 var(--body); -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img{max-width:100%; display:block}
+a{color:inherit; text-decoration:none}
+.wrap{width:min(1200px,92vw); margin-inline:auto}
+.display{font-family:var(--display); font-weight:800; letter-spacing:-.025em; line-height:.98}
+h1,h2,h3{margin:0}
+section{position:relative}
+
+/* ── nav ─────────────────────────────────────────────────────────── */
+.nav{position:fixed; inset:0 0 auto 0; z-index:60; backdrop-filter:blur(14px);
+     background:rgba(14,17,22,.78); border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex; align-items:center; gap:22px; height:70px}
+.brand{display:flex; align-items:center; gap:10px; font-family:var(--display);
+       font-weight:800; font-size:1.06rem; letter-spacing:-.02em}
+.brand .dot{color:var(--acid)}
+.brand img{height:30px; width:auto; border-radius:6px}
+.nav nav{margin-left:auto; display:flex; gap:26px; font-size:.9rem; color:var(--dim); font-weight:500}
+.nav nav a:hover{color:var(--ink)}
+.callbtn{background:var(--acid); color:#0C1005; font-weight:700; font-size:.9rem;
+         padding:11px 18px; border-radius:999px; white-space:nowrap;
+         transition:transform .18s ease, box-shadow .18s ease}
+.callbtn:hover{transform:translateY(-1px); background:#D4FF63}
+@media(max-width:880px){ .nav nav{display:none} }
+
+/* ── hero + the wand ─────────────────────────────────────────────── */
+.hero{min-height:660px; height:100svh; max-height:920px; position:relative; overflow:hidden;
+      display:flex; align-items:flex-end; padding-bottom:clamp(34px,6vh,64px)}
+.hero-media{position:absolute; inset:0; z-index:0}
+.hero-media img{width:100%; height:100%; object-fit:cover; object-position:center 62%}
+#grime{position:absolute; inset:0; z-index:1; touch-action:none}
+.hero-scrim{position:absolute; inset:0; z-index:2; pointer-events:none;
+  background:linear-gradient(to top,rgba(14,17,22,.94) 3%,rgba(14,17,22,.6) 30%,rgba(14,17,22,.06) 66%,rgba(14,17,22,.42) 100%)}
+.hero .wrap{position:relative; z-index:3; width:min(1200px,92vw)}
+.eyebrow{display:inline-flex; align-items:center; gap:9px; font-size:.78rem; font-weight:600;
+  letter-spacing:.04em; text-transform:uppercase; color:var(--acid);
+  border:1px solid rgba(198,242,78,.3); background:rgba(198,242,78,.07);
+  padding:7px 14px; border-radius:999px; margin-bottom:22px}
+.eyebrow .sep{color:var(--faint)}
+.eyebrow > span + span{margin-left:0}
+.hero h1{font-size:clamp(2.2rem,5.6vw,4.3rem); margin-bottom:20px; text-wrap:balance}
+.hero h1 em{font-style:normal; color:var(--acid)}
+.hero-sub{color:#C3C9D2; font-size:clamp(1rem,1.5vw,1.16rem); max-width:52ch; margin-bottom:30px}
+.hero-sub strong{color:var(--ink); font-weight:600}
+.ctas{display:flex; flex-wrap:wrap; gap:12px; margin-bottom:34px}
+.btn{padding:15px 26px; border-radius:999px; font-weight:700; font-size:1rem;
+     transition:transform .18s ease, box-shadow .18s ease, background .18s ease}
+.btn-a{background:var(--acid); color:#0C1005}
+.btn-a:hover{transform:translateY(-2px); background:#D4FF63}
+.btn-b{border:1px solid var(--line); color:var(--ink); background:rgba(255,255,255,.04)}
+.btn-b:hover{background:rgba(255,255,255,.09)}
+.hero-stats{display:flex; gap:clamp(24px,5vw,54px); flex-wrap:wrap}
+.hs .n{font-family:var(--display); font-weight:800; font-size:clamp(1.5rem,3vw,2.1rem); line-height:1}
+.hs .n span{color:var(--acid)}
+.hs .k{font-size:.8rem; color:var(--dim); margin-top:5px}
+
+/* the wand cursor */
+.wand{position:fixed; z-index:40; pointer-events:none; width:56px; height:56px;
+      margin:-28px 0 0 -28px; opacity:0; transition:opacity .25s ease}
+.wand.on{opacity:1}
+.wand .ring{position:absolute; inset:0; border:1.5px solid var(--acid); border-radius:50%}
+.wand .core{position:absolute; left:50%; top:50%; width:5px; height:5px; margin:-2.5px 0 0 -2.5px;
+            background:var(--acid); border-radius:50%}
+.cleanmeter{position:absolute; z-index:4; right:max(4vw,18px); bottom:clamp(34px,6vh,64px);
+  font-family:var(--display); font-weight:700; text-align:right; line-height:1}
+.cleanmeter .v{font-size:clamp(1.8rem,4vw,2.6rem); color:var(--acid)}
+.cleanmeter .l{font-size:.72rem; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--dim); font-family:var(--body); font-weight:600; margin-top:6px}
+@media(max-width:700px){ .cleanmeter{display:none} }
+.hint{position:absolute; z-index:4; left:50%; transform:translateX(-50%); bottom:14px;
+  font-size:.76rem; color:var(--faint); letter-spacing:.05em; text-transform:uppercase;
+  transition:opacity .4s ease}
+
+/* ── generic section furniture ───────────────────────────────────── */
+.sec{padding:clamp(72px,10vw,124px) 0}
+.sec-head{max-width:56ch; margin-bottom:clamp(36px,5vw,58px)}
+.kicker{font-size:.76rem; font-weight:700; letter-spacing:.13em; text-transform:uppercase;
+        color:var(--acid); margin-bottom:14px}
+.sec-head h2{font-size:clamp(1.9rem,4.4vw,3.2rem); margin-bottom:16px}
+.sec-head p{color:var(--dim); font-size:1.05rem; margin:0}
+
+/* ── trust strip ─────────────────────────────────────────────────── */
+.trust{border-block:1px solid var(--line); background:var(--panel)}
+.trust .wrap{display:flex; flex-wrap:wrap; gap:clamp(18px,4vw,44px); padding:22px 0;
+             align-items:center; justify-content:space-between}
+.tchip{display:flex; align-items:center; gap:9px; font-size:.88rem; color:var(--dim); font-weight:500}
+.tchip svg{flex:none; color:var(--acid)}
+
+/* ── services bento ──────────────────────────────────────────────── */
+.bento{display:grid; gap:14px; grid-template-columns:repeat(6,1fr)}
+.card{background:var(--panel); border:1px solid var(--line); border-radius:var(--r);
+      padding:26px; position:relative; overflow:hidden; min-height:180px;
+      display:flex; flex-direction:column; justify-content:flex-end}
+.card.lg{grid-column:span 3; min-height:290px}
+.card.sm{grid-column:span 2}
+.card.wide{grid-column:span 6; min-height:150px}
+.card h3{font-family:var(--display); font-weight:700; font-size:1.28rem; margin-bottom:8px}
+.card p{color:var(--dim); font-size:.94rem; margin:0}
+.card .price{position:absolute; top:22px; right:22px; font-family:var(--display);
+  font-weight:700; font-size:.94rem; color:var(--acid)}
+.card .bg{position:absolute; inset:0; z-index:0; opacity:.3}
+.card .bg img{width:100%; height:100%; object-fit:cover}
+.card.lg::after{content:""; position:absolute; inset:0;
+  background:linear-gradient(to top,rgba(21,26,34,.97) 22%,rgba(21,26,34,.4) 72%)}
+.card.lg > *{position:relative; z-index:2}
+.card.lg .bg{opacity:1}
+@media(max-width:900px){
+  .bento{grid-template-columns:repeat(2,1fr)}
+  .card.lg,.card.sm,.card.wide{grid-column:span 2}
+}
+
+/* ── before / after ──────────────────────────────────────────────── */
+.ba{position:relative; border-radius:var(--r); overflow:hidden; border:1px solid var(--line);
+    aspect-ratio:16/9; background:var(--panel); touch-action:pan-y}
+.ba img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover}
+/* the same frame, aged. Grime is a filter rather than a second photograph so
+   the two halves are guaranteed to be the same driveway. */
+.ba .before{filter:saturate(.42) brightness(.66) contrast(.86) sepia(.42) hue-rotate(22deg)}
+.ba .after{clip-path:inset(0 0 0 var(--split,50%))}
+.ba .handle{position:absolute; top:0; bottom:0; left:var(--split,50%); width:2px;
+  background:var(--acid); z-index:3; pointer-events:none}
+.ba .knob{position:absolute; top:50%; left:var(--split,50%); z-index:4;
+  width:46px; height:46px; margin:-23px 0 0 -23px; border-radius:50%;
+  background:var(--acid); color:#0C1005; display:grid; place-items:center;
+  font-weight:800; font-size:.8rem; pointer-events:none; box-shadow:0 4px 14px rgba(0,0,0,.45)}
+.ba .tag{position:absolute; top:14px; z-index:3; font-size:.72rem; font-weight:700;
+  letter-spacing:.09em; text-transform:uppercase; padding:6px 11px; border-radius:999px;
+  background:rgba(14,17,22,.8); border:1px solid var(--line)}
+.ba .tag.l{left:14px} .ba .tag.r{right:14px; color:var(--acid); border-color:rgba(198,242,78,.4)}
+
+/* ── pricing ─────────────────────────────────────────────────────── */
+.tiers{display:grid; gap:14px; grid-template-columns:repeat(3,1fr)}
+.tier{background:var(--panel); border:1px solid var(--line); border-radius:var(--r); padding:30px}
+.tier.hot{border-color:rgba(198,242,78,.45); background:linear-gradient(180deg,rgba(198,242,78,.06),transparent 55%)}
+.tier .nm{font-size:.78rem; font-weight:700; letter-spacing:.11em; text-transform:uppercase;
+  color:var(--dim); margin-bottom:12px}
+.tier.hot .nm{color:var(--acid)}
+.tier .amt{font-family:var(--display); font-weight:800; font-size:2.5rem; line-height:1; margin-bottom:4px}
+.tier .per{color:var(--faint); font-size:.85rem; margin-bottom:20px}
+.tier ul{list-style:none; margin:0 0 24px; padding:0; display:flex; flex-direction:column; gap:10px}
+.tier li{font-size:.93rem; color:var(--dim); display:flex; gap:10px; align-items:flex-start}
+.tier li svg{flex:none; margin-top:4px; color:var(--acid)}
+.tier .btn{display:block; text-align:center; width:100%; font-size:.94rem; padding:13px}
+@media(max-width:880px){ .tiers{grid-template-columns:1fr} }
+
+/* ── steps ───────────────────────────────────────────────────────── */
+.steps{display:grid; gap:14px; grid-template-columns:repeat(3,1fr); counter-reset:s}
+.step{background:var(--panel); border:1px solid var(--line); border-radius:var(--r); padding:28px}
+.step::before{counter-increment:s; content:"0" counter(s); font-family:var(--display);
+  font-weight:800; font-size:2rem; color:var(--acid); display:block; margin-bottom:14px; line-height:1}
+.step h3{font-family:var(--display); font-weight:700; font-size:1.12rem; margin-bottom:8px}
+.step p{color:var(--dim); font-size:.93rem; margin:0}
+@media(max-width:880px){ .steps{grid-template-columns:1fr} }
+
+/* ── reviews ─────────────────────────────────────────────────────── */
+.gbadge{display:inline-flex; align-items:center; gap:14px; background:var(--panel);
+  border:1px solid var(--line); border-radius:var(--r); padding:16px 22px; margin-bottom:26px}
+.gbadge .score{font-family:var(--display); font-weight:800; font-size:2rem; color:var(--acid); line-height:1}
+.gbadge .cap{font-size:.86rem; color:var(--dim); line-height:1.4}
+.gbadge.is-ph .score{color:var(--faint)}
+.revs{display:grid; gap:14px; grid-template-columns:repeat(3,1fr)}
+.rev{background:var(--panel); border:1px solid var(--line); border-radius:var(--r); padding:24px;
+     display:flex; flex-direction:column; gap:14px}
+.rev p{margin:0; color:#C3C9D2; font-size:.96rem}
+.rev .by{font-size:.84rem; color:var(--faint); margin-top:auto}
+.rev .by b{display:block; color:var(--ink); font-weight:600; font-size:.9rem}
+.rev-tag{align-self:flex-start; font-size:.66rem; font-weight:700; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--faint); border:1px solid var(--line);
+  padding:3px 8px; border-radius:999px}
+.rev.is-ph p{color:var(--dim)}
+@media(max-width:880px){ .revs{grid-template-columns:1fr} }
+
+/* ── area chips ──────────────────────────────────────────────────── */
+.chips{display:flex; flex-wrap:wrap; gap:9px}
+.chip{border:1px solid var(--line); background:var(--panel); border-radius:999px;
+  padding:8px 15px; font-size:.87rem; color:var(--dim)}
+
+/* ── faq ─────────────────────────────────────────────────────────── */
+.faq{border-top:1px solid var(--line)}
+.q{border-bottom:1px solid var(--line); padding:0}
+.q summary{list-style:none; cursor:pointer; padding:22px 44px 22px 0; position:relative;
+  font-family:var(--display); font-weight:700; font-size:1.06rem}
+.q summary::-webkit-details-marker{display:none}
+.q summary::after{content:"+"; position:absolute; right:6px; top:19px; font-size:1.5rem;
+  color:var(--acid); font-family:var(--body); font-weight:400; transition:transform .25s ease}
+.q[open] summary::after{transform:rotate(45deg)}
+.q .a{color:var(--dim); padding:0 0 24px; max-width:70ch; margin:0; font-size:.97rem}
+
+/* ── closer ──────────────────────────────────────────────────────── */
+.closer{background:linear-gradient(160deg,var(--panel2),var(--base) 70%);
+  border-top:1px solid var(--line)}
+.closer .wrap{text-align:center; padding:clamp(70px,10vw,120px) 0}
+.closer h2{font-size:clamp(2rem,5.4vw,3.6rem); margin-bottom:18px}
+.closer p{color:var(--dim); max-width:48ch; margin:0 auto 32px}
+footer{border-top:1px solid var(--line); padding:34px 0; color:var(--faint); font-size:.86rem}
+footer .wrap{display:flex; flex-wrap:wrap; gap:16px; justify-content:space-between; align-items:center}
+
+/* reveal-on-scroll base state is VISIBLE; GSAP animates from, never to */
+.reveal-group{will-change:auto}
+@media(prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important} }
+</style>
+</head>
+<body>
+
+<div class="wand" id="wand" aria-hidden="true"><span class="ring"></span><span class="core"></span></div>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <span data-p="name">{{BUSINESS_NAME}}</span><span class="dot">.</span>
+    </a>
+    <nav>
+      <a href="#services">Services</a>
+      <a href="#work">Our Work</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="callbtn" data-p="tel" href="tel:8135550100">{{PHONE}}</a>
+  </div>
+</header>
+
+<!-- ══ hero ══════════════════════════════════════════════════════ -->
+<section class="hero" id="top">
+  <div class="hero-media">
+    <img src="https://images.unsplash.com/photo-1718152521364-b9655b8a7926?auto=format&fit=crop&w=2000&q=70"
+         alt="Operator running a surface cleaner across wet pavement" fetchpriority="high">
+  </div>
+  <canvas id="grime" aria-hidden="true"></canvas>
+  <div class="hero-scrim"></div>
+
+  <div class="cleanmeter" aria-hidden="true">
+    <div class="v"><span id="pct">0</span>%</div>
+    <div class="l">surface cleaned</div>
+  </div>
+  <div class="hint" id="hint">Move to clean &nbsp;·&nbsp; drag on touch</div>
+
+  <div class="wrap">
+    <div class="eyebrow">
+      <span data-rev-claim>★ <b data-p="rating">{{RATING}}</b> on Google
+        <span class="sep">·</span> <span data-p="reviews">{{REVIEW_COUNT}}</span> reviews
+        <span class="sep">·</span></span>
+      <span><span data-p="city">{{CITY}}</span>, FL</span>
+    </div>
+    <h1 class="display">Twelve years of <em>Florida</em> off it.<br>In one afternoon.</h1>
+    <p class="hero-sub">
+      <strong data-p="tagline" data-tagline-claim>{{TAGLINE}}</strong>
+      <span data-sub-years>Soft wash, hot water and surface cleaners — run by someone who has done this
+      for <span data-p="years">{{YEARS}}</span> years</span>, on driveways, siding, roofs and pool decks
+      across <span data-p="city2">{{CITY}}</span>.
+    </p>
+    <div class="ctas">
+      <a class="btn btn-a" href="#pricing">Get a quote in 2 minutes</a>
+      <a class="btn btn-b" data-p="tel" href="tel:8135550100">Call now</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hs" data-stat="years"><div class="n"><span data-p="years">{{YEARS}}</span>+</div><div class="k">Years washing</div></div>
+      <div class="hs" data-stat="jobs"><div class="n" data-count>1800</div><div class="k">Surfaces cleaned</div></div>
+      <div class="hs" data-stat="rating"><div class="n"><span data-p="rating">{{RATING}}</span></div><div class="k">Google rating</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ trust ═════════════════════════════════════════════════════ -->
+<section class="trust">
+  <div class="wrap">
+    <div class="tchip"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg> Licensed &amp; insured</div>
+    <div class="tchip"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg> Soft wash — roof-safe chemistry</div>
+    <div class="tchip"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg> We bring water &amp; power</div>
+    <div class="tchip"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg> Written quote before we start</div>
+  </div>
+</section>
+
+<!-- ══ services ══════════════════════════════════════════════════ -->
+<section class="sec" id="services">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">What we clean</div>
+      <h2 class="display">Priced by the surface, not by the hour.</h2>
+      <p>You get the number before the trailer comes off the hitch. No hourly meter running while
+         someone coils a hose.</p>
+    </div>
+    <div class="bento reveal-group">
+      <article class="card lg">
+        <div class="bg"><img src="https://images.unsplash.com/photo-1781637202423-33ec5b47e52e?auto=format&fit=crop&w=1200&q=65" alt="Clean concrete driveway at a white garage"></div>
+        <div class="price">from $189</div>
+        <h3>Driveways &amp; walkways</h3>
+        <p>Flat-surface cleaner, not a wand — no zebra stripes, no etched concrete. Oil spots pre-treated.</p>
+      </article>
+      <article class="card lg">
+        <div class="bg"><img src="https://images.unsplash.com/photo-1783125127341-81112b795c23?auto=format&fit=crop&w=1200&q=65" alt="House exterior with clean siding and driveway"></div>
+        <div class="price">from $249</div>
+        <h3>House &amp; siding soft wash</h3>
+        <p>Low pressure, correct chemistry. Kills the mildew instead of blasting it off the paint.</p>
+      </article>
+      <article class="card sm"><div class="price">from $299</div><h3>Roof soft wash</h3><p>No-pressure treatment for black streaks. Shingle-safe.</p></article>
+      <article class="card sm"><div class="price">from $159</div><h3>Deck, patio &amp; pool cage</h3><p>Wood-safe pressure, screen-safe rinse.</p></article>
+      <article class="card sm"><div class="price">from $129</div><h3>Gutter brightening</h3><p>Removes the vertical tiger-stripe oxidation.</p></article>
+      <article class="card wide">
+        <div class="price">Quoted per site</div>
+        <h3>Commercial &amp; fleet</h3>
+        <p>Storefronts, dumpster pads, drive-thrus and box trucks — scheduled before you open or after you close.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ══ before / after ════════════════════════════════════════════ -->
+<section class="sec" id="work" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">Same driveway</div>
+      <h2 class="display">Drag it. That is one visit.</h2>
+      <p>Every quote we send has the address's own before shot attached, so you are comparing your
+         concrete to your concrete.</p>
+    </div>
+    <div class="ba" id="ba" role="slider" tabindex="0" aria-label="Before and after comparison"
+         aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+      <img class="before" src="https://images.unsplash.com/photo-1783125127143-d4e18726bab3?auto=format&fit=crop&w=1600&q=68" alt="Driveway and siding before cleaning">
+      <img class="after"  src="https://images.unsplash.com/photo-1783125127143-d4e18726bab3?auto=format&fit=crop&w=1600&q=68" alt="The same driveway and siding after cleaning">
+      <span class="tag l">Before</span><span class="tag r">After</span>
+      <span class="handle"></span><span class="knob">◂ ▸</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ pricing ═══════════════════════════════════════════════════ -->
+<section class="sec" id="pricing" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">Straight pricing</div>
+      <h2 class="display">Three packages. Published numbers.</h2>
+      <p>Most single-family homes land in the middle one. If yours doesn't, we say so on the phone
+         rather than at the door.</p>
+    </div>
+    <div class="tiers reveal-group">
+      <div class="tier">
+        <div class="nm">Driveway only</div>
+        <div class="amt">$189</div><div class="per">one visit · up to 900 sq ft</div>
+        <ul>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Surface-cleaner pass, edges wanded</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Oil &amp; rust spot pre-treatment</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Post-treatment to slow regrowth</li>
+        </ul>
+        <a class="btn btn-b" data-p="tel" href="tel:8135550100">Book this</a>
+      </div>
+      <div class="tier hot">
+        <div class="nm">Full exterior · most popular</div>
+        <div class="amt">$449</div><div class="per">one visit · house + drive + walk</div>
+        <ul>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Soft wash on all siding &amp; soffits</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Driveway, walkway and entry</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Windows rinsed, plants pre-watered</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Before/after photo set emailed</li>
+        </ul>
+        <a class="btn btn-a" data-p="tel" href="tel:8135550100">Book this</a>
+      </div>
+      <div class="tier">
+        <div class="nm">Twice a year</div>
+        <div class="amt">$719</div><div class="per">two visits · booked ahead</div>
+        <ul>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Everything in Full exterior, twice</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Spring and pre-holiday slots held</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Roof streak treatment included once</li>
+        </ul>
+        <a class="btn btn-b" data-p="tel" href="tel:8135550100">Book this</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ process ═══════════════════════════════════════════════════ -->
+<section class="sec" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">How a job runs</div>
+      <h2 class="display">Three steps, and you don't have to be home.</h2>
+    </div>
+    <div class="steps reveal-group">
+      <div class="step"><h3>Send a photo</h3><p>Text a picture of the surface. You get a firm number back the same day — not a range, a number.</p></div>
+      <div class="step"><h3>Pick a morning</h3><p>We bring our own water tank and generator. No hose hookup, no meter on your bill.</p></div>
+      <div class="step"><h3>Walk it after</h3><p>Pay when it's done and you've seen it. Photo set lands in your inbox that evening.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ reviews ═══════════════════════════════════════════════════ -->
+<section class="sec" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">What the neighbours said</div>
+      <h2 class="display">Reviews, straight off Google.</h2>
+    </div>
+    <div class="gbadge" data-gbadge>
+      <div class="score"><span data-p="rating">{{RATING}}</span></div>
+      <div class="cap">Rated by <b data-p="reviews">{{REVIEW_COUNT}}</b> customers<br>on Google</div>
+    </div>
+    <div class="revs" data-rev-grid>
+      <article class="rev"><span class="rev-tag">Google</span><p>{{REVIEW_1}}</p><div class="by"><b>{{REVIEWER_1}}</b>Verified Google review</div></article>
+      <article class="rev"><span class="rev-tag">Google</span><p>{{REVIEW_2}}</p><div class="by"><b>{{REVIEWER_2}}</b>Verified Google review</div></article>
+      <article class="rev"><span class="rev-tag">Google</span><p>{{REVIEW_3}}</p><div class="by"><b>{{REVIEWER_3}}</b>Verified Google review</div></article>
+    </div>
+  </div>
+</section>
+
+<!-- ══ area ══════════════════════════════════════════════════════ -->
+<section class="sec" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head" style="margin-bottom:26px">
+      <div class="kicker">Service area</div>
+      <h2 class="display">Where the trailer goes.</h2>
+    </div>
+    <div class="chips" id="areachips"></div>
+  </div>
+</section>
+
+<!-- ══ faq ═══════════════════════════════════════════════════════ -->
+<section class="sec" id="faq" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head"><div class="kicker">Questions</div><h2 class="display">The ones we get every week.</h2></div>
+    <div class="faq">
+      <details class="q"><summary>Will pressure damage my roof or siding?</summary>
+        <p class="a">Not the way we do it. Roofs and painted siding get a <b>soft wash</b> — low pressure
+        plus the correct cleaning solution, which kills the organic growth rather than blasting it off
+        along with your paint. High pressure is only used on concrete and paver surfaces.</p></details>
+      <details class="q"><summary>Do you need my water and power?</summary>
+        <p class="a">No. The rig carries its own tank and generator, so nothing shows up on your utility
+        bill and we can work an empty property.</p></details>
+      <details class="q"><summary>How long until the green comes back?</summary>
+        <p class="a">In Florida, untreated concrete starts to re-shade in about four to six months. Every
+        job here finishes with a post-treatment that roughly doubles that. Twice-a-year customers never
+        see it return.</p></details>
+      <details class="q"><summary>What about my plants?</summary>
+        <p class="a">Beds get soaked before and rinsed after, which dilutes anything that reaches them.
+        We have never replaced a customer's landscaping and we'd rather keep it that way.</p></details>
+      <details class="q"><summary>Do I need to be home?</summary>
+        <p class="a">Only if the gate is locked. Most exterior jobs are quoted from a photo, done while
+        you're at work, and paid by link once you have walked it.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ══ closer ════════════════════════════════════════════════════ -->
+<section class="closer">
+  <div class="wrap">
+    <h2 class="display">Send one photo. Get a real number.</h2>
+    <p>Text a picture of the driveway, the siding, whatever is bothering you. You'll have a firm
+       quote back today — and no one will knock on your door about it.</p>
+    <div class="ctas" style="justify-content:center">
+      <a class="btn btn-a" data-p="tel" href="tel:8135550100">Call <span data-p="phone2">{{PHONE}}</span></a>
+      <a class="btn btn-b" href="#pricing">See package pricing</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div><span data-p="name2">{{BUSINESS_NAME}}</span> — <span data-p="city3">{{CITY}}</span>, Florida</div>
+    <div>Licensed &amp; insured · Free written quotes</div>
+  </div>
+</footer>
+
+<!-- ══ personalization ═══════════════════════════════════════════
+     Identical URL contract to the other niche demos so teardown.py works
+     unchanged: ?name=&logo=&phone=&city=&rating=&reviews=&years=&tagline=
+                &r1..r3=&rn1..rn3=
+
+     hasRealRevs gates on review TEXT only. Gating it on rating/reviews was
+     the bug that rendered three empty review cards to a prospect: teardown
+     passes a rating but no review text, which switched the honest placeholder
+     cards off and left the boxes blank.
+══════════════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+  var q = new URLSearchParams(location.search);
+  function get(k){ var v = q.get(k); return v && v.trim() ? v.trim() : null; }
+  var ESC = {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};
+  function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return ESC[c]; }); }
+
+  var isProspect  = !!get('name');
+  var hasRealRevs = !!get('r1');
+  var phMode      = isProspect && !hasRealRevs;
+
+  var phoneRaw = (get('phone')||'').replace(/\D/g,'');
+  var phonePretty = phoneRaw.length === 10
+    ? '('+phoneRaw.slice(0,3)+') '+phoneRaw.slice(3,6)+'-'+phoneRaw.slice(6)
+    : get('phone');
+
+  var tokens = {
+    '{{BUSINESS_NAME}}': get('name'), '{{CITY}}': get('city'), '{{PHONE}}': phonePretty,
+    '{{RATING}}': get('rating'), '{{REVIEW_COUNT}}': get('reviews'),
+    '{{YEARS}}': get('years'), '{{TAGLINE}}': get('tagline'),
+    '{{REVIEW_1}}': get('r1'), '{{REVIEW_2}}': get('r2'), '{{REVIEW_3}}': get('r3'),
+    '{{REVIEWER_1}}': get('rn1'), '{{REVIEWER_2}}': get('rn2'), '{{REVIEWER_3}}': get('rn3')
+  };
+  var fallbacks = {
+    '{{BUSINESS_NAME}}':'Gulfline Exterior Cleaning', '{{CITY}}':'Tampa', '{{PHONE}}':'(813) 555-0100',
+    '{{RATING}}':'4.9', '{{REVIEW_COUNT}}':'86', '{{YEARS}}':'12',
+    '{{TAGLINE}}':'One crew, one truck, no subcontractors.',
+    '{{REVIEW_1}}':'Driveway had twenty years of black on it and I assumed it was just the colour of the concrete. It is not. Came back the shade of the garage floor.',
+    '{{REVIEW_2}}':'Soft washed the whole house and the pool cage in a morning. Covered the beds, watered them down first, and my hibiscus is fine.',
+    '{{REVIEW_3}}':'Quoted from a photo I texted at nine at night and the number did not move when he showed up. That alone is worth the call.',
+    '{{REVIEWER_1}}':'Verified client','{{REVIEWER_2}}':'Verified client','{{REVIEWER_3}}':'Verified client'
+  };
+
+  var resolved = {};
+  Object.keys(tokens).forEach(function(tok){
+    var val = tokens[tok];
+    if (val) resolved[tok] = val;
+    else if (!isProspect) resolved[tok] = fallbacks[tok];
+    else resolved[tok] = (tok === '{{CITY}}') ? fallbacks[tok] : '';
+  });
+
+  var html = document.body.innerHTML;
+  Object.keys(resolved).forEach(function(tok){
+    if (html.indexOf(tok) !== -1) html = html.split(tok).join(esc(resolved[tok]));
+  });
+  document.body.innerHTML = html;
+
+  function drop(sel){
+    var n = document.querySelectorAll(sel);
+    for (var i=0;i<n.length;i++) n[i].parentNode.removeChild(n[i]);
+  }
+  if (isProspect) {
+    if (!get('tagline')) drop('[data-tagline-claim]');
+    if (!get('years'))   { drop('[data-stat="years"]'); }
+    if (!get('rating'))  drop('[data-stat="rating"]');
+    drop('[data-stat="jobs"]');            // 1800 is unsourceable for a real business
+    var sub = document.querySelector('[data-sub-years]');
+    if (sub && !get('years')) sub.textContent = 'Soft wash, hot water and surface cleaners';
+  }
+
+  // Their logo, if we have one. Absent is the normal case, so the element is
+  // created only when a URL exists — an <img> with no src ships as a broken box.
+  var logo = get('logo'), brand = document.querySelector('.brand');
+  if (brand && logo && /^https?:\/\//i.test(logo)) {
+    var im = document.createElement('img');
+    im.src = logo; im.alt = ''; brand.insertBefore(im, brand.firstChild);
+  }
+
+  if (phMode) {
+    var claims = document.querySelectorAll('[data-rev-claim]');
+    for (var c=0;c<claims.length;c++) claims[c].textContent = 'Exterior cleaning · ';
+    var gb = document.querySelector('[data-gbadge]');
+    if (gb) { gb.className += ' is-ph';
+      gb.innerHTML = '<div class="score">★</div><div class="cap">Your Google rating<br>lands here</div>'; }
+    var grid = document.querySelector('[data-rev-grid]');
+    if (grid) {
+      var biz = get('name');
+      var copy = [
+        'Your real Google reviews appear here — pulled straight from your profile and kept current.',
+        'Every new review lands on the site automatically. Nothing to copy over, nothing to maintain.',
+        'The ones that need a reply get flagged to your phone before they cost you a booking.'
+      ];
+      grid.innerHTML = copy.map(function(t){
+        return '<article class="rev is-ph"><span class="rev-tag">Sample</span><p>'+esc(t)+'</p>'+
+               '<div class="by"><b>'+esc(biz)+'</b>Placeholder — not a real review</div></article>';
+      }).join('');
+    }
+  }
+
+  var name = get('name') || fallbacks['{{BUSINESS_NAME}}'];
+  var city = get('city') || fallbacks['{{CITY}}'];
+  document.title = name + ' — Pressure Washing, ' + city + ' FL';
+  var tel = phoneRaw || '8135550100';
+  var tels = document.querySelectorAll('[data-p="tel"]');
+  for (var t=0;t<tels.length;t++) tels[t].href = 'tel:'+tel;
+
+  // service-area chips built off their own city so the list is never someone else's
+  var NEAR = {
+    Tampa:['Brandon','Riverview','Lutz','Westchase','Carrollwood','Apollo Beach','Temple Terrace'],
+    Orlando:['Winter Park','Apopka','Oviedo','Windermere','Lake Nona','Altamonte Springs'],
+    Sarasota:['Bradenton','Venice','Lakewood Ranch','Osprey','Palmetto','Nokomis'],
+    Jacksonville:['Ponte Vedra','Orange Park','Fleming Island','Mandarin','Nocatee']
+  };
+  var chips = document.getElementById('areachips');
+  if (chips) {
+    var list = [city].concat(NEAR[city] || ['and the surrounding county']);
+    chips.innerHTML = list.map(function(p){ return '<span class="chip">'+esc(p)+'</span>'; }).join('');
+  }
+})();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script>
+/* ══ the wand ═══════════════════════════════════════════════════════
+   Two stacked layers. Underneath: the clean photo and the headline.
+   On top: a canvas painted with procedural grime. The pointer erases the
+   canvas with destination-out, so moving the mouse literally cleans the
+   surface. Grime is generated, never fetched — one less thing that can
+   fail on a call. */
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var cv = document.getElementById('grime');
+  var hero = document.querySelector('.hero');
+  var wand = document.getElementById('wand');
+  var pctEl = document.getElementById('pct');
+  var hint = document.getElementById('hint');
+  if (!cv || !hero) return;
+
+  // Reduced motion gets the clean surface immediately — the effect is the
+  // decoration, the clean driveway is the message.
+  if (reduced) { cv.style.display = 'none'; if (hint) hint.style.display='none'; return; }
+
+  var ctx = cv.getContext('2d', { willReadFrequently:false });
+  var W=0, H=0, dpr = Math.min(window.devicePixelRatio||1, 2);
+  var cleaned = 0, total = 1, lastX=null, lastY=null, touched=false;
+
+  function paintGrime(){
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.clearRect(0,0,W,H);
+
+    var g = ctx.createLinearGradient(0,0,W,H);
+    g.addColorStop(0,'rgba(58,54,44,.94)');
+    g.addColorStop(.5,'rgba(44,46,40,.96)');
+    g.addColorStop(1,'rgba(34,38,34,.94)');
+    ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+
+    // organic blotches — mildew and shade, not uniform dirt
+    var blotches = Math.round((W*H)/9000);
+    for (var i=0;i<blotches;i++){
+      var x=Math.random()*W, y=Math.random()*H, r=6+Math.random()*54;
+      var a=.05+Math.random()*.16;
+      var rg=ctx.createRadialGradient(x,y,0,x,y,r);
+      rg.addColorStop(0,'rgba(22,30,18,'+a+')');
+      rg.addColorStop(1,'rgba(22,30,18,0)');
+      ctx.fillStyle=rg; ctx.beginPath(); ctx.arc(x,y,r,0,6.2832); ctx.fill();
+    }
+    // fine speckle
+    ctx.fillStyle='rgba(20,18,14,.5)';
+    var spx = Math.round((W*H)/240);
+    for (var s=0;s<spx;s++){
+      ctx.fillRect(Math.random()*W, Math.random()*H, 1.2, 1.2);
+    }
+    ctx.globalCompositeOperation = 'destination-out';
+  }
+
+  function size(){
+    var r = hero.getBoundingClientRect();
+    W = Math.max(1, Math.round(r.width)); H = Math.max(1, Math.round(r.height));
+    cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+    cv.style.width = W+'px'; cv.style.height = H+'px';
+    total = W*H; cleaned = 0;
+    paintGrime();
+    if (pctEl) pctEl.textContent = '0';
+  }
+
+  function spray(x,y,radius){
+    var r = radius || 46;
+    var g = ctx.createRadialGradient(x,y,0,x,y,r);
+    g.addColorStop(0,'rgba(0,0,0,1)');
+    g.addColorStop(.55,'rgba(0,0,0,.92)');
+    g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(x,y,r,0,6.2832); ctx.fill();
+    cleaned += Math.PI*r*r*0.5;
+    if (pctEl) {
+      var p = Math.min(100, Math.round(cleaned/total*100));
+      pctEl.textContent = p;
+    }
+  }
+
+  function strokeTo(x,y){
+    if (lastX === null) { spray(x,y); }
+    else {
+      var dx=x-lastX, dy=y-lastY, d=Math.hypot(dx,dy), steps=Math.max(1,Math.round(d/12));
+      for (var i=1;i<=steps;i++) spray(lastX+dx*i/steps, lastY+dy*i/steps);
+    }
+    lastX=x; lastY=y;
+  }
+
+  function localPoint(e){
+    var r = cv.getBoundingClientRect();
+    return { x:e.clientX - r.left, y:e.clientY - r.top };
+  }
+
+  hero.addEventListener('pointermove', function(e){
+    var p = localPoint(e);
+    if (p.x<0||p.y<0||p.x>W||p.y>H) { lastX=null; return; }
+    strokeTo(p.x,p.y);
+    if (wand){ wand.style.left=e.clientX+'px'; wand.style.top=e.clientY+'px'; wand.classList.add('on'); }
+    if (!touched){ touched=true; if(hint) hint.style.opacity='0'; }
+  }, {passive:true});
+
+  hero.addEventListener('pointerleave', function(){
+    lastX=null; if (wand) wand.classList.remove('on');
+  });
+
+  // An untouched visitor still has to see what this does. One arc on load.
+  function demoSweep(){
+    var t=0, pts=90;
+    (function step(){
+      if (touched || t>=pts) return;
+      var pr = t/pts;
+      var x = W*(0.08 + 0.84*pr);
+      var y = H*(0.62 + Math.sin(pr*Math.PI*1.6)*0.13);
+      strokeTo(x,y); t++;
+      requestAnimationFrame(step);
+    })();
+  }
+
+  size();
+  window.addEventListener('resize', function(){ if(!touched) size(); }, {passive:true});
+  setTimeout(demoSweep, 850);
+
+  // Scrolling past the hero finishes the job, so the section is never left
+  // half-dirty behind you.
+  if (window.gsap && window.ScrollTrigger) {
+    gsap.registerPlugin(ScrollTrigger);
+    ScrollTrigger.create({
+      trigger: hero, start:'bottom 92%', once:true,
+      onEnter: function(){
+        var n=0;
+        (function wipe(){
+          if (n>34) return;
+          for (var i=0;i<7;i++) spray(Math.random()*W, Math.random()*H, 90);
+          n++; requestAnimationFrame(wipe);
+        })();
+      }
+    });
+  }
+})();
+
+/* ══ before / after ═════════════════════════════════════════════════ */
+(function(){
+  var ba = document.getElementById('ba'); if (!ba) return;
+  function set(pc){
+    pc = Math.max(0, Math.min(100, pc));
+    ba.style.setProperty('--split', pc+'%');
+    ba.setAttribute('aria-valuenow', Math.round(pc));
+  }
+  function fromEvent(e){
+    var r = ba.getBoundingClientRect();
+    set((e.clientX - r.left) / r.width * 100);
+  }
+  var dragging = false;
+  ba.addEventListener('pointerdown', function(e){ dragging=true; ba.setPointerCapture(e.pointerId); fromEvent(e); });
+  ba.addEventListener('pointermove', function(e){ if(dragging) fromEvent(e); });
+  ba.addEventListener('pointerup',   function(){ dragging=false; });
+  ba.addEventListener('pointercancel',function(){ dragging=false; });
+  ba.addEventListener('keydown', function(e){
+    var cur = parseFloat(ba.getAttribute('aria-valuenow'))||50;
+    if (e.key==='ArrowLeft'){ set(cur-4); e.preventDefault(); }
+    if (e.key==='ArrowRight'){ set(cur+4); e.preventDefault(); }
+  });
+  set(50);
+})();
+
+/* ══ choreography ═══════════════════════════════════════════════════
+   Every tween is a gsap.from — elements sit at their natural CSS state and
+   are animated FROM an offset, so a failed GSAP load or reduced-motion
+   leaves a complete, readable page rather than an invisible one. */
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (typeof gsap === 'undefined' || reduced) return;
+  try {
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.from('.hero .eyebrow, .hero h1, .hero-sub, .hero .ctas, .hero-stats', {
+      y:26, opacity:0, duration:.85, ease:'power2.out', stagger:.09, delay:.25
+    });
+    var groups = document.querySelectorAll('.reveal-group');
+    for (var i=0;i<groups.length;i++){
+      gsap.from(groups[i].children, {
+        y:30, opacity:0, duration:.7, ease:'power2.out', stagger:.07,
+        scrollTrigger:{ trigger:groups[i], start:'top 84%', once:true }
+      });
+    }
+    var counters = document.querySelectorAll('[data-count]');
+    for (var c=0;c<counters.length;c++){
+      (function(el){
+        var end = parseInt(el.textContent.replace(/\D/g,''),10);
+        if (!end) return;
+        var o = {v:0};
+        gsap.to(o,{ v:end, duration:1.5, ease:'power2.out', snap:{v:1},
+          onUpdate:function(){ el.textContent = o.v.toLocaleString(); },
+          scrollTrigger:{ trigger:el, start:'top 90%', once:true }});
+      })(counters[c]);
+    }
+  } catch(_) {}
+})();
+</script>
+</body>
+</html>

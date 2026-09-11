@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{BUSINESS_NAME}} — Lawn Care, {{CITY}} FL</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230e1a12'/%3E%3Ctext x='50' y='70' font-size='58' text-anchor='middle' fill='%23ffc857' font-family='Helvetica,Arial,sans-serif' font-weight='700'%3EL%3C/text%3E%3C/svg%3E">
+<meta name="description" content="Weekly and bi-weekly lawn maintenance in {{CITY}}, Florida. Same crew, same day, striped every visit.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..700&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F2EFE4; --dim:#9BA79A; --faint:#6C7A6D;
+  --night:#0B1410; --deep:#111E17; --panel:#16251C; --line:#22362A; --line2:#2E4737;
+  --gold:#E8B043; --gold-dk:#C4901F; --fresh:#79C25B;
+  --display:"Bodoni Moda",Didot,Georgia,serif;
+  --font:"Figtree",system-ui,-apple-system,sans-serif;
+  --r:10px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--night); color:#C7D2C6;
+     font:400 16px/1.62 var(--font); -webkit-font-smoothing:antialiased; overflow-x:hidden}
+img{max-width:100%; display:block}
+a{color:inherit; text-decoration:none}
+h1,h2,h3{margin:0; color:var(--cream)}
+.wrap{width:min(1160px,92vw); margin-inline:auto}
+.display{font-family:var(--display); font-weight:500; line-height:1.14; letter-spacing:-.008em;
+         padding-bottom:.06em}
+.display em{font-style:italic; color:var(--gold)}
+section{position:relative}
+
+/* ── nav ───────────────────────────────────────────────────────── */
+.nav{position:fixed; inset:0 0 auto 0; z-index:60; background:rgba(11,20,16,.84);
+     backdrop-filter:blur(12px); border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex; align-items:center; gap:20px; height:68px}
+.brand{display:flex; align-items:center; gap:10px; font-family:var(--display);
+       font-weight:600; font-size:1.34rem; color:var(--cream)}
+.brand img{height:28px; width:auto; border-radius:5px}
+.nav nav{margin-left:auto; display:flex; gap:26px; font-size:.9rem; color:var(--dim); font-weight:500}
+.nav nav a:hover{color:var(--cream)}
+.callbtn{background:var(--gold); color:#201804; font-weight:600; font-size:.88rem;
+         padding:11px 18px; border-radius:999px; white-space:nowrap; transition:background .18s ease}
+.callbtn:hover{background:#F5C05C}
+@media(max-width:900px){ .nav nav{display:none} }
+
+/* ── hero ──────────────────────────────────────────────────────── */
+.hero{padding:calc(68px + clamp(46px,8vh,88px)) 0 0; position:relative; overflow:hidden}
+.hero .wrap{position:relative; z-index:3}
+.hero-grid{display:grid; grid-template-columns:1.08fr .92fr; gap:clamp(26px,4vw,56px);
+           align-items:center}
+.hero-photo{border-radius:var(--r); overflow:hidden; border:1px solid var(--line);
+            aspect-ratio:4/5; position:relative}
+.hero-photo img{width:100%; height:100%; object-fit:cover}
+.hero-photo figcaption{position:absolute; left:14px; right:14px; bottom:14px;
+  background:rgba(11,20,16,.86); border:1px solid var(--line2); color:var(--cream);
+  padding:11px 14px; border-radius:8px; font-size:.86rem; line-height:1.45}
+.hero-photo figcaption span{color:var(--dim)}
+@media(max-width:940px){
+  .hero-grid{grid-template-columns:1fr}
+  .hero-photo{aspect-ratio:16/10; order:-1; margin-bottom:6px}
+}
+.eyebrow{display:inline-flex; align-items:center; flex-wrap:wrap; gap:8px; font-size:.75rem;
+  font-weight:600; letter-spacing:.09em; text-transform:uppercase; color:var(--gold);
+  border:1px solid var(--line2); border-radius:999px; padding:7px 15px; margin-bottom:22px}
+.hero h1{font-size:clamp(2.6rem,5.6vw,4.5rem); margin-bottom:20px; text-wrap:balance}
+.hero-sub{font-size:clamp(1.02rem,1.5vw,1.18rem); max-width:50ch; margin-bottom:28px}
+.hero-sub strong{color:var(--cream); font-weight:600}
+.ctas{display:flex; flex-wrap:wrap; gap:11px; margin-bottom:32px}
+.btn{padding:14px 25px; border-radius:999px; font-weight:600; font-size:.98rem;
+     transition:background .18s ease, transform .18s ease, border-color .18s ease}
+.btn-a{background:var(--gold); color:#201804}
+.btn-a:hover{background:#F5C05C; transform:translateY(-1px)}
+.btn-b{border:1px solid var(--line2); color:var(--cream)}
+.btn-b:hover{border-color:var(--gold); background:rgba(232,176,67,.07)}
+.hero-stats{display:flex; gap:clamp(22px,4.4vw,50px); flex-wrap:wrap; margin-bottom:clamp(26px,4vh,44px)}
+.hs .n{font-family:var(--display); font-size:clamp(1.8rem,3.2vw,2.6rem); line-height:1; color:var(--cream)}
+.hs .n span{color:var(--gold)}
+.hs .k{font-size:.79rem; color:var(--faint); margin-top:4px}
+
+/* the turf: a canvas of real blades that part around the cursor */
+#turf{display:block; width:100%; height:clamp(180px,24vh,270px); position:relative; z-index:2}
+.turfhint{position:absolute; z-index:3; left:50%; transform:translateX(-50%); bottom:12px;
+  font-size:.74rem; letter-spacing:.06em; text-transform:uppercase; color:var(--faint);
+  transition:opacity .45s ease; pointer-events:none}
+
+/* ── section furniture ─────────────────────────────────────────── */
+.sec{padding:clamp(66px,9vw,116px) 0}
+.band{background:var(--deep); border-block:1px solid var(--line)}
+.sec-head{max-width:54ch; margin-bottom:clamp(34px,4.6vw,54px)}
+.kicker{font-size:.73rem; font-weight:700; letter-spacing:.15em; text-transform:uppercase;
+        color:var(--gold); margin-bottom:13px}
+.sec-head h2{font-size:clamp(2.1rem,5vw,3.5rem); margin-bottom:14px}
+.sec-head p{margin:0; font-size:1.03rem}
+
+/* ── the stripe reveal ─────────────────────────────────────────── */
+.mow{position:relative; border-radius:var(--r); overflow:hidden; border:1px solid var(--line);
+     aspect-ratio:16/9; background:var(--panel)}
+.mow img{width:100%; height:100%; object-fit:cover}
+.mow .stripes{position:absolute; inset:0; pointer-events:none;
+  background:repeating-linear-gradient(90deg,
+    rgba(255,255,255,.13) 0 5.55%, rgba(0,0,0,.19) 5.55% 11.1%);
+  mix-blend-mode:overlay;
+  clip-path:inset(0 calc(100% - var(--mowed,0%)) 0 0)}
+.mow .mask{position:absolute; inset:0; background:rgba(11,20,16,.42);
+  clip-path:inset(0 0 0 var(--mowed,0%)); pointer-events:none; transition:none}
+.mow .edge{position:absolute; top:0; bottom:0; left:var(--mowed,0%); width:2px;
+  background:var(--gold); pointer-events:none; opacity:.85}
+.mow .lbl{position:absolute; z-index:3; bottom:14px; font-size:.74rem; font-weight:600;
+  letter-spacing:.08em; text-transform:uppercase; padding:6px 12px; border-radius:999px;
+  background:rgba(11,20,16,.82); border:1px solid var(--line2)}
+.mow .lbl.l{left:14px; color:var(--dim)} .mow .lbl.r{right:14px; color:var(--gold)}
+
+/* ── plans ─────────────────────────────────────────────────────── */
+.plans{display:grid; gap:13px; grid-template-columns:repeat(3,1fr)}
+.plan{background:var(--panel); border:1px solid var(--line); border-radius:var(--r); padding:28px;
+      display:flex; flex-direction:column}
+.plan.hot{border-color:var(--gold); background:linear-gradient(180deg,rgba(232,176,67,.07),transparent 52%)}
+.plan .nm{font-size:.76rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--faint); margin-bottom:12px}
+.plan.hot .nm{color:var(--gold)}
+.plan .amt{font-family:var(--display); font-size:2.7rem; line-height:1; color:var(--cream)}
+.plan .per{color:var(--faint); font-size:.85rem; margin:5px 0 20px}
+.plan ul{list-style:none; margin:0 0 24px; padding:0; display:flex; flex-direction:column; gap:10px}
+.plan li{font-size:.93rem; display:flex; gap:10px; align-items:flex-start}
+.plan li svg{flex:none; margin-top:4px; color:var(--gold)}
+.plan .btn{margin-top:auto; text-align:center; font-size:.94rem; padding:12px}
+@media(max-width:900px){ .plans{grid-template-columns:1fr} }
+
+/* ── visit checklist ───────────────────────────────────────────── */
+.visit{display:grid; gap:13px; grid-template-columns:repeat(2,1fr); align-items:start}
+.vlist{display:grid; gap:10px}
+.vrow{display:flex; gap:13px; align-items:flex-start; border:1px solid var(--line);
+      border-radius:var(--r); padding:16px 18px; background:var(--panel)}
+.vrow .i{flex:none; width:26px; height:26px; border-radius:50%; background:rgba(121,194,91,.14);
+  color:var(--fresh); display:grid; place-items:center; font-size:.78rem; font-weight:700}
+.vrow b{display:block; color:var(--cream); font-weight:600; font-size:.98rem; margin-bottom:2px}
+.vrow p{margin:0; font-size:.9rem; color:var(--dim)}
+.vphoto{border-radius:var(--r); overflow:hidden; border:1px solid var(--line); aspect-ratio:4/5}
+.vphoto img{width:100%; height:100%; object-fit:cover}
+@media(max-width:900px){ .visit{grid-template-columns:1fr} .vphoto{aspect-ratio:16/10} }
+
+/* ── reviews ───────────────────────────────────────────────────── */
+.gbadge{display:inline-flex; align-items:center; gap:14px; background:var(--panel);
+  border:1px solid var(--line); border-radius:var(--r); padding:15px 21px; margin-bottom:24px}
+.gbadge .score{font-family:var(--display); font-size:2.2rem; color:var(--gold); line-height:1}
+.gbadge .cap{font-size:.86rem; line-height:1.4}
+.gbadge.is-ph .score{color:var(--faint)}
+.revs{display:grid; gap:13px; grid-template-columns:repeat(3,1fr)}
+.rev{background:var(--panel); border:1px solid var(--line); border-radius:var(--r); padding:23px;
+     display:flex; flex-direction:column; gap:13px}
+.rev p{margin:0; font-size:.95rem; color:#CFD9CD}
+.rev .by{font-size:.83rem; color:var(--faint); margin-top:auto}
+.rev .by b{display:block; color:var(--cream); font-weight:600; font-size:.89rem}
+.rev-tag{align-self:flex-start; font-size:.65rem; font-weight:700; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--faint); border:1px solid var(--line2);
+  padding:3px 8px; border-radius:999px}
+.rev.is-ph p{color:var(--dim)}
+@media(max-width:900px){ .revs{grid-template-columns:1fr} }
+
+/* ── chips / faq ───────────────────────────────────────────────── */
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{border:1px solid var(--line2); border-radius:999px; padding:7px 15px;
+      font-size:.86rem; color:var(--dim)}
+.faq{border-top:1px solid var(--line)}
+.q{border-bottom:1px solid var(--line)}
+.q summary{list-style:none; cursor:pointer; padding:21px 44px 21px 0; position:relative;
+  font-family:var(--display); font-weight:500; font-size:1.32rem; color:var(--cream)}
+.q summary::-webkit-details-marker{display:none}
+.q summary::after{content:"+"; position:absolute; right:5px; top:19px; font-size:1.5rem;
+  color:var(--gold); font-family:var(--font); font-weight:400; transition:transform .25s ease}
+.q[open] summary::after{transform:rotate(45deg)}
+.q .a{padding:0 0 23px; max-width:70ch; margin:0; font-size:.96rem}
+
+/* ── closer ────────────────────────────────────────────────────── */
+.closer{background:linear-gradient(170deg,var(--panel),var(--night) 68%); border-top:1px solid var(--line)}
+.closer .wrap{text-align:center; padding:clamp(68px,9vw,118px) 0}
+.closer h2{font-size:clamp(2.2rem,5.8vw,4rem); margin-bottom:16px}
+.closer p{max-width:46ch; margin:0 auto 30px}
+footer{border-top:1px solid var(--line); padding:30px 0; color:var(--faint); font-size:.85rem}
+footer .wrap{display:flex; flex-wrap:wrap; gap:14px; justify-content:space-between}
+@media(prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important} }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top"><span data-p="name">{{BUSINESS_NAME}}</span></a>
+    <nav>
+      <a href="#plans">Plans</a>
+      <a href="#visit">Every visit</a>
+      <a href="#work">Our work</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="callbtn" data-p="tel" href="tel:8135550100">{{PHONE}}</a>
+  </div>
+</header>
+
+<!-- ══ hero ══════════════════════════════════════════════════════ -->
+<section class="hero" id="top">
+  <div class="wrap">
+   <div class="hero-grid">
+    <div>
+    <div class="eyebrow">
+      <span data-rev-claim>★ <b data-p="rating">{{RATING}}</b> on Google ·
+        <span data-p="reviews">{{REVIEW_COUNT}}</span> reviews ·</span>
+      <span><span data-p="city">{{CITY}}</span>, FL</span>
+    </div>
+    <h1 class="display">The same crew, the same day, <em>every week.</em></h1>
+    <p class="hero-sub">
+      <strong data-p="tagline" data-tagline-claim>{{TAGLINE}}</strong>
+      <span data-sub-years>Not a rotating roster of subcontractors — the same two people who have
+      cut this street for <span data-p="years">{{YEARS}}</span> years</span>, so nobody has to be
+      told again about the sprinkler head by the mailbox.
+    </p>
+    <div class="ctas">
+      <a class="btn btn-a" href="#plans">See weekly pricing</a>
+      <a class="btn btn-b" data-p="tel" href="tel:8135550100">Call for a quote</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hs" data-stat="years"><div class="n"><span data-p="years">{{YEARS}}</span>+</div><div class="k">Years on these streets</div></div>
+      <div class="hs" data-stat="lawns"><div class="n" data-count>340</div><div class="k">Lawns every week</div></div>
+      <div class="hs" data-stat="rating"><div class="n"><span data-p="rating">{{RATING}}</span></div><div class="k">Google rating</div></div>
+    </div>
+    </div>
+    <figure class="hero-photo" style="margin:0">
+      <!-- The hero has to look like the prospect's own street. The photo here was a
+           clipped-yew English formal garden under autumn colour — a beautiful picture
+           of a place no Pinellas County homeowner has ever stood in, and the first
+           thing a skeptical owner would notice on a FaceTime call. -->
+      <img src="https://images.unsplash.com/photo-1779636489740-6077a4198be6?auto=format&fit=crop&w=1000&q=68"
+           alt="A two-person lawn crew mowing and trimming the front yard of a brick house"
+           fetchpriority="high">
+      <!-- The caption may only claim what is inside this crop. The portrait frame
+           shows one of the two crew, so a "two people" caption was writing a second
+           person into a picture the prospect can see does not have one. -->
+      <figcaption>Mow, edge, blow.<br>
+        <span>Every Tuesday, whether you are home or not.</span></figcaption>
+    </figure>
+   </div>
+  </div>
+  <canvas id="turf" aria-hidden="true"></canvas>
+  <div class="turfhint" id="turfhint">Run your cursor through it</div>
+</section>
+
+<!-- ══ the stripe reveal ═════════════════════════════════════════ -->
+<section class="sec band" id="work">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">Scroll to mow</div>
+      <h2 class="display">Striped every visit, <em>not just the first one.</em></h2>
+      <p>Direction alternates week to week so the blade never lies down the same way twice. It is
+         the difference between a cut lawn and a kept one.</p>
+    </div>
+    <div class="mow" id="mow">
+      <img src="https://images.unsplash.com/photo-1734303023481-7508b5c9f1ff?auto=format&fit=crop&w=1600&q=68"
+           alt="A ride-on mower cutting stripes into a residential lawn" fetchpriority="high">
+      <div class="mask"></div><div class="stripes"></div><div class="edge"></div>
+      <span class="lbl l">Before</span><span class="lbl r">Cut &amp; striped</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ plans ═════════════════════════════════════════════════════ -->
+<section class="sec" id="plans">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">Simple plans</div>
+      <h2 class="display">Flat monthly. <em>No per-cut invoices.</em></h2>
+      <p>Priced on lot size at the first visit and then it does not move. Rain weeks are made up,
+         not billed twice and not skipped.</p>
+    </div>
+    <div class="plans reveal-group">
+      <div class="plan">
+        <div class="nm">Bi-weekly</div>
+        <div class="amt">$139</div><div class="per">per month · every other week</div>
+        <ul>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Mow, edge, line-trim, blow down</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Clippings bagged or mulched, your call</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Text before we arrive</li>
+        </ul>
+        <a class="btn btn-b" data-p="tel" href="tel:8135550100">Start this</a>
+      </div>
+      <div class="plan hot">
+        <div class="nm">Weekly · most homes</div>
+        <div class="amt">$189</div><div class="per">per month · same day each week</div>
+        <ul>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Everything in bi-weekly, every week</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Bed edges re-cut monthly</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Stripe direction rotated each visit</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Photo of the finished lawn after each cut</li>
+        </ul>
+        <a class="btn btn-a" data-p="tel" href="tel:8135550100">Start this</a>
+      </div>
+      <div class="plan">
+        <div class="nm">Weekly + turf</div>
+        <div class="amt">$279</div><div class="per">per month · cut plus treatment</div>
+        <ul>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Everything in weekly</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Six-step fertiliser and weed programme</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> Chinch bug and fungus watch through summer</li>
+        </ul>
+        <a class="btn btn-b" data-p="tel" href="tel:8135550100">Start this</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ every visit ═══════════════════════════════════════════════ -->
+<section class="sec band" id="visit">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">Every visit</div>
+      <h2 class="display">Five things, in the same order, <em>every time.</em></h2>
+      <p>Written down so it is the same whether the owner is on the crew that day or not.</p>
+    </div>
+    <div class="visit">
+      <div class="vlist reveal-group">
+        <div class="vrow"><span class="i">1</span><div><b>Walk it first</b><p>Toys, hoses and dog mess get moved or flagged before a blade turns.</p></div></div>
+        <div class="vrow"><span class="i">2</span><div><b>Cut high, cut sharp</b><p>St. Augustine stays at 3.5–4 inches. Blades sharpened weekly, which is why the tips aren't brown.</p></div></div>
+        <div class="vrow"><span class="i">3</span><div><b>Edge and trim</b><p>Hard edge on the drive and walk, string trim around every post, tree and bed.</p></div></div>
+        <div class="vrow"><span class="i">4</span><div><b>Blow everything down</b><p>Drive, walk, patio and lanai. Nothing left for you to sweep.</p></div></div>
+        <div class="vrow"><span class="i">5</span><div><b>Photo and gate check</b><p>Finished-lawn photo texted, gate latched, and we tell you if we saw a sprinkler head out.</p></div></div>
+      </div>
+      <figure class="vphoto" style="margin:0">
+        <img loading="lazy" src="https://images.unsplash.com/photo-1689728318937-17d24bc0a65c?auto=format&fit=crop&w=900&q=64"
+             alt="A crew member using a string trimmer along a garden bed">
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ══ reviews ═══════════════════════════════════════════════════ -->
+<section class="sec">
+  <div class="wrap">
+    <div class="sec-head"><div class="kicker">What the street says</div>
+      <h2 class="display">Reviews, straight off Google.</h2></div>
+    <div class="gbadge" data-gbadge>
+      <div class="score"><span data-p="rating">{{RATING}}</span></div>
+      <div class="cap">Rated by <b data-p="reviews">{{REVIEW_COUNT}}</b> customers<br>on Google</div>
+    </div>
+    <div class="revs" data-rev-grid>
+      <article class="rev"><span class="rev-tag">Google</span><p>{{REVIEW_1}}</p><div class="by"><b>{{REVIEWER_1}}</b>Verified Google review</div></article>
+      <article class="rev"><span class="rev-tag">Google</span><p>{{REVIEW_2}}</p><div class="by"><b>{{REVIEWER_2}}</b>Verified Google review</div></article>
+      <article class="rev"><span class="rev-tag">Google</span><p>{{REVIEW_3}}</p><div class="by"><b>{{REVIEWER_3}}</b>Verified Google review</div></article>
+    </div>
+  </div>
+</section>
+
+<!-- ══ area + faq ════════════════════════════════════════════════ -->
+<section class="sec band">
+  <div class="wrap">
+    <div class="sec-head" style="margin-bottom:22px"><div class="kicker">Route</div>
+      <h2 class="display">Where the trailer runs.</h2>
+      <p>We cut by neighbourhood, not by postcode — which is how the same day each week actually
+         holds.</p></div>
+    <div class="chips" id="areachips" style="margin-bottom:clamp(54px,7vw,86px)"></div>
+
+    <div class="sec-head" id="faq"><div class="kicker">Questions</div>
+      <h2 class="display">The ones we get every week.</h2></div>
+    <div class="faq">
+      <details class="q"><summary>What happens when it rains?</summary>
+        <p class="a">We push to the next dry day in the same week, not the next fortnight. If a
+        whole week is lost, it is made up — you are never billed for a cut that did not happen.</p></details>
+      <details class="q"><summary>Do I need to be home?</summary>
+        <p class="a">No. Most customers are at work. We text before we arrive, latch the gate on the
+        way out, and send a photo of the finished lawn.</p></details>
+      <details class="q"><summary>Why flat monthly instead of per cut?</summary>
+        <p class="a">Because Florida grass grows four times faster in July than in January, and
+        per-cut billing means your summer invoices double exactly when you notice them most. The
+        flat rate is the year averaged out.</p></details>
+      <details class="q"><summary>Can you take over mid-season?</summary>
+        <p class="a">Yes, and the first visit is usually a longer one to bring the height back down
+        gradually. We never scalp a lawn to catch it up — that is how you get a brown yard in
+        August.</p></details>
+      <details class="q"><summary>Do you handle the beds and hedges too?</summary>
+        <p class="a">Bed edges and light hedge work are in the weekly plan. Bigger landscaping,
+        mulch and palm trimming are quoted separately so you are not paying for them all year.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ══ closer ════════════════════════════════════════════════════ -->
+<section class="closer">
+  <div class="wrap">
+    <h2 class="display">Pick a day. <em>We'll keep it.</em></h2>
+    <p>Tell us the address and we'll quote from the lot size — usually within the hour, and the
+       number does not change once you're on the route.</p>
+    <div class="ctas" style="justify-content:center">
+      <a class="btn btn-a" data-p="tel" href="tel:8135550100">Call <span data-p="phone2">{{PHONE}}</span></a>
+      <a class="btn btn-b" href="#plans">See the plans</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div><span data-p="name2">{{BUSINESS_NAME}}</span> — <span data-p="city3">{{CITY}}</span>, Florida</div>
+    <div>Licensed &amp; insured · Free quotes from the lot size</div>
+  </div>
+</footer>
+
+<!-- personalization: identical URL contract to every other niche demo -->
+<script>
+(function(){
+  var q=new URLSearchParams(location.search);
+  function get(k){ var v=q.get(k); return v && v.trim() ? v.trim() : null; }
+  var ESC={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};
+  function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return ESC[c];}); }
+
+  var isProspect=!!get('name');
+  var hasRealRevs=!!get('r1');            // review TEXT only — never the rating
+  var phMode=isProspect && !hasRealRevs;
+
+  var phoneRaw=(get('phone')||'').replace(/\D/g,'');
+  var phonePretty=phoneRaw.length===10
+    ? '('+phoneRaw.slice(0,3)+') '+phoneRaw.slice(3,6)+'-'+phoneRaw.slice(6) : get('phone');
+
+  var tokens={
+    '{{BUSINESS_NAME}}':get('name'),'{{CITY}}':get('city'),'{{PHONE}}':phonePretty,
+    '{{RATING}}':get('rating'),'{{REVIEW_COUNT}}':get('reviews'),
+    '{{YEARS}}':get('years'),'{{TAGLINE}}':get('tagline'),
+    '{{REVIEW_1}}':get('r1'),'{{REVIEW_2}}':get('r2'),'{{REVIEW_3}}':get('r3'),
+    '{{REVIEWER_1}}':get('rn1'),'{{REVIEWER_2}}':get('rn2'),'{{REVIEWER_3}}':get('rn3')
+  };
+  var fallbacks={
+    '{{BUSINESS_NAME}}':'Rowan & Sons Lawn Care','{{CITY}}':'Tampa','{{PHONE}}':'(813) 555-0100',
+    '{{RATING}}':'4.9','{{REVIEW_COUNT}}':'134','{{YEARS}}':'11',
+    '{{TAGLINE}}':'Flat monthly, same day, no per-cut invoices.',
+    '{{REVIEW_1}}':'Third company in four years and the first one where the same two guys turn up. They know which gate sticks and they still latch it.',
+    '{{REVIEW_2}}':'The stripes are the thing my wife noticed. The thing I noticed is the lanai gets blown down every single week without being asked.',
+    '{{REVIEW_3}}':'Took over a lawn the last crew had scalped and brought it back over about six weeks instead of dumping fertiliser on it. Straight answer every time I ask something.',
+    '{{REVIEWER_1}}':'Verified client','{{REVIEWER_2}}':'Verified client','{{REVIEWER_3}}':'Verified client'
+  };
+
+  var resolved={};
+  Object.keys(tokens).forEach(function(t){
+    var v=tokens[t];
+    resolved[t]= v ? v : (!isProspect ? fallbacks[t] : (t==='{{CITY}}' ? fallbacks[t] : ''));
+  });
+  var html=document.body.innerHTML;
+  Object.keys(resolved).forEach(function(t){
+    if(html.indexOf(t)!==-1) html=html.split(t).join(esc(resolved[t]));
+  });
+  document.body.innerHTML=html;
+
+  function drop(sel){ var n=document.querySelectorAll(sel);
+    for(var i=0;i<n.length;i++) n[i].parentNode.removeChild(n[i]); }
+  if(isProspect){
+    if(!get('tagline')) drop('[data-tagline-claim]');
+    if(!get('years'))   drop('[data-stat="years"]');
+    if(!get('rating'))  drop('[data-stat="rating"]');
+    drop('[data-stat="lawns"]');   // 340 is unsourceable for a real business
+    var sub=document.querySelector('[data-sub-years]');
+    if(sub && !get('years')) sub.textContent='Not a rotating roster of subcontractors — the same two people every week';
+  }
+
+  var logo=get('logo'), brand=document.querySelector('.brand');
+  if(brand && logo && /^https?:\/\//i.test(logo)){
+    var im=document.createElement('img'); im.src=logo; im.alt='';
+    brand.insertBefore(im, brand.firstChild);
+  }
+
+  if(phMode){
+    var cl=document.querySelectorAll('[data-rev-claim]');
+    for(var i=0;i<cl.length;i++) cl[i].textContent='Lawn care ·';
+    var gb=document.querySelector('[data-gbadge]');
+    if(gb){ gb.className+=' is-ph';
+      gb.innerHTML='<div class="score">★</div><div class="cap">Your Google rating<br>lands here</div>'; }
+    var grid=document.querySelector('[data-rev-grid]');
+    if(grid){
+      var biz=get('name');
+      var copy=['Your real Google reviews appear here — pulled straight from your profile and kept current.',
+                'Every new review lands on the site automatically. Nothing to copy over, nothing to maintain.',
+                'The ones that need a reply get flagged to your phone before they cost you a booking.'];
+      grid.innerHTML=copy.map(function(t){
+        return '<article class="rev is-ph"><span class="rev-tag">Sample</span><p>'+esc(t)+'</p>'+
+               '<div class="by"><b>'+esc(biz)+'</b>Placeholder — not a real review</div></article>';
+      }).join('');
+    }
+  }
+
+  var name=get('name')||fallbacks['{{BUSINESS_NAME}}'], city=get('city')||fallbacks['{{CITY}}'];
+  document.title=name+' — Lawn Care, '+city+' FL';
+  var tel=phoneRaw||'8135550100', a=document.querySelectorAll('[data-p="tel"]');
+  for(var t2=0;t2<a.length;t2++) a[t2].href='tel:'+tel;
+
+  var NEAR={Tampa:['Brandon','Riverview','Lutz','Westchase','Carrollwood','Apollo Beach','Temple Terrace'],
+            Orlando:['Winter Park','Apopka','Oviedo','Windermere','Lake Nona','Altamonte Springs'],
+            Sarasota:['Bradenton','Venice','Lakewood Ranch','Osprey','Palmetto'],
+            Jacksonville:['Ponte Vedra','Orange Park','Fleming Island','Mandarin','Nocatee']};
+  var chips=document.getElementById('areachips');
+  if(chips){
+    var list=[city].concat(NEAR[city]||['and the surrounding county']);
+    chips.innerHTML=list.map(function(p){ return '<span class="chip">'+esc(p)+'</span>'; }).join('');
+  }
+})();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script>
+/* ══ the turf ═══════════════════════════════════════════════════════
+   A canvas of individually drawn blades. Each one has a rest angle; the
+   pointer pushes nearby blades away from it and they spring back. Cursor
+   is the input — the counterpart to the stripe section below, which is
+   driven only by scroll. */
+(function(){
+  var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var cv=document.getElementById('turf'); if(!cv) return;
+  var hint=document.getElementById('turfhint');
+  var ctx=cv.getContext('2d');
+  var dpr=Math.min(window.devicePixelRatio||1,2);
+  var W=0,H=0,blades=[],px=-9999,py=-9999,raf=null,touched=false;
+
+  var GREENS=['#15301B','#1B3D21','#234A28','#2C5A32','#356A38','#3E7B41','#488C4A','#54A055'];
+
+  function build(){
+    var r=cv.getBoundingClientRect();
+    W=Math.max(1,Math.round(r.width)); H=Math.max(1,Math.round(r.height));
+    cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    blades=[];
+    var step = W<640 ? 2.2 : 1.5;
+    for(var x=-6;x<W+6;x+=step){
+      var depth=Math.random();
+      blades.push({
+        x:x+(Math.random()-.5)*3,
+        h:H*(0.34+depth*0.68)*(0.78+Math.random()*0.44),
+        w:1.9+depth*2.8,
+        rest:(Math.random()-.5)*0.24,
+        a:0, v:0,
+        c:GREENS[Math.floor(depth*GREENS.length*0.999)]
+      });
+    }
+    blades.sort(function(a,b){ return a.h-b.h; });
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    var base=ctx.createLinearGradient(0,H*0.62,0,H);
+    base.addColorStop(0,'rgba(14,32,20,0)');
+    base.addColorStop(1,'rgba(14,32,20,.95)');
+    ctx.fillStyle=base; ctx.fillRect(0,H*0.62,W,H*0.38);
+    for(var i=0;i<blades.length;i++){
+      var b=blades[i];
+      // spring toward rest, pushed away from the pointer
+      var dx=b.x-px, dy=(H-b.h*0.5)-py, d=Math.hypot(dx,dy);
+      var force=0;
+      if(d<150){ force=(1-d/150)*(dx<0?-1:1)*0.9; }
+      b.v += ((b.rest+force)-b.a)*0.14;
+      b.v *= 0.80;
+      b.a += b.v;
+
+      var tipX=b.x+Math.sin(b.a)*b.h*0.62;
+      var tipY=H-b.h*Math.cos(b.a*0.5);
+      ctx.beginPath();
+      ctx.moveTo(b.x-b.w/2,H);
+      ctx.quadraticCurveTo(b.x+Math.sin(b.a)*b.h*0.22, H-b.h*0.55, tipX, tipY);
+      ctx.lineTo(tipX+b.w*0.5, tipY+1.5);
+      ctx.quadraticCurveTo(b.x+Math.sin(b.a)*b.h*0.22+b.w*0.6, H-b.h*0.55, b.x+b.w/2, H);
+      ctx.closePath();
+      ctx.fillStyle=b.c; ctx.fill();
+    }
+    var soil=ctx.createLinearGradient(0,H-14,0,H);
+    soil.addColorStop(0,'rgba(11,20,16,0)');
+    soil.addColorStop(1,'rgba(11,20,16,.9)');
+    ctx.fillStyle=soil; ctx.fillRect(0,H-14,W,14);
+    raf=requestAnimationFrame(draw);
+  }
+
+  function paintStill(){
+    // one frame, blades at rest, no animation loop
+    for(var i=0;i<blades.length;i++){ blades[i].a=blades[i].rest; blades[i].v=0; }
+    px=-9999; py=-9999;
+    draw(); cancelAnimationFrame(raf); raf=null;
+  }
+
+  build();
+  if(reduced){ paintStill(); if(hint) hint.style.display='none'; return; }
+
+  raf=requestAnimationFrame(draw);
+
+  function move(e){
+    var r=cv.getBoundingClientRect();
+    px=e.clientX-r.left; py=e.clientY-r.top;
+    if(!touched){ touched=true; if(hint) hint.style.opacity='0'; }
+  }
+  cv.addEventListener('pointermove',move,{passive:true});
+  cv.addEventListener('pointerleave',function(){ px=-9999; py=-9999; },{passive:true});
+  // the hero above it should also stir the grass
+  document.querySelector('.hero').addEventListener('pointermove',move,{passive:true});
+
+  var rt;
+  window.addEventListener('resize',function(){ clearTimeout(rt); rt=setTimeout(build,200); },{passive:true});
+
+  // an untouched visitor still sees it move: one pass, left to right
+  setTimeout(function sweep(){
+    if(touched) return;
+    var t=0;
+    (function step(){
+      if(touched||t>110) return;
+      px=W*(t/110); py=H*0.45; t++;
+      requestAnimationFrame(step);
+    })();
+  },900);
+})();
+
+/* ══ the stripes ════════════════════════════════════════════════════
+   Scroll is the only input. Progress through the section drives how far
+   the mower has got across the lawn. */
+(function(){
+  var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var mow=document.getElementById('mow'); if(!mow) return;
+  if(reduced || typeof gsap==='undefined' || typeof ScrollTrigger==='undefined'){
+    mow.style.setProperty('--mowed','100%'); return;      // show it finished
+  }
+  try{
+    gsap.registerPlugin(ScrollTrigger);
+    ScrollTrigger.create({
+      trigger:mow, start:'top 78%', end:'bottom 42%', scrub:0.5,
+      onUpdate:function(self){
+        mow.style.setProperty('--mowed',(self.progress*100).toFixed(1)+'%');
+      }
+    });
+  }catch(_){ mow.style.setProperty('--mowed','100%'); }
+})();
+
+/* ══ choreography ═══════════════════════════════════════════════════ */
+(function(){
+  var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(typeof gsap==='undefined'||reduced) return;
+  try{
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.from('.hero .eyebrow, .hero h1, .hero-sub, .hero .ctas, .hero-stats',
+      { y:26, opacity:0, duration:.85, ease:'power2.out', stagger:.08, delay:.2 });
+    var g=document.querySelectorAll('.reveal-group');
+    for(var i=0;i<g.length;i++){
+      gsap.from(g[i].children,{ y:28, opacity:0, duration:.65, ease:'power2.out', stagger:.07,
+        scrollTrigger:{ trigger:g[i], start:'top 84%', once:true }});
+    }
+    var c=document.querySelectorAll('[data-count]');
+    for(var n=0;n<c.length;n++){
+      (function(el){
+        var end=parseInt(el.textContent.replace(/\D/g,''),10); if(!end) return;
+        var o={v:0};
+        gsap.to(o,{ v:end, duration:1.4, ease:'power2.out', snap:{v:1},
+          onUpdate:function(){ el.textContent=o.v.toLocaleString(); },
+          scrollTrigger:{ trigger:el, start:'top 90%', once:true }});
+      })(c[n]);
+    }
+  }catch(_){}
+})();
+</script>
+</body>
+</html>
