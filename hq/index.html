@@ -435,7 +435,23 @@ const NICHE = {
   handyman:{label:"Handyman", best:"7–8am or 5–6pm", win:[[7,8],[17,18]], noun:"tradesman"},
   mobile_mechanic:{label:"Mechanic", best:"8–9am before the first job", win:[[8,9]], noun:"mechanic"},
   appliance_repair:{label:"Appliance", best:"8–9am", win:[[8,9]], noun:"tech"},
+  // ── LADDER B · AI visibility (pipelines/adlead.py). Office-hours buyers with a front desk.
+  roofing:{label:"Roofing (AI)", best:"9–11am or 2–4pm", win:[[9,11],[14,16]], noun:"roofer", lane:"aeo"},
+  hvac:{label:"HVAC (AI)", best:"9–11am or 2–4pm", win:[[9,11],[14,16]], noun:"AC company", lane:"aeo"},
+  plumbing:{label:"Plumbing (AI)", best:"9–11am or 2–4pm", win:[[9,11],[14,16]], noun:"plumber", lane:"aeo"},
+  pest_control:{label:"Pest (AI)", best:"9–11am or 2–4pm", win:[[9,11],[14,16]], noun:"pest company", lane:"aeo"},
+  med_spa:{label:"Med Spa (AI)", best:"10am–12 or 2–4pm", win:[[10,12],[14,16]], noun:"med spa", lane:"aeo"},
+  dentist:{label:"Dentist (AI)", best:"9–11am or 2–4pm", win:[[9,11],[14,16]], noun:"dentist", lane:"aeo"},
+  moving:{label:"Moving (AI)", best:"9–11am or 2–4pm", win:[[9,11],[14,16]], noun:"mover", lane:"aeo"},
+  remodeling:{label:"Remodeling (AI)", best:"9–11am or 2–4pm", win:[[9,11],[14,16]], noun:"remodeler", lane:"aeo"},
+  pool:{label:"Pool (AI)", best:"9–11am or 2–4pm", win:[[9,11],[14,16]], noun:"pool builder", lane:"aeo"},
+  chiropractor:{label:"Chiro (AI)", best:"10am–12 or 2–4pm", win:[[10,12],[14,16]], noun:"chiropractor", lane:"aeo"},
 };
+function isAeo(l){ return l.lane==="aeo"; }
+// What the consumer asked the assistant — mirrors NICHES[n].ai in adlead.py.
+const AEO_NOUN = { roofing:"roofing company", hvac:"AC repair company", plumbing:"plumber",
+  pest_control:"pest control company", med_spa:"med spa", dentist:"dentist", moving:"moving company",
+  remodeling:"kitchen and bath remodeler", pool:"pool builder", chiropractor:"chiropractor" };
 const DEFAULT_WIN = [[8,9],[16,18]];
 
 const PRICING = { setup:497, mo:149, site:1497, host:99 };
@@ -6284,6 +6300,305 @@ const LEADS = [
    "opener": "unnamed",
    "gate_run": "2026-09-10"
   }
+ },
+ {
+  "id": "ad_0006",
+  "lane": "aeo",
+  "business_name": "Rainier Roofing LLC",
+  "phone": "8134528248",
+  "city": "Tampa",
+  "address": "5000 N Nebraska Ave, Tampa",
+  "category": "roofing",
+  "rating": 4.6,
+  "review_count": 131,
+  "website": "https://rainierroofing.com/",
+  "domain": "rainierroofing.com",
+  "aeo": {
+   "query": "Tampa",
+   "of": 3,
+   "market_of": 9,
+   "competitors": [
+    "Westfall Roofing",
+    "Bill Shields Roofing Co.",
+    "Steadfast Roofing"
+   ],
+   "model": "claude-opus-5",
+   "checked": "2026-09-11",
+   "ads_from": "site tag AW-753632740",
+   "ads_last_shown": null,
+   "ads_creatives": null,
+   "ads_source": "https://rainierroofing.com/  +  https://www.googletagmanager.com/gtm.js?id=GTM-5Q6BT4DR",
+   "google_ads_tag": "AW-753632740",
+   "call_tracking": [],
+   "meta_pixel": true
+  },
+  "verify": {
+   "status": "check",
+   "gate_run": "2026-09-11",
+   "checked": "2026-09-11",
+   "alive": true,
+   "phone_ok": null,
+   "name_ok": false,
+   "opener": "unnamed",
+   "flags": [
+    {
+     "layer": "L3_ads",
+     "status": "check",
+     "why": "Ads inferred from site tag AW-753632740 on their site — no live creative seen. Say 'your site is set up for Google Ads', not 'I saw your ad'."
+    },
+    {
+     "layer": "L2_name",
+     "status": "info",
+     "why": "Google publishes no owner name. Ask for the owner."
+    }
+   ],
+   "owner_evidence": "none — Google Places carries no owner name",
+   "note": "site tag AW-753632740 · 131 reviews · 0/3 AI answers (9 market-wide)",
+   "sources": [
+    "https://www.google.com/maps/place/?q=place_id:ChIJz8WGFh3FwogRTV5DGvbcfcs",
+    "https://rainierroofing.com/  +  https://www.googletagmanager.com/gtm.js?id=GTM-5Q6BT4DR"
+   ]
+  }
+ },
+ {
+  "id": "ad_0016",
+  "lane": "aeo",
+  "business_name": "Miller II Roofing Solutions",
+  "phone": "8133659825",
+  "city": "Tampa",
+  "address": "2913 W Waters Ave, Tampa",
+  "category": "roofing",
+  "rating": 4.7,
+  "review_count": 127,
+  "website": "https://www.roofer-tampa.com/",
+  "domain": "roofer-tampa.com",
+  "aeo": {
+   "query": "Tampa",
+   "of": 3,
+   "market_of": 9,
+   "competitors": [
+    "Westfall Roofing",
+    "Bill Shields Roofing Co.",
+    "Steadfast Roofing"
+   ],
+   "model": "claude-opus-5",
+   "checked": "2026-09-11",
+   "ads_from": "site tag AW-1070241815",
+   "ads_last_shown": null,
+   "ads_creatives": null,
+   "ads_source": "https://roofer-tampa.com/  +  https://www.googletagmanager.com/gtm.js?id=GTM-W487CGFD",
+   "google_ads_tag": "AW-1070241815",
+   "call_tracking": [],
+   "meta_pixel": false
+  },
+  "verify": {
+   "status": "check",
+   "gate_run": "2026-09-11",
+   "checked": "2026-09-11",
+   "alive": true,
+   "phone_ok": null,
+   "name_ok": false,
+   "opener": "unnamed",
+   "flags": [
+    {
+     "layer": "L3_ads",
+     "status": "check",
+     "why": "Ads inferred from site tag AW-1070241815 on their site — no live creative seen. Say 'your site is set up for Google Ads', not 'I saw your ad'."
+    },
+    {
+     "layer": "L2_name",
+     "status": "info",
+     "why": "Google publishes no owner name. Ask for the owner."
+    }
+   ],
+   "owner_evidence": "none — Google Places carries no owner name",
+   "note": "site tag AW-1070241815 · 127 reviews · 0/3 AI answers (9 market-wide)",
+   "sources": [
+    "https://www.google.com/maps/place/?q=place_id:ChIJuToswTjBwogRffHe8DRgUYA",
+    "https://roofer-tampa.com/  +  https://www.googletagmanager.com/gtm.js?id=GTM-W487CGFD"
+   ]
+  }
+ },
+ {
+  "id": "ad_0021",
+  "lane": "aeo",
+  "business_name": "RoofingCo of America",
+  "phone": "7273093344",
+  "city": "St. Petersburg",
+  "address": "9414 International Ct N, St. Petersburg",
+  "category": "roofing",
+  "rating": 4.8,
+  "review_count": 202,
+  "website": "http://www.roofing.co/",
+  "domain": "roofing.co",
+  "aeo": {
+   "query": "St. Petersburg",
+   "of": 3,
+   "market_of": 9,
+   "competitors": [
+    "Mitchell Roofing Company",
+    "Blue Sky Roofing",
+    "Drew Roofing"
+   ],
+   "model": "claude-opus-5",
+   "checked": "2026-09-11",
+   "ads_from": "call tracking (calltrk)",
+   "ads_last_shown": null,
+   "ads_creatives": null,
+   "ads_source": "https://roofing.co/  +  https://www.googletagmanager.com/gtm.js?id=GTM-5H4GDQL",
+   "google_ads_tag": null,
+   "call_tracking": [
+    "calltrk"
+   ],
+   "meta_pixel": true
+  },
+  "verify": {
+   "status": "check",
+   "gate_run": "2026-09-11",
+   "checked": "2026-09-11",
+   "alive": true,
+   "phone_ok": null,
+   "name_ok": false,
+   "opener": "unnamed",
+   "flags": [
+    {
+     "layer": "L3_ads",
+     "status": "check",
+     "why": "Ads inferred from call tracking (calltrk) on their site — no live creative seen. Say 'your site is set up for Google Ads', not 'I saw your ad'."
+    },
+    {
+     "layer": "L2_name",
+     "status": "info",
+     "why": "Google publishes no owner name. Ask for the owner."
+    }
+   ],
+   "owner_evidence": "none — Google Places carries no owner name",
+   "note": "call tracking (calltrk) · 202 reviews · 0/3 AI answers (9 market-wide)",
+   "sources": [
+    "https://www.google.com/maps/place/?q=place_id:ChIJlz4_b2vjwogRjW3tWICg1dc",
+    "https://roofing.co/  +  https://www.googletagmanager.com/gtm.js?id=GTM-5H4GDQL"
+   ]
+  }
+ },
+ {
+  "id": "ad_0037",
+  "lane": "aeo",
+  "business_name": "Ridge Top Exteriors",
+  "phone": "8132913078",
+  "city": "Clearwater",
+  "address": "10810 US Hwy 19 N, Clearwater",
+  "category": "roofing",
+  "rating": 4.7,
+  "review_count": 1194,
+  "website": "https://www.ridgetopexteriors.com/locations/clearwater-fl",
+  "domain": "ridgetopexteriors.com",
+  "aeo": {
+   "query": "Clearwater",
+   "of": 3,
+   "market_of": 9,
+   "competitors": [
+    "Dean Roofing Company",
+    "Alvarez Roofing Services",
+    "John Hogan Roofing"
+   ],
+   "model": "claude-opus-5",
+   "checked": "2026-09-11",
+   "ads_from": "site tag AW-315242526",
+   "ads_last_shown": null,
+   "ads_creatives": null,
+   "ads_source": "https://ridgetopexteriors.com/  +  https://www.googletagmanager.com/gtm.js?id=GTM-MSLCGTR",
+   "google_ads_tag": "AW-315242526",
+   "call_tracking": [
+    "callrail"
+   ],
+   "meta_pixel": false
+  },
+  "verify": {
+   "status": "check",
+   "gate_run": "2026-09-11",
+   "checked": "2026-09-11",
+   "alive": true,
+   "phone_ok": null,
+   "name_ok": false,
+   "opener": "unnamed",
+   "flags": [
+    {
+     "layer": "L3_ads",
+     "status": "check",
+     "why": "Ads inferred from site tag AW-315242526 on their site — no live creative seen. Say 'your site is set up for Google Ads', not 'I saw your ad'."
+    },
+    {
+     "layer": "L2_name",
+     "status": "info",
+     "why": "Google publishes no owner name. Ask for the owner."
+    }
+   ],
+   "owner_evidence": "none — Google Places carries no owner name",
+   "note": "site tag AW-315242526 · 1194 reviews · 0/3 AI answers (9 market-wide)",
+   "sources": [
+    "https://www.google.com/maps/place/?q=place_id:ChIJnSywnVbOwogR7T-yp9N5RKk",
+    "https://ridgetopexteriors.com/  +  https://www.googletagmanager.com/gtm.js?id=GTM-MSLCGTR"
+   ]
+  }
+ },
+ {
+  "id": "ad_0059",
+  "lane": "aeo",
+  "business_name": "Green Leaf Roofing",
+  "phone": "8135772488",
+  "city": "Dunedin",
+  "address": "1350 County Rd 1 #796, Dunedin",
+  "category": "roofing",
+  "rating": 4.9,
+  "review_count": 193,
+  "website": "https://www.greenleafroofingllc.com/",
+  "domain": "greenleafroofingllc.com",
+  "aeo": {
+   "query": "Clearwater",
+   "of": 3,
+   "market_of": 9,
+   "competitors": [
+    "Dean Roofing Company",
+    "Alvarez Roofing Services",
+    "John Hogan Roofing"
+   ],
+   "model": "claude-opus-5",
+   "checked": "2026-09-11",
+   "ads_from": "site tag AW-10782870797",
+   "ads_last_shown": null,
+   "ads_creatives": null,
+   "ads_source": "https://greenleafroofingllc.com/  +  https://www.googletagmanager.com/gtm.js?id=GTM-KVQC8PV",
+   "google_ads_tag": "AW-10782870797",
+   "call_tracking": [],
+   "meta_pixel": false
+  },
+  "verify": {
+   "status": "check",
+   "gate_run": "2026-09-11",
+   "checked": "2026-09-11",
+   "alive": true,
+   "phone_ok": null,
+   "name_ok": false,
+   "opener": "unnamed",
+   "flags": [
+    {
+     "layer": "L3_ads",
+     "status": "check",
+     "why": "Ads inferred from site tag AW-10782870797 on their site — no live creative seen. Say 'your site is set up for Google Ads', not 'I saw your ad'."
+    },
+    {
+     "layer": "L2_name",
+     "status": "info",
+     "why": "Google publishes no owner name. Ask for the owner."
+    }
+   ],
+   "owner_evidence": "none — Google Places carries no owner name",
+   "note": "site tag AW-10782870797 · 193 reviews · 0/3 AI answers (9 market-wide)",
+   "sources": [
+    "https://www.google.com/maps/place/?q=place_id:ChIJsRoHCNTzwogRaPwtjU6WCiY",
+    "https://greenleafroofingllc.com/  +  https://www.googletagmanager.com/gtm.js?id=GTM-KVQC8PV"
+   ]
+  }
  }
 ];
 let leads = LEADS.slice();
@@ -6330,6 +6645,11 @@ function askName(l){
   return (v.opener==="ask" && firstName(l)) ? firstName(l) : null;
 }
 function openLine(l, who){
+  if(isAeo(l)){
+    const a=l.aeo||{}, comp=(a.competitors||[]).slice(0,2);
+    const q=`best ${AEO_NOUN[l.category]||nlabel(l.category)} in ${a.query||l.city}`;
+    return `"Hey — is the owner around? … ${who}, I'll be quick. I'm a student, I do AI search visibility for ${esc(nlabel(l.category).replace(" (AI)","").toLowerCase())} companies. Honestly I don't Google anymore — I asked Claude '${esc(q)}' this morning and you weren't in the answer. ${comp.length?esc(comp.join(" and "))+" were.":""} Got twenty seconds?"`;
+  }
   const n=greet(l), a=askName(l);
   if(n) return `"Hey ${esc(n)}, this is ${who} — I'll be quick. Do you have a website set up for ${esc(l.business_name||"")}?"`;
   if(a) return `"Hey — is this ${esc(a)}? This is ${who}, I'll be quick. Do you have a website set up for ${esc(l.business_name||"")}?"`;
@@ -6357,6 +6677,15 @@ const URGENT = { towing:"a tow", mobile_mechanic:"a mechanic at the roadside",
   car_detailing:"a car detailed before the weekend" };
 
 function questions(l){
+  if(isAeo(l)){
+    const a=l.aeo||{}, comp=(a.competitors||[]);
+    return [
+      `When somebody asks ChatGPT or Claude "who's the best ${AEO_NOUN[l.category]||nlabel(l.category)} in ${a.query||l.city}" — do you know who it names?`,
+      comp.length?`It's ${comp.slice(0,2).join(" and ")}. Not you. I checked ${a.of||3} different ways this morning.`:`It isn't you — I checked ${a.of||3} different ways this morning.`,
+      "You're paying Google to be at the top — and the customer who asks AI instead never sees Google at all.",
+      "Can I email you the check I ran? Score, who came up instead, and the four things causing it. Free.",
+    ];
+  }
   const urgent = URGENT[l.category] || "what you do";
   return [
     "Where would I go to see your work?",
@@ -6543,6 +6872,22 @@ function startQueue(){
 function msgs(l){
   const who=greet(l)||askName(l)||"there", biz=l.business_name||"your business";
   const url=demoUrl(l), link=url||"";
+  if(isAeo(l)){
+    const a=l.aeo||{}, comp=(a.competitors||[]).slice(0,2).join(" and ");
+    const q=`best ${AEO_NOUN[l.category]||nlabel(l.category)} in ${a.query||l.city}`;
+    return {
+      postvm:{label:"After voicemail", hint:"Send within 60 seconds of hanging up",
+        body:`Hey — Chase, just left you a voicemail. I asked Claude "${q}" this morning and ${biz} wasn't in the answer${comp?" — "+comp+" were":""}. I put the check in a one-page report. What's the best email to send it to?`, needsDemo:false},
+      report:{label:"Ask for the email", hint:"They said yes on the phone",
+        body:`Hey, Chase from RecoverRevenue — great talking. Send me the best email for the AI visibility report on ${biz} and I'll have it over today. Score, who's coming up instead of you, and the four fixes.`, needsDemo:false},
+      book:{label:"Send the booking link", hint:"After they've seen the report",
+        body:`Hey, Chase from RecoverRevenue. Grab a slot and I'll walk you through the four fixes for ${biz} — 15 minutes, no deck: ${BOOK_LINK}`, needsDemo:false},
+      confirm:{label:"Confirm the call", hint:"Lock in a booked slot",
+        body:`Hey, Chase — locking in our call. I'll have the ${biz} report pulled up so you can see exactly what Claude and ChatGPT say. Talk soon.`, needsDemo:false},
+      nudge:{label:"Nudge, no answer", hint:"Two days after the report went out",
+        body:`Hey, Chase — did the ${biz} report land? The short version: you're buying the Google click, and the customer who asks AI instead is calling ${comp||"a competitor"}. Worth 15 minutes?`, needsDemo:false},
+    };
+  }
   return {
     demo:{label:"Text the demo", hint:"After they said yes to a look",
       body:`Hey ${who}, Chase from RecoverRevenue — here's the demo site I built for ${biz}: ${link}\n\nIf you like it we can talk. If not, no hard feelings.`, needsDemo:true},
@@ -6577,7 +6922,7 @@ function renderDial(){
   const name=greet(l), ask=askName(l), stage=stageOf(d), url=demoUrl(l);
   const warns=(vf.flags||[]).filter(f=>f.status==="check");
   const info =(vf.flags||[]).filter(f=>f.status==="info");
-  const shut=closedToday(l), win=inWindow(l.category), inc=intake(l);
+  const shut=closedToday(l), win=inWindow(l.category), inc=isAeo(l)?null:intake(l), aeo=isAeo(l);
   const showCb=["No Answer","Voicemail","Interested"].includes(d.dispo);
   const live =d.dispo==="Interested"||STAGES.indexOf(stage)>=STAGES.indexOf("demo_sent");
   const M=msgs(l);
@@ -6616,7 +6961,7 @@ function renderDial(){
       ${shut?`<div class="warn"><b>Closed today</b> per their listed hours — expect voicemail.</div>`:""}
 
       <div class="asks">
-        <div class="ol">Ask these — every answer is "a website"</div>
+        <div class="ol">${aeo?"The call — competitor names are the whole thing":"Ask these — every answer is \"a website\""}</div>
         <ol>${questions(l).map(q=>`<li>${esc(q)}</li>`).join("")}</ol>
       </div>
 
@@ -6656,10 +7001,10 @@ function renderDial(){
 
     <div class="sec">
       <div class="seclab">Send it${live?" — don't let it cool off":""}</div>
-      ${demoBox(l,url)}
+      ${aeo?evidenceBox(l):demoBox(l,url)}
       <div class="sendgrid" style="margin-top:8px">
-        ${sendBtn(l,"demo",url)} ${sendBtn(l,"postvm",url)}
-        ${sendBtn(l,"pricing",url)} ${sendBtn(l,"book",url)}
+        ${aeo?sendBtn(l,"report",url)+" "+sendBtn(l,"postvm",url)+" "+sendBtn(l,"book",url)+" "+sendBtn(l,"nudge",url)
+             :sendBtn(l,"demo",url)+" "+sendBtn(l,"postvm",url)+" "+sendBtn(l,"pricing",url)+" "+sendBtn(l,"book",url)}
         <button class="sbtn wide" onclick="openTpl()"><span class="t">All ${Object.keys(msgs(l)).length} messages</span>
           <span class="mini ghost">Open</span></button>
       </div>
@@ -6673,7 +7018,7 @@ function renderDial(){
         — clears when you text pricing or book.</div>`:""}
     </div>
 
-    <details class="script"><summary>Script &amp; objections</summary><div class="prose">
+    ${aeo?aeoScript(l):`<details class="script"><summary>Script &amp; objections</summary><div class="prose">
       <h3>Bridge</h3><p>"Reason I'm calling — I build systems for ${esc(nlabel(l.category).toLowerCase())} businesses that text back every missed call in 60 seconds, so the job doesn't go to the next ${esc((NICHE[l.category]||{}).noun||"guy")}. You've got ${l.review_count??"a stack of"} reviews — that's real trust — but when you're mid-job and the phone rings out, that money walks."</p>
       <h3>The ask</h3><p>"Takes 2 minutes to see it. I'll text you a link right now — if it's not for you, no hard feelings."</p>
       <h3>"How much?"</h3><p>"$${PRICING.setup} setup, $${PRICING.mo} a month. One saved job pays for the month. Look at it first though — no point talking price on something you haven't seen."</p>
@@ -6682,7 +7027,7 @@ function renderDial(){
       <h3>"Send me an email"</h3><p>"I can do that — what's the best email? I'll have it to you in 5 minutes." Then actually send it in 5 minutes.</p>
       <h3>"I'm slammed"</h3><p>"Perfect time to build the pipeline so you're not scrambling when it slows down. I'll text it — look tonight, no pressure."</p>
       <h3>Voicemail — under 25s, then text immediately</h3><p>"Hey ${name||ask?esc(name||ask):"[name]"}, Chase calling. I built a demo website for ${esc(l.business_name||"")} and wanted to show you before I moved on — it's live right now. Call me back, takes 2 minutes."</p>
-    </div></details>
+    </div></details>`}
   </div>`;
 
   armSwipe();
@@ -6708,6 +7053,40 @@ function demoBox(l,url){
     paste it in the terminal, then drop the URL back in here and every text below wakes up.</div>
     <input class="url-in" placeholder="Paste the demo URL once it's live…"
       value="${esc(d.demoUrl||"")}" onchange="setDemoUrl(this.value)"></div>`;
+}
+
+// The AI lane has no demo. What it has is evidence, and the card shows exactly
+// what was looked up so nothing said on the phone outruns it.
+function evidenceBox(l){
+  const a=l.aeo||{}, comp=a.competitors||[];
+  const atc=/Transparency/.test(a.ads_from||"");
+  const adsLine = atc
+    ? `<b>${a.ads_creatives||"?"} ad creatives</b> on file, last shown <b>${esc(a.ads_last_shown||"?")}</b> — Google Ads Transparency Center`
+    : `<b>${esc(a.ads_from||"ads signal")}</b> — on their own site. No live creative seen: say "set up for Google Ads", not "I saw your ad".`;
+  const src=(a.ads_source||"").split("  +  ")[0];
+  return `<div class="demobox"><div class="dh"><span class="dt">What you checked</span>
+    ${src?`<button class="mini ghost" onclick="copyText('${esc(jsq(src))}');toast('Link copied')">Copy ads link</button>`:""}</div>
+    <div class="ds">ADS · ${adsLine}</div>
+    <div class="ds">AI · asked Claude "${esc(AEO_NOUN[l.category]||nlabel(l.category))} in ${esc(a.query||l.city||"")}" ${a.of||3} ways${a.market_of?`, ${a.market_of} across the market`:""} — <b>named 0 times</b>.${comp.length?` Named instead: <b>${esc(comp.join(", "))}</b>.`:""}</div>
+    ${src?`<a class="demolink" href="${esc(src)}" target="_blank" rel="noopener">${esc(src)}</a>`:""}
+    <div class="ds" style="margin-top:6px">Checked ${esc(a.checked||"")}. Open the link before you dial — it is what you say you saw.</div></div>`;
+}
+function aeoScript(l){
+  const a=l.aeo||{}, comp=(a.competitors||[]).slice(0,2), n=nlabel(l.category).replace(" (AI)","").toLowerCase();
+  const q=`best ${AEO_NOUN[l.category]||n} in ${a.query||l.city}`;
+  const who=comp.length?esc(comp.join(" and ")):"your competitors";
+  return `<details class="script"><summary>Script &amp; objections — AI visibility</summary><div class="prose">
+      <h3>Open — the query was actually run. Everything below is true.</h3><p>${openLine(l,"Chase")}</p>
+      <h3>"So what / who cares"</h3><p>"Fair. You're paying to sit at the top of Google and that still works. But the customer who asks AI instead never sees Google at all — they get three names and call one. Right now those three names are ${who}."</p>
+      <h3>"We already do SEO / we run ads"</h3><p>"You do, and it's working — that's how I found you. Google ranks pages, AI cites sources. Different systems. You can be number one on Google and invisible in ChatGPT. That's what's happening here."</p>
+      <h3>THE ASK — the email, not the sale</h3><p>"It's already in a one-pager — your score, the exact question where ${who} come up instead of you, and the four things causing it. Free, no strings. What's the best email?"</p>
+      <h3>"How much?"</h3><p>"Depends what the report finds — I'm not going to quote you on something I haven't shown you. Look at it first; if it's not a problem for you, we're done." <i>No number. Ladder B pricing is not approved.</i></p>
+      <h3>"Send me info" / "Email me"</h3><p>"That's exactly what I'm asking for — what's the address?" Then send it today. A report that arrives tomorrow is a cold lead.</p>
+      <h3>"Who are you?"</h3><p>"Chase, RecoverRevenue, Tampa. I'm a student — my whole generation asks ChatGPT before it Googles anything, and that's the customer you're missing."</p>
+      <h3>"Not interested"</h3><p>"Fair enough. One question — do you know who ChatGPT sends your customers to right now? … It's ${who}. That's all I wanted you to have."</p>
+      <h3>Voicemail — under 20s, then text</h3><p>"Hey, Chase calling for the owner. I asked Claude '${esc(q)}' this morning and ${esc(l.business_name||"you")} didn't come up — ${who} did. I've got the check in a one-pager. Call me back and I'll send it."</p>
+      <h3>Never say</h3><p>"I saw your ad" (unless the card says Transparency Center) · "ChatGPT said" (we asked Claude — say Claude, or check ChatGPT yourself first) · any monthly number.</p>
+    </div></details>`;
 }
 
 // ════════════════ SWIPE ════════════════
