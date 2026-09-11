@@ -31,6 +31,25 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);
 a{color:inherit;text-decoration:none}
 .wrap{width:min(1180px,92vw);margin-inline:auto}
 
+/* ---------- sms consent ---------- */
+.consent{display:flex;gap:12px;align-items:flex-start;margin:6px 0 4px;padding:16px 18px;
+  background:var(--accent-light);border:1px solid rgba(23,65,155,.16);border-radius:14px;
+  cursor:pointer;transition:border-color .25s var(--e)}
+.consent:hover{border-color:rgba(23,65,155,.34)}
+.consent input[type=checkbox]{appearance:none;-webkit-appearance:none;flex:0 0 auto;
+  width:20px;height:20px;margin:1px 0 0;border:1.5px solid rgba(23,65,155,.42);border-radius:5px;
+  background:#fff;cursor:pointer;position:relative;transition:background .18s var(--e),border-color .18s var(--e)}
+.consent input[type=checkbox]:checked{background:var(--accent);border-color:var(--accent)}
+.consent input[type=checkbox]:checked::after{content:"";position:absolute;left:6.5px;top:2.5px;
+  width:4px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(43deg)}
+.consent input[type=checkbox]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.consent-copy{font-size:.83rem;line-height:1.55;color:#20325c}
+.consent-copy b{font-weight:700}
+.consent-copy a{color:var(--accent);text-decoration:underline}
+.field-note{font-size:.81rem;color:var(--muted);margin:6px 0 0}
+.field-err{font-size:.83rem;color:var(--warn);margin:7px 0 0;display:none}
+.field-err.show{display:block}
+
 /* ---------- nav ---------- */
 .nav{position:sticky;top:0;z-index:60;background:rgba(253,253,255,.88);backdrop-filter:blur(14px);
   border-bottom:1px solid var(--line-soft)}
@@ -361,6 +380,26 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(
           <input type="text" id="leadIg" placeholder="@yourhandle">
         </div>
 
+        <div class="input-field">
+          <label for="leadPhone">Mobile Number (Required)</label>
+          <input type="tel" id="leadPhone" placeholder="(555) 123-4567" required
+                 autocomplete="tel" inputmode="tel">
+          <p class="field-note">Used to reach you about your audit and to schedule the call.</p>
+          <p class="field-err" id="phoneErr">Enter a valid 10-digit U.S. mobile number.</p>
+        </div>
+
+        <label class="consent" for="smsConsent">
+          <input type="checkbox" id="smsConsent">
+          <span class="consent-copy">
+            I agree to receive text messages from RecoverRevenue at the mobile number provided,
+            including messages about my audit, qualifying questions, and appointment scheduling and
+            reminders. <b>Consent is not a condition of purchase.</b> Message and data rates may
+            apply. Message frequency varies. Reply <b>STOP</b> to opt out or <b>HELP</b> for help.
+            See our <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> and
+            <a href="terms.html" target="_blank" rel="noopener">SMS Terms</a>.
+          </span>
+        </label>
+
         <div class="btn-row">
           <button type="button" class="btn btn-back" onclick="goToStep(3)">&larr; Back</button>
           <button type="button" class="btn btn-next" id="submitBtn" onclick="submitAudit()">
@@ -397,13 +436,25 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(
   <div class="wrap foot">
     <span class="logo">Recover<b>Revenue</b></span>
     <span>Faceless AI systems &amp; revenue recovery diagnostics for high-ticket service businesses.</span>
-    <span>&copy; 2026</span>
+    <span><a href="privacy.html" style="color:inherit">Privacy Policy</a> &middot; <a href="terms.html" style="color:inherit">SMS Terms</a> &middot; &copy; 2026</span>
   </div>
 </footer>
 
 <script>
 (function(){
   "use strict";
+
+  /* Verbatim copy of the on-page consent checkbox. Stored with every opted-in lead so the
+     consent record matches what the visitor actually agreed to. Keep in sync with the markup
+     above and with the Twilio A2P campaign registration. */
+  var CONSENT_TEXT = "I agree to receive text messages from RecoverRevenue at the mobile number " +
+    "provided, including messages about my audit, qualifying questions, and appointment " +
+    "scheduling and reminders. Consent is not a condition of purchase. Message and data rates " +
+    "may apply. Message frequency varies. Reply STOP to opt out or HELP for help.";
+
+  /* Set to the lead-intake URL once it is deployed. While empty the lead is still kept in
+     localStorage, but nothing leaves the browser. */
+  var LEAD_ENDPOINT = "";
 
   var currentStep = 1;
   var selectedRole = "owner";
@@ -483,6 +534,21 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(
       return;
     }
 
+    var phoneEl  = document.getElementById("leadPhone");
+    var phoneRaw = phoneEl.value.trim();
+    var digits   = phoneRaw.replace(/\D/g, "");
+    if(digits.length === 11 && digits.charAt(0) === "1"){ digits = digits.slice(1); }
+    var phoneErr = document.getElementById("phoneErr");
+    if(digits.length !== 10){
+      phoneErr.classList.add("show");
+      phoneEl.focus();
+      return;
+    }
+    phoneErr.classList.remove("show");
+
+    var consentEl   = document.getElementById("smsConsent");
+    var smsConsent  = !!consentEl.checked;
+
     var submitBtn = document.getElementById("submitBtn");
     submitBtn.disabled = true;
     submitBtn.innerHTML = "<span>Analyzing &amp; Queuing...</span>";
@@ -503,6 +569,11 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(
       inaction_cost_6mo: selectedCost,
       email: email,
       instagram: document.getElementById("leadIg").value.trim(),
+      phone: "+1" + digits,
+      sms_consent: smsConsent,
+      sms_consent_text: smsConsent ? CONSENT_TEXT : "",
+      sms_consent_at: smsConsent ? new Date().toISOString() : "",
+      sms_consent_url: window.location.href,
       status: "audit_queued"
     };
 
@@ -512,6 +583,18 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(
       existing.push(leadRecord);
       localStorage.setItem("rr_leads", JSON.stringify(existing));
     } catch(e){}
+
+    // Deliver the lead. localStorage alone never reaches us.
+    if(LEAD_ENDPOINT){
+      try {
+        fetch(LEAD_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(leadRecord),
+          keepalive: true
+        }).catch(function(){});
+      } catch(e){}
+    }
 
     setTimeout(function(){
       document.getElementById("auditForm").style.display = "none";
