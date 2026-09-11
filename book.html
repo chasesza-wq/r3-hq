@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Free Revenue Leak Audit · RecoverRevenue</title>
-<meta name="description" content="Calculate what your missed calls, unread DMs, and after-hours delays are costing you. 60-second diagnostic audit — delivered straight to your inbox or DM. Zero sales calls.">
+<title>15-Minute Revenue Leak Audit · RecoverRevenue</title>
+<meta name="description" content="Calculate what your missed calls, unread DMs, and after-hours delays are costing you. 15-minute diagnostic audit — delivered straight to your inbox or phone. Zero sales friction.">
 <meta name="robots" content="index,follow">
 <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
@@ -196,6 +196,7 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
+<script src="assets/pixel.js"></script>
 </head>
 <body>
 
@@ -207,9 +208,9 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(
 </header>
 
 <div class="wrap bhead">
-  <p class="eyebrow">60-Second Diagnostic · No Sales Calls</p>
-  <h1>Calculate your revenue <em>leak.</em></h1>
-  <p class="lede">Answer three quick questions. We inspect your site response, after-hours latency, and missed inbound volume — and deliver a comprehensive diagnostic dossier straight to your inbox or DM.</p>
+  <p class="eyebrow">15-Minute Diagnostic · Speed-to-Lead Audit · Zero Sales Friction</p>
+  <h1>The 15-Minute Revenue <em>Leak Audit.</em></h1>
+  <p class="lede">Answer three quick questions. We calculate the exact dollar amount slipping through missed calls, voicemail drop-offs, and unread messages — and deliver your custom 60-second recovery roadmap straight to your phone and inbox.</p>
 </div>
 
 <div class="wrap split">
@@ -364,25 +365,32 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(
 
       <!-- STEP 4: Consequence & Delivery Destination -->
       <div class="step-pane" id="pane4">
-        <h2 class="q-label">Where should we send it?</h2>
-        <p class="q-sub">Your audit lands in under 2 hours.</p>
+        <h2 class="q-label">Where should we deliver your 15-Minute Audit?</h2>
+        <p class="q-sub">Your diagnostic breakdown lands in under 2 hours via SMS and email.</p>
+
+        <div class="input-field">
+          <label for="leadName">First Name (Required)</label>
+          <input type="text" id="leadName" placeholder="e.g. Garrett" required autocomplete="given-name">
+          <p class="field-err" id="nameErr">Please enter your first name.</p>
+        </div>
+
+        <div class="input-field">
+          <label for="leadPhone">Mobile Phone Number (Required)</label>
+          <input type="tel" id="leadPhone" placeholder="(555) 123-4567" required
+                 autocomplete="tel" inputmode="tel">
+          <p class="field-note">Used to dispatch your speed-to-lead findings via SMS and coordinate your walkthrough.</p>
+          <p class="field-err" id="phoneErr">Enter a valid 10-digit U.S. mobile number.</p>
+        </div>
 
         <div class="input-field">
           <label for="leadEmail">Work Email Address (Required)</label>
           <input type="email" id="leadEmail" placeholder="you@company.com" required autocomplete="email">
+          <p class="field-err" id="emailErr">Enter a valid work email address.</p>
         </div>
 
         <div class="input-field">
-          <label for="leadIg">Instagram Handle (Optional &mdash; for instant DM delivery)</label>
-          <input type="text" id="leadIg" placeholder="@yourhandle">
-        </div>
-
-        <div class="input-field">
-          <label for="leadPhone">Mobile Number (Required)</label>
-          <input type="tel" id="leadPhone" placeholder="(555) 123-4567" required
-                 autocomplete="tel" inputmode="tel">
-          <p class="field-note">Used to reach you about your audit and to schedule the call.</p>
-          <p class="field-err" id="phoneErr">Enter a valid 10-digit U.S. mobile number.</p>
+          <label for="leadIg">Social Handle / Profile (Optional &mdash; for direct DM dispatch)</label>
+          <input type="text" id="leadIg" placeholder="@yourhandle or profile link">
         </div>
 
         <label class="consent" for="smsConsent">
@@ -540,13 +548,40 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(
     document.getElementById("liveLeakDisplay").textContent = "$" + annualLost.toLocaleString() + "/yr";
   };
 
+  // URL Parameter parsing for UTM tracking & DM link pre-filling
+  var urlParams = new URLSearchParams(window.location.search);
+  var utmSource = urlParams.get("utm_source") || urlParams.get("source") || "direct";
+  var utmMedium = urlParams.get("utm_medium") || "";
+  var utmCampaign = urlParams.get("utm_campaign") || "";
+
+  if(urlParams.get("first_name") || urlParams.get("name")){
+    var nameField = document.getElementById("leadName");
+    if(nameField) nameField.value = urlParams.get("first_name") || urlParams.get("name");
+  }
+  if(urlParams.get("phone")){
+    var phoneField = document.getElementById("leadPhone");
+    if(phoneField) phoneField.value = urlParams.get("phone");
+  }
+  if(urlParams.get("email")){
+    var emailField = document.getElementById("leadEmail");
+    if(emailField) emailField.value = urlParams.get("email");
+  }
+  if(urlParams.get("company") || urlParams.get("biz")){
+    var bizField = document.getElementById("bizName");
+    if(bizField) bizField.value = urlParams.get("company") || urlParams.get("biz");
+  }
+
   // Form submission & lead persistence
   window.submitAudit = function(){
-    var email = document.getElementById("leadEmail").value.trim();
-    if(!email || !email.includes("@")){
-      alert("Please enter a valid work email address so we can deliver your audit.");
+    var nameEl    = document.getElementById("leadName");
+    var firstName = nameEl ? nameEl.value.trim() : "";
+    var nameErr   = document.getElementById("nameErr");
+    if(!firstName){
+      if(nameErr) nameErr.classList.add("show");
+      nameEl.focus();
       return;
     }
+    if(nameErr) nameErr.classList.remove("show");
 
     var phoneEl  = document.getElementById("leadPhone");
     var phoneRaw = phoneEl.value.trim();
@@ -554,11 +589,21 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(
     if(digits.length === 11 && digits.charAt(0) === "1"){ digits = digits.slice(1); }
     var phoneErr = document.getElementById("phoneErr");
     if(digits.length !== 10){
-      phoneErr.classList.add("show");
+      if(phoneErr) phoneErr.classList.add("show");
       phoneEl.focus();
       return;
     }
-    phoneErr.classList.remove("show");
+    if(phoneErr) phoneErr.classList.remove("show");
+
+    var emailEl  = document.getElementById("leadEmail");
+    var email    = emailEl ? emailEl.value.trim() : "";
+    var emailErr = document.getElementById("emailErr");
+    if(!email || !email.includes("@")){
+      if(emailErr) emailErr.classList.add("show");
+      emailEl.focus();
+      return;
+    }
+    if(emailErr) emailErr.classList.remove("show");
 
     var consentEl   = document.getElementById("smsConsent");
     var smsConsent  = !!consentEl.checked;
@@ -573,6 +618,7 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(
 
     var leadRecord = {
       timestamp: new Date().toISOString(),
+      first_name: firstName,
       business_name: document.getElementById("bizName").value.trim(),
       website: document.getElementById("bizUrl").value.trim(),
       role: selectedRole,
@@ -584,6 +630,9 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(
       email: email,
       instagram: document.getElementById("leadIg").value.trim(),
       phone: "+1" + digits,
+      source: utmSource,
+      utm_medium: utmMedium,
+      utm_campaign: utmCampaign,
       sms_consent: smsConsent,
       sms_consent_text: smsConsent ? CONSENT_TEXT : "",
       sms_consent_at: smsConsent ? new Date().toISOString() : "",
@@ -619,7 +668,19 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(
 
       document.getElementById("destEmail").textContent = email;
       document.getElementById("finalLeakAmt").textContent = "$" + annualLost.toLocaleString() + "/yr";
+      
+      // Dynamically prefill Calendly parameters: First Name, Email, Mobile
+      var bookBtn = document.getElementById("bookBtn");
+      if(bookBtn){
+        var calBase = "https://calendly.com/chase-sza/15min";
+        bookBtn.href = calBase + "?name=" + encodeURIComponent(firstName) +
+                       "&email=" + encodeURIComponent(email) +
+                       "&a1=" + encodeURIComponent(digits);
+      }
+
       document.getElementById("successPane").style.display = "block";
+
+      if (typeof window.rrTrackAuditLead === "function") window.rrTrackAuditLead();
 
       window.scrollTo({ top: document.querySelector(".form-wrap").offsetTop - 80, behavior: 'smooth' });
     }, 850);
