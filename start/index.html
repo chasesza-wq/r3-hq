@@ -115,6 +115,43 @@ html.js .rv.in{opacity:1;transform:none}
 .btn-primary:hover{background:var(--accent-deep);transform:translateY(-1px)}
 .btn-primary .arr{transition:transform .45s var(--e)}
 .btn-primary:hover .arr{transform:translateX(4px)}
+/* ---------- the application gate (paid traffic only, ?app=1) ----------
+   Every long-running competitor routes ad -> short application -> calendar,
+   because it qualifies. The organic link skips this entirely. */
+.gate{padding:30px 28px 28px}
+.gate-q{margin-bottom:26px}
+.gate-q:last-of-type{margin-bottom:22px}
+.gate-q label{display:block;font-size:.79rem;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.gate-q label b{color:var(--accent);font-weight:700}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.opts.one{grid-template-columns:1fr}
+.opt{border:1px solid var(--line);background:var(--paper);border-radius:11px;
+  padding:13px 15px;text-align:left;font-size:.92rem;font-weight:600;line-height:1.35;
+  transition:border-color .25s var(--e),background .25s var(--e),transform .25s var(--e)}
+.opt:hover{border-color:rgba(23,65,155,.42);transform:translateY(-1px)}
+.opt[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-light);
+  color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.opt small{display:block;font-weight:500;color:var(--muted);font-size:.79rem;margin-top:3px}
+.opt[aria-pressed="true"] small{color:var(--accent);opacity:.8}
+.gate-go{width:100%;justify-content:center;padding:16px 24px;margin-top:4px}
+.gate-go:disabled{opacity:.38;cursor:not-allowed;transform:none}
+.gate-note{font-size:.83rem;color:var(--muted);margin-top:14px;text-align:center;line-height:1.55}
+.gate-steps{display:flex;gap:6px;margin-bottom:22px}
+.gate-steps i{height:3px;flex:1;border-radius:3px;background:var(--line);
+  transition:background .3s var(--e)}
+.gate-steps i.on{background:var(--accent)}
+/* the honest no for a list under 200 */
+.nofit{padding:34px 28px 30px}
+.nofit h3{font-size:1.12rem;margin-bottom:12px;letter-spacing:-.015em}
+.nofit p{color:var(--muted);font-size:.95rem;line-height:1.7;margin-bottom:16px}
+.nofit p b{color:var(--ink);font-weight:700}
+.nofit .alt{background:var(--paper);border:1px solid var(--line);border-radius:12px;
+  padding:18px 20px;margin-bottom:18px}
+.nofit .alt strong{display:block;font-family:var(--display);font-weight:800;
+  font-size:1.05rem;margin-bottom:5px}
+.nofit .alt span{font-size:.9rem;color:var(--muted);line-height:1.6}
+.nofit .btn{width:100%;justify-content:center}
 .book-foot{padding:16px 26px;border-top:1px solid var(--line-soft);
   font-size:.85rem;color:var(--muted);display:flex;gap:9px;align-items:flex-start}
 .book-foot svg{flex:none;margin-top:3px}
@@ -293,6 +330,63 @@ footer{border-top:1px solid var(--line-soft);padding-block:30px;background:var(-
         </div>
         <span class="live"><i></i>Booking</span>
       </div>
+      <!-- shown only on ?app=1 -->
+      <div class="gate" id="gate" hidden>
+        <div class="gate-steps"><i class="on"></i><i></i><i></i></div>
+
+        <div class="gate-q">
+          <label for="q1">1 &middot; What do you run?</label>
+          <div class="opts" id="q1" role="group">
+            <button type="button" class="opt" data-v="hvac" aria-pressed="false">HVAC / Plumbing</button>
+            <button type="button" class="opt" data-v="roof" aria-pressed="false">Roofing / Exterior</button>
+            <button type="button" class="opt" data-v="lawn" aria-pressed="false">Lawn / Tree / Land</button>
+            <button type="button" class="opt" data-v="other" aria-pressed="false">Something else</button>
+          </div>
+        </div>
+
+        <div class="gate-q">
+          <label for="q2">2 &middot; How many past customers do you have <b>with phone numbers?</b></label>
+          <div class="opts one" id="q2" role="group">
+            <button type="button" class="opt" data-v="under200" aria-pressed="false">Under 200<small>Or I am not sure I could pull a list</small></button>
+            <button type="button" class="opt" data-v="200to500" aria-pressed="false">200 to 500<small>I could export that</small></button>
+            <button type="button" class="opt" data-v="500plus" aria-pressed="false">More than 500<small>Years of them</small></button>
+          </div>
+        </div>
+
+        <div class="gate-q">
+          <label for="q3">3 &middot; What is an average job worth to you?</label>
+          <div class="opts" id="q3" role="group">
+            <button type="button" class="opt" data-v="u500" aria-pressed="false">Under $500</button>
+            <button type="button" class="opt" data-v="500to1500" aria-pressed="false">$500 to $1,500</button>
+            <button type="button" class="opt" data-v="1500to5k" aria-pressed="false">$1,500 to $5,000</button>
+            <button type="button" class="opt" data-v="5kplus" aria-pressed="false">$5,000+</button>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-primary gate-go" id="gateGo" disabled>
+          Show me the calendar <span class="arr">&rarr;</span>
+        </button>
+        <p class="gate-note">Three questions so the call is worth your fifteen minutes.
+        Nothing is sent anywhere until you actually book.</p>
+      </div>
+
+      <!-- shown when the list is too short to carry the guarantee -->
+      <div class="nofit" id="nofit" hidden>
+        <h3>Straight answer: the guarantee is not for you yet.</h3>
+        <p>Re-booking your own past customers is the fastest lever in the plan, and
+        <b>under 200 of them the math stops working.</b> I could still take your money and
+        hope. I would rather tell you now than argue about it on day 61.</p>
+        <div class="alt">
+          <strong>Visibility &middot; $497/month, $0 setup</strong>
+          <span>The booking site, your Google profile rebuilt, missed-call text-back inside
+          60 seconds, and review requests after every job. Month to month. It stops the
+          leak you have today, and it builds the list the guarantee needs.</span>
+        </div>
+        <p>If you want that, book the same 15 minutes and say so on the call. Same number,
+        same honesty, just a different plan.</p>
+        <a class="btn btn-primary" href="#" id="nofitBook">Book the 15 minutes anyway <span class="arr">&rarr;</span></a>
+      </div>
+
       <div class="cal-slot" id="calSlot">
         <div class="cal-fallback" id="calFallback">
           <p>Loading the calendar. If it does not appear, the direct link below works the same way.</p>
@@ -522,27 +616,102 @@ document.documentElement.className += " js";
   var direct = document.getElementById("calDirect");
   if(direct) direct.href = calUrl;
 
+  /* The gate appends what it learned, so the booking arrives already qualified
+     and the channel that produced it is still attached. */
+  var gateAnswers = "";
+  function urlWithAnswers(){ return calUrl + gateAnswers; }
+
   /* Load the inline widget. If Calendly is blocked or slow the fallback
      button is already on screen and goes to the same place. */
   var slot = document.getElementById("calSlot");
-  var w = document.createElement("div");
-  w.className = "calendly-inline-widget";
-  w.setAttribute("data-url", calUrl);
-  w.style.minWidth = "300px";
-  w.style.height = "660px";
-  w.setAttribute("data-auto-load", "false");
+  var mounted = false;
+  function mountCalendar(){
+    if(mounted) return;
+    mounted = true;
+    var url = urlWithAnswers();
+    if(direct) direct.href = url;
+    var w = document.createElement("div");
+    w.className = "calendly-inline-widget";
+    w.setAttribute("data-url", url);
+    w.style.minWidth = "300px";
+    w.style.height = "660px";
+    w.setAttribute("data-auto-load", "false");
 
-  var s = document.createElement("script");
-  s.src = "https://assets.calendly.com/assets/external/widget.js";
-  s.async = true;
-  s.onload = function(){
-    if(!window.Calendly) return;
-    var fb = document.getElementById("calFallback");
-    if(fb) fb.style.display = "none";
-    slot.appendChild(w);
-    window.Calendly.initInlineWidget({ url: calUrl, parentElement: w });
-  };
-  document.head.appendChild(s);
+    var s = document.createElement("script");
+    s.src = "https://assets.calendly.com/assets/external/widget.js";
+    s.async = true;
+    s.onload = function(){
+      if(!window.Calendly) return;
+      var fb = document.getElementById("calFallback");
+      if(fb) fb.style.display = "none";
+      slot.appendChild(w);
+      window.Calendly.initInlineWidget({ url: url, parentElement: w });
+    };
+    document.head.appendChild(s);
+  }
+
+  /* ---------- the application gate ----------
+     Only on ?app=1, which is what paid traffic uses. The organic link in every
+     bio and DM has no gate and goes straight to the calendar, because that
+     visitor already knows who we are. */
+  var gate  = document.getElementById("gate"),
+      nofit = document.getElementById("nofit"),
+      go    = document.getElementById("gateGo"),
+      steps = document.querySelectorAll(".gate-steps i"),
+      picked = {};
+
+  function wireGroup(id, key, step){
+    var grp = document.getElementById(id);
+    if(!grp) return;
+    [].slice.call(grp.querySelectorAll(".opt")).forEach(function(b){
+      b.addEventListener("click", function(){
+        [].slice.call(grp.querySelectorAll(".opt")).forEach(function(o){
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        picked[key] = b.dataset.v;
+        if(steps[step]) steps[step].classList.add("on");
+        go.disabled = !(picked.trade && picked.list && picked.ticket);
+      });
+    });
+  }
+
+  if(q.get("app") === "1"){
+    slot.hidden = true;
+    gate.hidden = false;
+    wireGroup("q1", "trade",  0);
+    wireGroup("q2", "list",   1);
+    wireGroup("q3", "ticket", 2);
+
+    go.addEventListener("click", function(){
+      gateAnswers = "&utm_term=" + encodeURIComponent(
+        picked.trade + "|" + picked.list + "|" + picked.ticket);
+
+      if(picked.list === "under200"){
+        /* The 200-list qualifier from SERVICE_AGREEMENT §7.4(a), enforced before
+           it costs anybody an hour. Say no here, not on day 61. */
+        gate.hidden = true;
+        nofit.hidden = false;
+        var nb = document.getElementById("nofitBook");
+        if(nb) nb.addEventListener("click", function(e){
+          e.preventDefault();
+          nofit.hidden = true;
+          slot.hidden = false;
+          gateAnswers += "&utm_campaign=visibility-path";
+          mountCalendar();
+          card.scrollIntoView({ behavior:"smooth", block:"start" });
+        });
+        nofit.scrollIntoView({ behavior:"smooth", block:"center" });
+        return;
+      }
+
+      gate.hidden = true;
+      slot.hidden = false;
+      mountCalendar();
+      card.scrollIntoView({ behavior:"smooth", block:"start" });
+    });
+  } else {
+    mountCalendar();
+  }
 
   /* ---------- mobile bar: show once the calendar has scrolled past ---------- */
   var bar = document.getElementById("mbar"), card = document.querySelector(".book-card");
