@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RecoverRevenue · Websites that answer the phone and prove it</title>
-<meta name="description" content="RecoverRevenue builds calm, fast websites with an AI receptionist behind them for local service businesses. Every call answered, every recovered dollar visible in your own portal.">
+<title>15 Qualified Jobs in 60 Days, Guaranteed · RecoverRevenue</title>
+<meta name="description" content="Done-for-you speed-to-lead and past-estimate reactivation for service contractors and home pros. 15 qualified jobs in 60 days, guaranteed.">
 <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
@@ -24,6 +24,7 @@
   --muted:#5c6a80;
   --accent:#17419b;
   --accent-deep:#102e70;
+  --accent-light:#eef4ff;
   --line:rgba(14,23,38,.09);
   --line-soft:rgba(14,23,38,.055);
   --band-muted:#a3b2ca;
@@ -57,6 +58,10 @@ a{color:inherit;text-decoration:none}
 button{font:inherit;cursor:pointer;background:none;border:0;color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
 
+/* Ribbon */
+.ribbon{background:var(--accent-light);border-bottom:1px solid #dce7fa;color:var(--accent);
+  font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;text-align:center;padding:11px 16px;position:relative;z-index:51}
+
 .wrap{width:min(1160px,calc(100% - 48px));margin-inline:auto}
 .wrap-wide{width:min(1280px,calc(100% - 48px));margin-inline:auto}
 section{padding-block:clamp(96px,11vw,164px)}
@@ -89,15 +94,15 @@ html.js .frame.in img{transform:scale(1)}
 
 /* ---------- nav (clean wordmark, no icon, no toggle) ---------- */
 .nav{
-  position:fixed;inset:0 0 auto 0;z-index:50;
+  position:sticky;top:0;z-index:50;
   transition:background .5s var(--e),box-shadow .5s var(--e);
 }
-.nav.scrolled{background:rgba(244,247,252,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+.nav.scrolled{background:rgba(244,247,252,.9);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
   box-shadow:0 1px 0 var(--line-soft)}
-.nav-in{display:flex;align-items:center;justify-content:space-between;padding-block:20px}
+.nav-in{display:flex;align-items:center;justify-content:space-between;padding-block:18px}
 .logo{font-family:var(--display);font-weight:800;font-size:1.12rem;letter-spacing:-0.02em}
 .logo b{color:var(--accent);font-weight:800}
-.nav-links{display:flex;gap:34px;align-items:center}
+.nav-links{display:flex;gap:30px;align-items:center}
 .nav-links a{font-size:.92rem;font-weight:500;color:var(--muted);transition:color .35s var(--e)}
 .nav-links a:hover{color:var(--ink)}
 .nav-cta{
@@ -123,10 +128,26 @@ html.js .frame.in img{transform:scale(1)}
 .btn-paper{background:var(--paper);color:var(--ink)}
 .btn-paper:hover{background:#e6ecf7}
 
+/* ---------- 4 leaks cards ---------- */
+.leaks-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:52px}
+.leak-card{
+  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r);
+  padding:32px 28px;display:flex;flex-direction:column;gap:12px;
+  box-shadow:0 1px 3px rgba(14,23,38,.04);transition:transform .2s ease,border-color .2s ease;
+}
+.leak-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.leak-badge{font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#c2410c;display:flex;align-items:center;gap:6px}
+.leak-card h3{font-family:var(--display);font-size:1.22rem;font-weight:700;line-height:1.25;color:var(--ink)}
+.leak-pain{font-size:.93rem;color:var(--muted);line-height:1.6}
+.leak-pain b{color:var(--ink);font-weight:700}
+.leak-fix{margin-top:auto;padding-top:14px;border-top:1px solid var(--line-soft);font-size:.9rem;color:var(--ink);line-height:1.5}
+.leak-fix b{color:var(--accent);font-weight:800}
+@media (max-width:768px){.leaks-grid{grid-template-columns:1fr}}
+
 /* ---------- hero ---------- */
 .hero{
-  position:relative;min-height:100dvh;display:flex;align-items:center;justify-content:center;
-  text-align:center;overflow:hidden;padding-block:140px 120px;
+  position:relative;min-height:92dvh;display:flex;align-items:center;justify-content:center;
+  text-align:center;overflow:hidden;padding-block:110px 100px;
 }
 #wash{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .hero-in{position:relative;z-index:2;max-width:940px;padding-inline:24px}
@@ -137,12 +158,12 @@ html.js .frame.in img{transform:scale(1)}
 .hl .rv-mask{display:block}
 .hero h1 .acc{font-style:normal;color:var(--accent)}
 .hero-sub{
-  color:var(--muted);font-size:clamp(1.05rem,1.6vw,1.22rem);max-width:36em;
-  margin:34px auto 0;line-height:1.8;
+  color:var(--muted);font-size:clamp(1.05rem,1.6vw,1.22rem);max-width:38em;
+  margin:30px auto 0;line-height:1.8;
 }
-.hero-ctas{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:46px}
+.hero-ctas{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:42px}
 .scroll-cue{
-  position:absolute;left:50%;bottom:34px;transform:translateX(-50%);z-index:2;
+  position:absolute;left:50%;bottom:24px;transform:translateX(-50%);z-index:2;
   display:flex;flex-direction:column;align-items:center;gap:10px;
   color:var(--muted);font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;font-weight:700;
 }
@@ -411,6 +432,7 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
 <script src="assets/pixel.js"></script>
 </head>
 <body>
+<div class="ribbon">For Service Contractors &amp; Home Pros: Roofing · HVAC · Plumbing · Electrical · Remodeling</div>
 <div class="scroll-prog" id="scrollProg" aria-hidden="true"></div>
 
 <!-- ================= NAV ================= -->
@@ -418,12 +440,12 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
   <div class="wrap-wide nav-in">
     <a class="logo" href="#top">Recover<b>Revenue</b></a>
     <nav class="nav-links" aria-label="Primary">
-      <a href="#what">What we build</a>
-      <a href="#portal">The portal</a>
+      <a href="#issues">The 4 Leaks</a>
+      <a href="#what">How It Works</a>
+      <a href="#portal">The Portal</a>
       <a href="#pricing">Pricing</a>
-      <a href="#process">How it works</a>
       <a href="#faq">FAQ</a>
-      <a class="nav-cta" href="start/">Book a call</a>
+      <a class="nav-cta" href="go/">Check Trade Eligibility &rarr;</a>
     </nav>
   </div>
 </header>
@@ -432,16 +454,16 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
 <section class="hero" id="top">
   <canvas id="wash" aria-hidden="true"></canvas>
   <div class="hero-in">
-    <p class="eyebrow rv" style="--d:.05s">Websites and AI phone systems for local service businesses</p>
+    <p class="eyebrow rv" style="--d:.05s">60-Day Guarantee &middot; Service Contractors &amp; Home Pros</p>
     <h1>
-      <span class="hl"><span class="rv rv-mask" style="--d:.12s">Your website should</span></span>
-      <span class="hl"><span class="rv rv-mask" style="--d:.24s">make you money.</span></span>
-      <span class="hl"><span class="rv rv-mask" style="--d:.36s">Ours do, <em class="acc">or you don't pay.</em></span></span>
+      <span class="hl"><span class="rv rv-mask" style="--d:.12s">15 Qualified Jobs</span></span>
+      <span class="hl"><span class="rv rv-mask" style="--d:.24s">in 60 Days,</span></span>
+      <span class="hl"><span class="rv rv-mask" style="--d:.36s"><em class="acc">Guaranteed.</em></span></span>
     </h1>
-    <p class="hero-sub rv" style="--d:.55s">We build calm, fast websites with an AI receptionist behind them, then re-book the customers already in your records. <b>15 new jobs in 60 days or your card is never charged</b> &mdash; and you keep the website either way.</p>
+    <p class="hero-sub rv" style="--d:.55s">We stop homeowners from calling your competitors the moment you miss a call, and turn dead estimates into booked work. <b>You run the jobs, we fill the calendar.</b> Answer 2 quick questions to see if your trade qualifies.</p>
     <div class="hero-ctas rv" style="--d:.7s">
-      <a class="btn btn-primary magnetic" href="start/">Book the 15-minute call <span class="arr">&rarr;</span></a>
-      <a class="btn btn-ghost" href="#pricing">See public pricing</a>
+      <a class="btn btn-primary magnetic" href="go/">Check Your Trade Eligibility <span class="arr">&rarr;</span></a>
+      <a class="btn btn-ghost" href="#issues">See The 4 Revenue Leaks</a>
     </div>
   </div>
   <div class="scroll-cue" aria-hidden="true"><i></i><span>Scroll</span></div>
@@ -451,58 +473,95 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
 <section class="thesis" id="thesis">
   <div class="wrap">
     <p class="eyebrow rv">Why this works</p>
-    <h2 class="h2 rv" style="--d:.08s">You do not have a traffic problem. You have a conversion problem.</h2>
-    <p class="lede rv" style="--d:.16s">You already pay for attention with ads, referrals, and Google. Then it hits voicemail at 9 PM and calls the next listing. <span class="lead-strong">We fix the leak, not the faucet</span>, and we put the proof in your hands, not in a slide.</p>
+    <h2 class="h2 rv" style="--d:.08s">You do not have a lead problem. You have a response speed and follow-up problem.</h2>
+    <p class="lede rv" style="--d:.16s">You already pay for marketing, referrals, and Google. Then your phone rings while crews are on a jobsite and the homeowner dials the next roofer or plumber. <span class="lead-strong">We secure the homeowner before they can call anyone else</span>, and we put the proof in your hands.</p>
   </div>
 </section>
 
-<!-- ================= PAIN ================= -->
-<section class="pain" id="pain">
-  <div class="wrap pain-grid">
-    <div>
-      <p class="eyebrow rv">After hours</p>
-      <h2 class="h2 rv" style="--d:.08s">Tuesday, 9:04 PM. Your phones are asleep. Your customers are not.</h2>
-      <p class="lede rv" style="--d:.16s">Roughly a third of calls to local service businesses land outside office hours. Whoever answers first usually wins the job. Most nights, that is not you.</p>
+<!-- ================= ISSUES & REVENUE LEAKS ================= -->
+<section class="pain" id="issues">
+  <div class="wrap">
+    <div class="pain-grid">
+      <div>
+        <p class="eyebrow rv">Revenue leaks in the field</p>
+        <h2 class="h2 rv" style="--d:.08s">When you're on a jobsite or driving, your missed calls hire your competitors.</h2>
+        <p class="lede rv" style="--d:.16s">78% of homeowners hire whoever responds first. Voicemails don't get left—they hang up and dial the next contractor on Google. Every unanswered call hands a $1,500+ ticket straight to your rival.</p>
+      </div>
+      <div class="ledger rv" style="--d:.1s">
+        <div class="ledger-head">
+          <h3>One week in the field: 3 trade calls</h3>
+          <span class="tag">Field Audit</span>
+        </div>
+        <div class="call lost rv" style="--d:.06s">
+          <span class="call-time num">11:15 AM</span>
+          <div class="call-body">
+            <strong>Roof leak inspection, active storm drip</strong>
+            <span>Crew on a 2-story pitch; call went to voicemail</span>
+          </div>
+          <div class="call-out">
+            <span class="status">Voicemail</span>
+            <span class="amt">Lost $4,500 job to roofer who texted</span>
+          </div>
+        </div>
+        <div class="call saved rv" style="--d:.15s">
+          <span class="call-time num">2:40 PM</span>
+          <div class="call-body">
+            <strong>Emergency tankless water heater replacement</strong>
+            <span>Tech was driving; automated text sent in 8 seconds</span>
+          </div>
+          <div class="call-out">
+            <span class="status">Secured &middot; 8s</span>
+            <span class="amt num">+$2,400 booked</span>
+          </div>
+        </div>
+        <div class="call saved rv" style="--d:.24s">
+          <span class="call-time num">7:15 PM</span>
+          <div class="call-body">
+            <strong>Full 4-ton heat pump replacement quote</strong>
+            <span>After-hours inquiry; consult booked on calendar</span>
+          </div>
+          <div class="call-out">
+            <span class="status">Secured &middot; 12s</span>
+            <span class="amt num">+$9,200 quote</span>
+          </div>
+        </div>
+        <div class="ledger-foot">The system locked down both jobs before the homeowner could dial the next shop on Google. <b>The voicemail never called anyone back.</b></div>
+      </div>
     </div>
-    <div class="ledger rv" style="--d:.1s">
-      <div class="ledger-head">
-        <h3>One evening, three calls</h3>
-        <span class="tag">Illustrative</span>
+
+    <!-- The 4 Core Bottlenecks & Fixes -->
+    <div class="leaks-grid">
+      <div class="leak-card rv" style="--d:.05s">
+        <span class="leak-badge">📞 LEAK 01 &middot; UNANSWERED CALLS</span>
+        <h3>Missed calls when crews are on jobsites</h3>
+        <p class="leak-pain">When you're on a roof, under a crawlspace, or running between bids, you can't pick up. <b>78% of homeowners hire whichever contractor responds first.</b> They don't leave voicemails—they hire the next guy on Google, costing you $1,500+ every missed call.</p>
+        <p class="leak-fix"><b>How We Fix It:</b> Instant speed-to-lead text-back locks down the homeowner in seconds, pre-qualifying the project before they can dial a competitor.</p>
       </div>
-      <div class="call lost rv" style="--d:.06s">
-        <span class="call-time num">7:42 PM</span>
-        <div class="call-body">
-          <strong>Water heater out, family of five</strong>
-          <span>Rang four times, went to voicemail</span>
-        </div>
-        <div class="call-out">
-          <span class="status">Voicemail</span>
-          <span class="amt">Lost to the shop that answered</span>
-        </div>
+
+      <div class="leak-card rv" style="--d:.1s">
+        <span class="leak-badge">📑 LEAK 02 &middot; STALLED BIDS</span>
+        <h3>Dead quotes &amp; paper estimates gathering dust</h3>
+        <p class="leak-pain">You drove out, measured, priced materials, and sent the quote—then got ghosted. <b>Most contractors sit on $50,000+ in stalled bids</b> simply because nobody has the time to manually chase cold homeowners.</p>
+        <p class="leak-fix"><b>How We Fix It:</b> Automated reactivation campaigns quietly follow up with polite, personalized check-ins that revive forgotten quotes and past customers with zero manual effort.</p>
       </div>
-      <div class="call saved rv" style="--d:.15s">
-        <span class="call-time num">8:15 PM</span>
-        <div class="call-body">
-          <strong>New patient, cleaning and exam</strong>
-          <span>Answered by AI in 9 seconds, booked Thursday 10 AM</span>
-        </div>
-        <div class="call-out">
-          <span class="status">Answered &middot; 9s</span>
-          <span class="amt num">+$420 booked</span>
-        </div>
+
+      <div class="leak-card rv" style="--d:.15s">
+        <span class="leak-badge">💸 LEAK 03 &middot; MARGIN DESTRUCTION</span>
+        <h3>Paying for expensive shared leads</h3>
+        <p class="leak-pain">Paying $80–$150 per lead on platforms where the exact same homeowner gets blasted to 4 other contractors turns your business into a <b>desperate price war where only low-ballers win</b> and your margins get crushed.</p>
+        <p class="leak-fix"><b>How We Fix It:</b> Exclusive, direct inbound demand for your business in your specific zip codes so 100% of the jobs and profits belong solely to you.</p>
       </div>
-      <div class="call saved rv" style="--d:.24s">
-        <span class="call-time num">9:03 PM</span>
-        <div class="call-body">
-          <strong>Two-zone AC replacement</strong>
-          <span>Answered by AI in 11 seconds, estimate scheduled</span>
-        </div>
-        <div class="call-out">
-          <span class="status">Answered &middot; 11s</span>
-          <span class="amt num">+$1,800 quote</span>
-        </div>
+
+      <div class="leak-card rv" style="--d:.2s">
+        <span class="leak-badge">⏱️ LEAK 04 &middot; LOCAL VISIBILITY</span>
+        <h3>Competitors get picked before you</h3>
+        <p class="leak-pain">If a local competitor has more fresh 5-star Google reviews or responds in minutes while you're busy, <b>they take your local jobs every single week</b> before you even know the homeowner needed help.</p>
+        <p class="leak-fix"><b>How We Fix It:</b> Automated review collection after every completed job plus instant speed-to-lead make your business the highest rated and fastest to reply in your county.</p>
       </div>
-      <div class="ledger-foot">The AI answered in under 30 seconds, both times. <b>The voicemail never called anyone back.</b></div>
+    </div>
+
+    <div style="text-align:center;margin-top:48px">
+      <a class="btn btn-primary magnetic rv" style="--d:.25s" href="go/">Diagnose Your Trade's Leak in 45 Seconds <span class="arr">&rarr;</span></a>
     </div>
   </div>
 </section>
@@ -511,8 +570,8 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
 <section class="leak" id="leak">
   <div class="wrap">
     <p class="eyebrow rv" style="justify-content:center">The leak, added up</p>
-    <p class="leak-line rv" style="--d:.1s">About <span class="big">$<span class="num" data-count="12600">12,600</span></span> walked out of a six-truck HVAC shop last month. Quietly. After hours.</p>
-    <p class="leak-note rv" style="--d:.2s">Illustrative estimate. Your real number goes in the first report we send you.</p>
+    <p class="leak-line rv" style="--d:.1s">About <span class="big">$<span class="num" data-count="14800">14,800</span></span> in trade jobs leaked out of an average 4-truck shop last month. Quietly. In the field.</p>
+    <p class="leak-note rv" style="--d:.2s">Estimated from typical trade ticket sizes. We calculate your exact number on your diagnostic call.</p>
   </div>
 </section>
 
@@ -520,39 +579,39 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
 <section class="what" id="what">
   <div class="wrap">
     <p class="eyebrow rv">What we build</p>
-    <h2 class="h2 rv" style="--d:.08s">A website that answers, books, and proves it.</h2>
+    <h2 class="h2 rv" style="--d:.08s">A trade engine that answers, books, and proves it.</h2>
 
     <div class="split">
       <div class="split-txt">
         <span class="step rv">01</span>
-        <h3 class="rv" style="--d:.08s">Every call answered in under 30 seconds.</h3>
-        <p class="rv" style="--d:.16s">Day, night, weekend. The AI receptionist picks up, sounds like your front desk, books real appointments into your calendar, and texts you a summary before you finish dinner.</p>
+        <h3 class="rv" style="--d:.08s">Every missed call texted back in seconds.</h3>
+        <p class="rv" style="--d:.16s">When your hands are dirty on a jobsite or you're running between bids, you cannot answer every ring. The system detects the missed call and texts the homeowner in seconds, pre-qualifies their project, and books the estimate directly into your calendar.</p>
         <div class="chips rv" style="--d:.24s">
-          <span class="chip">Pickup under 30 seconds</span>
+          <span class="chip">Pickup under 15 seconds</span>
           <span class="chip">Books into your calendar</span>
-          <span class="chip">Sounds like your front desk</span>
+          <span class="chip">Captures the homeowner first</span>
         </div>
       </div>
       <div class="frame rv" style="--d:.12s">
-        <img src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=1200&auto=format&fit=crop" alt="A customer being helped at a calm front counter" loading="lazy">
-        <span class="cap">Every caller, greeted</span>
+        <img src="assets/contractor_truck_dispatch.jpg" alt="Trade contractor in work truck receiving instant job booking notification" loading="lazy">
+        <span class="cap">Instant job alert in the field</span>
       </div>
     </div>
 
     <div class="split flip">
       <div class="split-txt">
         <span class="step rv">02</span>
-        <h3 class="rv" style="--d:.08s">No-shows quietly recovered.</h3>
-        <p class="rv" style="--d:.16s">Reminders that actually get replies. A reschedule link the moment someone cancels. Empty chairs and idle trucks get refilled without your staff chasing anyone by phone.</p>
+        <h3 class="rv" style="--d:.08s">Dead estimates turned into booked jobs.</h3>
+        <p class="rv" style="--d:.16s">Most contractors sit on $50,000+ in stalled paper quotes simply because there's zero time to follow up. We quietly re-activate your database of past estimates and previous customers with personalized check-ins that pull ready-to-work jobs straight into your schedule.</p>
         <div class="chips rv" style="--d:.24s">
-          <span class="chip">Reminders before every visit</span>
-          <span class="chip">Instant rebooking</span>
-          <span class="chip">Waitlist backfill</span>
+          <span class="chip">Reactivates stalled bids</span>
+          <span class="chip">Past-customer rebooking</span>
+          <span class="chip">15 jobs guaranteed</span>
         </div>
       </div>
       <div class="frame rv" style="--d:.12s">
-        <img src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=1200&auto=format&fit=crop" alt="A bright, calm waiting lounge with soft chairs" loading="lazy">
-        <span class="cap">Calendars that stay full</span>
+        <img src="assets/contractor_desk_calendar.jpg" alt="Contractor planning desk with full 60-day calendar, blueprints, and tools" loading="lazy">
+        <span class="cap">A calendar booked 60 days out</span>
       </div>
     </div>
   </div>
@@ -587,18 +646,18 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
       <p class="eyebrow rv">Pricing, public on purpose</p>
       <h2 class="h2 rv" style="--d:.08s">Two plans. You don't pay for the big one unless it works.</h2>
       <p class="lede rv" style="--d:.16s">No "book a call to find out." The number is on the page, and on the guaranteed plan your card is not charged until day 61 &mdash; and only if the system booked you 15 jobs.</p>
-      <div class="seg rv" style="--d:.24s" role="group" aria-label="Choose your vertical">
-        <button type="button" data-v="home" aria-pressed="true"><span class="lf">Home Services</span><span class="ls">Home</span></button>
-        <button type="button" data-v="dental" aria-pressed="false"><span class="lf">Dental &amp; Medical</span><span class="ls">Dental</span></button>
-        <button type="button" data-v="resto" aria-pressed="false"><span class="lf">Restaurants</span><span class="ls">Dining</span></button>
+      <div class="seg rv" style="--d:.24s" role="group" aria-label="Choose your trade">
+        <button type="button" data-v="roofing" aria-pressed="true"><span class="lf">Roofing &amp; Exterior</span><span class="ls">Roofing</span></button>
+        <button type="button" data-v="hvac" aria-pressed="false"><span class="lf">HVAC &amp; Mechanical</span><span class="ls">HVAC</span></button>
+        <button type="button" data-v="plumbing" aria-pressed="false"><span class="lf">Plumbing &amp; Electrical</span><span class="ls">Plumbing</span></button>
       </div>
-      <p class="seg-note rv" style="--d:.3s" id="segNote">HVAC, plumbing, electrical, landscaping, roofing</p>
+      <p class="seg-note rv" style="--d:.3s" id="segNote">Roof replacements, storm damage inspection, gutters, siding</p>
     </div>
 
     <div class="tiers rv" style="--d:.2s" id="tiers">
       <article class="tier rv" data-tier="0">
         <h3 class="tier-name">Visibility</h3>
-        <p class="tier-blurb">Get found. Stop losing the calls you already earn.</p>
+        <p class="tier-blurb">Get found locally. Stop losing the calls you already earn.</p>
         <div class="tier-price">
           <span class="mo num">$497<small> /month</small></span>
           <span class="setup num">$0 setup &middot; month to month</span>
@@ -611,12 +670,12 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
           <li>Tracking number, so "where did that job come from" has an answer</li>
         </ul>
         <p class="tier-terms">For businesses without a past-customer list yet. <b>No guarantee on this plan</b> &mdash; without the list, promising a number would be a guess.</p>
-        <a class="tier-cta" href="start/">Start with Visibility</a>
+        <a class="tier-cta" href="go/">Check Visibility Eligibility &rarr;</a>
       </article>
 
       <article class="tier hot rv" data-tier="1" style="--d:.1s">
         <h3 class="tier-name">Recovery Engine <span class="badge">Guaranteed</span></h3>
-        <p class="tier-blurb">Everything above, plus the outbound engine that produces the jobs.</p>
+        <p class="tier-blurb">Everything above, plus speed-to-lead and the outbound engine that produces 15 jobs.</p>
         <div class="tier-price">
           <span class="mo num">$1,497<small> /month</small></span>
           <span class="setup num">$0 setup &middot; first charge day 61</span>
@@ -630,7 +689,7 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
           <li>Lead dashboard: who called, who booked, who went cold</li>
         </ul>
         <p class="tier-terms">Card on file at signing, <b>charged for the first time on day 61</b> and only if the system booked 15+ jobs. Miss it and you are never charged, we part ways, and the website is yours. Requires 200+ past customers with phone numbers.</p>
-        <a class="tier-cta" href="start/">Book the 15-minute call</a>
+        <a class="tier-cta" href="go/">Claim 15-Job Guarantee &rarr;</a>
       </article>
     </div>
 
@@ -674,7 +733,7 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
   <div class="wrap">
     <div class="faq-head">
       <p class="eyebrow rv">Before you ask</p>
-      <h2 class="h2 rv" style="--d:.06s">The questions everyone asks on the call.</h2>
+      <h2 class="h2 rv" style="--d:.06s">The questions contractors ask on the call.</h2>
     </div>
 
     <div class="faq-list rv" style="--d:.12s">
@@ -684,11 +743,11 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
       </details>
       <details>
         <summary>Does the AI actually sound human?</summary>
-        <div class="a">Yes &mdash; and you will hear it yourself: ask on your audit call and we will ring it together. It knows your services and prices, asks the questions your best front-desk person asks, and hands complicated calls to you with a text summary.</div>
+        <div class="a">Yes &mdash; and you will hear it yourself: ask on your audit call and we will ring it together. It knows your trade services, asks the questions your best dispatcher asks, and hands complicated calls to you with a text summary.</div>
       </details>
       <details>
         <summary>Seven business days &mdash; really?</summary>
-        <div class="a">Really. Day 1 is the kickoff call; by day 7 you approve it on a screen share and we flip it live. We can move that fast because we only build for local service businesses, on a system we have refined build after build.</div>
+        <div class="a">Really. Day 1 is the kickoff call; by day 7 you approve it on a screen share and we flip it live. We can move that fast because we only build for local service contractors, on a system we have refined build after build.</div>
       </details>
       <details>
         <summary>Do I own the website?</summary>
@@ -696,11 +755,11 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
       </details>
       <details>
         <summary>Is there a setup fee?</summary>
-        <div class="a">No. There used to be and we killed it. The build &mdash; your website, your Google profile, your tracking number, your AI receptionist trained on your services and prices &mdash; is included, and on Recovery Engine it is done before you have paid anything at all. The monthly covers everything after: hosting, maintenance, monitoring, edits and reporting. No surprise invoices, no hourly billing.</div>
+        <div class="a">No. There used to be and we killed it. The build &mdash; your website, your Google profile, your tracking number, your speed-to-lead system trained on your trade services &mdash; is included, and on Recovery Engine it is done before you have paid anything at all. The monthly covers everything after: hosting, maintenance, monitoring, edits and reporting. No surprise invoices, no hourly billing.</div>
       </details>
       <details>
-        <summary>What if it doesn&rsquo;t fit neatly &mdash; I run a gym, salon or med spa?</summary>
-        <div class="a">Same two plans, same prices &mdash; the build is what changes. Repeat-visit businesses get booking flows, reminders and no-show recovery wired in; job-call businesses get dispatch-style call handling and reactivation campaigns. Tell us what you run on the call and we configure your plan around it.</div>
+        <summary>What trades do you work with?</summary>
+        <div class="a">We specialize strictly in local service contractors and home pros: Roofing, HVAC, Plumbing, Electrical, Remodeling, and exterior services. If you run crews and quote jobs, our speed-to-lead and estimate reactivation engines are built directly for your workflow.</div>
       </details>
     </div>
 
@@ -712,10 +771,10 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
 <section class="final" id="book">
   <div class="wrap">
     <p class="eyebrow rv">15 minutes &middot; on the phone &middot; no slide deck</p>
-    <h2 class="rv" style="--d:.08s">15 new jobs in 60 days, or you don't pay.</h2>
-    <p class="rv" style="--d:.16s">Tell me what an average job is worth to you and how many calls a week you miss. I will tell you what it costs you a year, and whether your list is long enough to carry the guarantee.</p>
-    <a class="btn btn-primary magnetic rv" style="--d:.24s" href="start/">Book the 15-minute call <span class="arr">&rarr;</span></a>
-    <p class="final-mail rv" style="--d:.32s">Prefer writing? <a href="mailto:chase@recoverrevenue.co">chase@recoverrevenue.co</a></p>
+    <h2 class="rv" style="--d:.08s">15 qualified jobs in 60 days, guaranteed.</h2>
+    <p class="rv" style="--d:.16s">Tell us what an average job is worth to you and where your business is leaking calls. We will diagnose your realistic 60-day potential and show you how to plug the leak.</p>
+    <a class="btn btn-primary magnetic rv" style="--d:.24s" href="go/">Check Your Trade Eligibility <span class="arr">&rarr;</span></a>
+    <p class="final-mail rv" style="--d:.32s">Want to see where you qualify? <a href="go/">Take the 45-second diagnostic &rarr;</a></p>
   </div>
 </section>
 
@@ -904,61 +963,70 @@ if(HAS_GSAP && FINE && !RM){
 
 /* ---------- pricing vertical switcher ---------- */
 var PRICING = {
-  home: {
-    note: "HVAC, plumbing, electrical, roofing, landscaping, tree, towing, detailing",
+  roofing: {
+    note: "Roofing replacements, storm damage inspection, gutters, siding, exteriors",
     tiers: [
-      { blurb: "Get found. Stop losing the calls you already earn.",
+      { blurb: "Get found locally. Stop losing high-ticket roof calls when crews are on slopes.",
         mo: "$497", setup: "$0 setup \u00b7 month to month",
-        terms: "For businesses without a past-customer list yet. <b>No guarantee on this plan</b> \u2014 without the list, promising a number would be a guess.",
-        feats: ["Booking website, built to convert, yours to keep",
-                "Google Business Profile claimed, rebuilt and posted to",
-                "Missed-call text-back within 60 seconds",
-                "Automated review requests after every job",
-                "Tracking number, so \u201cwhere did that job come from\u201d has an answer"] },
-      { blurb: "Everything above, plus the outbound engine that produces the jobs.",
+        terms: "For roofing shops without a reachable past-customer list yet. <b>No guarantee on this plan</b> \u2014 without past estimates, promising a number would be a guess.",
+        feats: ["Conversion website built for homeowners, yours to keep",
+                "Google Business Profile claimed, rebuilt and ranked locally",
+                "Missed-call speed-to-lead text-back within 15 seconds",
+                "Automated 5-star review requests after every completed roof",
+                "Dedicated tracking number with call recording & attribution"] },
+      { blurb: "Everything above, plus past estimate reactivation that produces 15 jobs.",
         mo: "$1,497", setup: "$0 setup \u00b7 first charge day 61",
-        terms: "Card on file at signing, <b>charged for the first time on day 61</b> and only if the system booked 15+ jobs. Miss it and you are never charged, we part ways, and the website is yours. Requires 200+ past customers with phone numbers.",
+        terms: "Card on file at signing, <b>charged for the first time on day 61</b> and only if the system booked 15+ jobs. Miss it and you are never charged, we part ways, and the website is yours. Requires past customer records.",
         feats: ["Everything in Visibility",
-                "Past-customer reactivation, texted on a real campaign",
-                "AI receptionist on after-hours and overflow calls, 24/7",
-                "Speed-to-lead: every form and missed call answered in 60 seconds",
-                "Lead dashboard: who called, who booked, who went cold"] }
+                "Dead quote & past-customer reactivation text campaigns",
+                "Speed-to-lead instant response on all inbound inquiries, 24/7",
+                "Estimate consult booking directly onto your estimator's calendar",
+                "Lead portal: see calls, booked jobs, and recovered dollars live"] }
     ]
   },
-  dental: {
-    note: "Dental, orthodontics, med spa, chiropractic, private practice",
+  hvac: {
+    note: "HVAC replacements, AC emergencies, heat pumps, furnace installs, tune-ups",
     tiers: [
-      { blurb: "A front door worthy of the practice, and a phone that gets answered.",
+      { blurb: "Lock down emergency cooling and heating calls the second they happen.",
         mo: "$497", setup: "$0 setup \u00b7 month to month",
-        terms: "For practices without a reachable recall list yet. <b>No guarantee on this plan</b> \u2014 without the list, promising a number would be a guess.",
-        feats: ["New-patient site built to fill the form, yours to keep",
-                "Google Business Profile claimed, rebuilt and posted to",
-                "Missed-call text-back within 60 seconds",
-                "Review requests after every visit",
-                "Tracking number and call attribution"] },
-      { blurb: "Everything above, plus recall, no-show recovery and the front desk after hours.",
+        terms: "For HVAC shops without an existing customer list yet. <b>No guarantee on this plan</b> \u2014 without past customer records, promising a number would be a guess.",
+        feats: ["High-converting service website, yours to keep",
+                "Google Business Profile optimized for emergency local search",
+                "Instant missed-call text-back within 15 seconds",
+                "Automated review collection after every service call",
+                "Tracking number with full source and revenue attribution"] },
+      { blurb: "Everything above, plus seasonal tune-up reactivation and replacement leads.",
         mo: "$1,497", setup: "$0 setup \u00b7 first charge day 61",
-        terms: "Card on file at signing, <b>charged for the first time on day 61</b> and only if the system booked 15+ appointments. Miss it and you are never charged, we part ways, and the site is yours. Requires 200+ past patients with phone numbers.",
+        terms: "Card on file at signing, <b>charged for the first time on day 61</b> and only if the system booked 15+ jobs. Miss it and you are never charged, we part ways, and the website is yours. Requires past customer records.",
         feats: ["Everything in Visibility",
-                "Lapsed-patient recall campaigns, texted, not called",
-                "AI receptionist on after-hours and overflow calls, 24/7",
-                "No-show recovery and hygiene waitlist backfill",
-                "Lead dashboard: who called, who booked, who went cold"] }
+                "Seasonal maintenance & replacement quote reactivation",
+                "Instant after-hours response and triage, 24/7",
+                "Service dispatch and diagnostic bookings directly on calendar",
+                "Lead portal: live revenue recovered and booked equipment"] }
     ]
   },
-  resto: {
-    note: "Restaurants, cafes, bars, catering operations",
+  plumbing: {
+    note: "Emergency repipes, water heaters, drain clearing, electrical & service trades",
     tiers: [
-      { blurb: "Menu first, phone first, fast. Every reservation call taken.",
+      { blurb: "Secure $1,200+ water heater and repipe jobs before they call the next guy.",
         mo: "$497", setup: "$0 setup \u00b7 month to month",
-        terms: "For rooms without a guest list yet. <b>No guarantee on this plan</b> \u2014 without the list, promising a number would be a guess.",
-        feats: ["Menu-first site with hours, directions and reservations up front",
-                "Google Business Profile claimed, rebuilt and posted to",
-                "Missed-call text-back within 60 seconds",
-                "Review follow-up after every visit",
-                "Tracking number and call attribution"] },
-      { blurb: "Everything above, plus the guest list worked and the phone covered at service.",
+        terms: "For service contractors without an established customer base yet. <b>No guarantee on this plan</b> \u2014 without the list, promising a number would be a guess.",
+        feats: ["Clean booking website built for mobile homeowners",
+                "Google Business Profile rebuilt for top map rankings",
+                "Instant missed-call text-back within 15 seconds",
+                "Automated review requests sent after every dispatch",
+                "Dedicated tracking number so marketing ROI is clear"] },
+      { blurb: "Everything above, plus past-customer recall and instant job intake.",
         mo: "$1,497", setup: "$0 setup \u00b7 first charge day 61",
+        terms: "Card on file at signing, <b>charged for the first time on day 61</b> and only if the system booked 15+ jobs. Miss it and you are never charged, we part ways, and the website is yours. Requires past customer records.",
+        feats: ["Everything in Visibility",
+                "Past customer annual check-up & estimate reactivation",
+                "Instant text-back on emergency and overflow calls, 24/7",
+                "Direct calendar booking for estimates and service visits",
+                "Lead portal: track every booked job and customer dollar"] }
+    ]
+  }
+};
         terms: "Card on file at signing, <b>charged for the first time on day 61</b> and only if the system booked 15+ covers or events. Miss it and you are never charged, we part ways, and the site is yours. Requires 200+ past guests with phone numbers.",
         feats: ["Everything in Visibility",
                 "Past-guest campaigns for slow nights and private events",
