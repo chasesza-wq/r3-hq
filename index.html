@@ -128,17 +128,53 @@ html.js .frame.in img{transform:scale(1)}
 .btn-paper{background:var(--paper);color:var(--ink)}
 .btn-paper:hover{background:#e6ecf7}
 
-/* ---------- 4 leaks cards ---------- */
-.leaks-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:52px}
+/* ---------- live proof feed (top) ---------- */
+.proof-sec{padding-block:clamp(70px,8vw,110px);background:var(--surface);border-bottom:1px solid var(--line-soft)}
+.proof-head{text-align:center;max-width:760px;margin:0 auto 44px}
+.proof-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.proof-card{
+  background:var(--paper);border:1px solid var(--line);border-radius:var(--r);
+  padding:26px 22px;display:flex;flex-direction:column;gap:14px;
+  box-shadow:0 2px 6px rgba(14,23,38,.03);transition:transform .2s ease,border-color .2s ease;
+}
+.proof-card:hover{transform:translateY(-3px);border-color:var(--accent)}
+.proof-badge{
+  font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  padding:5px 10px;border-radius:6px;display:inline-flex;align-items:center;gap:6px;width:fit-content;
+}
+.proof-badge.green{background:#ecfdf5;color:#047857;border:1px solid #a7f3d0}
+.proof-badge.blue{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
+.proof-badge.amber{background:#fffbeb;color:#b45309;border:1px solid #fde68a}
+.proof-card h3{font-family:var(--display);font-size:1.14rem;font-weight:700;line-height:1.25;color:var(--ink)}
+.proof-bubble{
+  background:var(--surface);border:1px solid var(--line-soft);border-radius:12px;
+  padding:14px 16px;font-size:.88rem;line-height:1.5;color:#26324a;display:flex;flex-direction:column;gap:8px;
+}
+.proof-bubble .chat-row{display:flex;flex-direction:column;gap:2px}
+.proof-bubble .chat-sender{font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase}
+.proof-bubble .chat-msg{font-size:.88rem;color:var(--ink)}
+.proof-stars{color:#f59e0b;font-size:.95rem;letter-spacing:2px;display:flex;align-items:center;gap:4px}
+.proof-quote{font-style:italic;font-size:.88rem;color:var(--muted);line-height:1.5}
+.proof-author{font-size:.76rem;font-weight:700;color:var(--ink);margin-top:2px}
+.proof-impact{
+  margin-top:auto;padding-top:12px;border-top:1px solid var(--line-soft);
+  font-size:.85rem;font-weight:700;color:var(--accent);display:flex;align-items:center;gap:6px;
+}
+@media (max-width:960px){.proof-grid{grid-template-columns:1fr}}
+
+/* ---------- 4 leaks cards (solutions area) ---------- */
+.leaks-sec{padding-block:clamp(84px,9vw,130px);background:var(--paper);border-top:1px solid var(--line-soft)}
+.leaks-head{text-align:center;max-width:760px;margin:0 auto 48px}
+.leaks-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
 .leak-card{
-  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r);
-  padding:32px 28px;display:flex;flex-direction:column;gap:12px;
-  box-shadow:0 1px 3px rgba(14,23,38,.04);transition:transform .2s ease,border-color .2s ease;
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+  padding:30px 26px;display:flex;flex-direction:column;gap:12px;
+  box-shadow:0 1px 4px rgba(14,23,38,.04);transition:transform .2s ease,border-color .2s ease;
 }
 .leak-card:hover{border-color:var(--accent);transform:translateY(-2px)}
 .leak-badge{font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#c2410c;display:flex;align-items:center;gap:6px}
-.leak-card h3{font-family:var(--display);font-size:1.22rem;font-weight:700;line-height:1.25;color:var(--ink)}
-.leak-pain{font-size:.93rem;color:var(--muted);line-height:1.6}
+.leak-card h3{font-family:var(--display);font-size:1.18rem;font-weight:700;line-height:1.25;color:var(--ink)}
+.leak-pain{font-size:.92rem;color:var(--muted);line-height:1.6}
 .leak-pain b{color:var(--ink);font-weight:700}
 .leak-fix{margin-top:auto;padding-top:14px;border-top:1px solid var(--line-soft);font-size:.9rem;color:var(--ink);line-height:1.5}
 .leak-fix b{color:var(--accent);font-weight:800}
@@ -440,9 +476,9 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
   <div class="wrap-wide nav-in">
     <a class="logo" href="#top">Recover<b>Revenue</b></a>
     <nav class="nav-links" aria-label="Primary">
-      <a href="#issues">The 4 Leaks</a>
+      <a href="#proof">Live Proof</a>
       <a href="#what">How It Works</a>
-      <a href="#portal">The Portal</a>
+      <a href="#issues">The 4 Leaks</a>
       <a href="#pricing">Pricing</a>
       <a href="#faq">FAQ</a>
       <a class="nav-cta" href="go/">Check Trade Eligibility &rarr;</a>
@@ -463,7 +499,7 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
     <p class="hero-sub rv" style="--d:.55s">We stop homeowners from calling your competitors the moment you miss a call, and turn dead estimates into booked work. <b>You run the jobs, we fill the calendar.</b> Answer 2 quick questions to see if your trade qualifies.</p>
     <div class="hero-ctas rv" style="--d:.7s">
       <a class="btn btn-primary magnetic" href="go/">Check Your Trade Eligibility <span class="arr">&rarr;</span></a>
-      <a class="btn btn-ghost" href="#issues">See The 4 Revenue Leaks</a>
+      <a class="btn btn-ghost" href="#proof">See Live Field Proof</a>
     </div>
   </div>
   <div class="scroll-cue" aria-hidden="true"><i></i><span>Scroll</span></div>
@@ -478,55 +514,124 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
   </div>
 </section>
 
-<!-- ================= ISSUES & REVENUE LEAKS ================= -->
-<section class="pain" id="issues">
+<!-- ================= LIVE PROOF FEED (TOP) ================= -->
+<section class="proof-sec" id="proof">
   <div class="wrap">
-    <div class="pain-grid">
-      <div>
-        <p class="eyebrow rv">Revenue leaks in the field</p>
-        <h2 class="h2 rv" style="--d:.08s">When you're on a jobsite or driving, your missed calls hire your competitors.</h2>
-        <p class="lede rv" style="--d:.16s">78% of homeowners hire whoever responds first. Voicemails don't get left—they hang up and dial the next contractor on Google. Every unanswered call hands a $1,500+ ticket straight to your rival.</p>
+    <div class="proof-head">
+      <p class="eyebrow rv" style="justify-content:center">Real Activity In The Field</p>
+      <h2 class="h2 rv" style="--d:.08s">Reviews collected. Calls answered. Dead quotes booked.</h2>
+      <p class="lede rv" style="--d:.16s;margin-inline:auto">What happens automatically every single week while your crews are on jobsites or driving between bids.</p>
+    </div>
+
+    <div class="proof-grid">
+      <!-- 1. Google Review & Map Boost -->
+      <div class="proof-card rv" style="--d:.05s">
+        <span class="proof-badge amber">⭐ 5.0 Google Review &middot; Auto-Sent</span>
+        <h3>Automated 5-Star Review</h3>
+        <div class="proof-bubble">
+          <div class="proof-stars">★★★★★</div>
+          <p class="proof-quote">&ldquo;Mike&rsquo;s crew texted me back within 2 minutes and had our roof leak patched that same morning. Outstanding service!&rdquo;</p>
+          <span class="proof-author">&mdash; Verified Homeowner, 2 days ago</span>
+        </div>
+        <div class="proof-impact">
+          <span>🚀 Moved shop from #6 &rarr; #1 on Google Local Map Pack</span>
+        </div>
       </div>
-      <div class="ledger rv" style="--d:.1s">
-        <div class="ledger-head">
-          <h3>One week in the field: 3 trade calls</h3>
-          <span class="tag">Field Audit</span>
-        </div>
-        <div class="call lost rv" style="--d:.06s">
-          <span class="call-time num">11:15 AM</span>
-          <div class="call-body">
-            <strong>Roof leak inspection, active storm drip</strong>
-            <span>Crew on a 2-story pitch; call went to voicemail</span>
+
+      <!-- 2. Call Booking (Speed-to-Lead) -->
+      <div class="proof-card rv" style="--d:.1s">
+        <span class="proof-badge blue">⚡ Missed Call &middot; 8s Text-Back</span>
+        <h3>Call Secured on Jobsite</h3>
+        <div class="proof-bubble">
+          <div class="chat-row">
+            <span class="chat-sender">Homeowner &middot; 2:14 PM</span>
+            <span class="chat-msg">Water heater leaking in basement, need someone today.</span>
           </div>
-          <div class="call-out">
-            <span class="status">Voicemail</span>
-            <span class="amt">Lost $4,500 job to roofer who texted</span>
+          <div class="chat-row" style="margin-top:6px">
+            <span class="chat-sender">Automated System &middot; 2:14 PM</span>
+            <span class="chat-msg">Hey! Hands dirty on a job. We have an emergency slot at 1:30 PM today&mdash;can we hold that for you?</span>
           </div>
-        </div>
-        <div class="call saved rv" style="--d:.15s">
-          <span class="call-time num">2:40 PM</span>
-          <div class="call-body">
-            <strong>Emergency tankless water heater replacement</strong>
-            <span>Tech was driving; automated text sent in 8 seconds</span>
-          </div>
-          <div class="call-out">
-            <span class="status">Secured &middot; 8s</span>
-            <span class="amt num">+$2,400 booked</span>
+          <div class="chat-row" style="margin-top:6px">
+            <span class="chat-sender">Homeowner &middot; 2:15 PM</span>
+            <span class="chat-msg">Yes please, see you then!</span>
           </div>
         </div>
-        <div class="call saved rv" style="--d:.24s">
-          <span class="call-time num">7:15 PM</span>
-          <div class="call-body">
-            <strong>Full 4-ton heat pump replacement quote</strong>
-            <span>After-hours inquiry; consult booked on calendar</span>
-          </div>
-          <div class="call-out">
-            <span class="status">Secured &middot; 12s</span>
-            <span class="amt num">+$9,200 quote</span>
-          </div>
+        <div class="proof-impact">
+          <span>📅 +$2,400 Emergency Job Booked on Calendar</span>
         </div>
-        <div class="ledger-foot">The system locked down both jobs before the homeowner could dial the next shop on Google. <b>The voicemail never called anyone back.</b></div>
       </div>
+
+      <!-- 3. Online Booking / Quote Reactivation -->
+      <div class="proof-card rv" style="--d:.15s">
+        <span class="proof-badge green">📑 Stalled Estimate &middot; Revived</span>
+        <h3>Past Estimate Rebooked</h3>
+        <div class="proof-bubble">
+          <div class="chat-row">
+            <span class="chat-sender">Automated Check-in &middot; 10:02 AM</span>
+            <span class="chat-msg">Hey Tom, checking in on the $6,200 deck estimate from last month&mdash;ready to get this on the schedule for next week?</span>
+          </div>
+          <div class="chat-row" style="margin-top:6px">
+            <span class="chat-sender">Homeowner &middot; 10:18 AM</span>
+            <span class="chat-msg">Thanks for following up! Just got bonus check, let&rsquo;s lock in Thursday.</span>
+          </div>
+        </div>
+        <div class="proof-impact">
+          <span>💰 +$6,200 Stalled Bid Turned Into Cash Flow</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= WHAT WE BUILD ================= -->
+<section class="what" id="what">
+  <div class="wrap">
+    <p class="eyebrow rv">What we build</p>
+    <h2 class="h2 rv" style="--d:.08s">A trade engine that answers, books, and proves it.</h2>
+
+    <div class="split">
+      <div class="split-txt">
+        <span class="step rv">01</span>
+        <h3 class="rv" style="--d:.08s">Every missed call texted back in seconds.</h3>
+        <p class="rv" style="--d:.16s">When your hands are dirty installing flooring or running between bids, you cannot answer every ring. The system detects the missed call and texts the homeowner in seconds, pre-qualifies their project, and books the estimate directly into your calendar.</p>
+        <div class="chips rv" style="--d:.24s">
+          <span class="chip">Pickup under 15 seconds</span>
+          <span class="chip">Books into your calendar</span>
+          <span class="chip">Captures the homeowner first</span>
+        </div>
+      </div>
+      <div class="frame rv" style="--d:.12s">
+        <img src="assets/contractor_flooring_booking.jpg" alt="Trade contractor installing flooring on jobsite while smartphone on table receives client booking text" loading="lazy">
+        <span class="cap">Hands busy on the floor &middot; Phone books the estimate on the table</span>
+      </div>
+    </div>
+
+    <div class="split flip">
+      <div class="split-txt">
+        <span class="step rv">02</span>
+        <h3 class="rv" style="--d:.08s">Dead estimates turned into booked jobs.</h3>
+        <p class="rv" style="--d:.16s">Most contractors sit on $50,000+ in stalled paper quotes simply because there's zero time to follow up. We quietly re-activate your database of past estimates and previous customers with personalized check-ins that pull ready-to-work jobs straight into your schedule.</p>
+        <div class="chips rv" style="--d:.24s">
+          <span class="chip">Reactivates stalled bids</span>
+          <span class="chip">Past-customer rebooking</span>
+          <span class="chip">15 jobs guaranteed</span>
+        </div>
+      </div>
+      <div class="frame rv" style="--d:.12s">
+        <img src="assets/contractor_workbench_calendar.jpg" alt="Contractor workbench with blueprints, trade tools, and full 60-day booked schedule" loading="lazy">
+        <span class="cap">A calendar booked 60 days out</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= THE 4 REVENUE LEAKS & SOLUTIONS ================= -->
+<section class="leaks-sec" id="issues">
+  <div class="wrap">
+    <div class="leaks-head">
+      <p class="eyebrow rv" style="justify-content:center">Revenue Leaks &amp; Automated Solutions</p>
+      <h2 class="h2 rv" style="--d:.08s">The 4 bottlenecks where contractors lose $14,800 a month.</h2>
+      <p class="lede rv" style="--d:.16s;margin-inline:auto">You do not have a lead problem. You have a response speed and follow-up leak. Here is where the money goes in the field, and how we plug each leak before you pay.</p>
     </div>
 
     <!-- The 4 Core Bottlenecks & Fixes -->
@@ -560,64 +665,19 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
       </div>
     </div>
 
-    <div style="text-align:center;margin-top:48px">
-      <a class="btn btn-primary magnetic rv" style="--d:.25s" href="go/">Diagnose Your Trade's Leak in 45 Seconds <span class="arr">&rarr;</span></a>
-    </div>
-  </div>
-</section>
-
-<!-- ================= LEAK, ADDED UP ================= -->
-<section class="leak" id="leak">
-  <div class="wrap">
-    <p class="eyebrow rv" style="justify-content:center">The leak, added up</p>
-    <p class="leak-line rv" style="--d:.1s">About <span class="big">$<span class="num" data-count="14800">14,800</span></span> in trade jobs leaked out of an average 4-truck shop last month. Quietly. In the field.</p>
-    <p class="leak-note rv" style="--d:.2s">Estimated from typical trade ticket sizes. We calculate your exact number on your diagnostic call.</p>
-  </div>
-</section>
-
-<!-- ================= WHAT WE BUILD ================= -->
-<section class="what" id="what">
-  <div class="wrap">
-    <p class="eyebrow rv">What we build</p>
-    <h2 class="h2 rv" style="--d:.08s">A trade engine that answers, books, and proves it.</h2>
-
-    <div class="split">
-      <div class="split-txt">
-        <span class="step rv">01</span>
-        <h3 class="rv" style="--d:.08s">Every missed call texted back in seconds.</h3>
-        <p class="rv" style="--d:.16s">When your hands are dirty on a jobsite or you're running between bids, you cannot answer every ring. The system detects the missed call and texts the homeowner in seconds, pre-qualifies their project, and books the estimate directly into your calendar.</p>
-        <div class="chips rv" style="--d:.24s">
-          <span class="chip">Pickup under 15 seconds</span>
-          <span class="chip">Books into your calendar</span>
-          <span class="chip">Captures the homeowner first</span>
-        </div>
-      </div>
-      <div class="frame rv" style="--d:.12s">
-        <img src="assets/contractor_jobsite_action.jpg" alt="Trade contractor actively working on jobsite while automated lead text captures estimate on bench" loading="lazy">
-        <span class="cap">Hands busy on the jobsite &middot; Lead secured automatically</span>
-      </div>
-    </div>
-
-    <div class="split flip">
-      <div class="split-txt">
-        <span class="step rv">02</span>
-        <h3 class="rv" style="--d:.08s">Dead estimates turned into booked jobs.</h3>
-        <p class="rv" style="--d:.16s">Most contractors sit on $50,000+ in stalled paper quotes simply because there's zero time to follow up. We quietly re-activate your database of past estimates and previous customers with personalized check-ins that pull ready-to-work jobs straight into your schedule.</p>
-        <div class="chips rv" style="--d:.24s">
-          <span class="chip">Reactivates stalled bids</span>
-          <span class="chip">Past-customer rebooking</span>
-          <span class="chip">15 jobs guaranteed</span>
-        </div>
-      </div>
-      <div class="frame rv" style="--d:.12s">
-        <img src="assets/contractor_workbench_calendar.jpg" alt="Contractor workbench with blueprints, trade tools, and full 60-day booked schedule" loading="lazy">
-        <span class="cap">A calendar booked 60 days out</span>
+    <!-- The Leak, Added Up -->
+    <div style="margin-top:52px;padding:36px 28px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);text-align:center" class="rv" style="--d:.2s">
+      <p class="eyebrow rv" style="justify-content:center">The leak, added up</p>
+      <p class="leak-line rv" style="--d:.1s;margin:12px auto">About <span class="big" style="color:var(--accent)">$<span class="num" data-count="14800">14,800</span></span> in trade jobs leaked out of an average 4-truck shop last month.</p>
+      <p class="leak-note rv" style="--d:.18s;color:var(--muted);font-size:.9rem">Calculated from typical trade ticket sizes and missed-call volumes. We diagnose your exact number on your call.</p>
+      <div style="margin-top:28px">
+        <a class="btn btn-primary magnetic rv" style="--d:.24s" href="go/">Diagnose Your Trade's Leak in 45 Seconds <span class="arr">&rarr;</span></a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ================= PORTAL (compact, live) ================= -->
+<!-- PORTAL DEMO ARCHIVED (Preserved for future iteration)
 <section class="portal" id="portal">
   <div class="wrap">
     <div class="portal-split">
@@ -638,6 +698,7 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
     </div>
   </div>
 </section>
+-->
 
 <!-- ================= PRICING ================= -->
 <section class="pricing" id="pricing">
