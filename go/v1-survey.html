@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>15 Jobs in 60 Days Guarantee · RecoverRevenue</title>
+<meta name="description" content="Done-for-you 2-way AI speed-to-lead and customer database reactivation. 15 qualified jobs in 60 days, guaranteed.">
+<link rel="icon" type="image/svg+xml" href="../assets/logo-mark.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@700,800&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0e1726; --ink2:#2d3748; --mut:#64748b; --mut2:#94a3b8;
+  --line:#e2e8f0; --line2:#edf2f7;
+  --blue:#17419b; --blue-deep:#102e70; --blue-soft:#eef4ff;
+  --pos:#12b866; --pos-soft:rgba(18,184,102,.1);
+  --display:'Cabinet Grotesk','Helvetica Neue',Helvetica,Arial,sans-serif;
+  --font:'Satoshi','Helvetica Neue',Helvetica,Arial,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:#fff;color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.grad{color:var(--blue)}
+
+/* Top ribbon */
+.ribbon{background:var(--blue-soft);border-bottom:1px solid #dce7fa;color:var(--blue);
+  font-size:12.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;text-align:center;padding:12px 16px}
+
+/* Canvas & Header */
+.canvas{position:relative;min-height:100vh}
+.markbar{max-width:640px;margin:0 auto;padding:24px 20px 0;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:var(--display);font-weight:800;font-size:1.15rem;letter-spacing:-.02em}
+.logo b{color:var(--blue)}
+
+.hero{position:relative;max-width:640px;margin:0 auto;padding:48px 20px 0;text-align:center}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(1.85rem,6.8vw,2.5rem);line-height:1.12;letter-spacing:-.03em;margin:0 auto 16px}
+.sub{font-size:clamp(15px,1.8vw,17px);color:var(--mut);max-width:44ch;margin:0 auto 40px;line-height:1.55}
+.sub b{color:var(--ink2);font-weight:700}
+
+/* Survey Shell */
+.shell{position:relative;max-width:640px;margin:0 auto;border-radius:22px;background:#fbfdff;
+  border:1.5px solid #dce5f7;box-shadow:0 18px 45px -20px rgba(23,65,155,.16),0 2px 8px rgba(14,23,38,.04);text-align:left}
+.survey-pad{position:relative;padding:36px 28px}
+
+/* Full page app takeover after Q1 */
+body.survey-full{background:#f4f7fc}
+.survey-full .micro,.survey-full footer{display:none}
+.survey-full .hero{padding-top:0}
+.survey-full .ribbon{background:#eaf0fc}
+.survey-full .shell{border-color:transparent;box-shadow:none;background:transparent}
+.survey-full .survey-pad{padding:12px 4px 50px;min-height:calc(100vh - 200px)}
+.survey-full .q-eye{font-size:13px;margin-top:8px;margin-bottom:12px}
+.survey-full .sv-t{font-size:clamp(1.5rem,4.5vw,1.9rem)}
+.survey-full .cta-zone{display:none}
+.survey-full .sv-opt{border:1.5px solid #e2e8f0;box-shadow:0 8px 20px -10px rgba(14,23,38,.12)}
+.survey-full .sv-opts{gap:14px}
+.survey-full .sv-in{border:1.5px solid #cbd5e1;box-shadow:0 8px 20px -10px rgba(14,23,38,.1)}
+.survey-full .sv-in:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(23,65,155,.12)}
+
+/* Progress Bar & Back */
+.sv{max-width:580px;margin:0 auto}
+.sv-back{background:none;border:0;padding:5px 0;font:inherit;font-size:13px;font-weight:700;color:var(--mut);cursor:pointer;display:none;align-items:center;gap:6px}
+.sv-back.on{display:inline-flex}
+.sv-back:hover{color:var(--ink)}
+.sv-count{font-size:12.5px;color:var(--mut)}
+.sv-count b{color:var(--ink);font-weight:700}
+.sv-batt{display:flex;gap:6px;max-width:640px;margin:16px auto 0;padding:0 20px}
+.sv-seg{flex:1;height:5px;border-radius:99px;background:#e2e8f0;position:relative;overflow:hidden}
+.sv-seg.on{background:var(--blue)}
+
+/* Steps */
+.step{display:none}
+.step.on{display:block;animation:svIn .28s ease}
+@keyframes svIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.q-eye{font-size:11.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:12px}
+.sv-t{font-family:var(--display);font-weight:800;font-size:clamp(1.35rem,3.8vw,1.65rem);letter-spacing:-.02em;line-height:1.22;margin-bottom:8px}
+.sv-h{font-size:15px;color:var(--mut);margin-bottom:6px}
+.sv-h b{color:var(--ink2);font-weight:700}
+.sv-t+.sv-opts,.sv-h+.sv-opts,.sv-t+.field,.sv-h+.field,.sv-t+form{margin-top:24px}
+
+/* Options */
+.sv-opts{display:flex;flex-direction:column;gap:12px}
+.sv-opt{position:relative;display:flex;align-items:center;width:100%;padding:16px 44px 16px 20px;border-radius:14px;
+  border:1.5px solid var(--line);background:#fff;font:inherit;font-size:15.5px;font-weight:700;letter-spacing:-.01em;color:var(--ink);cursor:pointer;text-align:left;
+  transition:all .16s ease;box-shadow:0 1px 3px rgba(14,23,38,.04)}
+.sv-opt::after{content:"";position:absolute;right:20px;top:50%;width:8px;height:8px;border-top:2.2px solid #94a3b8;border-right:2.2px solid #94a3b8;transform:translateY(-50%) rotate(45deg);transition:all .15s}
+.sv-opt:hover{border-color:var(--blue);background:var(--blue-soft)}
+.sv-opt:active{transform:scale(.99)}
+.sv-opt.sel{border-color:var(--blue);background:var(--blue-soft);color:var(--blue-deep)}
+.sv-opt.sel::after{border-color:var(--blue)}
+
+/* Inputs & Form */
+.field{display:flex;flex-direction:column;gap:10px}
+.sv-in{width:100%;padding:15px 18px;border:1.5px solid var(--line);border-radius:12px;background:#fff;font:inherit;font-size:16px;font-weight:600;color:var(--ink);outline:none;transition:border-color .15s,box-shadow .15s}
+.sv-in:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(23,65,155,.12)}
+.btn{display:inline-flex;align-items:center;justify-content:center;width:100%;padding:17px 24px;margin-top:16px;border:0;border-radius:14px;
+  font:inherit;font-size:16.5px;font-weight:700;cursor:pointer;transition:background .2s,transform .1s}
+.btn-b{background:var(--blue);color:#fff}
+.btn-b:hover{background:var(--blue-deep)}
+.btn-b:active{transform:scale(.99)}
+
+.err{display:none;margin-top:12px;font-size:14px;color:#dc2626;font-weight:600}
+.err.on{display:block}
+.legal{margin-top:12px;font-size:12px;color:var(--mut2);line-height:1.5;text-align:center}
+
+/* Under-card ticks */
+.cta-zone{border-top:1px solid var(--line2);margin-top:32px;padding-top:22px;text-align:center}
+.ticks{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 22px}
+.tick{display:inline-flex;align-items:center;gap:6px;font-size:14.5px;font-weight:700;color:var(--ink2)}
+.tick::before{content:"✓";color:var(--pos);font-weight:900}
+.micro{max-width:640px;margin:24px auto 0;text-align:center;font-size:12.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mut2)}
+
+footer{border-top:1px solid var(--line2);margin-top:60px;padding:36px 20px 48px;text-align:center;font-size:12.5px;color:var(--mut2);line-height:1.6}
+footer a{text-decoration:underline}
+
+@media(max-width:560px){
+  .hero{padding:36px 16px 0}
+  .survey-pad{padding:28px 18px}
+  .sv-opt{font-size:15px;padding:15px 38px 15px 16px}
+}
+</style>
+<script src="../assets/pixel.js"></script>
+</head>
+<body>
+
+<div class="ribbon">For Trade Contractors: Roofing · HVAC · Plumbing · Electrical</div>
+
+<div class="canvas">
+  <div class="markbar">
+    <button type="button" class="sv-back" id="s-back">Back</button>
+    <a class="logo" href="https://recoverrevenue.co/">Recover<b>Revenue</b></a>
+    <span class="sv-count">Step <b id="s-now">1</b> of <b>5</b></span>
+  </div>
+  <div class="sv-batt" id="s-batt">
+    <span class="sv-seg on"></span>
+    <span class="sv-seg"></span>
+    <span class="sv-seg"></span>
+    <span class="sv-seg"></span>
+    <span class="sv-seg"></span>
+  </div>
+
+  <div class="hero">
+    <div id="landing-view">
+      <h1>15 Qualified Jobs in 60 Days, <span class="grad">or you don't pay.</span></h1>
+      <p class="sub">We reactivate dormant past customer records and catch every missed call with <b>22-second 2-way AI</b>. Answer 4 quick questions to see if your trade qualifies.</p>
+    </div>
+
+    <div class="shell">
+      <div class="survey-pad" id="survey">
+        <div class="sv">
+
+          <!-- Q1: Trade Type -->
+          <div class="step on" data-step="1">
+            <div class="q-eye">Question 1 of 4</div>
+            <div class="sv-t">What type of trade business do you run?</div>
+            <div class="sv-opts" data-q="trade" data-mode="single">
+              <button type="button" class="sv-opt" data-v="Roofing">🔨 Roofing Contractor</button>
+              <button type="button" class="sv-opt" data-v="HVAC">❄️ HVAC & Mechanical</button>
+              <button type="button" class="sv-opt" data-v="Plumbing">🚰 Plumbing & Repipe</button>
+              <button type="button" class="sv-opt" data-v="Electrical">⚡ Electrical & Generators</button>
+              <button type="button" class="sv-opt" data-v="Other Trade">🛠️ Other Trade Business</button>
+            </div>
+          </div>
+
+          <!-- Q2: Ticket Size -->
+          <div class="step" data-step="2">
+            <div class="q-eye">Question 2 of 4</div>
+            <div class="sv-t">What is your average completed job ticket size?</div>
+            <div class="sv-opts" data-q="ticket_size" data-mode="single">
+              <button type="button" class="sv-opt" data-v="Under $2,500">Under $2,500</button>
+              <button type="button" class="sv-opt" data-v="$2,500–$5,000">$2,500 – $5,000</button>
+              <button type="button" class="sv-opt" data-v="$5,000–$10,000">$5,000 – $10,000</button>
+              <button type="button" class="sv-opt" data-v="$10,000–$20,000">$10,000 – $20,000</button>
+              <button type="button" class="sv-opt" data-v="$20,000+">$20,000+</button>
+            </div>
+          </div>
+
+          <!-- Q3: Revenue Leak -->
+          <div class="step" data-step="3">
+            <div class="q-eye">Question 3 of 4</div>
+            <div class="sv-t">Where is your biggest revenue leak right now?</div>
+            <div class="sv-h">Select all that apply.</div>
+            <div class="sv-opts" data-q="bottlenecks" data-mode="multi">
+              <button type="button" class="sv-opt" data-v="Missed calls on jobsites">Missed calls when technicians are on jobsites</button>
+              <button type="button" class="sv-opt" data-v="Dead paper estimates">Dead paper estimates that were never followed up</button>
+              <button type="button" class="sv-opt" data-v="Expensive shared leads">Paying too much for garbage shared leads (Angi/HomeAdvisor)</button>
+              <button type="button" class="sv-opt" data-v="Slow speed to lead">Homeowners hiring competitors before we can call back</button>
+            </div>
+            <button type="button" class="btn btn-b" data-next>Continue &rarr;</button>
+            <div class="err" data-err>Select at least one so we know where you're leaking revenue.</div>
+          </div>
+
+          <!-- Q4: List Size -->
+          <div class="step" data-step="4">
+            <div class="q-eye">Question 4 of 4</div>
+            <div class="sv-t">Roughly how many past customer contacts / old quotes do you have?</div>
+            <div class="sv-opts" data-q="list_size" data-mode="single">
+              <button type="button" class="sv-opt" data-v="Under 150">Under 150 contacts</button>
+              <button type="button" class="sv-opt" data-v="150–500">150 – 500 contacts</button>
+              <button type="button" class="sv-opt" data-v="500–1,500">500 – 1,500 contacts</button>
+              <button type="button" class="sv-opt" data-v="1,500+">1,500+ contacts</button>
+            </div>
+          </div>
+
+          <!-- Step 5: Contact Intake -->
+          <div class="step" data-step="5">
+            <div class="q-eye">Final Step</div>
+            <div class="sv-t">Where should Garrett send your diagnostic results?</div>
+            <div class="sv-h">Application complete. <b>Choose your 15-minute phone slot on the next screen.</b></div>
+            <form id="contact-form" novalidate>
+              <div class="field">
+                <input class="sv-in" type="text" id="f-name" placeholder="Your First Name" required autocomplete="given-name">
+                <input class="sv-in" type="tel" id="f-phone" placeholder="Cell Phone Number (for Call & SMS)" required autocomplete="tel">
+              </div>
+              <button type="submit" class="btn btn-b">Continue to Pick Call Time &rarr;</button>
+              <div class="err" data-err>Please enter your first name and a valid 10-digit mobile number.</div>
+              <p class="legal">By continuing, you agree to receive SMS updates from RecoverRevenue about your call. Reply STOP to opt out.</p>
+            </form>
+          </div>
+
+        </div>
+
+        <div class="cta-zone">
+          <div class="ticks">
+            <span class="tick">15 Jobs Guaranteed</span>
+            <span class="tick">First Charge Day 61</span>
+            <span class="tick">Done-For-You</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="micro">Takes 60 seconds · Zero High-Pressure Pitch</div>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 RecoverRevenue &middot; Delray Beach, FL &middot; <a href="../privacy.html">Privacy</a> &middot; <a href="../terms.html">SMS Terms</a></p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var answers = {};
+  var steps  = [].slice.call(document.querySelectorAll('.step'));
+  var TOTAL  = 5;
+  var cur    = 1;
+  var segs   = [].slice.call(document.querySelectorAll('#s-batt .sv-seg'));
+  var nowEl  = document.getElementById('s-now');
+  var back   = document.getElementById('s-back');
+  var landing = document.getElementById('landing-view');
+
+  // Phone auto formatting
+  var phoneEl = document.getElementById('f-phone');
+  phoneEl.addEventListener('input', function(e){
+    var raw = e.target.value.replace(/\D/g, '').substring(0, 10);
+    var f = '';
+    if (raw.length > 6) f = '(' + raw.substring(0,3) + ') ' + raw.substring(3,6) + '-' + raw.substring(6);
+    else if (raw.length > 3) f = '(' + raw.substring(0,3) + ') ' + raw.substring(3);
+    else if (raw.length > 0) f = '(' + raw;
+    e.target.value = f;
+  });
+
+  function go(n){
+    cur = n;
+    steps.forEach(function(s){ s.classList.toggle('on', +s.dataset.step === n); });
+    var shown = Math.min(n, TOTAL);
+    segs.forEach(function(sg,i){ sg.classList.toggle('on', i < shown); });
+    nowEl.textContent = shown;
+    back.classList.toggle('on', n > 1 && n <= TOTAL);
+    var full = n > 1;
+    document.body.classList.toggle('survey-full', full);
+    landing.hidden = full;
+    window.scrollTo(0, 0);
+  }
+
+  back.addEventListener('click', function(){ if(cur > 1 && cur <= TOTAL) go(cur-1); });
+
+  // Single select auto-advancing
+  [].slice.call(document.querySelectorAll('.sv-opts')).forEach(function(group){
+    var q = group.dataset.q, multi = group.dataset.mode === 'multi';
+    [].slice.call(group.querySelectorAll('.sv-opt')).forEach(function(opt){
+      opt.addEventListener('click', function(){
+        if(multi){
+          opt.classList.toggle('sel');
+          answers[q] = [].slice.call(group.querySelectorAll('.sv-opt.sel')).map(function(o){ return o.dataset.v; });
+          hideErr(group.closest('.step'));
+        } else {
+          [].slice.call(group.querySelectorAll('.sv-opt')).forEach(function(o){ o.classList.remove('sel'); });
+          opt.classList.add('sel');
+          answers[q] = opt.dataset.v;
+          setTimeout(function(){ go(cur+1); }, 240);
+        }
+      });
+    });
+  });
+
+  // Multi-select continue
+  [].slice.call(document.querySelectorAll('[data-next]')).forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var step = btn.closest('.step');
+      if(+step.dataset.step === 3){
+        if(!answers.bottlenecks || !answers.bottlenecks.length){ return showErr(step); }
+      }
+      hideErr(step); go(cur+1);
+    });
+  });
+
+  // Contact form submit
+  document.getElementById('contact-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    var step = e.target.closest('.step');
+    var name = document.getElementById('f-name').value.trim();
+    var phone = document.getElementById('f-phone').value.trim();
+    var digits = phone.replace(/\D/g, '');
+    if(!name || digits.length < 10){ return showErr(step); }
+    hideErr(step);
+
+    answers.first_name = name;
+    answers.phone = '+1' + digits;
+
+    try {
+      localStorage.setItem('rr_lead', JSON.stringify(answers));
+      fetch('/api/lead', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(answers)
+      }).catch(function(){});
+    } catch(err){}
+
+    // Redirect to booking page
+    window.location.href = 'book.html?name=' + encodeURIComponent(name) + '&phone=' + encodeURIComponent(digits);
+  });
+
+  function showErr(step){ var el = step.querySelector('[data-err]'); if(el) el.classList.add('on'); }
+  function hideErr(step){ var el = step.querySelector('[data-err]'); if(el) el.classList.remove('on'); }
+})();
+</script>
+</body>
+</html>
