@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Pick a time · 15 minutes · RecoverRevenue</title>
-<meta name="description" content="15 new jobs in 60 days or you don't pay. Pick a 15-minute phone slot with the founder. Nothing is charged on this page.">
+<title>15 Jobs in 60 Days or You Don't Pay · RecoverRevenue</title>
+<meta name="description" content="We turn your dormant customer database and missed inquiries into 15 high-margin booked jobs in 60 days, or you pay $0. Claim your guarantee and pick a time.">
 <link rel="canonical" href="https://recoverrevenue.co/go/">
 <meta name="robots" content="noindex">
 <meta property="og:title" content="15 new jobs in 60 days, or you don't pay">
-<meta property="og:description" content="Pick a 15-minute phone slot. No form, no deck, nothing charged.">
+<meta property="og:description" content="2-Way AI speed-to-lead and past customer reactivation for trade businesses. Pick a 15-minute slot with founder Garrett Cole.">
 <meta property="og:url" content="https://recoverrevenue.co/go/">
 <link rel="icon" type="image/svg+xml" href="../assets/logo-mark.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png">
@@ -18,86 +18,123 @@
 <link rel="preconnect" href="https://calendly.com" crossorigin>
 <link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@700,800&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
 <style>
-/* Same palette and type as /start/ — this is the same funnel with the reading removed.
-   The page exists for one visitor: someone who tapped a link in a bio or a DM and already
-   knows who we are. They get the calendar, not a pitch. */
 :root{
-  --paper:#f4f7fc; --surface:#fdfdff; --ink:#0e1726; --muted:#5c6a80;
-  --accent:#17419b; --accent-deep:#102e70; --line:rgba(14,23,38,.09);
-  --line-soft:rgba(14,23,38,.055); --pos:#12b866; --warn:#c2410c; --r:18px;
+  --paper:#f4f7fc; --surface:#ffffff; --ink:#0e1726; --muted:#5c6a80;
+  --accent:#17419b; --accent-deep:#102e70; --accent-light:#eaf1fc;
+  --line:rgba(14,23,38,.1); --line-soft:rgba(14,23,38,.06);
+  --pos:#12b866; --pos-bg:rgba(18,184,102,.1);
+  --warn:#c2410c; --r:16px;
   --display:'Cabinet Grotesk','Helvetica Neue',Helvetica,Arial,sans-serif;
   --body:'Satoshi','Helvetica Neue',Helvetica,Arial,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 body{font-family:var(--body);background:var(--paper);color:var(--ink);line-height:1.5;
   -webkit-font-smoothing:antialiased;min-height:100vh;min-height:100dvh}
 a{color:inherit}
-.wrap{width:100%;max-width:560px;margin:0 auto;padding:0 14px}
+.wrap{width:100%;max-width:560px;margin:0 auto;padding:0 16px}
 
-/* header: wordmark and the one fact a visitor needs before the calendar */
-.top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 0 10px}
-.logo{font-family:var(--display);font-weight:800;font-size:1.05rem;letter-spacing:-.02em;text-decoration:none}
+/* Top bar */
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 0 14px}
+.logo{font-family:var(--display);font-weight:800;font-size:1.15rem;letter-spacing:-.02em;text-decoration:none}
 .logo b{color:var(--accent)}
-.pill{display:inline-flex;align-items:center;gap:7px;font-size:.72rem;font-weight:700;letter-spacing:.08em;
-  text-transform:uppercase;color:var(--pos);background:rgba(18,184,102,.09);padding:5px 11px;border-radius:999px;white-space:nowrap}
+.pill{display:inline-flex;align-items:center;gap:7px;font-size:.72rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--pos);background:var(--pos-bg);padding:5px 12px;border-radius:999px;white-space:nowrap}
 .pill i{width:6px;height:6px;border-radius:50%;background:var(--pos);display:block;animation:pulse 2.2s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.82)}}
 
-h1{font-family:var(--display);font-weight:800;font-size:clamp(1.55rem,6.2vw,2.1rem);line-height:1.08;letter-spacing:-.02em;margin:4px 0 8px}
+/* Headers */
+h1{font-family:var(--display);font-weight:800;font-size:clamp(1.75rem,6.8vw,2.3rem);line-height:1.1;letter-spacing:-.025em;margin:8px 0 10px}
 h1 em{font-style:normal;color:var(--accent)}
-.lede{color:var(--muted);font-size:.95rem;line-height:1.55;margin-bottom:14px}
+.lede{color:var(--muted);font-size:.98rem;line-height:1.55;margin-bottom:18px}
 .lede b{color:var(--ink);font-weight:700}
 
-/* the calendar IS the page */
-.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
-  box-shadow:0 24px 60px -34px rgba(14,23,38,.3)}
+/* Step container animation */
+.step-pane{transition:opacity .25s ease, transform .25s ease}
+.step-pane.hidden{display:none;opacity:0;transform:translateY(10px)}
+
+/* Urgency / Leak Mindset Box */
+.leak-box{background:#ffffff;border:1.5px solid rgba(23,65,155,.15);border-radius:14px;padding:16px 18px;margin-bottom:20px;box-shadow:0 8px 24px -12px rgba(23,65,155,.12)}
+.leak-tag{display:inline-flex;align-items:center;gap:5px;font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);background:var(--accent-light);padding:3px 8px;border-radius:6px;margin-bottom:8px}
+.leak-box h3{font-family:var(--display);font-size:1.05rem;font-weight:800;color:var(--ink);line-height:1.25;margin-bottom:6px}
+.leak-box p{font-size:.88rem;color:var(--muted);line-height:1.48}
+
+/* Trade Quick Select */
+.trade-group{margin-bottom:16px}
+.trade-label{font-size:.76rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:block}
+.trade-chips{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.trade-chip{display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 8px;font-size:.84rem;font-weight:700;background:#ffffff;border:1.5px solid var(--line);border-radius:10px;cursor:pointer;user-select:none;transition:all .18s ease}
+.trade-chip:hover{border-color:var(--accent)}
+.trade-chip.active{background:var(--accent-light);border-color:var(--accent);color:var(--accent-deep)}
+
+/* Intake Form Card */
+.form-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px 22px;box-shadow:0 18px 45px -24px rgba(14,23,38,.2);margin-bottom:24px}
+.form-card h2{font-family:var(--display);font-size:1.22rem;font-weight:800;letter-spacing:-.015em;margin-bottom:4px}
+.form-card p.form-sub{font-size:.88rem;color:var(--muted);margin-bottom:18px}
+.form-grid{display:grid;gap:14px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:.78rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--muted)}
+.field input{font-family:var(--body);font-size:1.02rem;padding:14px 14px;border-radius:10px;border:1.5px solid var(--line);background:#fff;color:var(--ink);outline:none;transition:border-color .2s ease}
+.field input:focus{border-color:var(--accent)}
+.field-err{font-size:.8rem;color:var(--warn);font-weight:600;display:none;margin-top:2px}
+.field-err.show{display:block}
+
+/* Primary Submit Button */
+.btn-submit{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:#fff;font-family:var(--body);font-weight:700;font-size:1.05rem;padding:16px 22px;border-radius:12px;border:0;cursor:pointer;width:100%;transition:background .2s ease, transform .1s ease}
+.btn-submit:hover{background:var(--accent-deep)}
+.btn-submit:active{transform:scale(.98)}
+.trust-note{margin-top:14px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:.82rem;color:var(--muted);text-align:center}
+.trust-note svg{flex:none;color:var(--pos)}
+.consent-note{margin-top:10px;font-size:.74rem;color:var(--muted);line-height:1.45;text-align:center}
+.consent-note a{color:var(--accent);text-decoration:underline}
+
+/* Step 2 Agenda & Value Framing (Replaces Old 'Thumbs Down') */
+.agenda-box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:14px 20px 18px}
+.agenda-title{font-size:.74rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.agenda-items{display:grid;gap:12px}
+.agenda-row{display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:flex-start}
+.agenda-num{width:26px;height:26px;border-radius:8px;background:var(--accent-light);color:var(--accent-deep);font-weight:800;font-size:.8rem;display:grid;place-items:center}
+.agenda-text h4{font-size:.88rem;font-weight:700;color:var(--ink);line-height:1.2;margin-bottom:2px}
+.agenda-text p{font-size:.82rem;color:var(--muted);line-height:1.4}
+
+/* Step 2 Calendar Card */
+.cal-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:0 24px 60px -34px rgba(14,23,38,.3);margin-bottom:20px}
+.cal-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(23,65,155,.04);border-bottom:1px solid var(--line-soft)}
+.btn-back{background:none;border:0;color:var(--muted);font-size:.82rem;font-weight:700;display:inline-flex;align-items:center;gap:5px;cursor:pointer}
+.btn-back:hover{color:var(--accent)}
+.cal-pill{font-size:.72rem;font-weight:700;text-transform:uppercase;color:var(--accent);letter-spacing:.05em}
 .slot{min-height:640px;background:var(--surface);position:relative}
 .calendly-inline-widget{width:100%;height:640px;min-width:280px}
-.fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:12px;padding:28px 22px;text-align:center;background:var(--surface);transition:opacity .25s}
+.fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:28px 22px;text-align:center;background:var(--surface);transition:opacity .25s}
 .fallback.off{opacity:0;pointer-events:none}
 .fallback p{color:var(--muted);font-size:.92rem;max-width:26em}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:#fff;
-  font-weight:700;font-size:1rem;padding:15px 26px;border-radius:12px;text-decoration:none;border:0;width:100%;max-width:340px}
-.btn:active{background:var(--accent-deep)}
+.btn-direct{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:#fff;font-weight:700;font-size:.96rem;padding:13px 22px;border-radius:10px;text-decoration:none;border:0}
 .spin{width:22px;height:22px;border:2.5px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:rot .9s linear infinite}
 @keyframes rot{to{transform:rotate(360deg)}}
-.under{display:flex;align-items:center;gap:8px;padding:11px 16px;border-top:1px solid var(--line-soft);
-  font-size:.8rem;color:var(--muted)}
-.under svg{flex:none}
+.under{display:flex;align-items:center;gap:8px;padding:12px 16px;border-top:1px solid var(--line-soft);font-size:.82rem;color:var(--muted)}
+.under svg{flex:none;color:var(--pos)}
 
-/* below the fold: only what a visitor scrolls for. Three facts, one disqualifier, the price. */
-.facts{padding:28px 0 8px}
-.facts h2{font-family:var(--display);font-weight:700;font-size:1.05rem;margin-bottom:12px}
-.facts ol{list-style:none;display:grid;gap:10px}
-.facts li{display:grid;grid-template-columns:24px 1fr;gap:10px;font-size:.93rem;color:var(--muted);line-height:1.55}
-.facts li i{font-style:normal;font-family:var(--display);font-weight:700;color:var(--accent);
-  background:var(--surface);border:1px solid var(--line);border-radius:8px;width:24px;height:24px;
-  display:grid;place-items:center;font-size:.8rem}
-.facts li b{color:var(--ink);font-weight:700}
-.stop{margin-top:18px;padding:14px 16px;border-radius:12px;background:rgba(194,65,12,.06);border:1px solid rgba(194,65,12,.18);
-  font-size:.9rem;line-height:1.55;color:var(--ink)}
-.stop b{color:var(--warn)}
-.price{margin-top:14px;font-size:.9rem;color:var(--muted);line-height:1.6}
+/* Below the fold terms */
+.facts{padding:14px 0 8px}
+.guarantee-terms{padding:14px 16px;border-radius:12px;background:#ffffff;border:1px solid var(--line);font-size:.88rem;line-height:1.55;color:var(--ink)}
+.guarantee-terms b{color:var(--accent-deep)}
+.price{margin-top:12px;font-size:.86rem;color:var(--muted);line-height:1.6}
 .price b{color:var(--ink)}
-footer{padding:22px 0 calc(28px + env(safe-area-inset-bottom));font-size:.78rem;color:var(--muted);
-  display:flex;flex-wrap:wrap;gap:6px 16px}
+footer{padding:22px 0 calc(28px + env(safe-area-inset-bottom));font-size:.78rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 16px}
 footer a{text-decoration:none;border-bottom:1px solid var(--line)}
+
 @media (min-width:640px){
-  .wrap{padding:0 20px}
-  .top{padding:22px 0 14px}
-  .lede{font-size:1rem}
+  .wrap{padding:0 22px}
+  .top{padding:20px 0 14px}
+  .trade-chips{grid-template-columns:repeat(4,1fr)}
 }
 </style>
+
 <script>
-/* ---- channel normalisation, BEFORE pixel.js reads the URL ----
-   Bios and DMs carry a clean link: recoverrevenue.co/go/  (or ?c=li / ig / fb / dm).
-   Here the short code, or failing that the referrer, becomes utm_* on this page's
-   own URL so pixel.js and the Calendly booking both record where the visitor came from. */
+/* Channel & UTM normalisation */
 (function(){
   var q = new URLSearchParams(location.search);
-  if (q.get("utm_source")) return;                       /* already tagged: leave it */
+  if (q.get("utm_source")) return;
   var map = { li:"linkedin", ig:"instagram", fb:"facebook", dm:"dm", tt:"tiktok", yt:"youtube", x:"x" };
   var src = map[(q.get("c") || "").toLowerCase()];
   if (!src) {
@@ -123,35 +160,134 @@ footer a{text-decoration:none;border-bottom:1px solid var(--line)}
 <div class="wrap">
   <header class="top">
     <a class="logo" href="https://recoverrevenue.co/">Recover<b>Revenue</b></a>
-    <span class="pill"><i></i> Booking open</span>
+    <span class="pill"><i></i> 60-Day Guarantee Active</span>
   </header>
 
-  <h1>15 new jobs in 60 days, <em>or you don't pay.</em></h1>
-  <p class="lede">Pick a time below. <b>15 minutes, on the phone, with the founder.</b> No form, no deck, and nothing is charged on this page.</p>
+  <!-- ==================== STEP 1: CLEAR OFFER + INTAKE ==================== -->
+  <section id="step1" class="step-pane">
+    <h1>15 Qualified Jobs in 60 Days, <em>or you don't pay.</em></h1>
+    <p class="lede">We reactivate your dormant past customer records and catch every missed inbound call with <b>22-second 2-way AI speed-to-lead</b>. You pay $0 until Day 61, and only if we deliver.</p>
 
-  <div class="card">
-    <div class="slot" id="slot">
-      <div class="fallback" id="fallback">
-        <div class="spin" id="spin"></div>
-        <p id="fbText">Loading the calendar&hellip;</p>
-        <a class="btn" id="direct" href="https://calendly.com/chase-sza/15min" target="_blank" rel="noopener">Open the calendar &rarr;</a>
+    <!-- Urgency Sales Factor ("Fix the leak now or later?") -->
+    <div class="leak-box">
+      <span class="leak-tag">⚡ The Urgency Factor</span>
+      <h3>Would you fix a roof leak now, or wait until it floods?</h3>
+      <p>Every week you wait, 3 to 5 homeowners who called you hire your competitor instead. On this 15-minute diagnostic, we calculate the exact revenue leaking from your customer list—and map out how we plug it.</p>
+    </div>
+
+    <!-- Intake Form Card -->
+    <div class="form-card">
+      <h2>Claim Your Guarantee & Pick Time</h2>
+      <p class="form-sub">Enter your details below. You will choose your 15-minute phone slot on the next screen.</p>
+      
+      <form id="intakeForm" novalidate>
+        <div class="trade-group">
+          <label class="trade-label">Select Your Trade</label>
+          <div class="trade-chips">
+            <div class="trade-chip active" data-trade="Roofing">🔨 Roofing</div>
+            <div class="trade-chip" data-trade="HVAC">❄️ HVAC</div>
+            <div class="trade-chip" data-trade="Plumbing">🚰 Plumbing</div>
+            <div class="trade-chip" data-trade="Electrical & Trades">⚡ Other Trade</div>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="leadName">Your First Name</label>
+            <input type="text" id="leadName" placeholder="e.g. John" autocomplete="given-name" required>
+            <div class="field-err" id="nameErr">Please enter your first name</div>
+          </div>
+          <div class="field">
+            <label for="leadPhone">Cell Phone Number (For Call & SMS)</label>
+            <input type="tel" id="leadPhone" placeholder="(555) 000-0000" autocomplete="tel" required>
+            <div class="field-err" id="phoneErr">Please enter a valid 10-digit mobile number</div>
+          </div>
+        </div>
+
+        <div style="margin-top:18px">
+          <button type="submit" class="btn-submit" id="submitBtn">
+            Next: Pick Call Time &rarr;
+          </button>
+        </div>
+
+        <div class="trust-note">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Zero setup fees · 15-min diagnostic call with founder Garrett Cole
+        </div>
+        <div class="consent-note">
+          By continuing, you consent to receive SMS updates from RecoverRevenue about your diagnostic call. Consent is not a condition of purchase. Reply STOP to opt out. See our <a href="../terms.html" target="_blank">SMS Terms</a>.
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ==================== STEP 2: BOOKING (HIGH-VALUE FRAMING) ==================== -->
+  <section id="step2" class="step-pane hidden">
+    <div class="cal-card">
+      <div class="cal-bar">
+        <button type="button" class="btn-back" id="btnBack">
+          &larr; Edit details
+        </button>
+        <span class="cal-pill">Step 2 of 2: Pick Time</span>
+      </div>
+
+      <div style="padding:20px 20px 6px">
+        <h1>Pick your slot, <em id="displayName">there</em>.</h1>
+        <p class="lede" style="margin-bottom:12px">15 minutes, on the phone, directly with founder <b>Garrett Cole</b>. No slide deck, no high pressure—just your numbers.</p>
+      </div>
+
+      <!-- Positive Diagnostic Call Agenda (High Value Anticipation) -->
+      <div class="agenda-box">
+        <div class="agenda-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          What happens on our 15-minute diagnostic:
+        </div>
+        <div class="agenda-items">
+          <div class="agenda-row">
+            <div class="agenda-num">1</div>
+            <div class="agenda-text">
+              <h4>Unclaimed Revenue Audit</h4>
+              <p>We analyze your past customer database size and calculate your realistic 60-day revenue potential.</p>
+            </div>
+          </div>
+          <div class="agenda-row">
+            <div class="agenda-num">2</div>
+            <div class="agenda-text">
+              <h4>22-Second Speed-to-Lead Test</h4>
+              <p>We show how our 2-way AI locks down inbound callers before they dial your competitors.</p>
+            </div>
+          </div>
+          <div class="agenda-row">
+            <div class="agenda-num">3</div>
+            <div class="agenda-text">
+              <h4>15-Job Action Plan</h4>
+              <p>We map out your exact 60-day campaign. If your trade qualifies for the 15-job guarantee, we start this week. If not, you keep the audit for free.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Calendly Slot -->
+      <div class="slot" id="slot">
+        <div class="fallback" id="fallback">
+          <div class="spin" id="spin"></div>
+          <p id="fbText">Loading your calendar&hellip;</p>
+          <a class="btn-direct" id="direct" href="https://calendly.com/chase-sza/15min" target="_blank" rel="noopener">Open Calendar in New Tab &rarr;</a>
+        </div>
+      </div>
+      <div class="under">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        You are booking a phone consultation with Garrett Cole. Nothing is charged today.
       </div>
     </div>
-    <div class="under">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      You are booking a phone call, not a payment. Nothing is charged here.
-    </div>
-  </div>
+  </section>
 
+  <!-- Below the Fold: Qualification & Pricing -->
   <section class="facts">
-    <h2>What the 15 minutes is</h2>
-    <ol>
-      <li><i>1</i><span>You tell me what an average job is worth and roughly how many calls a week go unanswered.</span></li>
-      <li><i>2</i><span>I tell you what that costs you a year, and whether your past-customer list is long enough to carry the guarantee.</span></li>
-      <li><i>3</i><span><b>If it fits, we start that week. If it doesn't, I say so on the call</b> &mdash; not in a follow-up sequence.</span></li>
-    </ol>
-    <div class="stop"><b>Don't book if</b> you have fewer than 200 past customers with phone numbers, or you can't take new jobs in the next 60 days. The guarantee isn't for you yet, and I'd rather not waste your fifteen minutes.</div>
-    <p class="price"><b>The price is public:</b> $1,497 a month. Card on file the day we start, <b>first charge on day 61, and only if you got the 15 jobs.</b> No setup fee. Full terms and the arithmetic are on <a href="../start/">the long page</a>.</p>
+    <div class="guarantee-terms">
+      <b>The 60-Day Guarantee:</b> 15 completed or scheduled jobs in 60 days. Our standard fee is $1,497/mo. Your card is placed on file the day we start, but <b>your first charge is on Day 61, and only if you got the 15 jobs.</b> Zero setup fees.
+    </div>
+    <p class="price">Full terms and requirements are available on <a href="../start/">the full details page</a>.</p>
   </section>
 
   <footer>
@@ -165,57 +301,197 @@ footer a{text-decoration:none;border-bottom:1px solid var(--line)}
 <script>
 (function(){
   var q = new URLSearchParams(location.search);
-  var calUrl = "https://calendly.com/chase-sza/15min"
-    + "?hide_gdpr_banner=1&hide_event_type_details=1"
-    + "&primary_color=17419b&background_color=fdfdff&text_color=0e1726"
-    + "&utm_source="   + encodeURIComponent(q.get("utm_source")   || "direct")
-    + "&utm_medium="   + encodeURIComponent(q.get("utm_medium")   || "bio")
-    + "&utm_campaign=" + encodeURIComponent(q.get("utm_campaign") || "60day-guarantee");
+  var selectedTrade = "Roofing";
 
-  var direct = document.getElementById("direct"), fb = document.getElementById("fallback"),
-      spin = document.getElementById("spin"), txt = document.getElementById("fbText"),
-      slot = document.getElementById("slot");
-  direct.href = calUrl;
-
-  /* If the widget has not painted in 4s the visitor is on a slow in-app browser or
-     Calendly is blocked. Stop spinning and leave the button, which goes to the same URL. */
-  var painted = false;
-  var timer = setTimeout(function(){
-    if (painted) return;
-    spin.style.display = "none";
-    txt.textContent = "The calendar is taking a while to load in this browser.";
-  }, 4000);
-
-  var w = document.createElement("div");
-  w.className = "calendly-inline-widget";
-  w.setAttribute("data-auto-load", "false");
-  slot.appendChild(w);
-
-  function paintedNow(){ if (painted) return; painted = true; clearTimeout(timer); fb.classList.add("off"); }
-
-  /* Two independent signals that the calendar is on screen: the iframe's own load event
-     (works everywhere), and Calendly's postMessage once it has sized itself. */
-  new MutationObserver(function(){
-    var f = w.querySelector("iframe");
-    if (!f) return;
-    f.addEventListener("load", paintedNow, { once: true });
-  }).observe(w, { childList: true });
-  window.addEventListener("message", function(e){
-    if (String(e.origin).indexOf("calendly.com") === -1) return;
-    var d = e.data;
-    if (d && typeof d.event === "string" && d.event.indexOf("calendly.") === 0) paintedNow();
-    /* calendly.event_scheduled -> pixel 'Schedule' is handled in assets/pixel.js */
+  // Trade chip selection
+  var chips = document.querySelectorAll(".trade-chip");
+  chips.forEach(function(chip){
+    chip.addEventListener("click", function(){
+      chips.forEach(function(c){ c.classList.remove("active"); });
+      chip.classList.add("active");
+      selectedTrade = chip.getAttribute("data-trade") || "Roofing";
+    });
   });
 
-  var s = document.createElement("script");
-  s.src = "https://assets.calendly.com/assets/external/widget.js";
-  s.async = true;
-  s.onload = function(){
-    if (!window.Calendly) return;
-    window.Calendly.initInlineWidget({ url: calUrl, parentElement: w });
-  };
-  s.onerror = function(){ clearTimeout(timer); spin.style.display = "none"; txt.textContent = "Calendly is blocked in this browser."; };
-  document.head.appendChild(s);
+  // Phone auto-formatting
+  var phoneInput = document.getElementById("leadPhone");
+  phoneInput.addEventListener("input", function(e){
+    var raw = e.target.value.replace(/\D/g, "").substring(0, 10);
+    var formatted = "";
+    if (raw.length > 6) {
+      formatted = "(" + raw.substring(0, 3) + ") " + raw.substring(3, 6) + "-" + raw.substring(6);
+    } else if (raw.length > 3) {
+      formatted = "(" + raw.substring(0, 3) + ") " + raw.substring(3);
+    } else if (raw.length > 0) {
+      formatted = "(" + raw;
+    }
+    e.target.value = formatted;
+  });
+
+  // Elements
+  var form = document.getElementById("intakeForm");
+  var nameInput = document.getElementById("leadName");
+  var nameErr = document.getElementById("nameErr");
+  var phoneErr = document.getElementById("phoneErr");
+  var step1 = document.getElementById("step1");
+  var step2 = document.getElementById("step2");
+  var displayName = document.getElementById("displayName");
+  var btnBack = document.getElementById("btnBack");
+
+  var calLoaded = false;
+  var currentLead = { name: "", phone: "" };
+
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    var nameVal = nameInput.value.trim();
+    var phoneDigits = phoneInput.value.replace(/\D/g, "");
+
+    var valid = true;
+    if (!nameVal || nameVal.length < 2) {
+      nameErr.classList.add("show");
+      valid = false;
+    } else {
+      nameErr.classList.remove("show");
+    }
+
+    if (!phoneDigits || phoneDigits.length < 10) {
+      phoneErr.classList.add("show");
+      valid = false;
+    } else {
+      phoneErr.classList.remove("show");
+    }
+
+    if (!valid) return;
+
+    currentLead.name = nameVal;
+    currentLead.phone = phoneDigits;
+
+    var leadPayload = {
+      first_name: nameVal,
+      phone: "+1" + phoneDigits,
+      trade: selectedTrade,
+      utm_source: q.get("utm_source") || "direct",
+      utm_medium: q.get("utm_medium") || "bio",
+      utm_campaign: q.get("utm_campaign") || "60day-guarantee"
+    };
+
+    // Save lead record locally
+    try {
+      localStorage.setItem("rr_lead", JSON.stringify(leadPayload));
+      var list = JSON.parse(localStorage.getItem("rr_leads") || "[]");
+      list.push(leadPayload);
+      localStorage.setItem("rr_leads", JSON.stringify(list));
+    } catch(err){}
+
+    // Send to automated SMS campaign backend
+    try {
+      fetch("/api/lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(leadPayload)
+      }).catch(function(err){ console.log("SMS API background queue ping:", err); });
+    } catch(err){}
+
+    // Trigger Meta Pixel 'Lead' event
+    try {
+      if (window.fbq) {
+        window.fbq("track", "Lead", {
+          content_name: "60day-guarantee-intake",
+          trade: selectedTrade
+        });
+      }
+    } catch(err){}
+
+    // Transition to Step 2
+    displayName.textContent = nameVal;
+    step1.classList.add("hidden");
+    step2.classList.remove("hidden");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    // Load Calendly
+    initCalendly(nameVal, phoneDigits);
+  });
+
+  // Back button
+  btnBack.addEventListener("click", function(){
+    step2.classList.add("hidden");
+    step1.classList.remove("hidden");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  function initCalendly(name, phone){
+    if (calLoaded) return;
+    calLoaded = true;
+
+    var calUrl = "https://calendly.com/chase-sza/15min"
+      + "?hide_gdpr_banner=1&hide_event_type_details=1"
+      + "&primary_color=17419b&background_color=ffffff&text_color=0e1726"
+      + "&name="         + encodeURIComponent(name)
+      + "&a1="           + encodeURIComponent(phone)
+      + "&utm_source="   + encodeURIComponent(q.get("utm_source")   || "direct")
+      + "&utm_medium="   + encodeURIComponent(q.get("utm_medium")   || "bio")
+      + "&utm_campaign=" + encodeURIComponent(q.get("utm_campaign") || "60day-guarantee");
+
+    var direct = document.getElementById("direct"), fb = document.getElementById("fallback"),
+        spin = document.getElementById("spin"), txt = document.getElementById("fbText"),
+        slot = document.getElementById("slot");
+    direct.href = calUrl;
+
+    var painted = false;
+    var timer = setTimeout(function(){
+      if (painted) return;
+      spin.style.display = "none";
+      txt.textContent = "The calendar is taking a moment to load.";
+    }, 4000);
+
+    var w = document.createElement("div");
+    w.className = "calendly-inline-widget";
+    w.setAttribute("data-auto-load", "false");
+    slot.appendChild(w);
+
+    function paintedNow(){ if (painted) return; painted = true; clearTimeout(timer); fb.classList.add("off"); }
+
+    new MutationObserver(function(){
+      var f = w.querySelector("iframe");
+      if (!f) return;
+      f.addEventListener("load", paintedNow, { once: true });
+    }).observe(w, { childList: true });
+
+    // Listen for Calendly booking events
+    window.addEventListener("message", function(e){
+      if (String(e.origin).indexOf("calendly.com") === -1) return;
+      var d = e.data;
+      if (d && typeof d.event === "string") {
+        if (d.event.indexOf("calendly.") === 0) paintedNow();
+        // Prospect successfully booked!
+        if (d.event === "calendly.event_scheduled") {
+          try {
+            fetch("/api/booked", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                phone: "+1" + currentLead.phone,
+                first_name: currentLead.name
+              })
+            }).catch(function(){});
+            if (window.fbq) {
+              window.fbq("track", "Schedule", { content_name: "15min-diagnostic-booked" });
+            }
+          } catch(err){}
+        }
+      }
+    });
+
+    var s = document.createElement("script");
+    s.src = "https://assets.calendly.com/assets/external/widget.js";
+    s.async = true;
+    s.onload = function(){
+      if (!window.Calendly) return;
+      window.Calendly.initInlineWidget({ url: calUrl, parentElement: w });
+    };
+    s.onerror = function(){ clearTimeout(timer); spin.style.display = "none"; txt.textContent = "Calendly is blocked in this browser."; };
+    document.head.appendChild(s);
+  }
 })();
 </script>
 </body>
