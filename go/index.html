@@ -225,7 +225,7 @@ footer a{text-decoration:underline}
           <div class="step" data-step="3">
             <div class="q-eye">Final Step 3 of 3</div>
             <div class="sv-t">Who are we speaking with?</div>
-            <div class="sv-h">Diagnostic complete. <b>Where should Garrett send your call details and roadmap?</b></div>
+            <div class="sv-h">Diagnostic complete. <b>Where should we send your call details and roadmap?</b></div>
             
             <form id="contact-form" novalidate>
               <div class="field">
@@ -258,7 +258,7 @@ footer a{text-decoration:underline}
       <!-- Gratification Card: Empathy & Understanding -->
       <div class="grat-card">
         <div class="grat-badge">✓ Diagnostic Complete · 100% Match</div>
-        <h2>We've got your answers, <span id="displayName">there</span>.</h2>
+        <h2>We've got your answers.</h2>
         <div id="dynamicGratBody">
           <p class="grat-p" id="gratStat" style="margin-bottom:12px"></p>
           <p class="grat-p" id="gratFix"></p>
@@ -268,8 +268,8 @@ footer a{text-decoration:underline}
       <!-- Calendar Slot -->
       <div class="cal-card">
         <div class="cal-head">
-          <h3>Pick your 15-minute diagnostic time, <span id="calName">there</span>.</h3>
-          <p>15 minutes, on the phone, directly with founder <b>Garrett Cole</b>. No sales pitch, no slides—just your numbers.</p>
+          <h3>Pick your 15-minute diagnostic time</h3>
+          <p>15 minutes on the phone to look over your numbers and map out your schedule. No sales pitch, no slides—just your business.</p>
         </div>
 
         <div class="slot" id="slot">
@@ -283,7 +283,7 @@ footer a{text-decoration:underline}
 
       <div class="ticks" style="justify-content:center;margin-bottom:20px">
         <span class="tick">15 Jobs Guaranteed in 60 Days</span>
-        <span class="tick">Phone Call with Garrett Cole</span>
+        <span class="tick">15-Minute Diagnostic Call</span>
         <span class="tick">Nothing Charged Today</span>
       </div>
     </div>
@@ -459,8 +459,8 @@ footer a{text-decoration:underline}
         fix: "<b>How we solve it:</b> We boost your local Google ranking with automated 5-star customer reviews, and respond to every inquiry in seconds via SMS. You become the first contractor they see—and the first to lock them in."
       },
       "Other": {
-        stat: "<b>You're not alone.</b> Every trade business has specific bottlenecks that leak revenue and leave holes in the weekly schedule—whether it's seasonal slow periods or inconsistent booking loops.",
-        fix: "<b>How we solve it:</b> On our 15-minute diagnostic call, Garrett Cole will review your local market, past customer list, and exact numbers to build a custom roadmap that hits 15 guaranteed jobs in 60 days."
+        stat: "<b>You're not alone.</b> Unpredictable schedule holes and operational leaks cost trade contractors tens of thousands in lost revenue every single month.",
+        fix: "<b>How we solve it:</b> We take your exact bottleneck, review your service area and customer records, and map out a simple, automated system to hit 15 guaranteed jobs in 60 days."
       }
     };
 
@@ -469,9 +469,6 @@ footer a{text-decoration:underline}
     document.getElementById('gratFix').innerHTML = selectedDiag.fix;
 
     // Transition to Gratification & Booking view
-    document.getElementById('displayName').textContent = nameVal;
-    document.getElementById('calName').textContent = nameVal;
-
     surveyShell.style.display = 'none';
     landing.style.display = 'none';
     countBox.style.display = 'none';
