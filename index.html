@@ -349,22 +349,6 @@ html.js .frame.in img{transform:scale(1)}
   .split.flip .frame{order:2}
 }
 
-/* ---------- portal (kept, de-emphasized: compact split, live) ---------- */
-.portal{padding-block:clamp(72px,8vw,112px)}
-.portal-split{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(40px,6vw,84px);align-items:center}
-.portal-split>div{min-width:0}
-.plist{list-style:none;margin-top:30px;border-top:1px solid var(--line-soft)}
-.plist li{padding:17px 0;border-bottom:1px solid var(--line-soft)}
-.plist li:last-child{border-bottom:0}
-.plist b{display:block;font-weight:700;font-size:1rem;letter-spacing:-.01em}
-.plist span{display:block;color:var(--muted);font-size:.92rem;margin-top:4px;line-height:1.55}
-.device{
-  width:min(300px,100%);height:600px;margin:0 auto;border-radius:38px;overflow:hidden;background:#0e1726;
-  box-shadow:0 30px 70px rgba(14,23,38,.18),0 0 0 8px #0e1726,0 0 0 10px rgba(14,23,38,.45);
-}
-.device iframe{width:100%;height:100%;border:0;display:block;background:#fff}
-.device-note{text-align:center;color:var(--muted);font-size:.84rem;margin-top:18px}
-@media (max-width:900px){.portal-split{grid-template-columns:1fr;gap:52px}}
 
 /* ---------- pricing ---------- */
 .pricing{background:var(--surface);border-block:1px solid var(--line-soft)}
@@ -654,16 +638,8 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
         </div>
       </div>
       <div class="frame rv" style="--d:.12s">
-        <img src="assets/contractor_flooring_booking.jpg" alt="Trade contractor installing flooring on jobsite while smartphone on table receives client booking text" loading="lazy">
-        <div class="msg-float-pill">
-          <div class="msg-float-icon">💬</div>
-          <div class="msg-float-body">
-            <span class="msg-float-tag">⚡ Speed-to-Lead</span>
-            <strong class="msg-float-title">Client Booked &middot; Tuesday 10:00 AM</strong>
-          </div>
-          <span class="msg-float-status">Confirmed</span>
-        </div>
-        <span class="cap">Hands busy on the floor &middot; Phone books the estimate on the table</span>
+        <img src="assets/contractor_flooring_booking.jpg" alt="Trade contractor installing flooring on jobsite with iPad on bench clearly displaying Client Booked message" loading="lazy">
+        <span class="cap">Hands busy on the floor &middot; iPad confirms the booked job on the bench</span>
       </div>
     </div>
 
@@ -744,29 +720,6 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
   </div>
 </section>
 
-<!-- PORTAL DEMO ARCHIVED (Preserved for future iteration)
-<section class="portal" id="portal">
-  <div class="wrap">
-    <div class="portal-split">
-      <div>
-        <p class="eyebrow rv">The portal</p>
-        <h2 class="h2 rv" style="--d:.08s">Most agencies email you a folder. Your account comes with this.</h2>
-        <p class="lede rv" style="--d:.14s">You do not have to trust us. You watch it. Revenue recovered sits front and center, every automation shows its status, and a plain-English report lands in your inbox monthly.</p>
-        <ul class="plist rv" style="--d:.2s">
-          <li><b>Revenue recovered, front and center</b><span>The first thing you see is what the system earned you this month. Conservatively attributed, updated live.</span></li>
-          <li><b>Every automation, visible</b><span>Live status on each system: calls answered, no-shows saved, response times. Proof the promises are kept.</span></li>
-          <li><b>Plain-English monthly reports</b><span>What happened, what we changed, what is next. In your portal by the 5th, no dashboards to decode.</span></li>
-        </ul>
-      </div>
-      <div class="rv" style="--d:.16s">
-        <div class="device"><iframe src="portal/index.html" title="Client portal demo"></iframe></div>
-        <p class="device-note">This is the real portal. Tap around. Demo data, live product.</p>
-      </div>
-    </div>
-  </div>
-</section>
--->
-
 <!-- ================= PRICING ================= -->
 <section class="pricing" id="pricing">
   <div class="wrap">
@@ -844,8 +797,8 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
       </div>
       <div class="step rv" style="--d:.2s">
         <span class="num">03</span>
-        <h3>Watch the portal</h3>
-        <p>Revenue recovered, calls answered, reviews earned &mdash; in one live dashboard. 90-day commitment, then month to month. We earn our stay.</p>
+        <h3>Watch the revenue grow</h3>
+        <p>Revenue recovered, calls answered, reviews earned &mdash; in your live dashboard. 90-day commitment, then month to month. We earn our stay.</p>
         <div class="chk" data-step="2"><span class="box"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg></span>Reported in dollars</div>
       </div>
     </div>
@@ -854,7 +807,18 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
   </div>
 </section>
 
-<!-- ================= FAQ ================= -->
+<!-- ================= FINAL CTA / 15 QUALIFIED JOBS ================= -->
+<section class="final" id="book">
+  <div class="wrap">
+    <p class="eyebrow rv">15 minutes &middot; on the phone &middot; no slide deck</p>
+    <h2 class="rv" style="--d:.08s">15 qualified jobs in 60 days, guaranteed.</h2>
+    <p class="rv" style="--d:.16s">Tell us what an average job is worth to you and where your business is leaking calls. We will diagnose your realistic 60-day potential and show you how to plug the leak.</p>
+    <a class="btn btn-primary magnetic rv" style="--d:.24s" href="go/">Check Your Trade Eligibility <span class="arr">&rarr;</span></a>
+    <p class="final-mail rv" style="--d:.32s">Want to see where you qualify? <a href="go/">Take the 45-second diagnostic &rarr;</a></p>
+  </div>
+</section>
+
+<!-- ================= FAQ (UNDER 15 QUALIFIED JOBS) ================= -->
 <section class="faq-sec" id="faq">
   <div class="wrap">
     <div class="faq-head">
@@ -865,7 +829,7 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
     <div class="faq-list rv" style="--d:.12s">
       <details>
         <summary>What if it doesn&rsquo;t make me money?</summary>
-        <div class="a">You will see it in the portal &mdash; we report conservatively-attributed dollars, not vanity clicks. On Recovery Engine you are not charged at all until day 61, and only if the system booked you 15 jobs; miss it and you are never charged and you keep the website. That risk is ours on purpose.</div>
+        <div class="a">You will see it in your live dashboard &mdash; we report conservatively-attributed dollars, not vanity clicks. On Recovery Engine you are not charged at all until day 61, and only if the system booked you 15 jobs; miss it and you are never charged and you keep the website. That risk is ours on purpose.</div>
       </details>
       <details>
         <summary>Does the AI actually sound human?</summary>
@@ -890,17 +854,6 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
     </div>
 
     <p class="faq-note rv">Still unsure? That is what the fifteen minutes are for.</p>
-  </div>
-</section>
-
-<!-- ================= FINAL CTA ================= -->
-<section class="final" id="book">
-  <div class="wrap">
-    <p class="eyebrow rv">15 minutes &middot; on the phone &middot; no slide deck</p>
-    <h2 class="rv" style="--d:.08s">15 qualified jobs in 60 days, guaranteed.</h2>
-    <p class="rv" style="--d:.16s">Tell us what an average job is worth to you and where your business is leaking calls. We will diagnose your realistic 60-day potential and show you how to plug the leak.</p>
-    <a class="btn btn-primary magnetic rv" style="--d:.24s" href="go/">Check Your Trade Eligibility <span class="arr">&rarr;</span></a>
-    <p class="final-mail rv" style="--d:.32s">Want to see where you qualify? <a href="go/">Take the 45-second diagnostic &rarr;</a></p>
   </div>
 </section>
 
@@ -1107,7 +1060,7 @@ var PRICING = {
                 "Dead quote & past-customer reactivation text campaigns",
                 "Speed-to-lead instant response on all inbound inquiries, 24/7",
                 "Estimate consult booking directly onto your estimator's calendar",
-                "Lead portal: see calls, booked jobs, and recovered dollars live"] }
+                "Live dashboard: see calls, booked jobs, and recovered dollars live"] }
     ]
   },
   hvac: {
@@ -1128,7 +1081,7 @@ var PRICING = {
                 "Seasonal maintenance & replacement quote reactivation",
                 "Instant after-hours response and triage, 24/7",
                 "Service dispatch and diagnostic bookings directly on calendar",
-                "Lead portal: live revenue recovered and booked equipment"] }
+                "Live dashboard: live revenue recovered and booked equipment"] }
     ]
   },
   plumbing: {
@@ -1149,7 +1102,7 @@ var PRICING = {
                 "Past customer annual check-up & estimate reactivation",
                 "Instant text-back on emergency and overflow calls, 24/7",
                 "Direct calendar booking for estimates and service visits",
-                "Lead portal: track every booked job and customer dollar"] }
+                "Live dashboard: track every booked job and customer dollar"] }
     ]
   }
 };
