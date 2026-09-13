@@ -145,39 +145,89 @@ html.js .frame.in img{transform:scale(1)}
 .proof-badge.green{background:#ecfdf5;color:#047857;border:1px solid #a7f3d0}
 .proof-badge.blue{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
 .proof-badge.amber{background:#fffbeb;color:#b45309;border:1px solid #fde68a}
-.proof-card h3{font-family:var(--display);font-size:1.14rem;font-weight:700;line-height:1.25;color:var(--ink)}
-.proof-bubble{
-  background:var(--surface);border:1px solid var(--line-soft);border-radius:12px;
-  padding:14px 16px;font-size:.88rem;line-height:1.5;color:#26324a;display:flex;flex-direction:column;gap:8px;
+.proof-card h3{font-family:var(--display);font-size:1.14rem;font-weight:700;line-height:1.25;color:var(--ink);margin:0}
+
+/* SMS chat bubbles inside proof cards */
+.sms-thread{display:flex;flex-direction:column;gap:8px;padding:12px 14px;background:#fff;border-radius:14px;border:1px solid var(--line-soft)}
+.sms-bubble{max-width:88%;padding:8px 12px;border-radius:14px;font-size:.84rem;line-height:1.4}
+.sms-in{background:#f1f5f9;color:#0f172a;align-self:flex-start;border-bottom-left-radius:3px}
+.sms-out{background:var(--accent);color:#fff;align-self:flex-end;border-bottom-right-radius:3px;font-weight:500}
+.sms-time{display:block;font-size:.64rem;opacity:.75;margin-top:2px}
+.sms-in .sms-time{color:#64748b}
+.sms-out .sms-time{color:#dbeafe;text-align:right}
+
+.proof-review-bubble{
+  background:#fff;border:1px solid var(--line-soft);border-radius:14px;
+  padding:14px;display:flex;flex-direction:column;gap:8px;
 }
-.proof-bubble .chat-row{display:flex;flex-direction:column;gap:2px}
-.proof-bubble .chat-sender{font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase}
-.proof-bubble .chat-msg{font-size:.88rem;color:var(--ink)}
 .proof-stars{color:#f59e0b;font-size:.95rem;letter-spacing:2px;display:flex;align-items:center;gap:4px}
-.proof-quote{font-style:italic;font-size:.88rem;color:var(--muted);line-height:1.5}
-.proof-author{font-size:.76rem;font-weight:700;color:var(--ink);margin-top:2px}
-.proof-impact{
-  margin-top:auto;padding-top:12px;border-top:1px solid var(--line-soft);
-  font-size:.85rem;font-weight:700;color:var(--accent);display:flex;align-items:center;gap:6px;
+.proof-quote{font-style:italic;font-size:.86rem;color:var(--muted);line-height:1.5;margin:0}
+.proof-author{font-size:.74rem;font-weight:700;color:var(--ink)}
+
+/* Big emphasis on money */
+.money-highlight{
+  margin-top:auto;padding-top:14px;border-top:1px solid var(--line-soft);
+  display:flex;align-items:baseline;gap:4px;
 }
+.money-highlight .plus{font-family:var(--display);font-size:1.45rem;font-weight:900;color:#059669;line-height:1}
+.money-highlight .amount{
+  font-family:var(--display);font-size:1.75rem;font-weight:900;color:#059669;line-height:1;
+  letter-spacing:-0.03em;font-variant-numeric:tabular-nums;
+}
+.money-highlight .label{font-size:.82rem;font-weight:700;color:var(--ink);margin-left:5px}
+.money-highlight.rank .plus{color:var(--accent)}
+.money-highlight.rank .amount{color:var(--accent)}
+
 @media (max-width:960px){.proof-grid{grid-template-columns:1fr}}
 
-/* ---------- 4 leaks cards (solutions area) ---------- */
-.leaks-sec{padding-block:clamp(84px,9vw,130px);background:var(--paper);border-top:1px solid var(--line-soft)}
-.leaks-head{text-align:center;max-width:760px;margin:0 auto 48px}
-.leaks-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+/* ---------- floating message pill on photo ---------- */
+.frame{position:relative}
+.msg-float-pill{
+  position:absolute;top:20px;right:20px;
+  background:rgba(255,255,255,.94);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1.5px solid rgba(23,65,155,.2);border-radius:14px;padding:12px 16px;
+  display:flex;align-items:center;gap:12px;box-shadow:0 10px 28px rgba(14,23,38,.14);
+  z-index:3;max-width:calc(100% - 40px);
+}
+.msg-float-icon{
+  width:36px;height:36px;border-radius:10px;background:#eef4ff;color:var(--accent);
+  display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex:none;
+}
+.msg-float-body{display:flex;flex-direction:column;gap:2px;text-align:left}
+.msg-float-tag{font-size:.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.msg-float-title{font-size:.9rem;font-weight:800;color:var(--ink);line-height:1.2}
+.msg-float-status{
+  background:#ecfdf5;color:#047857;border:1px solid #a7f3d0;font-size:.72rem;font-weight:800;
+  text-transform:uppercase;letter-spacing:.06em;padding:4px 9px;border-radius:6px;margin-left:auto;flex:none;
+}
+@media (max-width:600px){
+  .msg-float-pill{top:12px;right:12px;padding:8px 10px;gap:8px}
+  .msg-float-icon{width:28px;height:28px;font-size:.9rem}
+  .msg-float-title{font-size:.78rem}
+  .msg-float-status{display:none}
+}
+
+/* ---------- 4 leaks cards (compact & solutions area) ---------- */
+.leaks-sec{padding-block:clamp(74px,8vw,112px);background:var(--paper);border-top:1px solid var(--line-soft)}
+.leaks-head{text-align:center;max-width:760px;margin:0 auto 40px}
+.leaks-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
 .leak-card{
-  background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
-  padding:30px 26px;display:flex;flex-direction:column;gap:12px;
-  box-shadow:0 1px 4px rgba(14,23,38,.04);transition:transform .2s ease,border-color .2s ease;
+  background:var(--surface);border:1px solid var(--line);border-radius:16px;
+  padding:24px 22px;display:flex;flex-direction:column;gap:10px;
+  box-shadow:0 1px 3px rgba(14,23,38,.03);transition:transform .2s ease,border-color .2s ease;
 }
 .leak-card:hover{border-color:var(--accent);transform:translateY(-2px)}
-.leak-badge{font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#c2410c;display:flex;align-items:center;gap:6px}
-.leak-card h3{font-family:var(--display);font-size:1.18rem;font-weight:700;line-height:1.25;color:var(--ink)}
-.leak-pain{font-size:.92rem;color:var(--muted);line-height:1.6}
-.leak-pain b{color:var(--ink);font-weight:700}
-.leak-fix{margin-top:auto;padding-top:14px;border-top:1px solid var(--line-soft);font-size:.9rem;color:var(--ink);line-height:1.5}
-.leak-fix b{color:var(--accent);font-weight:800}
+.leak-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.leak-badge{font-size:.7rem;font-weight:800;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+.leak-loss{
+  font-size:.72rem;font-weight:800;letter-spacing:.04em;color:#b91c1c;background:#fef2f2;
+  border:1px solid #fecaca;padding:3px 8px;border-radius:6px;
+}
+.leak-card h3{font-family:var(--display);font-size:1.12rem;font-weight:700;line-height:1.2;color:var(--ink);margin:2px 0 0}
+.leak-line-pain{font-size:.88rem;color:var(--muted);line-height:1.5;margin:0}
+.leak-line-pain b{color:#b91c1c;font-weight:700}
+.leak-line-fix{font-size:.88rem;color:var(--ink);line-height:1.5;margin:0;padding-top:8px;border-top:1px dashed var(--line-soft)}
+.leak-line-fix b{color:var(--accent);font-weight:800}
 @media (max-width:768px){.leaks-grid{grid-template-columns:1fr}}
 
 /* ---------- hero ---------- */
@@ -528,13 +578,14 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
       <div class="proof-card rv" style="--d:.05s">
         <span class="proof-badge amber">⭐ 5.0 Google Review &middot; Auto-Sent</span>
         <h3>Automated 5-Star Review</h3>
-        <div class="proof-bubble">
+        <div class="proof-review-bubble">
           <div class="proof-stars">★★★★★</div>
           <p class="proof-quote">&ldquo;Mike&rsquo;s crew texted me back within 2 minutes and had our roof leak patched that same morning. Outstanding service!&rdquo;</p>
           <span class="proof-author">&mdash; Verified Homeowner, 2 days ago</span>
         </div>
-        <div class="proof-impact">
-          <span>🚀 Moved shop from #6 &rarr; #1 on Google Local Map Pack</span>
+        <div class="money-highlight rank">
+          <span class="plus">#</span><span class="amount">1</span>
+          <span class="label">Google Maps Local Pack &middot; 5.0 Rating</span>
         </div>
       </div>
 
@@ -542,22 +593,23 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
       <div class="proof-card rv" style="--d:.1s">
         <span class="proof-badge blue">⚡ Missed Call &middot; 8s Text-Back</span>
         <h3>Call Secured on Jobsite</h3>
-        <div class="proof-bubble">
-          <div class="chat-row">
-            <span class="chat-sender">Homeowner &middot; 2:14 PM</span>
-            <span class="chat-msg">Water heater leaking in basement, need someone today.</span>
+        <div class="sms-thread">
+          <div class="sms-bubble sms-in">
+            Water heater leaking in basement, need someone today.
+            <span class="sms-time">2:14 PM &middot; Homeowner</span>
           </div>
-          <div class="chat-row" style="margin-top:6px">
-            <span class="chat-sender">Automated System &middot; 2:14 PM</span>
-            <span class="chat-msg">Hey! Hands dirty on a job. We have an emergency slot at 1:30 PM today&mdash;can we hold that for you?</span>
+          <div class="sms-bubble sms-out">
+            Hey! Hands dirty on a job. We have an emergency slot at 1:30 PM today&mdash;can we hold that for you?
+            <span class="sms-time">2:14 PM &middot; Auto-Reply (8s)</span>
           </div>
-          <div class="chat-row" style="margin-top:6px">
-            <span class="chat-sender">Homeowner &middot; 2:15 PM</span>
-            <span class="chat-msg">Yes please, see you then!</span>
+          <div class="sms-bubble sms-in">
+            Yes please, see you then!
+            <span class="sms-time">2:15 PM &middot; Homeowner</span>
           </div>
         </div>
-        <div class="proof-impact">
-          <span>📅 +$2,400 Emergency Job Booked on Calendar</span>
+        <div class="money-highlight">
+          <span class="plus">+</span>$<span class="amount">2,400</span>
+          <span class="label">Emergency Water Heater Booked</span>
         </div>
       </div>
 
@@ -565,18 +617,19 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
       <div class="proof-card rv" style="--d:.15s">
         <span class="proof-badge green">📑 Stalled Estimate &middot; Revived</span>
         <h3>Past Estimate Rebooked</h3>
-        <div class="proof-bubble">
-          <div class="chat-row">
-            <span class="chat-sender">Automated Check-in &middot; 10:02 AM</span>
-            <span class="chat-msg">Hey Tom, checking in on the $6,200 deck estimate from last month&mdash;ready to get this on the schedule for next week?</span>
+        <div class="sms-thread">
+          <div class="sms-bubble sms-out">
+            Hey Tom, checking in on the $6,200 deck estimate from last month&mdash;ready to get this on the schedule for next week?
+            <span class="sms-time">10:02 AM &middot; Automated Check-in</span>
           </div>
-          <div class="chat-row" style="margin-top:6px">
-            <span class="chat-sender">Homeowner &middot; 10:18 AM</span>
-            <span class="chat-msg">Thanks for following up! Just got bonus check, let&rsquo;s lock in Thursday.</span>
+          <div class="sms-bubble sms-in">
+            Thanks for following up! Just got bonus check, let&rsquo;s lock in Thursday.
+            <span class="sms-time">10:18 AM &middot; Homeowner</span>
           </div>
         </div>
-        <div class="proof-impact">
-          <span>💰 +$6,200 Stalled Bid Turned Into Cash Flow</span>
+        <div class="money-highlight">
+          <span class="plus">+</span>$<span class="amount">6,200</span>
+          <span class="label">Stalled Estimate Revived &amp; Paid</span>
         </div>
       </div>
     </div>
@@ -602,6 +655,14 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
       </div>
       <div class="frame rv" style="--d:.12s">
         <img src="assets/contractor_flooring_booking.jpg" alt="Trade contractor installing flooring on jobsite while smartphone on table receives client booking text" loading="lazy">
+        <div class="msg-float-pill">
+          <div class="msg-float-icon">💬</div>
+          <div class="msg-float-body">
+            <span class="msg-float-tag">⚡ Speed-to-Lead</span>
+            <strong class="msg-float-title">Client Booked &middot; Tuesday 10:00 AM</strong>
+          </div>
+          <span class="msg-float-status">Confirmed</span>
+        </div>
         <span class="cap">Hands busy on the floor &middot; Phone books the estimate on the table</span>
       </div>
     </div>
@@ -634,45 +695,51 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
       <p class="lede rv" style="--d:.16s;margin-inline:auto">You do not have a lead problem. You have a response speed and follow-up leak. Here is where the money goes in the field, and how we plug each leak before you pay.</p>
     </div>
 
-    <!-- The 4 Core Bottlenecks & Fixes -->
+    <!-- The 4 Compact Core Bottlenecks & Fixes -->
     <div class="leaks-grid">
       <div class="leak-card rv" style="--d:.05s">
-        <span class="leak-badge">📞 LEAK 01 &middot; UNANSWERED CALLS</span>
-        <h3>Missed calls when crews are on jobsites</h3>
-        <p class="leak-pain">When you're on a roof, under a crawlspace, or running between bids, you can't pick up. <b>78% of homeowners hire whichever contractor responds first.</b> They don't leave voicemails—they hire the next guy on Google, costing you $1,500+ every missed call.</p>
-        <p class="leak-fix"><b>How We Fix It:</b> Instant speed-to-lead text-back locks down the homeowner in seconds, pre-qualifying the project before they can dial a competitor.</p>
+        <div class="leak-top">
+          <span class="leak-badge">LEAK 01</span>
+          <span class="leak-loss">-$1,500 / missed call</span>
+        </div>
+        <h3>Unanswered calls on jobsites</h3>
+        <p class="leak-line-pain"><b>The Problem:</b> 78% of homeowners hire whoever replies first. If you're working or driving, they dial the next guy on Google.</p>
+        <p class="leak-line-fix"><b>The Solution:</b> Instant 15-second text-back locks them down before they can call a competitor.</p>
       </div>
 
       <div class="leak-card rv" style="--d:.1s">
-        <span class="leak-badge">📑 LEAK 02 &middot; STALLED BIDS</span>
-        <h3>Dead quotes &amp; paper estimates gathering dust</h3>
-        <p class="leak-pain">You drove out, measured, priced materials, and sent the quote—then got ghosted. <b>Most contractors sit on $50,000+ in stalled bids</b> simply because nobody has the time to manually chase cold homeowners.</p>
-        <p class="leak-fix"><b>How We Fix It:</b> Automated reactivation campaigns quietly follow up with polite, personalized check-ins that revive forgotten quotes and past customers with zero manual effort.</p>
+        <div class="leak-top">
+          <span class="leak-badge">LEAK 02</span>
+          <span class="leak-loss">-$50,000 in ghosted bids</span>
+        </div>
+        <h3>Dead quotes gathering dust</h3>
+        <p class="leak-line-pain"><b>The Problem:</b> You drove out, measured, and sent the estimate—then got ghosted with zero time to chase cold homeowners.</p>
+        <p class="leak-line-fix"><b>The Solution:</b> Automated check-ins quietly revive forgotten quotes and past customers into booked jobs.</p>
       </div>
 
       <div class="leak-card rv" style="--d:.15s">
-        <span class="leak-badge">💸 LEAK 03 &middot; MARGIN DESTRUCTION</span>
-        <h3>Paying for expensive shared leads</h3>
-        <p class="leak-pain">Paying $80–$150 per lead on platforms where the exact same homeowner gets blasted to 4 other contractors turns your business into a <b>desperate price war where only low-ballers win</b> and your margins get crushed.</p>
-        <p class="leak-fix"><b>How We Fix It:</b> Exclusive, direct inbound demand for your business in your specific zip codes so 100% of the jobs and profits belong solely to you.</p>
+        <div class="leak-top">
+          <span class="leak-badge">LEAK 03</span>
+          <span class="leak-loss">Margin price wars</span>
+        </div>
+        <h3>Expensive shared leads</h3>
+        <p class="leak-line-pain"><b>The Problem:</b> Paying $100+ for shared leads blasted to 4 other contractors turns into a low-ball race to the bottom.</p>
+        <p class="leak-line-fix"><b>The Solution:</b> 100% exclusive local demand sent directly to your phone in your specific service zip codes.</p>
       </div>
 
       <div class="leak-card rv" style="--d:.2s">
-        <span class="leak-badge">⏱️ LEAK 04 &middot; LOCAL VISIBILITY</span>
-        <h3>Competitors get picked before you</h3>
-        <p class="leak-pain">If a local competitor has more fresh 5-star Google reviews or responds in minutes while you're busy, <b>they take your local jobs every single week</b> before you even know the homeowner needed help.</p>
-        <p class="leak-fix"><b>How We Fix It:</b> Automated review collection after every completed job plus instant speed-to-lead make your business the highest rated and fastest to reply in your county.</p>
+        <div class="leak-top">
+          <span class="leak-badge">LEAK 04</span>
+          <span class="leak-loss">Lost map pack jobs</span>
+        </div>
+        <h3>Competitors picked first</h3>
+        <p class="leak-line-pain"><b>The Problem:</b> Local competitors with fresh 5-star Google reviews win high-ticket jobs before you even know they needed help.</p>
+        <p class="leak-line-fix"><b>The Solution:</b> Automated 5-star review collection pushes your shop to #1 on Google Maps.</p>
       </div>
     </div>
 
-    <!-- The Leak, Added Up -->
-    <div style="margin-top:52px;padding:36px 28px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);text-align:center" class="rv" style="--d:.2s">
-      <p class="eyebrow rv" style="justify-content:center">The leak, added up</p>
-      <p class="leak-line rv" style="--d:.1s;margin:12px auto">About <span class="big" style="color:var(--accent)">$<span class="num" data-count="14800">14,800</span></span> in trade jobs leaked out of an average 4-truck shop last month.</p>
-      <p class="leak-note rv" style="--d:.18s;color:var(--muted);font-size:.9rem">Calculated from typical trade ticket sizes and missed-call volumes. We diagnose your exact number on your call.</p>
-      <div style="margin-top:28px">
-        <a class="btn btn-primary magnetic rv" style="--d:.24s" href="go/">Diagnose Your Trade's Leak in 45 Seconds <span class="arr">&rarr;</span></a>
-      </div>
+    <div style="text-align:center;margin-top:44px">
+      <a class="btn btn-primary magnetic rv" style="--d:.24s" href="go/">Diagnose Your Trade's Leak in 45 Seconds <span class="arr">&rarr;</span></a>
     </div>
   </div>
 </section>
