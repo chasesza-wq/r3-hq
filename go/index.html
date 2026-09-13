@@ -178,7 +178,7 @@ footer a{text-decoration:underline}
   <div class="hero">
     <div id="landing-view">
       <h1>15 Qualified Jobs in 60 Days, <span class="grad">Guaranteed.</span></h1>
-      <p class="sub">We install <b>22-second 2-way AI speed-to-lead</b> and past customer database reactivation directly into your business. Answer 2 quick questions to see if you qualify.</p>
+      <p class="sub">We stop homeowners from calling your competitors the moment you miss a call, and turn past estimates into booked work. <b>You do the trade, we fill the calendar.</b> Answer 2 quick questions to see if you qualify.</p>
     </div>
 
     <!-- 3-STEP SURVEY SHELL -->
@@ -196,7 +196,7 @@ footer a{text-decoration:underline}
               <button type="button" class="sv-opt" data-v="Missed calls on jobsites">📞 Unanswered calls when crews are on jobsites</button>
               <button type="button" class="sv-opt" data-v="Dead paper estimates">📑 Dead paper quotes & estimates that never closed</button>
               <button type="button" class="sv-opt" data-v="Expensive shared leads">💸 Paying for shared leads that 5 competitors call</button>
-              <button type="button" class="sv-opt" data-v="Slow speed to lead">⏱️ Slow response time (leads hire competitors first)</button>
+              <button type="button" class="sv-opt" data-v="Competitors get picked before you">⏱️ Competitors get picked before you (Google ranking & slow response)</button>
               <button type="button" class="sv-opt" id="optOther" data-v="Other">✏️ Other bottleneck (type below)</button>
             </div>
 
@@ -245,7 +245,7 @@ footer a{text-decoration:underline}
         <div class="cta-zone">
           <div class="ticks">
             <span class="tick">15 Jobs Guaranteed</span>
-            <span class="tick">22-Sec Speed-to-Lead</span>
+            <span class="tick">Instant Text-Back</span>
             <span class="tick">Done-For-You System</span>
           </div>
         </div>
@@ -259,11 +259,10 @@ footer a{text-decoration:underline}
       <div class="grat-card">
         <div class="grat-badge">✓ Diagnostic Complete · 100% Match</div>
         <h2>We've got your answers, <span id="displayName">there</span>.</h2>
-        <p class="grat-p">
-          You told us your biggest bottleneck is <b id="echoLeak">Missed calls on jobsites</b> in <b id="echoTrade">Roofing</b>.
-          You're not alone—that single leak costs trade contractors an average of <b>$12,000–$25,000 every month</b> in uncalled homeowner jobs.
-          Our 22-second 2-way AI was engineered specifically to plug that exact leak and lock in those homeowners before they dial your competitor.
-        </p>
+        <div id="dynamicGratBody">
+          <p class="grat-p" id="gratStat" style="margin-bottom:12px"></p>
+          <p class="grat-p" id="gratFix"></p>
+        </div>
       </div>
 
       <!-- Calendar Slot -->
@@ -437,11 +436,41 @@ footer a{text-decoration:underline}
       }
     } catch(err){}
 
+    // Problem diagnoses definitions (Cutthroat, plain English, zero tech jargon)
+    var diagnoses = {
+      "Missed calls on jobsites": {
+        stat: "<b>You're not alone.</b> Over 60% of homeowner calls go straight to voicemail because you or your crew are on a ladder, under a crawlspace, or driving. Homeowners with an urgent project don't leave voicemails—they hang up and hire the next contractor on Google.",
+        fix: "<b>How we solve it:</b> The second a call goes unanswered, an instant text message engages the homeowner, answers their questions, and books the estimate directly onto your calendar before they can dial a competitor."
+      },
+      "Dead paper estimates": {
+        stat: "<b>You're not alone.</b> Most contractors sit on $50,000 to $150,000 in unclosed quotes. You drove out, inspected, and wrote the bid—they just stalled out because you're busy in the field and don't have hours to chase cold leads.",
+        fix: "<b>How we solve it:</b> We reactivate those old bids with a respectful text follow-up sequence. It reopens the conversation, answers their concerns, and books the job onto your schedule without you lifting a finger."
+      },
+      "Expensive shared leads": {
+        stat: "<b>You're not alone.</b> Lead brokers like Angi and HomeAdvisor sell the exact same homeowner to 5 contractors at once. You're forced into an exhausting race to the bottom against low-ballers who destroy your profit margins.",
+        fix: "<b>How we solve it:</b> We pull high-margin work directly out of your past customer database and exclusive direct inquiries. Every job is 100% yours—no bidding wars, no price cuts, full profit."
+      },
+      "Competitors get picked before you": {
+        stat: "<b>You're not alone.</b> 78% of homeowners hire whichever contractor gets back to them first, or whoever shows up at the top of Google with fresh 5-star reviews. If you take an hour to reply, your competitor already won the job.",
+        fix: "<b>How we solve it:</b> We boost your local Google ranking with automated 5-star customer reviews, and respond to every inquiry in seconds via SMS. You become the first contractor they see—and the first to lock them in."
+      },
+      "Slow speed to lead": {
+        stat: "<b>You're not alone.</b> 78% of homeowners hire whichever contractor gets back to them first, or whoever shows up at the top of Google with fresh 5-star reviews. If you take an hour to reply, your competitor already won the job.",
+        fix: "<b>How we solve it:</b> We boost your local Google ranking with automated 5-star customer reviews, and respond to every inquiry in seconds via SMS. You become the first contractor they see—and the first to lock them in."
+      },
+      "Other": {
+        stat: "<b>You're not alone.</b> Every trade business has specific bottlenecks that leak revenue and leave holes in the weekly schedule—whether it's seasonal slow periods or inconsistent booking loops.",
+        fix: "<b>How we solve it:</b> On our 15-minute diagnostic call, Garrett Cole will review your local market, past customer list, and exact numbers to build a custom roadmap that hits 15 guaranteed jobs in 60 days."
+      }
+    };
+
+    var selectedDiag = diagnoses[answers.revenue_leak] || diagnoses["Other"];
+    document.getElementById('gratStat').innerHTML = selectedDiag.stat;
+    document.getElementById('gratFix').innerHTML = selectedDiag.fix;
+
     // Transition to Gratification & Booking view
     document.getElementById('displayName').textContent = nameVal;
     document.getElementById('calName').textContent = nameVal;
-    document.getElementById('echoLeak').textContent = answers.revenue_leak;
-    document.getElementById('echoTrade').textContent = answers.trade;
 
     surveyShell.style.display = 'none';
     landing.style.display = 'none';
