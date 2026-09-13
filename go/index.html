@@ -136,9 +136,8 @@ body.survey-full{background:#f4f7fc}
 .grat-p b{color:var(--ink);font-weight:700}
 
 .cal-card{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 24px 60px -34px rgba(14,23,38,.3);margin-bottom:24px}
-.cal-head{padding:18px 20px 10px;border-bottom:1px solid var(--line2)}
-.cal-head h3{font-family:var(--display);font-size:1.18rem;font-weight:800}
-.cal-head p{font-size:.86rem;color:var(--mut)}
+.cal-head{padding:18px 20px 16px;border-bottom:1px solid var(--line2)}
+.cal-head h3{font-family:var(--display);font-size:1.18rem;font-weight:800;margin:0}
 .slot{min-height:640px;background:var(--surface);position:relative}
 .calendly-inline-widget{width:100%;height:640px;min-width:280px}
 .fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:28px 22px;text-align:center;background:var(--surface);transition:opacity .25s}
@@ -161,7 +160,7 @@ footer a{text-decoration:underline}
 </head>
 <body>
 
-<div class="ribbon">For Trade Contractors: Roofing · HVAC · Plumbing · Electrical</div>
+<div class="ribbon">For Service Contractors & Home Pros: Roofing · HVAC · Plumbing · Electrical · Remodeling</div>
 
 <div class="canvas">
   <div class="markbar">
@@ -178,7 +177,7 @@ footer a{text-decoration:underline}
   <div class="hero">
     <div id="landing-view">
       <h1>15 Qualified Jobs in 60 Days, <span class="grad">Guaranteed.</span></h1>
-      <p class="sub">We stop homeowners from calling your competitors the moment you miss a call, and turn past estimates into booked work. <b>You do the trade, we fill the calendar.</b> Answer 2 quick questions to see if you qualify.</p>
+      <p class="sub">We stop homeowners from calling your competitors the moment you miss a call, and turn past estimates into booked work. <b>You run the jobs, we fill the calendar.</b> Answer 2 quick questions to see if you qualify.</p>
     </div>
 
     <!-- 3-STEP SURVEY SHELL -->
@@ -207,17 +206,18 @@ footer a{text-decoration:underline}
             </div>
           </div>
 
-          <!-- ==================== STEP 2: TRADE SPECIALTY ==================== -->
+          <!-- ==================== STEP 2: SERVICE / INDUSTRY ==================== -->
           <div class="step" data-step="2">
             <div class="q-eye">Step 2 of 3</div>
-            <div class="sv-t">What trade do you specialize in?</div>
-            <div class="sv-h">This tailors your 60-day reactivation campaign to your ticket size.</div>
+            <div class="sv-t">What type of service business do you run?</div>
+            <div class="sv-h">This tailors your 60-day campaign to your typical ticket size.</div>
             <div class="sv-opts" id="tradeOpts" data-q="trade">
-              <button type="button" class="sv-opt" data-v="Roofing">🔨 Roofing Contractor</button>
+              <button type="button" class="sv-opt" data-v="Roofing">🔨 Roofing & Exterior</button>
               <button type="button" class="sv-opt" data-v="HVAC">❄️ HVAC & Mechanical</button>
               <button type="button" class="sv-opt" data-v="Plumbing">🚰 Plumbing & Repipe</button>
-              <button type="button" class="sv-opt" data-v="Electrical">⚡ Electrical & Standby Power</button>
-              <button type="button" class="sv-opt" data-v="Other Trade">🛠️ Other Trade Business</button>
+              <button type="button" class="sv-opt" data-v="Electrical">⚡ Electrical & Power</button>
+              <button type="button" class="sv-opt" data-v="Remodeling">🏡 Remodeling, Construction & Home Services</button>
+              <button type="button" class="sv-opt" data-v="Other Service">🛠️ Other Service or Trade Business</button>
             </div>
           </div>
 
@@ -258,7 +258,7 @@ footer a{text-decoration:underline}
       <!-- Gratification Card: Empathy & Understanding -->
       <div class="grat-card">
         <div class="grat-badge">✓ Diagnostic Complete · 100% Match</div>
-        <h2>We've got your answers.</h2>
+        <h2>Your Diagnosis</h2>
         <div id="dynamicGratBody">
           <p class="grat-p" id="gratStat" style="margin-bottom:12px"></p>
           <p class="grat-p" id="gratFix"></p>
@@ -269,7 +269,6 @@ footer a{text-decoration:underline}
       <div class="cal-card">
         <div class="cal-head">
           <h3>Pick your 15-minute diagnostic time</h3>
-          <p>15 minutes on the phone to look over your numbers and map out your schedule. No sales pitch, no slides—just your business.</p>
         </div>
 
         <div class="slot" id="slot">
