@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lead engine — RecoverRevenue</title>
+<meta name="description" content="Your next 10 jobs are already in your phone. We wake up your past-customer list and fill your slow weeks. Run the math with your own numbers.">
+<link rel="icon" type="image/svg+xml" href="../assets/logo-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="sell.css">
+<style>
+  .calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:940px;margin:44px auto 0}
+  @media(max-width:860px){.calc-grid{grid-template-columns:1fr}}
+  .calc{background:#fff;border:1px solid var(--line);border-radius:20px;padding:30px}
+  .calc .chead{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--dim);font-weight:700;margin-bottom:22px}
+  .field{margin-bottom:24px}
+  .field label{display:flex;justify-content:space-between;font-size:13.5px;font-weight:600;margin-bottom:10px}
+  .field label output{font-family:var(--mono);color:var(--blue);font-weight:700}
+  .field input[type=range]{width:100%;accent-color:var(--blue);cursor:pointer}
+  .calc .note{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--dim);line-height:1.7;margin-top:8px}
+  .result{background:var(--dark);color:var(--dark-ink);border:0;display:flex;flex-direction:column;justify-content:center}
+  .result .rl{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:#8b93a5}
+  .result .rn{font-family:var(--disp);font-size:clamp(2.6rem,5vw,3.8rem);font-weight:800;color:var(--sky);font-variant-numeric:tabular-nums;margin:8px 0 4px}
+  .result .rs{font-size:13.5px;color:#9aa0a8;line-height:1.6}
+  .result .rs b{color:var(--dark-ink)}
+  .result .rline{display:flex;justify-content:space-between;font-size:12.5px;color:#9aa0a8;border-bottom:1px dashed var(--dark-line);padding:9px 0}
+  .result .rline b{color:var(--dark-ink);font-variant-numeric:tabular-nums}
+  .result .rlines{margin:18px 0 14px}
+  /* ---- wake-the-list simulator ---- */
+  .sim{max-width:940px;margin:24px auto 0;background:#fff;border:1px solid var(--line);border-radius:20px;padding:clamp(16px,3vw,26px)}
+  .sim .chead{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--dim);font-weight:700}
+  .sim-head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+  .sim-week{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--ink);margin-top:8px}
+  .sim-total .tl{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--dim);text-align:right}
+  .sim-total .tn{display:block;font-family:var(--disp);font-size:30px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--ink);text-align:right}
+  .sim-total.won .tn{color:var(--blue)}
+  .sim-grid{display:grid;grid-template-columns:280px minmax(0,1fr);gap:18px}
+  @media(max-width:860px){.sim-grid{grid-template-columns:1fr}}
+  .cust-panel{border:1px solid var(--line);border-radius:14px;padding:14px;align-self:start}
+  .cust{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 2px;border-bottom:1px dashed var(--line)}
+  .cust:last-child{border-bottom:0}
+  .cust .cw{min-width:0}
+  .cust b{font-size:13px;display:block}
+  .cust .cm{font-family:var(--mono);font-size:8.5px;letter-spacing:.06em;color:var(--dim);display:block;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cst{font-family:var(--mono);font-size:9px;letter-spacing:.06em;color:var(--dim);border:1px dashed var(--line);border-radius:99px;padding:4px 9px;white-space:nowrap;flex:none;transition:color .3s,background .3s,border-color .3s}
+  .cst.txd{color:var(--blue);border:1px solid rgba(27,72,200,.4);background:var(--blue-soft)}
+  .cst.bkd{color:#1e7a45;border:1px solid rgba(47,158,95,.45);background:rgba(47,158,95,.09)}
+  .cal{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+  .cday{min-width:0}
+  .cday .dh{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;color:var(--dim);text-align:center;margin-bottom:6px}
+  .slot{
+    border:1px dashed var(--line);border-radius:9px;min-height:46px;margin-bottom:6px;padding:3px;overflow:hidden;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;text-align:center;
+    font-family:var(--mono);font-size:8.5px;letter-spacing:.06em;color:rgba(22,24,29,.35);
+  }
+  .slot.pre{border-style:solid;background:var(--paper2);color:var(--dim)}
+  .slot.fill{border:1px solid rgba(47,158,95,.45);background:rgba(47,158,95,.09);color:#1e7a45}
+  .slot.fill b{font-family:'Inter',sans-serif;font-size:9.5px;font-weight:700;color:var(--ink);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .slot.pop{animation:slotpop .45s cubic-bezier(.22,.7,.3,1)}
+  @keyframes slotpop{0%{transform:scale(.8);opacity:0}100%{transform:scale(1);opacity:1}}
+  .thread{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:12px;max-height:250px;overflow-y:auto}
+  .sms .ln.show{opacity:1;transform:none}
+  .sim-foot{display:flex;align-items:center;gap:14px 18px;flex-wrap:wrap;margin-top:18px}
+  .sim-reset{font-size:12.5px;color:var(--dim);text-decoration:underline;cursor:pointer;background:none;border:none;font-family:'Inter',sans-serif;padding:0}
+  .sim-note{font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--dim);line-height:1.7;flex:1;min-width:180px}
+  .push.spent .face{opacity:.55}
+  @media (prefers-reduced-motion:reduce){.slot.pop{animation:none}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="brand" href="../index.html">Recover<i>Revenue</i></a>
+  <a href="../index.html#services">All systems</a>
+  <a href="#calc">Run your math</a>
+  <a href="#offer">Pricing</a>
+  <a class="cta" href="https://calendly.com/chase-sza/30min?utm_source=recoverrevenue&amp;utm_medium=site&amp;utm_content=lead-engine-lead-engine" target="_blank" rel="noopener">Book a call</a>
+</nav>
+
+<header>
+  <div class="wrap">
+    <div class="kicker">SYSTEM 04 — LEAD ENGINE</div>
+    <h1 class="h1">Your next 10 jobs are<br>already <span class="em">in your phone.</span></h1>
+    <p class="lead hero-sub">Slow weeks aren't bad luck — they're an unworked customer list. Hundreds of people already trusted you once, paid you once, and haven't heard from you since. <b>We wake that list up, every month, without you lifting a finger.</b></p>
+    <div class="hero-cta-row">
+      <a class="push" href="https://calendly.com/chase-sza/30min?utm_source=recoverrevenue&amp;utm_medium=site&amp;utm_content=lead-engine-lead-engine" target="_blank" rel="noopener"><span class="edge"><span class="face">Book the 15-minute leak audit →</span></span></a>
+    </div>
+    <div class="crumb"><a href="../index.html#services">← All four systems</a></div>
+  </div>
+</header>
+
+<section class="math">
+  <div class="wrap">
+    <div class="kicker">The money math</div>
+    <h2 class="h2">The cheapest customer is one you already won</h2>
+    <div class="math-grid">
+      <div class="mcard rv"><div class="n">$0<small> to reach them</small></div><p>You already paid to win these customers once — in ads, in referrals, in years of work. The list is a paid-off asset sitting idle.</p></div>
+      <div class="mcard rv"><div class="n">1 text<small> is all it takes</small></div><p>A season reminder, a past-customer offer, a "we're in your area this week." Useful, not spammy — from the business they already hired.</p></div>
+      <div class="mcard rv"><div class="n">Day 4</div><p>That's when the bookings typically start landing after a campaign goes out — right into the slow week you were dreading.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="calc">
+  <div class="wrap">
+    <div class="kicker">Proof, not promises</div>
+    <h2 class="h2" style="text-align:center">Run it with your own numbers</h2>
+    <p class="lead" style="margin:0 auto;text-align:center">We have no interest in fantasy projections — so this uses <b>your list and your ticket,</b> at a deliberately conservative response rate. Your portal tracks the real number.</p>
+    <div class="calc-grid">
+      <div class="calc">
+        <div class="chead">YOUR INPUTS — DRAG THEM</div>
+        <div class="field">
+          <label>Past customers on your list <output id="listOut">300</output></label>
+          <input type="range" id="listIn" min="50" max="2000" step="25" value="300">
+        </div>
+        <div class="field">
+          <label>Your average job value <output id="ticketOut">$250</output></label>
+          <input type="range" id="ticketIn" min="75" max="2500" step="25" value="250">
+        </div>
+        <div class="note">ASSUMES A 3% BOOKED-JOB RESPONSE PER CAMPAIGN — DELIBERATELY CONSERVATIVE. ESTIMATE ONLY; YOUR PORTAL TRACKS THE REAL NUMBER.</div>
+      </div>
+      <div class="calc result">
+        <div class="rl">ONE CAMPAIGN, CONSERVATIVELY</div>
+        <div class="rn" id="revOut">$2,250</div>
+        <div class="rs">from <b id="jobsOut">9 booked jobs</b> off your existing list</div>
+        <div class="rlines">
+          <div class="rline"><span>Campaigns per month</span><b>1 — done for you</b></div>
+          <div class="rline"><span>Your time required</span><b>0 hours</b></div>
+          <div class="rline"><span>Where it's tracked</span><b>Your portal, in dollars</b></div>
+        </div>
+        <a class="push" href="https://calendly.com/chase-sza/30min?utm_source=recoverrevenue&amp;utm_medium=site&amp;utm_content=lead-engine-lead-engine" style="align-self:flex-start" target="_blank" rel="noopener"><span class="edge"><span class="face">Make my list work →</span></span></a>
+      </div>
+    </div>
+    <div class="sim rv" id="sim">
+      <div class="sim-head">
+        <div>
+          <div class="chead">WAKE THE LIST — PRESS THE BUTTON, WATCH THE WEEK FILL · SIMULATED, DEMO DATA</div>
+          <div class="sim-week" id="simState">NEXT WEEK: 2 JOBS ON THE BOOKS. 13 SLOTS EMPTY.</div>
+        </div>
+        <div class="sim-total" id="simTotalWrap"><span class="tl">WEEK RECOVERED</span><span class="tn" id="simTotal">$0</span></div>
+      </div>
+      <div class="sim-grid">
+        <div class="cust-panel">
+          <div class="chead" style="margin-bottom:8px">YOUR PAST-CUSTOMER LIST — 8 OF 300</div>
+          <div class="cust" data-c="mike"><span class="cw"><b>Mike R.</b><span class="cm">FULL DETAIL · 6 MO AGO</span></span><span class="cst">—</span></div>
+          <div class="cust" data-c="dana"><span class="cw"><b>Dana K.</b><span class="cm">CERAMIC COAT · 8 MO AGO</span></span><span class="cst">—</span></div>
+          <div class="cust" data-c="luis"><span class="cw"><b>Luis O.</b><span class="cm">INTERIOR CLEAN · 9 MO AGO</span></span><span class="cst">—</span></div>
+          <div class="cust" data-c="sarah"><span class="cw"><b>Sarah P.</b><span class="cm">WASH PACKAGE · 5 MO AGO</span></span><span class="cst">—</span></div>
+          <div class="cust" data-c="tn"><span class="cw"><b>T. Nguyen</b><span class="cm">FULL DETAIL · 12 MO AGO</span></span><span class="cst">—</span></div>
+          <div class="cust" data-c="carla"><span class="cw"><b>Carla M.</b><span class="cm">WASH PACKAGE · 7 MO AGO</span></span><span class="cst">—</span></div>
+          <div class="cust" data-c="jb"><span class="cw"><b>J. Brooks</b><span class="cm">FULL DETAIL · 14 MO AGO</span></span><span class="cst">—</span></div>
+          <div class="cust" data-c="pete"><span class="cw"><b>Pete D.</b><span class="cm">TRUCK DETAIL · 10 MO AGO</span></span><span class="cst">—</span></div>
+        </div>
+        <div>
+          <div class="cal" id="simCal" aria-label="Next week's schedule">
+            <div class="cday"><div class="dh">MON</div><div class="slot" data-s="mon-9">9A</div><div class="slot" data-s="mon-1">1P</div><div class="slot" data-s="mon-4">4P</div></div>
+            <div class="cday"><div class="dh">TUE</div><div class="slot" data-s="tue-9">9A</div><div class="slot pre" data-s="tue-1">BOOKED</div><div class="slot" data-s="tue-4">4P</div></div>
+            <div class="cday"><div class="dh">WED</div><div class="slot" data-s="wed-9">9A</div><div class="slot" data-s="wed-1">1P</div><div class="slot" data-s="wed-4">4P</div></div>
+            <div class="cday"><div class="dh">THU</div><div class="slot pre" data-s="thu-9">BOOKED</div><div class="slot" data-s="thu-1">1P</div><div class="slot" data-s="thu-4">4P</div></div>
+            <div class="cday"><div class="dh">FRI</div><div class="slot" data-s="fri-9">9A</div><div class="slot" data-s="fri-1">1P</div><div class="slot" data-s="fri-4">4P</div></div>
+          </div>
+          <div class="thread" id="simThread">
+            <div class="sms" id="simSms"><div class="dhead">CAMPAIGN THREAD — TEXTS GO OUT WHEN YOU PRESS THE BUTTON</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="sim-foot">
+        <button class="push" id="simRun"><span class="edge"><span class="face">Run reactivation campaign →</span></span></button>
+        <button class="sim-reset" id="simReset">Reset the week</button>
+        <span class="sim-note">WAVE 1: 4 TEXTS · DAY-4 FOLLOW-UP: 2 MORE · ONE WORD OPTS ANYONE OUT · EVERY BOOKED JOB TRACKED IN YOUR PORTAL</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--paper2)">
+  <div class="wrap">
+    <div class="kicker">How it works</div>
+    <h2 class="h2">Bring us a shoebox. We'll bring back customers.</h2>
+    <div class="proc">
+      <div class="step rv"><div class="num">01</div><h3>We clean your list</h3><p>Phone contacts, invoices, a spreadsheet, literally a shoebox — whatever exists. Cleaning and organizing it is part of the build fee.</p></div>
+      <div class="step rv"><div class="num">02</div><h3>Campaigns go out monthly</h3><p>Season reminders, past-customer offers, slow-week fillers — written for your business, sent by text and email. One word opts anyone out.</p></div>
+      <div class="step rv"><div class="num">03</div><h3>Bookings land, portal counts</h3><p>Replies route to booking — and every job a campaign produces is tracked in your portal, attributed conservatively, in dollars.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="dark-band">
+  <div class="wrap">
+    <div class="kicker">The guarantee stack</div>
+    <h2 class="h2">Why this is <span class="em">our</span> risk, not yours</h2>
+    <div class="gstack">
+      <div class="gcard rv"><b>Your list first, ads later.</b><p>We work the paid-off asset before renting strangers. When your list is tapped out, we'll tell you — managed ads are the next gear, not the first.</p></div>
+      <div class="gcard rv"><b>Zero homework.</b><p>You never write a campaign, never touch a spreadsheet. Your only job is doing the work the bookings bring.</p></div>
+      <div class="gcard rv"><b>Conservative attribution.</b><p>Only jobs that clearly came from a campaign get counted. We'd rather under-report than inflate your portal.</p></div>
+      <div class="gcard rv"><b>90 days, then month-to-month.</b><p>If the campaigns aren't producing more than they cost, the portal will say so — and you can fire us.</p></div>
+    </div>
+    <div class="portal-badge"><i></i>EVERY SYSTEM REPORTS INTO ONE PORTAL — DOLLARS RECOVERED, UPDATED LIVE</div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="kicker">Straight answers</div>
+    <h2 class="h2" style="text-align:center">What owners ask us</h2>
+    <div class="faq">
+      <details><summary>Texting old customers feels like spam.</summary><div class="a">It's one useful message to people who already hired you — a reminder, a season heads-up, an offer. They can opt out with one word; almost nobody does when it's their own tree guy.</div></details>
+      <details><summary>My list is a mess — half of it is in my head.</summary><div class="a">Bring us whatever exists — phone contacts, invoices, a shoebox. Cleaning it up is part of the build fee. Zero homework is the deal on every plan.</div></details>
+      <details><summary>Why not just run Facebook ads?</summary><div class="a">Ads rent strangers; your list is people who already said yes. We work the paid-off asset first — when it's tapped out, we'll tell you, and managed local ads (from $997/mo) are the next gear, not the first.</div></details>
+    </div>
+  </div>
+</section>
+
+<section class="offer" id="offer">
+  <div class="wrap">
+    <div class="offer-grid">
+      <div>
+        <div class="kicker">The plan this page is about</div>
+        <h2 class="h2">Full Recovery</h2>
+        <p class="lead">The lead engine ships in our top plan on purpose: <b>pouring leads onto missed calls wastes them.</b> The AI receptionist catches what the campaigns stir up — that's why they travel together.</p>
+        <div class="achips">
+          <span class="achip">Included: <b>monthly reactivation campaigns</b></span>
+          <span class="achip">Next gear when your list is tapped: <b>managed ads from $997/mo</b></span>
+        </div>
+      </div>
+      <div class="tier rv">
+        <div class="tname">Full Recovery</div>
+        <div class="tprice">$650<span>/mo</span></div>
+        <div class="tsetup"><b>$2,497 build fee</b> — everything below, plus your AI receptionist trained &amp; live</div>
+        <ul>
+          <li>Everything in Visibility+ (site, GBP weekly, chatbot, review engine)</li>
+          <li>Lead engine — monthly past-customer reactivation campaigns</li>
+          <li>List cleanup included in the build</li>
+          <li>AI receptionist — answers 24/7, in under 30 seconds</li>
+          <li>Every campaign job tracked in your portal</li>
+          <li>Priority support — same-day response</li>
+        </ul>
+        <a class="tbtn" href="https://calendly.com/chase-sza/30min?utm_source=recoverrevenue&amp;utm_medium=site&amp;utm_content=lead-engine-full-recovery-plan" target="_blank" rel="noopener">Fill my slow weeks</a>
+        <a class="allplans" href="../index.html#pricing">Compare <b>all plans →</b></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <div class="kicker">One call. Fifteen minutes.</div>
+    <h2 class="h2">Find out what your list is worth.</h2>
+    <p class="lead" style="max-width:520px">Bring a rough count of past customers and your average ticket — we'll run the honest math together. You leave with your numbers either way.</p>
+    <a class="push dark-edge" href="https://calendly.com/chase-sza/30min?utm_source=recoverrevenue&amp;utm_medium=site&amp;utm_content=lead-engine-lead-engine" target="_blank" rel="noopener"><span class="edge"><span class="face">Book the 15-minute leak audit →</span></span></a>
+    <div class="sub-cta">Prefer email? <a href="mailto:chase@recoverrevenue.co">chase@recoverrevenue.co</a></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span><b>Recover<i>Revenue</i></b> — Tampa Bay, FL</span>
+    <span>Websites · AI receptionists · Review engines · Lead engines</span>
+    <span>© 2026 RecoverRevenue</span>
+  </div>
+</footer>
+
+<a class="callbar" href="https://calendly.com/chase-sza/30min?utm_source=recoverrevenue&amp;utm_medium=site&amp;utm_content=lead-engine-lead-engine" target="_blank" rel="noopener">Book a 15-min leak audit →</a>
+
+<script>
+(function(){
+  "use strict";
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  },{threshold:.15});
+  document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+
+  /* calculator — 3% conservative booked-job response */
+  var listIn = document.getElementById('listIn'), ticketIn = document.getElementById('ticketIn');
+  var listOut = document.getElementById('listOut'), ticketOut = document.getElementById('ticketOut');
+  var revOut = document.getElementById('revOut'), jobsOut = document.getElementById('jobsOut');
+  function calc(){
+    var list = +listIn.value, ticket = +ticketIn.value;
+    var jobs = Math.max(1, Math.round(list * 0.03));
+    listOut.textContent = list.toLocaleString();
+    ticketOut.textContent = '$' + ticket.toLocaleString();
+    jobsOut.textContent = jobs + ' booked job' + (jobs === 1 ? '' : 's');
+    revOut.textContent = '$' + (jobs * ticket).toLocaleString();
+  }
+  listIn.addEventListener('input', calc);
+  ticketIn.addEventListener('input', calc);
+  calc();
+
+  /* ---- wake-the-list simulator ---- */
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var sms = document.getElementById('simSms');
+  var thread = document.getElementById('simThread');
+  var runBtn = document.getElementById('simRun');
+  var faceEl = runBtn.querySelector('.face');
+  var resetBtn = document.getElementById('simReset');
+  var totalEl = document.getElementById('simTotal');
+  var totalWrap = document.getElementById('simTotalWrap');
+  var stateEl = document.getElementById('simState');
+  var smsInit = sms.innerHTML;
+  var stateInit = stateEl.textContent;
+
+  var slots = {};
+  document.querySelectorAll('#simCal .slot').forEach(function(s){
+    s._orig = s.innerHTML;
+    slots[s.getAttribute('data-s')] = s;
+  });
+  var statuses = {};
+  document.querySelectorAll('.cust').forEach(function(c){
+    statuses[c.getAttribute('data-c')] = c.querySelector('.cst');
+  });
+  var SLOT_LABEL = {
+    'mon-9':'MON 9:00 AM','mon-1':'MON 1:00 PM','mon-4':'MON 4:00 PM',
+    'tue-9':'TUE 9:00 AM','tue-1':'TUE 1:00 PM','tue-4':'TUE 4:00 PM',
+    'wed-9':'WED 9:00 AM','wed-1':'WED 1:00 PM','wed-4':'WED 4:00 PM',
+    'thu-9':'THU 9:00 AM','thu-1':'THU 1:00 PM','thu-4':'THU 4:00 PM',
+    'fri-9':'FRI 9:00 AM','fri-1':'FRI 1:00 PM','fri-4':'FRI 4:00 PM'
+  };
+
+  var W1 = [
+    {c:'mike', out:"Hey Mike — TidalShine here. It's been 6 months since your full detail. We're in Westchase this week — $30 off for past customers. Want a slot?", reply:'Perfect timing. Tuesday morning?', slot:'tue-9', name:'Mike', amt:189},
+    {c:'dana', out:"Hi Dana — your ceramic coat is due for its top-up. We have Thursday afternoon open.", reply:'Yes — anything after 1pm', slot:'thu-1', name:'Dana', amt:249},
+    {c:'luis', out:"Luis — 9 months since your interior deep clean. Wednesday 4 PM is open this week.", reply:'Book it 👍', slot:'wed-4', name:'Luis', amt:179},
+    {c:'sarah', out:"Sarah — want us back out this week? Friday morning is open for past customers.", reply:null}
+  ];
+  var W2 = [
+    {c:'sarah', out:"No rush Sarah — that Friday 9 AM slot just opened back up if last week got busy.", reply:'Perfect — Friday works', slot:'fri-9', name:'Sarah', amt:189},
+    {c:'pete', out:"Pete — 10 months since the truck's last full detail. Monday 1 PM is open.", reply:'Yeah do it', slot:'mon-1', name:'Pete', amt:220}
+  ];
+
+  var phase = 0, running = false, runId = 0, timers = [], total = 0;
+  function clearTimers(){ timers.forEach(clearTimeout); timers = []; }
+
+  function addLn(cls, html){
+    var d = document.createElement('div');
+    d.className = 'ln ' + cls;
+    d.innerHTML = html;
+    sms.appendChild(d);
+    if (reduced){ d.classList.add('show'); }
+    else { requestAnimationFrame(function(){ requestAnimationFrame(function(){ d.classList.add('show'); }); }); }
+    thread.scrollTop = thread.scrollHeight;
+  }
+  function setStatus(c, cls, text){
+    var el = statuses[c];
+    el.className = 'cst ' + cls;
+    el.textContent = text;
+  }
+  function fillSlot(item){
+    var s = slots[item.slot];
+    s.classList.remove('pre');
+    s.classList.add('fill');
+    if (!reduced) s.classList.add('pop');
+    s.innerHTML = '<b>' + item.name + '</b>$' + item.amt;
+  }
+  function countTotal(target){
+    var id = runId, from = totalEl._val || 0;
+    totalWrap.classList.add('won');
+    if (reduced){ totalEl._val = target; totalEl.textContent = '$' + target.toLocaleString('en-US'); return; }
+    var t0 = null, dur = 700;
+    function frame(ts){
+      if (id !== runId) return;
+      if (t0 === null) t0 = ts;
+      var k = Math.min(1, (ts - t0) / dur);
+      k = 1 - Math.pow(1 - k, 3);
+      totalEl.textContent = '$' + Math.round(from + (target - from) * k).toLocaleString('en-US');
+      if (k < 1) requestAnimationFrame(frame); else totalEl._val = target;
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function waveSteps(wave, header){
+    var steps = [];
+    if (header) steps.push(function(n){ addLn('tag', header); n(800); });
+    wave.forEach(function(item){
+      steps.push(function(n){
+        addLn('out', item.out);
+        setStatus(item.c, 'txd', 'TEXTED');
+        n(1100);
+      });
+    });
+    wave.forEach(function(item){
+      if (!item.reply) return;
+      steps.push(function(n){ addLn('in', item.reply); n(900); });
+      steps.push(function(n){
+        addLn('tag', 'BOOKED — ' + SLOT_LABEL[item.slot] + ' · $' + item.amt);
+        fillSlot(item);
+        setStatus(item.c, 'bkd', 'BOOKED $' + item.amt);
+        total += item.amt;
+        countTotal(total);
+        n(1000);
+      });
+    });
+    return steps;
+  }
+
+  function runSteps(steps, i, id, onDone){
+    if (id !== runId) return;
+    if (i >= steps.length){ onDone(); return; }
+    steps[i](function(hold){
+      timers.push(setTimeout(function(){ runSteps(steps, i + 1, id, onDone); }, reduced ? 0 : hold));
+    });
+  }
+
+  function press(){
+    if (running || phase >= 2) return;
+    running = true;
+    runId++;
+    var id = runId;
+    if (phase === 0){
+      runSteps(waveSteps(W1, null), 0, id, function(){
+        running = false; phase = 1;
+        faceEl.textContent = 'Send the day-4 follow-up →';
+        stateEl.textContent = 'NEXT WEEK: 5 JOBS ON THE BOOKS. 10 SLOTS EMPTY.';
+      });
+    } else {
+      runSteps(waveSteps(W2, 'DAY 4 — AUTOMATIC FOLLOW-UP TO NON-REPLIERS'), 0, id, function(){
+        running = false; phase = 2;
+        faceEl.textContent = 'Week recovered: $' + total.toLocaleString('en-US');
+        runBtn.classList.add('spent');
+        stateEl.textContent = 'NEXT WEEK: 7 JOBS ON THE BOOKS — $' + total.toLocaleString('en-US') + ' OFF YOUR OWN LIST.';
+      });
+    }
+  }
+
+  function reset(){
+    runId++; clearTimers();
+    running = false; phase = 0; total = 0;
+    sms.innerHTML = smsInit;
+    stateEl.textContent = stateInit;
+    totalEl.textContent = '$0'; totalEl._val = 0;
+    totalWrap.classList.remove('won');
+    faceEl.textContent = 'Run reactivation campaign →';
+    runBtn.classList.remove('spent');
+    document.querySelectorAll('#simCal .slot').forEach(function(s){
+      s.classList.remove('fill','pop');
+      if (s.getAttribute('data-s') === 'tue-1' || s.getAttribute('data-s') === 'thu-9') s.classList.add('pre');
+      s.innerHTML = s._orig;
+    });
+    Object.keys(statuses).forEach(function(c){ setStatus(c, '', '—'); });
+  }
+
+  runBtn.addEventListener('click', press);
+  resetBtn.addEventListener('click', reset);
+})();
+</script>
+</body>
+</html>

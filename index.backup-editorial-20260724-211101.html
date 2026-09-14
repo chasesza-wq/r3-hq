@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RecoverRevenue. Websites and AI systems that make local businesses money.</title>
+<meta name="description" content="We build websites and AI systems that make local businesses money, not just look good. HVAC, dental, landscaping, restaurants.">
+<link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+<style>
+  :root{
+    /* White + blue. One accent, used with intent. No pure #fff / #000. */
+    --paper:#f4f7fc;      /* cool off-white page */
+    --surface:#ffffff;    /* cards / raised surfaces */
+    --ink:#0e1726;        /* near-navy ink, not pure black */
+    --dim:#5a6b82;        /* muted text: own hex, not opacity */
+    --line:rgba(14,23,38,.10);
+    --blue:#1e5fd6;       /* the one accent */
+    --blue-deep:#0b3aa0;  /* accent text on light */
+    --sky:#e9f1ff;        /* blue tint wash */
+    --pill:#0e1726; --pill-ink:#ffffff;
+  }
+  [data-theme="dark"]{
+    --paper:#0a1120; --surface:#111b2e; --ink:#eaf1fb; --dim:#8ea3c0;
+    --line:rgba(234,241,251,.10); --blue:#5b9bff; --blue-deep:#9dc0ff;
+    --sky:#14233d; --pill:#eaf1fb; --pill-ink:#0a1120;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;
+    background:var(--paper); color:var(--ink);
+    transition:background .3s,color .3s;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+  h1,h2,h3{letter-spacing:-.03em;font-weight:800}
+  section{padding:clamp(72px,10vw,132px) 0}
+  .kicker{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--blue-deep);font-weight:800;margin-bottom:16px}
+  .h2{font-size:clamp(30px,4.6vw,54px);line-height:1.06;margin-bottom:18px;letter-spacing:-.035em}
+  .lead{font-size:clamp(16px,1.6vw,19px);line-height:1.65;color:var(--dim);max-width:660px}
+  .lead b{color:var(--ink);font-weight:700}
+  .accent{color:var(--blue)}
+
+  /* reveal */
+  .rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.22,.7,.3,1)}
+  .rv.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
+
+  /* ---------- nav ---------- */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:50;
+    background:color-mix(in srgb, var(--paper) 82%, transparent);
+    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-in{max-width:1160px;margin:0 auto;padding:0 24px;height:66px;display:flex;align-items:center;justify-content:space-between}
+  .brand{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:800;letter-spacing:-.02em;color:var(--ink);text-decoration:none}
+  .brand .mark{width:26px;height:26px;border-radius:8px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;letter-spacing:-.04em}
+  .nav-links{display:flex;gap:26px;align-items:center}
+  .nav-links a{font-size:13.5px;font-weight:600;color:var(--dim);text-decoration:none;transition:color .2s}
+  .nav-links a:hover{color:var(--ink)}
+  .nav-cta{
+    font-size:13px;font-weight:700;color:var(--pill-ink)!important;background:var(--pill);
+    padding:10px 18px;border-radius:999px;
+  }
+  .tbtn{
+    width:34px;height:34px;border-radius:999px;border:1px solid var(--line);background:none;
+    color:var(--ink);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;
+  }
+  @media (max-width:760px){ .nav-links a.hideM{display:none} }
+
+  /* ---------- hero (asymmetric) ---------- */
+  .hero{padding:150px 0 96px}
+  .hero-grid{display:grid;grid-template-columns:1.35fr .95fr;gap:56px;align-items:center}
+  @media (max-width:940px){.hero-grid{grid-template-columns:1fr;gap:40px}}
+  .hero h1{font-size:clamp(42px,7.2vw,86px);line-height:1.0;max-width:14ch;letter-spacing:-.045em}
+  .hero h1 em{font-style:normal;color:var(--blue)}
+  .hero .lead{margin:26px 0 34px}
+  .cta-row{display:flex;gap:14px;flex-wrap:wrap}
+  .btn{
+    display:inline-block;padding:15px 28px;border-radius:14px;font-size:15px;font-weight:700;
+    text-decoration:none;letter-spacing:-.01em;border:1px solid transparent;transition:transform .2s,box-shadow .2s;
+  }
+  .btn:hover{transform:translateY(-2px)}
+  .btn.solid{background:var(--blue);color:#fff;box-shadow:0 6px 18px rgba(14,23,38,.14)}
+  .btn.solid:hover{box-shadow:0 10px 26px rgba(14,23,38,.18)}
+  .btn.ghost{border-color:var(--line);color:var(--ink);background:var(--surface)}
+  .hero-strip{
+    display:flex;gap:30px;flex-wrap:wrap;margin-top:56px;padding-top:26px;border-top:1px solid var(--line);
+  }
+  .hero-strip .it{font-size:13px;color:var(--dim);font-weight:600;display:flex;align-items:center;gap:8px}
+  .hero-strip .dot{width:7px;height:7px;border-radius:50%;background:var(--blue)}
+
+  /* hero visual: live "answered vs missed" call card */
+  .callcard{
+    background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:22px;
+    box-shadow:0 24px 60px rgba(14,23,38,.10);
+  }
+  .callcard .ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+  .callcard .ch b{font-size:13px;letter-spacing:.02em}
+  .callcard .live{font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--blue);display:flex;align-items:center;gap:6px}
+  .callcard .live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--blue);animation:pulse 1.8s infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.7)}}
+  .callrow{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+  .callrow .ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+  .callrow.ans .ic{background:var(--sky);color:var(--blue-deep)}
+  .callrow.miss .ic{background:rgba(14,23,38,.05);color:var(--dim)}
+  .callrow .t{flex:1;min-width:0}
+  .callrow .t b{font-size:13.5px;display:block}
+  .callrow .t span{font-size:12px;color:var(--dim)}
+  .callrow .tag{font-size:11px;font-weight:800;letter-spacing:.04em;white-space:nowrap}
+  .callrow.ans .tag{color:var(--blue)}
+  .callrow.miss .tag{color:var(--dim)}
+
+  /* ---------- thesis (numbered editorial list, not card trio) ---------- */
+  .thesis{border-top:1px solid var(--line)}
+  .steps{margin-top:52px;border-top:1px solid var(--line)}
+  .step{display:grid;grid-template-columns:96px 1fr;gap:28px;padding:34px 0;border-bottom:1px solid var(--line);align-items:start}
+  @media (max-width:720px){.step{grid-template-columns:60px 1fr;gap:18px}}
+  .step .num{font-size:clamp(38px,6vw,64px);font-weight:800;letter-spacing:-.05em;color:var(--blue);line-height:.9;font-variant-numeric:tabular-nums}
+  .step h3{font-size:clamp(20px,2.6vw,26px);margin-bottom:10px;letter-spacing:-.03em}
+  .step p{font-size:15.5px;line-height:1.62;color:var(--dim);max-width:640px}
+  .step p b{color:var(--ink)}
+
+  /* ---------- leak meter (full-bleed visual pain point) ---------- */
+  .leak{background:var(--sky);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .leak .kicker{color:var(--blue-deep)}
+  .leak-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;margin-top:14px}
+  @media (max-width:860px){.leak-grid{grid-template-columns:1fr;gap:36px}}
+  .leak-big{font-size:clamp(56px,11vw,124px);font-weight:800;letter-spacing:-.05em;line-height:.92;color:var(--ink);font-variant-numeric:tabular-nums}
+  .leak-big .pre{color:var(--dim)}
+  .leak-sub{font-size:15px;color:var(--dim);margin-top:14px;line-height:1.6;max-width:460px}
+  .leak-stats{display:flex;flex-direction:column;gap:2px}
+  .lstat{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 0;border-top:1px solid var(--line)}
+  .lstat:last-child{border-bottom:1px solid var(--line)}
+  .lstat .lab{font-size:14.5px;color:var(--ink);font-weight:600;max-width:62%}
+  .lstat .val{font-size:clamp(24px,3.4vw,34px);font-weight:800;letter-spacing:-.03em;color:var(--blue-deep);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .leak-note{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6;max-width:620px}
+
+  /* ---------- services / pricing ---------- */
+  .services{border-top:1px solid var(--line)}
+  .niche-tabs{display:flex;gap:8px;margin:40px 0 26px;flex-wrap:wrap}
+  .ntab{
+    padding:11px 20px;border-radius:999px;border:1px solid var(--line);background:var(--surface);
+    color:var(--dim);font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .2s;
+  }
+  .ntab.active{background:var(--pill);color:var(--pill-ink);border-color:transparent}
+  .niche{display:none}
+  .niche.active{display:block;animation:nf .35s ease}
+  @keyframes nf{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .niche-note{font-size:15px;color:var(--dim);margin-bottom:26px;max-width:640px;line-height:1.6}
+  .niche-note b{color:var(--ink)}
+  .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media (max-width:900px){.tiers{grid-template-columns:1fr}}
+  .tier{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:30px;display:flex;flex-direction:column;position:relative}
+  .tier.feat{border-color:var(--blue);box-shadow:0 14px 40px rgba(14,23,38,.10)}
+  .tier .flag{
+    position:absolute;top:-11px;left:26px;background:var(--blue);color:#fff;
+    font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border-radius:999px;padding:5px 13px;
+  }
+  .tier h3{font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+  .tier .price{font-size:38px;font-weight:800;letter-spacing:-.03em;margin:14px 0 2px;font-variant-numeric:tabular-nums}
+  .tier .price span{font-size:15px;color:var(--dim);font-weight:600;letter-spacing:0}
+  .tier .setup{font-size:13px;color:var(--dim);margin-bottom:18px}
+  .tier ul{list-style:none;margin:0 0 24px;flex:1}
+  .tier li{font-size:14px;line-height:1.5;color:var(--ink);padding:9px 0;border-top:1px solid var(--line);display:flex;gap:10px;align-items:flex-start}
+  .tier li::before{content:"✓";color:var(--blue);font-weight:800;flex-shrink:0}
+  .tier .go{font-size:12.5px;color:var(--dim);margin-bottom:16px}
+  .tier a{
+    text-align:center;padding:13px;border-radius:12px;font-size:14px;font-weight:700;text-decoration:none;
+    border:1px solid var(--line);color:var(--ink);transition:all .2s;background:var(--surface);
+  }
+  .tier.feat a{background:var(--blue);color:#fff;border-color:transparent}
+  .tier a:hover{transform:translateY(-1px)}
+  .addon{
+    margin-top:16px;border:1px dashed var(--line);border-radius:16px;padding:20px 26px;background:var(--surface);
+    display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
+  }
+  .addon .t{font-size:14.5px;font-weight:700}
+  .addon .d{font-size:13px;color:var(--dim);margin-top:3px}
+  .addon .p{font-size:15px;font-weight:700;white-space:nowrap;color:var(--blue-deep)}
+  .terms{display:flex;gap:26px;flex-wrap:wrap;margin-top:34px}
+  .terms .it{font-size:12.5px;color:var(--dim);font-weight:600}
+  .terms .it b{color:var(--ink)}
+
+  /* ---------- portal (split) ---------- */
+  .portal{border-top:1px solid var(--line);background:var(--surface)}
+  .portal-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+  .portal-grid>div{min-width:0}
+  @media (max-width:920px){.portal-grid{grid-template-columns:1fr}}
+  .phone{
+    width:min(340px,100%);height:700px;margin:0 auto;border-radius:40px;overflow:hidden;
+    box-shadow:0 30px 70px rgba(14,23,38,.22),0 0 0 9px #0e1726,0 0 0 11px #2a3140;
+    background:#000;
+  }
+  .phone iframe{width:100%;height:100%;border:none;display:block}
+  .plist{list-style:none;margin-top:26px}
+  .plist li{padding:15px 0;border-top:1px solid var(--line);font-size:15px;line-height:1.5}
+  .plist li b{display:block;margin-bottom:2px}
+  .plist li span{color:var(--dim);font-size:14px}
+  .try{font-size:13px;color:var(--dim);text-align:center;margin-top:16px}
+
+  /* ---------- proof ---------- */
+  .proof{border-top:1px solid var(--line)}
+  .proof-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:46px}
+  @media (max-width:820px){.proof-cards{grid-template-columns:1fr}}
+  .pcard{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;text-decoration:none;color:var(--ink);transition:transform .25s,box-shadow .25s}
+  .pcard:hover{transform:translateY(-4px);box-shadow:0 18px 44px rgba(14,23,38,.10)}
+  .pcard .thumb{height:170px;display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--line);font-size:13px;letter-spacing:.14em;color:var(--blue-deep);font-weight:800;text-transform:uppercase}
+  .pcard .thumb.t1{background:linear-gradient(135deg,#eaf1ff,#d5e4ff)}
+  .pcard .thumb.t2{background:linear-gradient(135deg,#f0f5ff,#dbe8ff)}
+  .pcard .thumb.t3{background:linear-gradient(135deg,#e4edff,#cfe0ff)}
+  .pcard .body{padding:20px 22px}
+  .pcard h3{font-size:16px;margin-bottom:6px}
+  .pcard p{font-size:13.5px;color:var(--dim);line-height:1.55}
+  .std{
+    margin-top:40px;border:1px solid var(--line);border-radius:16px;padding:28px;background:var(--surface);
+    display:grid;grid-template-columns:repeat(4,1fr);gap:20px;
+  }
+  @media (max-width:820px){.std{grid-template-columns:1fr 1fr}}
+  .std .it .n{font-size:26px;font-weight:800;letter-spacing:-.02em;color:var(--blue-deep);font-variant-numeric:tabular-nums}
+  .std .it .c{font-size:12px;color:var(--dim);margin-top:4px;line-height:1.5}
+  .fict{font-size:12px;color:var(--dim);margin-top:18px;line-height:1.6}
+
+  /* ---------- final cta (full-bleed blue interrupt) ---------- */
+  .final{background:var(--blue);text-align:center}
+  .final .kicker{color:rgba(255,255,255,.7)}
+  .final .h2{max-width:800px;margin:0 auto 18px;color:#fff}
+  .final .lead{margin:0 auto 40px;color:rgba(255,255,255,.85)}
+  .final .lead b{color:#fff}
+  .final .btn.solid{background:#fff;color:var(--blue);box-shadow:0 10px 30px rgba(0,0,0,.18)}
+  .final .btn.ghost{border-color:rgba(255,255,255,.4);color:#fff;background:transparent}
+
+  footer{border-top:1px solid var(--line);padding:34px 0}
+  .foot-in{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+  footer .f{font-size:12.5px;color:var(--dim)}
+  footer a{color:var(--dim);text-decoration:none;font-size:12.5px;margin-left:18px}
+  footer a:hover{color:var(--ink)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-in">
+    <a href="#" class="brand"><span class="mark">R3</span>RecoverRevenue</a>
+    <div class="nav-links">
+      <a href="#services" class="hideM">Pricing</a>
+      <a href="#portal" class="hideM">Client Portal</a>
+      <a href="#work" class="hideM">Work</a>
+      <a href="portal/index.html">Log in</a>
+      <button class="tbtn" onclick="toggleTheme()" aria-label="Toggle theme">◐</button>
+      <a href="#book" class="nav-cta">Book a call</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <h1 class="rv">Your website should <em>make you money.</em> Ours do. Provably.</h1>
+        <p class="lead rv">We build sites and AI systems that answer every call, recover no-shows, and prove every recovered dollar in your own portal.</p>
+        <div class="cta-row rv">
+          <a class="btn solid" href="#book">Book a 15-minute call</a>
+          <a class="btn ghost" href="#portal">See the client portal</a>
+        </div>
+        <div class="hero-strip rv">
+          <div class="it"><span class="dot"></span>AI answers in under 30 seconds, 24/7</div>
+          <div class="it"><span class="dot"></span>Live in as few as 3 business days</div>
+          <div class="it"><span class="dot"></span>Month to month after 90 days</div>
+        </div>
+      </div>
+      <div class="rv">
+        <div class="callcard">
+          <div class="ch">
+            <b>Tuesday, 9:14 PM</b>
+            <span class="live">LIVE</span>
+          </div>
+          <div class="callrow ans">
+            <div class="ic">✓</div>
+            <div class="t"><b>New patient, booked</b><span>AI answered in 8 seconds. Appt set for Thu 10am.</span></div>
+            <div class="tag">+$420</div>
+          </div>
+          <div class="callrow ans">
+            <div class="ic">✓</div>
+            <div class="t"><b>Quote request captured</b><span>Estimate scheduled. Text confirmation sent.</span></div>
+            <div class="tag">+$1,800</div>
+          </div>
+          <div class="callrow miss">
+            <div class="ic">✕</div>
+            <div class="t"><b>Competitor down the street</b><span>Rang out. Caller booked elsewhere.</span></div>
+            <div class="tag">Lost</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ THESIS (numbered editorial) ============ -->
+<section class="thesis" id="thesis">
+  <div class="wrap">
+    <div class="kicker rv">Why this works</div>
+    <h2 class="h2 rv">You don't have a traffic problem. You have a conversion problem.</h2>
+    <p class="lead rv">You already pay for attention with ads, referrals, and Google. Then it hits voicemail at 9 PM and calls the next listing. We fix the leak, not the faucet.</p>
+    <div class="steps">
+      <div class="step rv">
+        <div class="num">01</div>
+        <div>
+          <h3>Every call answered</h3>
+          <p>An AI receptionist that picks up in <b>under 30 seconds, around the clock</b>, knows your services and pricing, and books the appointment while your competitor's phone rings out.</p>
+        </div>
+      </div>
+      <div class="step rv">
+        <div class="num">02</div>
+        <div>
+          <h3>No-shows recovered</h3>
+          <p>Automated reminders at 24 hours and 2 hours, plus waitlist backfill on cancellations. <b>Typically cuts no-shows by half or more.</b> Empty chairs become revenue again.</p>
+        </div>
+      </div>
+      <div class="step rv">
+        <div class="num">03</div>
+        <div>
+          <h3>Every dollar visible</h3>
+          <p>Your portal shows <b>revenue recovered this month</b>, conservatively attributed, updated live, and reported plainly by the 5th. If it is not making you money, you will see that too.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LEAK METER (visual pain point) ============ -->
+<section class="leak" id="leak">
+  <div class="wrap">
+    <div class="kicker rv">The leak</div>
+    <h2 class="h2 rv" style="max-width:14ch">Right now, calls are going to voicemail.</h2>
+    <div class="leak-grid">
+      <div class="rv">
+        <div class="leak-big"><span class="pre">$</span><span data-count="4200" data-dur="2200">0</span></div>
+        <p class="leak-sub">Walking out the door this month for a typical local business that misses after-hours calls. That is not a marketing problem. It is a pickup problem, and it compounds every week you wait.</p>
+      </div>
+      <div class="leak-stats rv">
+        <div class="lstat">
+          <div class="lab">Calls missed after hours each week</div>
+          <div class="val"><span data-count="14">0</span></div>
+        </div>
+        <div class="lstat">
+          <div class="lab">Callers who never call back</div>
+          <div class="val"><span data-count="80">0</span>%</div>
+        </div>
+        <div class="lstat">
+          <div class="lab">Average job value walking away</div>
+          <div class="val">$<span data-count="300">0</span>+</div>
+        </div>
+      </div>
+    </div>
+    <p class="leak-note">Figures are illustrative industry ranges for local service businesses, not client results. On your call we replace them with your real numbers: your call volume, your average job, your actual leak.</p>
+  </div>
+</section>
+
+<!-- ============ SERVICES / PRICING ============ -->
+<section class="services" id="services">
+  <div class="wrap">
+    <div class="kicker rv">Pricing, public on purpose</div>
+    <h2 class="h2 rv">Pick your business. See the price.</h2>
+    <p class="lead rv">No "book a call to find out." Every plan is designed to pay for itself inside the first 30 days.</p>
+
+    <div class="niche-tabs rv">
+      <button class="ntab active" data-n="trades" onclick="setNiche('trades')">Home Services</button>
+      <button class="ntab" data-n="dental" onclick="setNiche('dental')">Dental &amp; Medical</button>
+      <button class="ntab" data-n="rest" onclick="setNiche('rest')">Restaurants</button>
+    </div>
+
+    <!-- HOME SERVICES (HVAC, plumbing, landscaping, electrical) -->
+    <div class="niche active" id="n-trades">
+      <p class="niche-note">HVAC, plumbing, landscaping, electrical. <b>The job goes to whoever answers first.</b> Missed-call text-back in under 60 seconds, first touch on new leads in under 2 minutes.</p>
+      <div class="tiers">
+        <div class="tier rv">
+          <h3>Launch</h3>
+          <div class="price">$149<span>/mo</span></div>
+          <div class="setup">plus $497 setup</div>
+          <ul>
+            <li>Pick 1 workflow. Most pick Missed-Call Text-Back (under 60s)</li>
+            <li>Monthly performance report</li>
+          </ul>
+          <div class="go">Live in 3 business days</div>
+          <a href="#book">Start with Launch</a>
+        </div>
+        <div class="tier feat rv">
+          <div class="flag">Most popular</div>
+          <h3>Growth</h3>
+          <div class="price">$249<span>/mo</span></div>
+          <div class="setup">plus $997 setup</div>
+          <ul>
+            <li>Pick 3 workflows</li>
+            <li>Review funneler, lead nurture, no-show reduction, and more</li>
+          </ul>
+          <div class="go">Live in 5 business days</div>
+          <a href="#book">Start with Growth</a>
+        </div>
+        <div class="tier rv">
+          <h3>Partner</h3>
+          <div class="price">$397<span>/mo</span></div>
+          <div class="setup">plus $1,997 setup</div>
+          <ul>
+            <li>All 6 workflows</li>
+            <li>Reporting dashboard</li>
+            <li>Monthly strategy call</li>
+          </ul>
+          <div class="go">Live in 7 business days</div>
+          <a href="#book">Start with Partner</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- DENTAL & MEDICAL -->
+    <div class="niche" id="n-dental">
+      <p class="niche-note">Every missed call at a dental or med office is a <b>$180+ appointment</b> booking with the practice down the street. These systems answer, remind, and rebook automatically.</p>
+      <div class="tiers">
+        <div class="tier rv">
+          <h3>Launch</h3>
+          <div class="price">$297<span>/mo</span></div>
+          <div class="setup">plus $997 setup</div>
+          <ul>
+            <li>AI voice receptionist, 24/7, answers in under 30s</li>
+            <li>Books appointments, knows your services and pricing</li>
+            <li>Monthly performance report</li>
+          </ul>
+          <div class="go">Live in 7 business days</div>
+          <a href="#book">Start with Launch</a>
+        </div>
+        <div class="tier feat rv">
+          <div class="flag">Most popular</div>
+          <h3>Growth</h3>
+          <div class="price">$397<span>/mo</span></div>
+          <div class="setup">plus $1,497 setup</div>
+          <ul>
+            <li>Everything in Launch</li>
+            <li>No-show recovery, 24h and 2h SMS reminders</li>
+            <li>Waitlist activation on cancellations</li>
+          </ul>
+          <div class="go">Live in 7 business days</div>
+          <a href="#book">Start with Growth</a>
+        </div>
+        <div class="tier rv">
+          <h3>Partner</h3>
+          <div class="price">$597<span>/mo</span></div>
+          <div class="setup">plus $2,497 setup</div>
+          <ul>
+            <li>Everything in Growth</li>
+            <li>Past-client reactivation campaigns</li>
+            <li>Review funneler, 3 to 5x review velocity</li>
+            <li>Monthly strategy call</li>
+          </ul>
+          <div class="go">Live in 10 business days</div>
+          <a href="#book">Start with Partner</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESTAURANTS -->
+    <div class="niche" id="n-rest">
+      <p class="niche-note">Reservations captured while your host seats tables. Reminders that actually get confirmed. Guests who come back.</p>
+      <div class="tiers">
+        <div class="tier rv">
+          <h3>Launch</h3>
+          <div class="price">$1,200<span>/mo</span></div>
+          <div class="setup">plus $2,500 setup</div>
+          <ul>
+            <li>AI reservation capture</li>
+            <li>Confirmation texts</li>
+            <li>Review follow-up</li>
+          </ul>
+          <div class="go">Live in 5 to 7 business days</div>
+          <a href="#book">Start with Launch</a>
+        </div>
+        <div class="tier feat rv">
+          <div class="flag">Most popular</div>
+          <h3>Growth</h3>
+          <div class="price">$2,000<span>/mo</span></div>
+          <div class="setup">plus $4,500 setup</div>
+          <ul>
+            <li>Everything in Launch</li>
+            <li>Waitlist management</li>
+            <li>Special-occasion capture</li>
+            <li>Monthly revenue reporting</li>
+          </ul>
+          <div class="go">Live in 7 to 10 business days</div>
+          <a href="#book">Start with Growth</a>
+        </div>
+        <div class="tier rv">
+          <h3>Partner</h3>
+          <div class="price">$3,000<span>/mo</span></div>
+          <div class="setup">plus $7,500 setup</div>
+          <ul>
+            <li>Everything in Growth</li>
+            <li>Custom-branded mobile app</li>
+            <li>Loyalty and push notifications</li>
+          </ul>
+          <div class="go">Live in 10 to 14 business days</div>
+          <a href="#book">Start with Partner</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="addon rv">
+      <div>
+        <div class="t">Add-on: Conversion website</div>
+        <div class="d">Built to our verified standard. Zero errors, zero layout breaks, tested at four screen widths before it ships.</div>
+      </div>
+      <div class="p">$1,497 build plus $99/mo</div>
+    </div>
+
+    <div class="terms rv">
+      <div class="it"><b>Month to month</b> after your first 90 days</div>
+      <div class="it"><b>2 revision rounds</b> per deliverable</div>
+      <div class="it"><b>1 business day</b> support response</div>
+      <div class="it"><b>You never touch the tech.</b> We build and maintain it all</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PORTAL ============ -->
+<section class="portal" id="portal">
+  <div class="wrap">
+    <div class="portal-grid">
+      <div>
+        <div class="kicker rv">The client portal</div>
+        <h2 class="h2 rv">Most agencies email you a Drive folder. Your account comes with this.</h2>
+        <ul class="plist">
+          <li class="rv"><b>Revenue recovered, front and center</b><span>The first thing you see is what the system earned you this month. Conservatively attributed, live.</span></li>
+          <li class="rv"><b>Every automation, visible</b><span>Live status on each system: calls answered, no-shows saved, response times. Proof the promises are kept.</span></li>
+          <li class="rv"><b>AI-written monthly reports</b><span>Plain English. What happened, what we changed, what is next. In your portal by the 5th.</span></li>
+          <li class="rv"><b>Calendar, messages, billing, one login</b><span>Book calls, message the team, see invoices and your contract. Everything in one place.</span></li>
+        </ul>
+      </div>
+      <div class="rv">
+        <div class="phone"><iframe src="portal/index.html" title="Client portal demo" loading="lazy"></iframe></div>
+        <div class="try">This is live. Tap around. Demo data, real product.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROOF ============ -->
+<section class="proof" id="work">
+  <div class="wrap">
+    <div class="kicker rv">The standard</div>
+    <h2 class="h2 rv">We're new. So the proof is the work.</h2>
+    <p class="lead rv">No clients yet, so we built the portfolio we intend to earn. Every build below is a concept for a fictional brand, running real code, verified the same way client work will be.</p>
+
+    <div class="proof-cards">
+      <a class="pcard rv" href="https://chasesza-wq.github.io/fable5-demos/studio-portfolio/" target="_blank" rel="noopener">
+        <div class="thumb t1">Meridian&reg;</div>
+        <div class="body"><h3>Full studio site</h3><p>Reactive WebGL terrain, scroll choreography, live stat counters, revenue-first copy.</p></div>
+      </a>
+      <a class="pcard rv" href="https://chasesza-wq.github.io/fable5-demos/spherical-gallery/" target="_blank" rel="noopener">
+        <div class="thumb t2">Sphere Gallery</div>
+        <div class="body"><h3>Inside-a-sphere gallery</h3><p>70 curved WebGL cards, drag with inertia, cinematic detail transitions.</p></div>
+      </a>
+      <a class="pcard rv" href="https://chasesza-wq.github.io/fable5-demos/portfolio-landing/" target="_blank" rel="noopener">
+        <div class="thumb t3">Mira Solenne</div>
+        <div class="body"><h3>Portfolio landing</h3><p>Three.js particle field, GSAP choreography, fully mobile responsive.</p></div>
+      </a>
+    </div>
+
+    <div class="std rv">
+      <div class="it"><div class="n">0</div><div class="c">console errors allowed. Ever.</div></div>
+      <div class="it"><div class="n">4</div><div class="c">screen widths tested at 320, 390, 768, 1440px</div></div>
+      <div class="it"><div class="n">0px</div><div class="c">horizontal overflow tolerated</div></div>
+      <div class="it"><div class="n">100%</div><div class="c">of builds verified in headless Chrome before shipping</div></div>
+    </div>
+    <p class="fict rv">All showcase brands (Meridian, Mira Solenne) are fictional concept work and their statistics are illustrative. We say so because we would rather show you our standard than borrow someone else's results.</p>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section class="final" id="book">
+  <div class="wrap">
+    <div class="kicker rv">Next step</div>
+    <h2 class="h2 rv">When was the last time your website booked you a job?</h2>
+    <p class="lead rv">15 minutes. We will find where your leads leak at nights, weekends, and no-shows, and tell you plainly what recovering them is worth. If the math does not work, we will say so.</p>
+    <div class="cta-row rv" style="justify-content:center">
+      <a class="btn solid" href="mailto:szarekch@gmail.com?subject=15-minute%20call">Book a 15-minute call</a>
+      <a class="btn ghost" href="portal/index.html">Tour the client portal</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-in">
+    <div class="f">&copy; 2026 RecoverRevenue &middot; Tampa Bay, FL</div>
+    <div>
+      <a href="#services">Pricing</a>
+      <a href="#portal">Portal</a>
+      <a href="#work">Work</a>
+      <a href="portal/index.html">Client login</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // theme: default to white + blue (light). Manual toggle only, no auto dark flip.
+  window.toggleTheme = function(){
+    var d = document.documentElement;
+    d.setAttribute("data-theme", d.getAttribute("data-theme") === "dark" ? "light" : "dark");
+  };
+
+  // niche tabs
+  window.setNiche = function(n){
+    document.querySelectorAll(".niche").forEach(function(x){ x.classList.remove("active"); });
+    document.getElementById("n-" + n).classList.add("active");
+    document.querySelectorAll(".ntab").forEach(function(t){
+      t.classList.toggle("active", t.getAttribute("data-n") === n);
+    });
+    document.querySelectorAll("#n-" + n + " .rv").forEach(function(el){ el.classList.add("in"); });
+  };
+
+  // count-up for leak meter + proof stats
+  function countUp(el){
+    var target = parseFloat(el.getAttribute("data-count"));
+    var dur = parseFloat(el.getAttribute("data-dur") || "1400");
+    var start = null;
+    function frame(ts){
+      if(!start) start = ts;
+      var p = Math.min((ts - start) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      var val = Math.round(target * eased);
+      el.textContent = val.toLocaleString("en-US");
+      if(p < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  // scroll reveals + trigger counters when in view
+  try{
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          e.target.classList.add("in");
+          e.target.querySelectorAll("[data-count]").forEach(function(c){
+            if(!c.dataset.done){ c.dataset.done = "1"; countUp(c); }
+          });
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: .18 });
+    document.querySelectorAll(".rv").forEach(function(el){ io.observe(el); });
+  }catch(e){
+    document.querySelectorAll(".rv").forEach(function(el){ el.classList.add("in"); });
+    document.querySelectorAll("[data-count]").forEach(function(c){ c.textContent = parseFloat(c.getAttribute("data-count")).toLocaleString("en-US"); });
+  }
+
+  // safety net: content must never stay hidden if the observer stalls
+  setTimeout(function(){
+    document.querySelectorAll(".rv:not(.in)").forEach(function(el){ el.classList.add("in"); });
+    document.querySelectorAll("[data-count]").forEach(function(c){
+      if(!c.dataset.done){ c.dataset.done = "1"; countUp(c); }
+    });
+  }, 2600);
+})();
+</script>
+</body>
+</html>

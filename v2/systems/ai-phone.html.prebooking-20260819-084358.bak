@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI phone agent — RecoverRevenue</title>
+<meta name="description" content="An AI receptionist that answers every call in under 30 seconds — nights, weekends, mid-job — quotes your prices and books the job. Simulate the 9 PM call both ways.">
+<link rel="icon" type="image/svg+xml" href="../assets/logo-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="sell.css">
+<style>
+  /* ---- 9:14 PM call simulator ---- */
+  .sim-stage{background:var(--dark);border:1px solid var(--dark-line);color:var(--dark-ink);max-width:680px;margin:44px auto 0;border-radius:22px;overflow:hidden}
+  .sim-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:16px 20px;border-bottom:1px solid var(--dark-line)}
+  .sim-top .meta b{font-size:14.5px;display:block}
+  .sim-top .meta span{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:#8b93a5}
+  .seg{display:flex;background:var(--dark2);border:1px solid var(--dark-line);border-radius:99px;padding:4px;flex:none}
+  .seg-btn{
+    border:none;background:none;color:#8b93a5;font-family:'Inter',sans-serif;font-size:12.5px;font-weight:700;
+    padding:8px 15px;border-radius:99px;cursor:pointer;transition:color .2s,background .2s;white-space:nowrap;
+  }
+  .seg-btn.on{background:var(--dark-ink);color:var(--dark)}
+  .sim-screen{padding:20px;min-height:330px;display:flex;flex-direction:column;gap:11px}
+  .sim-idle{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:#5c646e;line-height:1.8;margin:auto;text-align:center;max-width:340px}
+  .ev{opacity:0;transform:translateY(10px);transition:opacity .45s,transform .45s cubic-bezier(.22,.7,.3,1)}
+  .ev.show{opacity:1;transform:none}
+  .chip{
+    align-self:center;display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11px;
+    letter-spacing:.12em;color:#c7cdd8;border:1px solid var(--dark-line);border-radius:99px;padding:9px 16px;
+  }
+  .chip .dot{width:8px;height:8px;border-radius:50%;background:var(--sky);flex:none;animation:ringp 1.1s infinite}
+  @keyframes ringp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.7)}}
+  .chip.vm{color:#8b93a5}
+  .chip.vm .dot{background:#8b93a5;animation:none}
+  .chip.lost{
+    display:block;align-self:stretch;text-align:center;border:1px solid rgba(224,82,82,.45);
+    background:rgba(224,82,82,.08);color:#f0a3a3;border-radius:14px;padding:13px 16px;letter-spacing:.08em;line-height:1.6;
+  }
+  .chip.cal{
+    display:block;align-self:stretch;text-align:center;border:1px solid rgba(105,209,143,.35);
+    background:rgba(105,209,143,.09);color:#8fd6a8;border-radius:14px;padding:13px 16px;letter-spacing:.08em;line-height:1.6;
+  }
+  .tline{max-width:90%}
+  .tline b{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;margin-bottom:3px;color:#69d18f;font-weight:700}
+  .tline.caller b{color:#8b93a5}
+  .tline p{font-size:14px;line-height:1.55;color:#c7cdd8;min-height:1.55em}
+  .tline p .cur{display:inline-block;width:7px;height:13px;background:#69d18f;vertical-align:-2px;animation:blink .8s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  .sim-count{
+    display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;
+    border-top:1px solid var(--dark-line);padding:15px 20px;
+  }
+  .sim-count .scl{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:#8b93a5}
+  .sim-count .scn{font-family:var(--disp);font-size:30px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--dark-ink)}
+  .sim-count.lost .scl{color:#f0a3a3}
+  .sim-count.lost .scn{color:#e77}
+  .sim-count.won .scl{color:#8fd6a8}
+  .sim-count.won .scn{color:#69d18f}
+  .sim-foot{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:0 20px 20px}
+  .sim-note{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;color:#5c646e;line-height:1.7;flex:1;min-width:200px}
+  @media (prefers-reduced-motion:reduce){
+    .ev{opacity:1;transform:none}
+    .chip .dot,.tline p .cur{animation:none}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="brand" href="../index.html">Recover<i>Revenue</i></a>
+  <a href="../index.html#services">All systems</a>
+  <a href="#demo">Try the call</a>
+  <a href="#offer">Pricing</a>
+  <a class="cta" href="mailto:chase@recoverrevenue.co?subject=AI%20phone%20agent">Book a call</a>
+</nav>
+
+<header>
+  <div class="wrap">
+    <div class="kicker">SYSTEM 02 — AI PHONE AGENT</div>
+    <h1 class="h1">It's 7:42 PM.<br>Your phone is ringing.<br><span class="em">Who's answering?</span></h1>
+    <p class="lead hero-sub">You're under a sink, up a tree, or mid-tow. 85% of callers who hit voicemail never call back — they book the next result on Google. This answers <b>every call in under 30 seconds, 24/7,</b> quotes your prices, and books the job into your calendar.</p>
+    <div class="hero-cta-row">
+      <a class="push" href="mailto:chase@recoverrevenue.co?subject=AI%20phone%20agent"><span class="edge"><span class="face">Book the 15-minute leak audit →</span></span></a>
+    </div>
+    <div class="crumb"><a href="../index.html#services">← All four systems</a></div>
+  </div>
+</header>
+
+<section class="math">
+  <div class="wrap">
+    <div class="kicker">The money math</div>
+    <h2 class="h2">Missed calls are the biggest leak there is</h2>
+    <div class="math-grid">
+      <div class="mcard rv"><div class="n">62%<small> unanswered</small></div><p>Nearly two-thirds of calls to small businesses go unanswered. After hours it's almost all of them.</p></div>
+      <div class="mcard rv"><div class="n">85%<small> never call back</small></div><p>A missed caller doesn't leave a voicemail and wait. They call the next name on the list — your competitor answers.</p></div>
+      <div class="mcard rv"><div class="n">1 job<small> /mo covers it</small></div><p>Run one saved after-hours job against your average ticket. For most trades, a single catch pays the month.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="demo">
+  <div class="wrap">
+    <div class="kicker">Proof, not promises</div>
+    <h2 class="h2" style="text-align:center">Call your own business at 9:14 PM.</h2>
+    <p class="lead" style="margin:0 auto;text-align:center">Same caller, same $340 job — run the night both ways and watch where the money goes. Want it live in your ear instead? <b>Ask on your audit call and we'll ring the AI together.</b></p>
+    <div class="sim-stage rv" id="simStage">
+      <div class="sim-top">
+        <div class="meta"><b>Your line — (813) 555-0119</b><span>TONIGHT · 9:14 PM · SIMULATED, DEMO DATA</span></div>
+        <div class="seg" role="group" aria-label="How the phone gets answered">
+          <button class="seg-btn on" id="segOff" aria-pressed="true">Without AI</button>
+          <button class="seg-btn" id="segOn" aria-pressed="false">With AI</button>
+        </div>
+      </div>
+      <div class="sim-screen" id="simScreen" aria-live="polite">
+        <div class="sim-idle">INCOMING CALL QUEUED — WATER HEATER LEAKING, WORTH $340.<br>PICK A MODE, THEN PLACE THE CALL.</div>
+      </div>
+      <div class="sim-count" id="simCountWrap">
+        <span class="scl" id="simCountLabel">TONIGHT'S MISSED REVENUE</span>
+        <span class="scn" id="simCount">$0</span>
+      </div>
+      <div class="sim-foot">
+        <button class="push" id="simRun"><span class="edge"><span class="face">Simulate the 9 PM call →</span></span></button>
+        <span class="sim-note">IT ONLY QUOTES YOUR PRICE SHEET. ANYTHING COMPLICATED GETS HANDED TO YOU WITH A TEXT SUMMARY.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--paper2)">
+  <div class="wrap">
+    <div class="kicker">How it works</div>
+    <h2 class="h2">Trained on your business, not a script</h2>
+    <div class="proc">
+      <div class="step rv"><div class="num">01</div><h3>We load your world</h3><p>Your services, prices, service area and hours go in. It asks the questions your best front-desk person would ask.</p></div>
+      <div class="step rv"><div class="num">02</div><h3>It answers everything you can't</h3><p>Under 30 seconds, day or night. Quotes from your price sheet, qualifies the job, books straight into your calendar.</p></div>
+      <div class="step rv"><div class="num">03</div><h3>You stay in control</h3><p>Every call ends with a text summary to you. Complicated calls get handed over, not guessed at. You approve everything on the calendar.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="dark-band">
+  <div class="wrap">
+    <div class="kicker">The guarantee stack</div>
+    <h2 class="h2">Why this is <span class="em">our</span> risk, not yours</h2>
+    <div class="gstack">
+      <div class="gcard rv"><b>Under 30 seconds, 24/7 — that's the SLA.</b><p>Nights, weekends, holidays, mid-job. Every after-hours call captured.</p></div>
+      <div class="gcard rv"><b>90 days, then month-to-month.</b><p>Your portal shows every call it caught, in dollars. If it isn't covering itself, fire us.</p></div>
+      <div class="gcard rv"><b>Your prices only.</b><p>It quotes your price sheet — nothing invented. Complicated calls come to you with a summary.</p></div>
+      <div class="gcard rv"><b>Hear it before you buy it.</b><p>On your audit call we'll ring the receptionist together and you can grill it yourself.</p></div>
+    </div>
+    <div class="portal-badge"><i></i>EVERY SYSTEM REPORTS INTO ONE PORTAL — DOLLARS RECOVERED, UPDATED LIVE</div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="kicker">Straight answers</div>
+    <h2 class="h2" style="text-align:center">What owners ask us</h2>
+    <div class="faq">
+      <details><summary>Customers will hate talking to a robot.</summary><div class="a">Play the call above — then remember the alternative isn't your voice, it's your voicemail. Callers hang up on voicemail; they book with this. And anyone who asks for a human gets handed to you with a text summary.</div></details>
+      <details><summary>What if it screws up a quote or books something wrong?</summary><div class="a">It only quotes YOUR price sheet, and anything complicated gets handed to you instead of guessed at. Every booking lands on your calendar for you to approve — you'll never be surprised on a job site.</div></details>
+      <details><summary>$650 a month is real money.</summary><div class="a">One saved after-hours job a month likely covers it — run it against your own average ticket. Your portal shows every call it caught in dollars; after 90 days you're month-to-month. If it isn't covering itself, fire us.</div></details>
+    </div>
+  </div>
+</section>
+
+<section class="offer" id="offer">
+  <div class="wrap">
+    <div class="offer-grid">
+      <div>
+        <div class="kicker">The plan this page is about</div>
+        <h2 class="h2">Full Recovery</h2>
+        <p class="lead">The receptionist ships in our top plan on purpose — answering every call only pays when the website, reviews and lead engine are pushing calls at it. Full bucket, no leaks.</p>
+        <div class="achips">
+          <span class="achip">Add for booking businesses: <b>App Lite +$197/mo</b></span>
+          <span class="achip">Add: <b>SMS reminders — typically cuts no-shows by 50%+</b></span>
+        </div>
+      </div>
+      <div class="tier rv">
+        <div class="tname">Full Recovery</div>
+        <div class="tprice">$650<span>/mo</span></div>
+        <div class="tsetup"><b>$2,497 build fee</b> — everything below, plus your AI receptionist trained &amp; live</div>
+        <ul>
+          <li>Everything in Visibility+ (site, GBP weekly, chatbot, review engine)</li>
+          <li>AI receptionist — answers 24/7, in under 30 seconds</li>
+          <li>Books straight into your calendar</li>
+          <li>Call summary texted after every call</li>
+          <li>Lead engine — monthly past-customer reactivation</li>
+          <li>Priority support — same-day response</li>
+        </ul>
+        <a class="tbtn" href="mailto:chase@recoverrevenue.co?subject=Full%20Recovery%20plan">Catch every call</a>
+        <a class="allplans" href="../index.html#pricing">Compare <b>all plans →</b></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <div class="kicker">One call. Fifteen minutes.</div>
+    <h2 class="h2">Find out what missed calls cost you.</h2>
+    <p class="lead" style="max-width:520px">You leave with your numbers either way — and if you want, we'll ring the AI together so you can hear it live.</p>
+    <a class="push dark-edge" href="mailto:chase@recoverrevenue.co?subject=AI%20phone%20agent"><span class="edge"><span class="face">Book the 15-minute leak audit →</span></span></a>
+    <div class="sub-cta">Prefer email? <a href="mailto:chase@recoverrevenue.co">chase@recoverrevenue.co</a></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span><b>Recover<i>Revenue</i></b> — Tampa Bay, FL</span>
+    <span>Websites · AI receptionists · Review engines · Lead engines</span>
+    <span>© 2026 RecoverRevenue</span>
+  </div>
+</footer>
+
+<a class="callbar" href="mailto:chase@recoverrevenue.co?subject=AI%20phone%20agent">Book a 15-min leak audit →</a>
+
+<script>
+(function(){
+  "use strict";
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  },{threshold:.15});
+  document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+
+  /* ---- 9:14 PM call simulator ---- */
+  var screenEl = document.getElementById('simScreen');
+  var runBtn = document.getElementById('simRun');
+  var faceEl = runBtn.querySelector('.face');
+  var segOff = document.getElementById('segOff');
+  var segOn = document.getElementById('segOn');
+  var wrap = document.getElementById('simCountWrap');
+  var labelEl = document.getElementById('simCountLabel');
+  var countEl = document.getElementById('simCount');
+  var idleHTML = screenEl.innerHTML;
+
+  var mode = 'off';          /* 'off' = without AI, 'on' = with AI */
+  var runId = 0, timers = [];
+
+  function clearTimers(){ timers.forEach(clearTimeout); timers = []; }
+  function make(html){ var d = document.createElement('div'); d.innerHTML = html; return d.firstElementChild; }
+  function addEv(node){
+    screenEl.appendChild(node);
+    if (reduced){ node.classList.add('show'); }
+    else {
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){ node.classList.add('show'); }); });
+    }
+    return node;
+  }
+  function chip(cls, html, live){
+    return make('<div class="ev chip ' + cls + '">' + (live ? '<span class="dot"></span>' : '') + html + '</div>');
+  }
+
+  function countUp(target){
+    var id = runId, from = countEl._val || 0;
+    if (reduced){ countEl._val = target; countEl.textContent = '$' + target; return; }
+    var t0 = null, dur = 900;
+    function frame(ts){
+      if (id !== runId) return;
+      if (t0 === null) t0 = ts;
+      var k = Math.min(1, (ts - t0) / dur);
+      k = 1 - Math.pow(1 - k, 3);
+      var v = Math.round(from + (target - from) * k);
+      countEl.textContent = '$' + v;
+      if (k < 1) requestAnimationFrame(frame); else countEl._val = target;
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function typeText(p, text, cb){
+    if (reduced){ p.textContent = text; cb(); return; }
+    var id = runId, i = 0;
+    var tn = document.createTextNode('');
+    var cur = document.createElement('span'); cur.className = 'cur';
+    p.appendChild(tn); p.appendChild(cur);
+    var iv = setInterval(function(){
+      if (id !== runId){ clearInterval(iv); return; }
+      i += 2; /* two chars per tick */
+      tn.data = text.slice(0, i);
+      if (i >= text.length){
+        clearInterval(iv);
+        if (cur.parentNode) cur.parentNode.removeChild(cur);
+        cb();
+      }
+    }, 22);
+  }
+
+  function say(role, ts, text, cls){
+    return function(next){
+      var node = addEv(make('<div class="ev tline ' + (cls || '') + '"><b>' + role + ' · ' + ts + '</b><p></p></div>'));
+      typeText(node.querySelector('p'), text, function(){ next(550); });
+    };
+  }
+
+  function withoutSteps(){
+    return [
+      function(n){ addEv(chip('', '9:14:02 PM — RINGING…', true)); n(1500); },
+      function(n){ addEv(chip('', "9:14:10 PM — STILL RINGING. YOU'RE UNDER A SINK.", true)); n(1700); },
+      function(n){ addEv(chip('vm', '9:14:21 PM — VOICEMAIL PICKS UP', true)); n(1500); },
+      function(n){ addEv(chip('vm', '9:14:24 PM — CALLER HANGS UP. NO MESSAGE.', true)); n(1600); },
+      function(n){
+        addEv(chip('lost', '9:16 PM — CALLER BOOKS YOUR COMPETITOR.<br>THE $340 WATER HEATER JOB IS GONE.'));
+        wrap.classList.add('lost');
+        countUp(340);
+        n(1700);
+      },
+      function(n){ addEv(chip('vm', "THAT'S ONE CALL. 62% GO UNANSWERED — FLIP TO “WITH AI.”", false)); n(0); }
+    ];
+  }
+
+  function withSteps(){
+    return [
+      function(n){ addEv(chip('', '9:14:02 PM — RINGING…', true)); n(1000); },
+      function(n){ addEv(chip('', '9:14:06 PM — ANSWERED. 4 SECONDS IN.', true)); n(900); },
+      say('YOUR AI', '9:14:06 PM', "Thanks for calling Bayside Plumbing — you're on the after-hours line. What's going on?"),
+      say('CALLER', '9:14:14 PM', "My water heater's leaking all over the garage. You guys open this late?", 'caller'),
+      say('YOUR AI', '9:14:19 PM', "You're covered — this line books after-hours. Is it leaking from the tank itself or a fitting on top?"),
+      say('CALLER', '9:14:29 PM', 'Bottom of the tank. What does a swap run?', 'caller'),
+      say('YOUR AI', '9:14:33 PM', 'A standard 40-gallon swap is $340 with the old unit hauled off. First open slot is Tuesday 9:00 AM — want it?'),
+      say('CALLER', '9:14:41 PM', 'Yeah, book it.', 'caller'),
+      say('YOUR AI', '9:14:44 PM', "Done — your confirmation text is on the way. If you can, shut the cold-water valve on top of the tank tonight."),
+      function(n){
+        addEv(chip('cal', 'ON YOUR CALENDAR — TUE 9:00 AM — BOOKED $340'));
+        wrap.classList.add('won');
+        countUp(340);
+        n(0);
+      }
+    ];
+  }
+
+  function runSteps(steps, i, id){
+    if (id !== runId) return;
+    if (i >= steps.length){ faceEl.textContent = 'Replay the 9 PM call →'; return; }
+    steps[i](function(hold){
+      timers.push(setTimeout(function(){ runSteps(steps, i + 1, id); }, reduced ? 0 : hold));
+    });
+  }
+
+  function baseLabel(){ return mode === 'off' ? "TONIGHT'S MISSED REVENUE" : "TONIGHT'S RECOVERED REVENUE"; }
+
+  function play(){
+    runId++; clearTimers();
+    screenEl.innerHTML = '';
+    wrap.className = 'sim-count';
+    labelEl.textContent = baseLabel();
+    countEl.textContent = '$0'; countEl._val = 0;
+    faceEl.textContent = 'Simulate the 9 PM call →';
+    runSteps(mode === 'off' ? withoutSteps() : withSteps(), 0, runId);
+  }
+
+  function setMode(m){
+    if (mode === m) return;
+    mode = m;
+    runId++; clearTimers();
+    segOff.classList.toggle('on', m === 'off');
+    segOn.classList.toggle('on', m === 'on');
+    segOff.setAttribute('aria-pressed', m === 'off' ? 'true' : 'false');
+    segOn.setAttribute('aria-pressed', m === 'on' ? 'true' : 'false');
+    screenEl.innerHTML = idleHTML;
+    wrap.className = 'sim-count';
+    labelEl.textContent = baseLabel();
+    countEl.textContent = '$0'; countEl._val = 0;
+    faceEl.textContent = 'Simulate the 9 PM call →';
+  }
+
+  runBtn.addEventListener('click', play);
+  segOff.addEventListener('click', function(){ setMode('off'); });
+  segOn.addEventListener('click', function(){ setMode('on'); });
+})();
+</script>
+</body>
+</html>

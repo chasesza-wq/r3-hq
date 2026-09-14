@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>RecoverRevenue — Client Portal</title>
+<link rel="icon" type="image/svg+xml" href="../assets/logo-mark.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#101216" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ffffff; --bg2:#f3f4f6; --ink:#16181d; --dim:#6d7078;
+    --line:rgba(22,24,29,.1); --green:#178a4c; --amber:#c8791b; --blue:#1b48c8;
+    --sheet:#ffffff; --pill:#16181d; --pill-ink:#ffffff;
+    --disp:'Bricolage Grotesque',sans-serif; --mono:'Space Mono',monospace;
+  }
+  [data-theme="dark"]{
+    --bg:#101216; --bg2:#16191f; --ink:#f2f3ef; --dim:#9aa0a8;
+    --line:rgba(242,243,239,.1); --sheet:#16191f; --pill:#f2f3ef; --pill-ink:#101216;
+    --blue:#7ea8ff; --green:#69d18f;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    background:#eef0f2; display:flex; align-items:center; justify-content:center;
+    min-height:100vh; padding:24px;
+    background-image:radial-gradient(rgba(22,24,29,.05) 1px,transparent 1px);
+    background-size:26px 26px;
+  }
+  [data-theme="dark"] body-backdrop{background:#000}
+
+  /* phone frame on desktop */
+  .device{
+    width:100%; max-width:400px; height:820px; max-height:calc(100vh - 48px);
+    background:var(--bg); border-radius:44px; overflow:hidden; position:relative;
+    box-shadow:0 30px 80px rgba(0,0,0,.28), 0 0 0 10px #17181a, 0 0 0 12px #3a3b3e;
+    display:flex; flex-direction:column;
+    transition:background .3s;
+  }
+  @media (max-width:520px){
+    body{padding:0;background:var(--bg)}
+    .device{max-width:none;height:100vh;height:100dvh;max-height:none;border-radius:0;box-shadow:none}
+  }
+  /* embed mode — ?embed=1: marketing site iframes the portal as a phone frame */
+  html.embed body{padding:12px !important;background:transparent !important}
+  html.embed .device{
+    max-width:400px !important;width:400px !important;height:820px !important;max-height:none !important;
+    border-radius:44px !important;
+    box-shadow:0 30px 80px rgba(0,0,0,.5), 0 0 0 10px #17181a, 0 0 0 12px #3a3b3e !important;
+  }
+
+  /* ---------- header ---------- */
+  header{
+    padding:22px 22px 10px; display:flex; align-items:center; justify-content:space-between;
+    flex-shrink:0;
+  }
+  .brand{font-family:var(--mono); font-size:11px; letter-spacing:.22em; font-weight:700; color:var(--dim); text-transform:uppercase}
+  .brand b{color:var(--ink)}
+  .brand .wordmark{font-family:var(--disp);font-size:16px;font-weight:800;letter-spacing:-.01em;text-transform:none;color:var(--ink)}
+  .brand .wordmark i{font-style:normal;color:var(--blue)}
+  .avatar{
+    width:36px;height:36px;border-radius:50%;background:var(--bg2);border:1px solid var(--line);
+    color:var(--ink); font-size:13px; font-weight:700; display:flex;align-items:center;justify-content:center;
+    cursor:pointer; user-select:none;
+  }
+
+  /* ---------- main scroll area ---------- */
+  main{flex:1; overflow-y:auto; padding:6px 22px 110px; scrollbar-width:none}
+  main::-webkit-scrollbar{display:none}
+  .screen{display:none; animation:fade .28s ease}
+  .screen.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  h1{font-family:var(--disp);font-size:26px;font-weight:800;letter-spacing:-.02em;color:var(--ink);margin:8px 0 2px}
+  .sub{font-size:13px;color:var(--dim);margin-bottom:22px}
+
+  /* hero stat */
+  .hero{padding:26px 0 22px; border-bottom:1px solid var(--line)}
+  .hero .label{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);font-weight:700}
+  .hero .num{font-family:var(--disp);font-size:56px;font-weight:800;letter-spacing:-.04em;color:var(--ink);line-height:1.1;margin:6px 0 4px;font-variant-numeric:tabular-nums}
+  .hero .delta{font-size:13px;color:var(--green);font-weight:600}
+  .hero .foot{font-size:12px;color:var(--dim);margin-top:10px}
+  .status-line{display:flex;align-items:center;gap:8px;margin-top:16px;font-size:13px;color:var(--ink);font-weight:500}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(18,183,106,.15)}
+
+  /* list rows */
+  .rows{margin-top:4px}
+  .row{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:17px 0;border-bottom:1px solid var(--line);cursor:pointer;
+  }
+  .row .l{min-width:0}
+  .row .t{font-size:15px;font-weight:600;color:var(--ink)}
+  .row .d{font-size:12.5px;color:var(--dim);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .row .r{display:flex;align-items:center;gap:10px;flex-shrink:0}
+  .chev{color:var(--dim);font-size:16px}
+  .badge{background:var(--blue);color:#fff;font-size:11px;font-weight:700;border-radius:10px;padding:2px 8px}
+
+  /* activity cards */
+  .card{
+    border:1px solid var(--line); border-radius:16px; padding:18px; margin-bottom:12px;
+    background:var(--bg);
+  }
+  .card .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .card .name{font-size:15px;font-weight:700;color:var(--ink)}
+  .live{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--green)}
+  .live .dot{width:7px;height:7px;box-shadow:none}
+  .card .stat{font-family:var(--disp);font-size:28px;font-weight:800;letter-spacing:-.03em;color:var(--ink);font-variant-numeric:tabular-nums}
+  .card .unit{font-size:13px;color:var(--dim);font-weight:500;margin-left:6px}
+  .card .last{font-size:12.5px;color:var(--dim);margin-top:8px;padding-top:10px;border-top:1px solid var(--line)}
+  .card.locked{background:var(--bg2);border-style:dashed}
+  .card.locked .name{color:var(--dim)}
+  .lock{font-size:12px;color:var(--dim);font-weight:600}
+  .card.locked .est{font-size:14px;color:var(--ink);font-weight:600;margin-top:2px}
+  .linkbtn{
+    display:inline-block;margin-top:12px;font-size:13px;font-weight:600;color:var(--blue);
+    cursor:pointer;background:none;border:none;font-family:inherit;padding:0;
+  }
+
+  /* pill button */
+  .pill{
+    display:block;width:100%;padding:16px;border:none;border-radius:14px;
+    background:var(--pill);color:var(--pill-ink);font-size:15px;font-weight:700;
+    font-family:inherit;cursor:pointer;margin:18px 0 6px;letter-spacing:-.01em;
+  }
+  .pill.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+
+  /* calendar */
+  .day-group{margin-top:20px}
+  .day-label{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:700;margin-bottom:4px}
+  .evt{display:flex;gap:14px;padding:15px 0;border-bottom:1px solid var(--line);align-items:flex-start}
+  .evt .bar{width:3px;border-radius:2px;background:var(--blue);align-self:stretch;min-height:34px}
+  .evt .bar.g{background:var(--green)} .evt .bar.a{background:var(--amber)}
+  .evt .t{font-size:14.5px;font-weight:600;color:var(--ink)}
+  .evt .d{font-size:12.5px;color:var(--dim);margin-top:2px}
+
+  /* report */
+  .rep-hero{border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:14px;text-align:center}
+  .rep-hero .num{font-family:var(--disp);font-size:40px;font-weight:800;letter-spacing:-.03em;color:var(--ink)}
+  .rep-hero .cap{font-size:12.5px;color:var(--dim);margin-top:4px}
+  .payback{font-size:13px;font-weight:700;color:var(--green);margin-top:8px}
+  .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+  .kpi{border:1px solid var(--line);border-radius:14px;padding:14px}
+  .kpi .n{font-family:var(--disp);font-size:22px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+  .kpi .c{font-size:11.5px;color:var(--dim);margin-top:2px}
+  .prose h3{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin:18px 0 6px}
+  .prose p{font-size:14px;line-height:1.6;color:var(--ink)}
+  .fine{font-size:11px;color:var(--dim);line-height:1.5;margin-top:18px}
+
+  /* inbox */
+  .sla{font-size:12px;color:var(--dim);text-align:center;padding:10px 0 16px}
+  .msg{max-width:82%;padding:12px 15px;border-radius:18px;font-size:14px;line-height:1.45;margin-bottom:10px}
+  .msg.them{background:var(--bg2);color:var(--ink);border-bottom-left-radius:6px}
+  .msg.me{background:var(--blue);color:#fff;margin-left:auto;border-bottom-right-radius:6px}
+  .msg.sys{background:none;border:1px dashed var(--line);color:var(--dim);font-size:12.5px;max-width:100%;text-align:center;border-radius:12px}
+  .msg .who{font-size:11px;font-weight:700;opacity:.65;margin-bottom:3px;letter-spacing:.04em}
+  .composer{display:flex;gap:10px;margin-top:16px}
+  .composer input{
+    flex:1;padding:13px 16px;border-radius:22px;border:1px solid var(--line);
+    background:var(--bg2);color:var(--ink);font-size:14px;font-family:inherit;outline:none;
+  }
+  .composer button{
+    width:44px;height:44px;border-radius:50%;border:none;background:var(--pill);color:var(--pill-ink);
+    font-size:16px;cursor:pointer;flex-shrink:0;
+  }
+
+  /* ---------- tab bar ---------- */
+  nav{
+    position:absolute;bottom:0;left:0;right:0;
+    display:flex;justify-content:space-around;align-items:center;
+    padding:10px 8px calc(14px + env(safe-area-inset-bottom));
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    border-top:1px solid var(--line);
+  }
+  .tab{
+    display:flex;flex-direction:column;align-items:center;gap:4px;
+    background:none;border:none;cursor:pointer;font-family:inherit;
+    color:var(--dim);font-size:10px;font-weight:600;letter-spacing:.02em;
+    width:64px;padding:4px 0;position:relative;
+  }
+  .tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .tab.active{color:var(--ink)}
+  .tab .nb{
+    position:absolute;top:-2px;right:14px;background:var(--blue);color:#fff;
+    font-size:9px;font-weight:700;border-radius:8px;padding:1px 5px;
+  }
+
+  /* ---------- account sheet ---------- */
+  .scrim{
+    position:absolute;inset:0;background:rgba(0,0,0,.4);opacity:0;pointer-events:none;
+    transition:opacity .3s;z-index:20;
+  }
+  .scrim.open{opacity:1;pointer-events:auto}
+  .sheet{
+    position:absolute;left:0;right:0;bottom:0;z-index:21;
+    background:var(--sheet);border-radius:28px 28px 0 0;
+    max-height:86%;overflow-y:auto;padding:14px 22px 34px;
+    transform:translateY(102%);transition:transform .35s cubic-bezier(.32,.72,.28,1);
+  }
+  .sheet.open{transform:none}
+  .grab{width:38px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 18px}
+  .sheet h2{font-family:var(--disp);font-size:20px;font-weight:800;color:var(--ink);letter-spacing:-.02em}
+  .plan-chip{
+    display:inline-block;margin:8px 0 4px;font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--blue);border:1px solid var(--blue);border-radius:20px;padding:4px 12px;
+  }
+  .owe{margin:14px 0 6px}
+  .owe .it{display:flex;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13.5px;color:var(--ink)}
+  .owe .it .ck{color:var(--green);font-weight:700}
+  .sheet .row .t{font-size:14.5px}
+  .theme-row{display:flex;align-items:center;justify-content:space-between;padding:17px 0;border-bottom:1px solid var(--line)}
+  .theme-row .t{font-size:14.5px;font-weight:600;color:var(--ink)}
+  .switch{
+    width:52px;height:30px;border-radius:16px;background:var(--bg2);border:1px solid var(--line);
+    position:relative;cursor:pointer;transition:background .25s;
+  }
+  .switch::after{
+    content:"";position:absolute;top:2px;left:2px;width:24px;height:24px;border-radius:50%;
+    background:var(--ink);transition:transform .25s;
+  }
+  [data-theme="dark"] .switch::after{transform:translateX(22px)}
+
+  /* ---------- sign-in screen ---------- */
+  .login{
+    position:absolute;inset:0;z-index:30;background:var(--bg);display:none;
+    flex-direction:column;justify-content:center;padding:32px 28px;overflow-y:auto;
+  }
+  .login.show{display:flex}
+  .login .wordmark{font-family:var(--disp);font-size:22px;font-weight:800;color:var(--ink)}
+  .login .wordmark i{font-style:normal;color:var(--blue)}
+  .login h2{font-family:var(--disp);font-size:26px;font-weight:800;color:var(--ink);margin:26px 0 6px;letter-spacing:-.02em}
+  .login .ls{font-size:13.5px;color:var(--dim);margin-bottom:24px;line-height:1.5}
+  .lfield{margin-bottom:14px}
+  .lfield label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);font-weight:700;margin-bottom:7px}
+  .lfield input,.lfield select{
+    width:100%;padding:13px 15px;border-radius:12px;border:1px solid var(--line);
+    background:var(--bg2);color:var(--ink);font-size:14.5px;font-family:inherit;outline:none;
+  }
+  .lfield input:focus,.lfield select:focus{border-color:var(--blue)}
+  .lerr{font-size:12.5px;color:#c0392b;min-height:18px;margin:4px 0 2px}
+  .login .links{display:flex;justify-content:space-between;gap:10px;margin-top:16px;font-size:12.5px}
+  .login .links button{background:none;border:none;color:var(--blue);font-weight:600;cursor:pointer;font-family:inherit;font-size:12.5px;padding:0}
+
+  /* ---------- onboarding chat ---------- */
+  .ob-card{
+    border:1px solid var(--line);border-radius:16px;background:var(--bg);padding:16px;margin-bottom:10px;max-width:92%;
+  }
+  .ob-card .ot{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--blue);font-weight:700;margin-bottom:8px}
+  .ob-card h4{font-size:14.5px;font-weight:700;color:var(--ink)}
+  .ob-card ul{list-style:none;margin:10px 0 4px}
+  .ob-card li{font-size:12.5px;color:var(--dim);padding:4px 0 4px 18px;position:relative;line-height:1.45}
+  .ob-card li::before{content:'·';position:absolute;left:4px;color:var(--blue);font-weight:800}
+  .ob-btn{
+    display:inline-block;margin-top:10px;padding:11px 16px;border-radius:11px;border:none;cursor:pointer;
+    background:var(--blue);color:#fff;font-size:13.5px;font-weight:700;font-family:inherit;
+  }
+  .ob-btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  .ob-done{display:inline-flex;align-items:center;gap:7px;margin-top:10px;font-size:12.5px;font-weight:700;color:var(--green)}
+  .msg.tag{background:none;padding:4px 0;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--green);font-weight:700}
+
+  /* ---------- agreement / payment modals ---------- */
+  .modal{
+    position:absolute;inset:0;z-index:40;background:rgba(0,0,0,.45);display:none;
+    align-items:flex-end;justify-content:center;
+  }
+  .modal.open{display:flex}
+  .modal .mbox{
+    background:var(--sheet);width:100%;max-height:92%;border-radius:24px 24px 0 0;
+    display:flex;flex-direction:column;overflow:hidden;
+  }
+  .mhead{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:18px 20px 12px;border-bottom:1px solid var(--line)}
+  .mhead b{font-family:var(--disp);font-size:16px;color:var(--ink)}
+  .mhead button{background:none;border:none;font-size:20px;color:var(--dim);cursor:pointer;padding:2px 6px}
+  .mbody{overflow-y:auto;padding:16px 20px;font-size:13px;line-height:1.6;color:var(--ink)}
+  .mbody h3{font-family:'Inter',sans-serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin:16px 0 6px}
+  .mbody p,.mbody ul{margin-bottom:8px;color:var(--ink)}
+  .mbody ul{padding-left:18px}
+  .mfoot{border-top:1px solid var(--line);padding:14px 20px 18px}
+  .mfoot .sig-row{display:flex;gap:10px}
+  .mfoot input{
+    flex:1;padding:12px 14px;border-radius:11px;border:1px solid var(--line);
+    background:var(--bg2);color:var(--ink);font-size:14px;font-family:inherit;outline:none;
+  }
+  .mfoot .ob-btn{margin-top:0;white-space:nowrap}
+  .mfoot .fine2{font-size:10.5px;color:var(--dim);margin-top:9px;line-height:1.5}
+  .pay-line{display:flex;justify-content:space-between;font-size:13.5px;padding:10px 0;border-bottom:1px dashed var(--line)}
+  .pay-line b{font-variant-numeric:tabular-nums}
+  .pay-total{display:flex;justify-content:space-between;font-size:15px;font-weight:800;padding:12px 0 2px}
+
+  /* ---------- desktop app layout (client portal for computer) ---------- */
+  @media (min-width:1100px){
+    html:not(.embed) body{padding:32px}
+    html:not(.embed) .device{
+      max-width:1180px;height:calc(100vh - 64px);max-height:820px;border-radius:20px;
+      box-shadow:0 30px 80px rgba(0,0,0,.16),0 0 0 1px var(--line);
+      display:grid;grid-template-columns:230px 1fr;grid-template-rows:auto 1fr;
+    }
+    html:not(.embed) nav{
+      position:static;grid-column:1;grid-row:1/3;
+      flex-direction:column;justify-content:flex-start;gap:4px;
+      padding:22px 14px;border-top:0;border-right:1px solid var(--line);
+      background:var(--bg2);backdrop-filter:none;-webkit-backdrop-filter:none;
+    }
+    html:not(.embed) nav::before{
+      content:'RecoverRevenue';font-family:var(--disp);font-weight:800;font-size:17px;color:var(--ink);
+      padding:2px 12px 18px;letter-spacing:-.01em;
+    }
+    html:not(.embed) .tab{flex-direction:row;justify-content:flex-start;gap:12px;width:100%;font-size:13.5px;padding:11px 13px;border-radius:10px}
+    html:not(.embed) .tab.active{background:var(--bg);color:var(--ink);box-shadow:0 1px 4px rgba(22,24,29,.06)}
+    html:not(.embed) .tab .nb{position:static;margin-left:auto}
+    html:not(.embed) header{grid-column:2;grid-row:1;padding:22px 40px 10px}
+    html:not(.embed) main{grid-column:2;grid-row:2;padding:6px 40px 40px}
+    html:not(.embed) .screen{max-width:760px;margin:0 auto}
+    html:not(.embed) .cards2{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+    html:not(.embed) .cards2 .card{margin-bottom:0}
+    html:not(.embed) .sheet{left:auto;right:26px;bottom:26px;width:420px;border-radius:24px}
+    html:not(.embed) .sheet:not(.open){transform:translateY(calc(100% + 60px))}
+    html:not(.embed) .scrim{border-radius:20px}
+    html:not(:where(.embed)) .login{padding:0;display:none;align-items:center}
+    html:not(.embed) .login.show{display:flex}
+    html:not(.embed) .login .lbox{width:400px;margin:0 auto}
+    html:not(.embed) .modal{align-items:center}
+    html:not(.embed) .modal .mbox{width:640px;border-radius:24px;max-height:86%}
+  }
+  .login .lbox{width:100%}
+
+  /* print — agreement PDF via system dialog */
+  @media print{
+    body{background:#fff;padding:0;display:block}
+    body.printing .device>*{display:none !important}
+    body.printing .device{box-shadow:none;border-radius:0;max-width:none;height:auto;max-height:none;display:block}
+    body.printing #agreeModal{display:block !important;position:static;background:#fff}
+    body.printing #agreeModal .mbox{max-height:none;border-radius:0;display:block}
+    body.printing #agreeModal .mhead button,body.printing #agreeModal .mfoot{display:none}
+    body.printing #agreeModal .mbody{overflow:visible}
+  }
+</style>
+</head>
+<body>
+<div class="device" id="device">
+
+  <header>
+    <div class="brand" style="display:flex;align-items:center;gap:10px">
+      <span class="wordmark">Recover<i>Revenue</i></span>
+      <span>PORTAL</span>
+    </div>
+    <div class="avatar" id="avatar">SR</div>
+  </header>
+
+  <main id="main">
+
+    <!-- ============ HOME ============ -->
+    <section class="screen active" id="scr-home">
+      <h1 id="homeTitle">Good evening, Sarah</h1>
+      <div class="sub" id="homeSub">Radiance Med Spa · Visibility+ plan</div>
+
+      <div class="hero">
+        <div class="label" id="heroLabel">Revenue recovered — July</div>
+        <div class="num" id="heroNum">$0</div>
+        <div class="delta" id="heroDelta">▲ 18% vs June</div>
+        <div class="foot" id="heroFoot">Missed calls texted back, chatbot leads captured, reviews earned — attributed conservatively.</div>
+        <div class="status-line" id="heroStatus"><span class="dot"></span> All systems live</div>
+      </div>
+
+      <div class="rows" id="obRows" style="display:none">
+        <div class="row" onclick="go('inbox')">
+          <div class="l"><div class="t">1 · Sign your service agreement</div><div class="d">Read and e-sign in chat — takes 2 minutes</div></div>
+          <div class="r"><span class="badge" id="obR1">›</span></div>
+        </div>
+        <div class="row" onclick="go('inbox')">
+          <div class="l"><div class="t">2 · Settle the build invoice</div><div class="d">Secure payment link, right in your chat</div></div>
+          <div class="r"><span class="badge" id="obR2">›</span></div>
+        </div>
+        <div class="row">
+          <div class="l"><div class="t">3 · We build. You watch it here.</div><div class="d">Dashboard unlocks the moment you're live</div></div>
+          <div class="r"><span class="badge" id="obR3">›</span></div>
+        </div>
+      </div>
+
+      <div class="rows" id="demoRows">
+        <div class="row" onclick="go('calendar')">
+          <div class="l"><div class="t">Next up</div><div class="d">Monthly review call — Tue Jul 7, 2:00 PM</div></div>
+          <div class="r"><span class="chev">›</span></div>
+        </div>
+        <div class="row" onclick="go('reports')">
+          <div class="l"><div class="t">June report is ready</div><div class="d">$3,540 recovered · 7.9× your monthly fee</div></div>
+          <div class="r"><span class="chev">›</span></div>
+        </div>
+        <div class="row" onclick="go('inbox')">
+          <div class="l"><div class="t">Messages</div><div class="d">Chase: "Review ask moved to 20 min post-visit — posts up 19%…"</div></div>
+          <div class="r"><span class="badge">1</span><span class="chev">›</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ACTIVITY ============ -->
+    <section class="screen" id="scr-activity">
+      <h1>Activity</h1>
+      <div class="sub">Your automations, working right now</div>
+
+      <div class="card locked" id="actLock" style="display:none">
+        <div class="top"><span class="name">Waiting on go-live</span><span class="lock">🔒</span></div>
+        <div class="last">Your systems activate the moment onboarding is complete. Finish the two steps in your <button class="linkbtn" onclick="go('inbox')" style="margin:0">chat ›</button></div>
+      </div>
+
+      <div class="cards2" id="actCards">
+      <div class="card">
+        <div class="top"><span class="name">Website Chatbot</span><span class="live"><span class="dot"></span>Live</span></div>
+        <div><span class="stat">38</span><span class="unit">quotes delivered this month · 24/7</span></div>
+        <div class="last">Latest: quoted a HydraFacial package &amp; captured the lead, 9:12 PM</div>
+      </div>
+
+      <div class="card">
+        <div class="top"><span class="name">Review Engine</span><span class="live"><span class="dot"></span>Live</span></div>
+        <div><span class="stat">19</span><span class="unit">reviews earned this month · 4.9★ average</span></div>
+        <div class="last">Latest: Emma R. posted 5★, 27 minutes after her visit</div>
+      </div>
+
+      <div class="card">
+        <div class="top"><span class="name">Missed-Call Text-Back</span><span class="live"><span class="dot"></span>Live</span></div>
+        <div><span class="stat">23</span><span class="unit">missed calls texted back within 60 seconds</span></div>
+        <div class="last">Latest: (813) 555-0142 texted back, booked for Thursday, 4:44 PM</div>
+      </div>
+
+      <div class="card locked">
+        <div class="top"><span class="name">AI Receptionist</span><span class="lock">🔒 Full Recovery plan</span></div>
+        <div class="est">Est. $1,400/mo currently going to voicemail</div>
+        <div class="last">22 after-hours calls last month rang out. The receptionist answers in under 30 seconds, 24/7.</div>
+        <button class="linkbtn" onclick="go('inbox')">Ask about upgrading ›</button>
+      </div>
+
+      <div class="card locked">
+        <div class="top"><span class="name">Lead Engine</span><span class="lock">🔒 Full Recovery plan</span></div>
+        <div class="est">312 past clients haven't visited in 90+ days</div>
+        <button class="linkbtn" onclick="go('inbox')">Ask about upgrading ›</button>
+      </div>
+      </div>
+    </section>
+
+    <!-- ============ CALENDAR ============ -->
+    <section class="screen" id="scr-calendar">
+      <h1>Calendar</h1>
+      <div class="sub">July 2026</div>
+
+      <button class="pill">Book a call with Chase</button>
+
+      <div class="day-group">
+        <div class="day-label">Tue · Jul 7</div>
+        <div class="evt"><div class="bar"></div><div><div class="t">Monthly review call</div><div class="d">2:00 – 2:30 PM · video link in Inbox</div></div></div>
+      </div>
+      <div class="day-group">
+        <div class="day-label">Fri · Jul 10</div>
+        <div class="evt"><div class="bar a"></div><div><div class="t">Reminder cadence check-in</div><div class="d">We review no-show data after the cadence change</div></div></div>
+      </div>
+      <div class="day-group">
+        <div class="day-label">Sat · Aug 1</div>
+        <div class="evt"><div class="bar g"></div><div><div class="t">July report published</div><div class="d">Auto-delivered to your Reports tab by Aug 5</div></div></div>
+      </div>
+      <div class="day-group">
+        <div class="day-label">Completed</div>
+        <div class="evt" style="opacity:.5"><div class="bar g"></div><div><div class="t">Go-live ✓</div><div class="d">Jun 12 — AI Receptionist live on your main line</div></div></div>
+        <div class="evt" style="opacity:.5"><div class="bar g"></div><div><div class="t">Kickoff call ✓</div><div class="d">Jun 8 — services, pricing & FAQ training complete</div></div></div>
+      </div>
+    </section>
+
+    <!-- ============ REPORTS ============ -->
+    <section class="screen" id="scr-reports">
+      <h1>Reports</h1>
+      <div class="sub">Published monthly, by the 5th · prepared by your AI analyst, reviewed by Chase</div>
+
+      <div class="card locked" id="repLock" style="display:none">
+        <div class="top"><span class="name">Your first report</span><span class="lock">🔒</span></div>
+        <div class="last">Lands here by the 5th of your first full month live — revenue recovered, in conservatively-attributed dollars.</div>
+      </div>
+
+      <div id="repContent">
+      <div class="rep-hero">
+        <div class="num">$3,540</div>
+        <div class="cap">revenue recovered in June</div>
+        <div class="payback">7.9× your $450 monthly fee</div>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi"><div class="n">21</div><div class="c">missed calls texted back</div></div>
+        <div class="kpi"><div class="n">17</div><div class="c">reviews earned</div></div>
+        <div class="kpi"><div class="n">34</div><div class="c">chatbot quotes delivered</div></div>
+        <div class="kpi"><div class="n">12</div><div class="c">bookings attributed</div></div>
+      </div>
+
+      <div class="prose">
+        <h3>What happened</h3>
+        <p>Every missed call in June got a text back within 60 seconds — 21 of them, and 8 turned into booked appointments. The chatbot quoted 34 visitors after hours; 4 booked.</p>
+        <h3>What we changed</h3>
+        <p>We moved the review ask from the next morning to 20 minutes after the visit. Reviews posted per ask rose from 22% to 41% — that's the 4.9★ average doing your selling now.</p>
+        <h3>What's next</h3>
+        <p>22 after-hours calls still rang out before the text-back caught them. That's the AI receptionist's job — worth a look at the Full Recovery plan on our Tuesday call.</p>
+      </div>
+
+      <button class="pill ghost">Download PDF for your accountant</button>
+      <div class="fine">Attribution is conservative: only calls, bookings and confirmations directly handled by the system are counted, valued at your average ticket of $180. Past reports: May · April (archive).</div>
+      </div>
+    </section>
+
+    <!-- ============ INBOX ============ -->
+    <section class="screen" id="scr-inbox">
+      <h1>Inbox</h1>
+      <div class="sub" id="inboxSub">Direct line to your team</div>
+      <div class="sla">We respond within 1 business day — usually much faster.</div>
+
+      <div id="obStream" style="display:none"></div>
+
+      <div id="demoStream">
+      <div class="msg sys">Jun 30 · June report published to your Reports tab</div>
+      <div class="msg them"><div class="who">CHASE</div>Review ask moved to 20 minutes post-visit — posts per ask are already up from 22% to 41%. Watching it this week.</div>
+      <div class="msg me">That's great. Can we talk about the AI receptionist on our call Tuesday?</div>
+      <div class="msg them"><div class="who">CHASE</div>Absolutely — I'll bring the numbers on the 22 after-hours calls that still rang out last month. See you Tuesday at 2.</div>
+      <div class="msg sys">Replies to your email notifications land here automatically</div>
+      </div>
+
+      <div class="composer">
+        <input type="text" placeholder="Message your team…" id="composerInput">
+        <button onclick="sendMsg()">↑</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============ TAB BAR ============ -->
+  <nav>
+    <button class="tab active" data-scr="home" onclick="go('home')">
+      <svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>Home
+    </button>
+    <button class="tab" data-scr="activity" onclick="go('activity')">
+      <svg viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>Activity
+    </button>
+    <button class="tab" data-scr="calendar" onclick="go('calendar')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Calendar
+    </button>
+    <button class="tab" data-scr="reports" onclick="go('reports')">
+      <svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Reports
+    </button>
+    <button class="tab" data-scr="inbox" onclick="go('inbox')">
+      <span class="nb" id="inboxBadge">1</span>
+      <svg viewBox="0 0 24 24"><path d="M21 12h-5l-2 3h-4l-2-3H3"/><path d="M5 5h14l2 7v7H3v-7z"/></svg>Inbox
+    </button>
+  </nav>
+
+  <!-- ============ ACCOUNT SHEET ============ -->
+  <div class="scrim" id="scrim" onclick="closeSheet()"></div>
+  <div class="sheet" id="sheet">
+    <div class="grab"></div>
+    <h2 id="sheetName">Sarah Reyes</h2>
+    <div class="sub" style="margin-bottom:0" id="sheetBiz">Radiance Med Spa</div>
+    <span class="plan-chip" id="sheetPlan">Visibility+ · $450/mo</span>
+
+    <div class="owe">
+      <div class="day-label" style="margin:14px 0 4px">What we owe you</div>
+      <div class="it"><span class="ck">✓</span> Website hosted, maintained, unlimited small edits</div>
+      <div class="it"><span class="ck">✓</span> Chatbot quoting &amp; capturing leads 24/7</div>
+      <div class="it"><span class="ck">✓</span> Review engine — every visit gets the ask</div>
+      <div class="it"><span class="ck">✓</span> Missed-call text-back in 60 seconds</div>
+      <div class="it"><span class="ck">✓</span> Monthly report in your portal by the 5th</div>
+      <div class="it"><span class="ck">✓</span> Month-to-month after your first 90 days</div>
+    </div>
+
+    <div class="theme-row">
+      <span class="t">Dark mode</span>
+      <div class="switch" onclick="toggleTheme()"></div>
+    </div>
+
+    <div class="rows">
+      <div class="row"><div class="l"><div class="t">Billing</div><div class="d" id="sheetBill">Next payment $450 · Jul 12 · Visa ··4242</div></div><span class="chev">›</span></div>
+      <div class="row" onclick="viewAgreement()"><div class="l"><div class="t">Documents</div><div class="d" id="sheetDoc">Service agreement · signed Jun 5, 2026</div></div><span class="chev">›</span></div>
+      <div class="row" onclick="openInstall()"><div class="l"><div class="t">Install the app</div><div class="d">Phone home screen &amp; desktop app — 30 seconds</div></div><span class="chev">›</span></div>
+      <div class="row"><div class="l"><div class="t">Notifications</div><div class="d">Email me for reports & messages</div></div><span class="chev">›</span></div>
+      <div class="row" style="border-bottom:none" id="signOutRow" onclick="doSignOut()"><div class="l"><div class="t">Sign out</div><div class="d">You can sign back in any time</div></div><span class="chev">›</span></div>
+    </div>
+    <button class="pill ghost" onclick="closeSheet()">Close</button>
+  </div>
+
+  <!-- ============ SIGN-IN ============ -->
+  <div class="login" id="login">
+    <div class="lbox">
+      <div class="wordmark">Recover<i>Revenue</i></div>
+      <h2>Sign in to your portal</h2>
+      <div class="ls">Your dashboard, reports and direct line to the team — one login, every device.</div>
+      <div class="lfield"><label for="liEmail">Email</label><input id="liEmail" type="email" autocomplete="email" placeholder="you@yourbusiness.com"></div>
+      <div class="lfield"><label for="liName">Your name</label><input id="liName" type="text" autocomplete="name" placeholder="First Last"></div>
+      <div class="lfield"><label for="liBiz">Business name</label><input id="liBiz" type="text" placeholder="Your Business LLC"></div>
+      <div class="lfield"><label for="liPlan">Your plan</label>
+        <select id="liPlan">
+          <option>Visibility</option>
+          <option selected>Visibility+</option>
+          <option>Full Recovery</option>
+        </select>
+      </div>
+      <div class="lerr" id="liErr"></div>
+      <button class="pill" id="liGo" style="margin-top:2px">Sign in →</button>
+      <div class="links">
+        <button type="button" onclick="location.href='index.html?demo=1'">View the demo instead</button>
+        <button type="button" onclick="openInstall()">📲 Get the app</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ AGREEMENT MODAL ============ -->
+  <div class="modal" id="agreeModal">
+    <div class="mbox">
+      <div class="mhead"><b id="agreeTitle">Service Agreement</b><button onclick="closeModal('agreeModal')" aria-label="Close">✕</button></div>
+      <div class="mbody" id="agreeBody"></div>
+      <div class="mfoot" id="agreeFoot">
+        <div class="sig-row">
+          <input id="sigName" type="text" placeholder="Type your full legal name to sign" autocomplete="off">
+          <button class="ob-btn" id="sigGo">Sign agreement</button>
+        </div>
+        <div class="lerr" id="sigErr" style="margin-top:6px"></div>
+        <div class="fine2">Typing your name and clicking "Sign agreement" is a binding electronic signature (ESIGN / Florida UETA). <button class="linkbtn" style="margin:0" onclick="printAgreement()">Download PDF</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ PAYMENT MODAL ============ -->
+  <div class="modal" id="payModal">
+    <div class="mbox">
+      <div class="mhead"><b>Start your build</b><button onclick="closeModal('payModal')" aria-label="Close">✕</button></div>
+      <div class="mbody">
+        <div class="pay-line"><span id="payBuildLbl">One-time build fee</span><b id="payBuild">$1,497</b></div>
+        <div class="pay-line"><span id="payMoLbl">First month</span><b id="payMo">$450</b></div>
+        <div class="pay-total"><span>Due today</span><b id="payTotal">$1,947</b></div>
+        <p style="font-size:12px;color:var(--dim);margin-top:12px;line-height:1.55">Demo checkout — in production this button opens your secure Stripe payment link. Nothing is charged here.</p>
+      </div>
+      <div class="mfoot">
+        <button class="ob-btn" id="payGo" style="width:100%">Pay securely — demo →</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="app-state.js"></script>
+<script src="agreement.js"></script>
+<script src="install.js"></script>
+<script>
+(function(){
+  if (location.search.indexOf("embed") > -1) document.documentElement.classList.add("embed");
+  var main = document.getElementById("main");
+
+  // tabs
+  window.go = function(name){
+    document.querySelectorAll(".screen").forEach(function(s){ s.classList.remove("active"); });
+    document.getElementById("scr-" + name).classList.add("active");
+    document.querySelectorAll(".tab").forEach(function(t){
+      t.classList.toggle("active", t.getAttribute("data-scr") === name);
+    });
+    main.scrollTop = 0;
+    if(name === "inbox"){
+      var b = document.getElementById("inboxBadge");
+      if(b) b.remove();
+    }
+    closeSheet();
+  };
+
+  // account sheet
+  var sheet = document.getElementById("sheet"), scrim = document.getElementById("scrim");
+  document.getElementById("avatar").addEventListener("click", function(){
+    sheet.classList.add("open"); scrim.classList.add("open");
+  });
+  window.closeSheet = function(){
+    sheet.classList.remove("open"); scrim.classList.remove("open");
+  };
+
+  // theme
+  window.toggleTheme = function(){
+    var d = document.documentElement;
+    d.setAttribute("data-theme", d.getAttribute("data-theme") === "dark" ? "light" : "dark");
+  };
+  // Light is the default everywhere. Dark mode is manual-only (account sheet toggle).
+
+  // hero counter — target comes from app state (locked = $0 until paid)
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function runHeroCounter(target){
+    var el = document.getElementById("heroNum"), t0 = null;
+    if(!target || reduce){ el.textContent = "$" + (target||0).toLocaleString(); return; }
+    requestAnimationFrame(function step(ts){
+      if(!t0) t0 = ts;
+      var p = Math.min((ts - t0) / 1400, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = "$" + Math.round(target * eased).toLocaleString();
+      if(p < 1) requestAnimationFrame(step);
+    });
+  }
+
+  // demo composer
+  window.sendMsg = function(){
+    var input = document.getElementById("composerInput");
+    var v = input.value.trim();
+    if(!v) return;
+    var m = document.createElement("div");
+    m.className = "msg me";
+    m.textContent = v;
+    input.parentNode.parentNode.insertBefore(m, input.parentNode);
+    input.value = "";
+  };
+
+  /* ============ app integration: auth + chat onboarding + PWA ============ */
+  var PLANS = {
+    "Visibility":      {mo:250, build:997},
+    "Visibility+":     {mo:450, build:1497},
+    "Full Recovery":   {mo:650, build:2497}
+  };
+  function money(n){ return "$" + n.toLocaleString(); }
+  function $id(i){ return document.getElementById(i); }
+  var hasState = typeof RRState !== "undefined";
+  var hasAgree = typeof RR_AGREEMENT !== "undefined";
+
+  window.openInstall = function(){ if (window.RRInstall) RRInstall.open(); };
+  window.closeModal = function(id){ $id(id).classList.remove("open"); };
+  window.doSignOut = function(){
+    if (!hasState) return;
+    RRState.signOut();
+    closeSheet(); go("home"); render();
+  };
+
+  function fillAgreement(){
+    if (!hasAgree) return;
+    var s = hasState ? RRState.getSession() : null;
+    var plan = (s && s.plan) || "Visibility+";
+    var p = PLANS[plan] || PLANS["Visibility+"];
+    var html = RR_AGREEMENT.html
+      .replace(/{{client_name}}/g,  s ? s.name : "Sarah Reyes")
+      .replace(/{{business_name}}/g,s ? s.business : "Radiance Med Spa")
+      .replace(/{{plan_name}}/g,    plan)
+      .replace(/{{monthly_fee}}/g,  money(p.mo) + "/month")
+      .replace(/{{build_fee}}/g,    money(p.build))
+      .replace(/{{date}}/g,         new Date().toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"}));
+    $id("agreeTitle").textContent = RR_AGREEMENT.title + " — v" + RR_AGREEMENT.version;
+    $id("agreeBody").innerHTML = html;
+  }
+  window.viewAgreement = function(){
+    fillAgreement();
+    var signed = hasState && RRState.getOnboarding().signedAt;
+    $id("agreeFoot").style.display = signed ? "none" : "";
+    if (!signed && hasState) RRState.markAgreementViewed();
+    $id("agreeModal").classList.add("open");
+    $id("agreeBody").scrollTop = 0;
+  };
+  window.printAgreement = function(){
+    document.body.classList.add("printing");
+    var done = function(){ document.body.classList.remove("printing"); window.removeEventListener("afterprint", done); };
+    window.addEventListener("afterprint", done);
+    setTimeout(function(){ window.print(); }, 60);
+  };
+
+  function obChat(){
+    if (!hasState) return;
+    var s = RRState.getSession(); if (!s) return;
+    var o = RRState.getOnboarding();
+    if (!o.welcomedAt) { RRState.markWelcomed(); o = RRState.getOnboarding(); }
+    var first = s.name.split(" ")[0];
+    var p = PLANS[s.plan] || PLANS["Visibility+"];
+    var h = "";
+    h += '<div class="msg sys">AUTOMATED WELCOME · ' + new Date(o.welcomedAt).toLocaleString("en-US",{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}) + "</div>";
+    h += '<div class="msg them"><div class="who">CHASE</div>Welcome aboard, ' + first + "! Two quick steps and your build starts today: sign your agreement, then settle the build invoice. Both happen right here.</div>";
+    h += '<div class="ob-card"><div class="ot">STEP 1 — SERVICE AGREEMENT</div><h4>' + (hasAgree ? RR_AGREEMENT.title : "Service Agreement") + "</h4>";
+    if (hasAgree) h += "<ul>" + RR_AGREEMENT.summary.slice(0,4).map(function(x){return "<li>"+x+"</li>";}).join("") + "</ul>";
+    if (o.signedAt){
+      h += '<div class="ob-done">✓ Signed by ' + o.signedName + " · " + new Date(o.signedAt).toLocaleDateString() + '</div><br><button class="ob-btn ghost" onclick="viewAgreement()">View / download PDF</button>';
+    } else {
+      h += '<button class="ob-btn" onclick="viewAgreement()">Read &amp; sign — 2 min</button>';
+    }
+    h += "</div>";
+    if (o.signedAt){
+      h += '<div class="ob-card"><div class="ot">STEP 2 — START YOUR BUILD</div><h4>' + s.plan + " plan</h4>";
+      h += '<div class="pay-line"><span>One-time build fee</span><b>' + money(p.build) + '</b></div>';
+      h += '<div class="pay-line"><span>First month</span><b>' + money(p.mo) + '</b></div>';
+      h += '<div class="pay-total"><span>Due today</span><b>' + money(p.build + p.mo) + "</b></div>";
+      if (o.paidAt){
+        h += '<div class="ob-done">✓ Paid · ' + new Date(o.paidAt).toLocaleDateString() + "</div>";
+      } else {
+        h += '<button class="ob-btn" onclick="openPay()">Pay securely →</button>';
+      }
+      h += "</div>";
+    }
+    if (o.paidAt){
+      h += '<div class="msg them"><div class="who">CHASE</div>Payment received — your build kicks off today. Kickoff call invite is on its way to ' + s.email + ". Watch Activity light up as each system goes live.</div>";
+      h += '<div class="msg tag">✓ ONBOARDING COMPLETE — DASHBOARD UNLOCKED</div>';
+    }
+    $id("obStream").innerHTML = h;
+  }
+  window.openPay = function(){
+    if (!hasState) return;
+    var s = RRState.getSession(); if (!s) return;
+    var p = PLANS[s.plan] || PLANS["Visibility+"];
+    $id("payBuild").textContent = money(p.build);
+    $id("payMo").textContent = money(p.mo);
+    $id("payTotal").textContent = money(p.build + p.mo);
+    $id("payModal").classList.add("open");
+  };
+  $id("payGo").addEventListener("click", function(){
+    var r = RRState.markPaid();
+    if (r.ok){ closeModal("payModal"); render(); go("home"); }
+  });
+  $id("sigGo").addEventListener("click", function(){
+    var r = RRState.signAgreement($id("sigName").value);
+    if (!r.ok){ $id("sigErr").textContent = r.error === "sign first" ? r.error : "That doesn't match the name on the account — type your full name as entered at sign-in."; return; }
+    $id("sigErr").textContent = "";
+    closeModal("agreeModal");
+    render();
+  });
+  $id("liGo").addEventListener("click", function(){
+    var s = RRState.signIn({
+      email: $id("liEmail").value.trim(),
+      name: $id("liName").value.trim(),
+      business: $id("liBiz").value.trim(),
+      plan: $id("liPlan").value
+    });
+    if (!s){ $id("liErr").textContent = "Check your email address, name and business — all three are required."; return; }
+    $id("liErr").textContent = "";
+    render(); go("inbox");
+  });
+
+  function render(){
+    if (!hasState){ runHeroCounter(4180); return; }
+    var demo = RRState.isDemo();
+    var s = RRState.getSession();
+    $id("login").classList.toggle("show", !demo && !s);
+    var m = RRState.metrics();
+    var o = RRState.getOnboarding();
+    var who = demo ? {name:"Sarah Reyes", business:"Radiance Med Spa", plan:"Visibility+"} : (s || {name:"—", business:"", plan:"Visibility+"});
+    var hr = new Date().getHours();
+    $id("homeTitle").textContent = "Good " + (hr<12?"morning":hr<17?"afternoon":"evening") + ", " + who.name.split(" ")[0];
+    $id("homeSub").textContent = who.business + " · " + who.plan + " plan";
+    $id("sheetName").textContent = who.name;
+    $id("sheetBiz").textContent = who.business;
+    $id("avatar").textContent = who.name.split(" ").map(function(w){return w.charAt(0);}).join("").slice(0,2).toUpperCase() || "RR";
+    var pp = PLANS[who.plan] || PLANS["Visibility+"];
+    $id("sheetPlan").textContent = who.plan + " · " + money(pp.mo) + "/mo";
+    $id("sheetBill").textContent = m.locked ? ("First payment " + money(pp.build+pp.mo) + " · due at onboarding") : ("Next payment " + money(pp.mo) + " · monthly · card on file");
+    $id("sheetDoc").textContent = o.signedAt ? ("Service agreement · signed " + new Date(o.signedAt).toLocaleDateString()) : "Service agreement · awaiting signature";
+    var locked = m.locked;
+    $id("heroLabel").textContent = locked ? "Revenue recovered — pending go-live" : "Revenue recovered — July";
+    $id("heroDelta").style.display = locked ? "none" : "";
+    $id("heroFoot").textContent = locked ? "Your dashboard unlocks the moment onboarding is complete and your systems go live." : "Missed calls texted back, chatbot leads captured, reviews earned — attributed conservatively.";
+    $id("heroStatus").innerHTML = locked ? '<span class="dot" style="background:var(--amber);box-shadow:0 0 0 3px rgba(200,121,27,.15)"></span> Onboarding in progress' : '<span class="dot"></span> All systems live';
+    $id("obRows").style.display = locked ? "" : "none";
+    $id("demoRows").style.display = locked ? "none" : "";
+    $id("actLock").style.display = locked ? "" : "none";
+    $id("actCards").style.opacity = locked ? ".35" : "";
+    $id("actCards").style.pointerEvents = locked ? "none" : "";
+    $id("repLock").style.display = locked ? "" : "none";
+    $id("repContent").style.display = locked ? "none" : "";
+    $id("obStream").style.display = locked || (s && !demo) ? "" : "none";
+    $id("demoStream").style.display = (demo || !s) ? "" : "none";
+    $id("inboxSub").textContent = locked ? "Let's get you live — two steps" : "Direct line to your team";
+    if (locked){
+      $id("obR1").textContent = o.signedAt ? "✓" : "›";
+      $id("obR1").style.background = o.signedAt ? "var(--green)" : "var(--blue)";
+      $id("obR2").textContent = o.paidAt ? "✓" : "›";
+      $id("obR2").style.background = o.paidAt ? "var(--green)" : "var(--blue)";
+      $id("obR3").textContent = "…";
+      $id("obR3").style.background = "var(--dim)";
+    }
+    if (s && !demo) obChat();
+    runHeroCounter(m.recovered);
+  }
+  if (hasState) RRState.onChange(function(){ render(); });
+  render();
+})();
+</script>
+</body>
+</html>

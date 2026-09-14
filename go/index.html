@@ -432,34 +432,7 @@ footer a{text-decoration:underline}
       }
     } catch(err){}
 
-    // Compact, edgy problem diagnoses (Twisting the knife, hinting at the fix, zero sales fluff)
-    var diagnoses = {
-      "Missed calls on jobsites": {
-        stat: "<b>The Reality:</b> When you're on a job or driving, missed calls don't leave voicemails—they hire the next contractor on Google. Every unanswered ring is $1,500+ handed straight to your competitor.",
-        fix: "<b>The Fix:</b> We plug this instantly via text before they can dial anyone else. We'll map the exact setup on our call."
-      },
-      "Dead paper estimates": {
-        stat: "<b>The Reality:</b> You drove out, measured, and gave the price—then got ghosted. Most contractors sit on $50k+ in stalled bids simply because there's zero time to chase cold homeowners.",
-        fix: "<b>The Fix:</b> We revive forgotten quotes with automated check-ins that bring back ready-to-sign jobs. We'll audit your list on the call."
-      },
-      "Expensive shared leads": {
-        stat: "<b>The Reality:</b> Paying $100+ for the same lead 4 other guys get turns your business into a race to the bottom where only low-ballers win and your margins get crushed.",
-        fix: "<b>The Fix:</b> We generate exclusive jobs directly from your own market and past clients so you keep 100% of your profit. We'll show you how on the call."
-      },
-      "Competitors get picked before you": {
-        stat: "<b>The Reality:</b> 78% of homeowners hire whoever responds first. If you take an hour to reply or lack fresh reviews, your competitors take your local jobs every single week.",
-        fix: "<b>The Fix:</b> We make your business the first to rank and the first to respond in seconds. We'll review your local speed on the call."
-      },
-      "Slow speed to lead": {
-        stat: "<b>The Reality:</b> 78% of homeowners hire whoever responds first. If you take an hour to reply or lack fresh reviews, your competitors take your local jobs every single week.",
-        fix: "<b>The Fix:</b> We make your business the first to rank and the first to respond in seconds. We'll review your local speed on the call."
-      },
-      "Other": {
-        stat: "<b>The Reality:</b> Unpredictable schedule holes and operational leaks cost service businesses thousands in lost profit every single month.",
-        fix: "<b>The Fix:</b> We plug the leak with automated calendar booking so your schedule stays locked 60 days out. We'll diagnose your numbers on the call."
-      }
-    };
-
+    // Compact, edgy problem diagnoses
     var selectedDiag = diagnoses[answers.revenue_leak] || diagnoses["Other"];
     document.getElementById('gratStat').innerHTML = selectedDiag.stat;
     document.getElementById('gratFix').innerHTML = selectedDiag.fix;
@@ -479,6 +452,67 @@ footer a{text-decoration:underline}
     // Mount Calendly prefilled
     initCalendly(nameVal, phoneDigits);
   });
+
+  // Global diagnoses dictionary
+  var diagnoses = {
+    "Missed calls on jobsites": {
+      stat: "<b>The Reality:</b> When you're on a job or driving, missed calls don't leave voicemails—they hire the next contractor on Google. Every unanswered ring is $1,500+ handed straight to your competitor.",
+      fix: "<b>The Fix:</b> We plug this instantly via text before they can dial anyone else. We'll map the exact setup on our call."
+    },
+    "Dead paper estimates": {
+      stat: "<b>The Reality:</b> You drove out, measured, and gave the price—then got ghosted. Most contractors sit on $50k+ in stalled bids simply because there's zero time to chase cold homeowners.",
+      fix: "<b>The Fix:</b> We revive forgotten quotes with automated check-ins that bring back ready-to-sign jobs. We'll audit your list on the call."
+    },
+    "Expensive shared leads": {
+      stat: "<b>The Reality:</b> Paying $100+ for the same lead 4 other guys get turns your business into a race to the bottom where only low-ballers win and your margins get crushed.",
+      fix: "<b>The Fix:</b> We generate exclusive jobs directly from your own market and past clients so you keep 100% of your profit. We'll show you how on the call."
+    },
+    "Competitors get picked before you": {
+      stat: "<b>The Reality:</b> 78% of homeowners hire whoever responds first. If you take an hour to reply or lack fresh reviews, your competitors take your local jobs every single week.",
+      fix: "<b>The Fix:</b> We make your business the first to rank and the first to respond in seconds. We'll review your local speed on the call."
+    },
+    "Slow speed to lead": {
+      stat: "<b>The Reality:</b> 78% of homeowners hire whoever responds first. If you take an hour to reply or lack fresh reviews, your competitors take your local jobs every single week.",
+      fix: "<b>The Fix:</b> We make your business the first to rank and the first to respond in seconds. We'll review your local speed on the call."
+    },
+    "Other": {
+      stat: "<b>The Reality:</b> Unpredictable schedule holes and operational leaks cost service businesses thousands in lost profit every single month.",
+      fix: "<b>The Fix:</b> We plug the leak with automated calendar booking so your schedule stays locked 60 days out. We'll diagnose your numbers on the call."
+    }
+  };
+
+  // Check URL parameters: If user arrives from Meta Instant Form or has ?step=booking, bypass quiz!
+  var urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('step') === 'booking' || urlParams.get('book') === '1' || urlParams.get('direct') === '1' || (urlParams.get('name') && urlParams.get('phone'))) {
+    var pName = urlParams.get('name') || urlParams.get('first_name') || 'there';
+    var pPhone = urlParams.get('phone') || '';
+    var pTrade = urlParams.get('trade') || 'Trade Professional';
+    var pLeak = urlParams.get('leak') || urlParams.get('bottleneck') || 'Missed calls on jobsites';
+
+    answers.first_name = pName;
+    answers.phone = pPhone;
+    answers.trade = pTrade;
+    answers.revenue_leak = pLeak;
+
+    setTimeout(function(){
+      var d = diagnoses[pLeak] || diagnoses["Missed calls on jobsites"];
+      var gs = document.getElementById('gratStat');
+      var gf = document.getElementById('gratFix');
+      if (gs) gs.innerHTML = d.stat;
+      if (gf) gf.innerHTML = d.fix;
+
+      surveyShell.style.display = 'none';
+      landing.style.display = 'none';
+      countBox.style.display = 'none';
+      batt.style.display = 'none';
+      back.style.display = 'none';
+      microText.style.display = 'none';
+      document.body.classList.remove('survey-full');
+
+      bookingView.classList.add('on');
+      initCalendly(pName, pPhone.replace(/\D/g, ''));
+    }, 40);
+  }
 
   function initCalendly(name, phone){
     var calUrl = "https://calendly.com/chase-sza/15min"

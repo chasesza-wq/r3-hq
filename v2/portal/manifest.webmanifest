@@ -1,0 +1,30 @@
+{
+  "name": "RecoverRevenue Portal",
+  "short_name": "RR Portal",
+  "description": "Live missed-call recovery dashboard for RecoverRevenue clients.",
+  "start_url": "./index.html?app=1",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#16181d",
+  "icons": [
+    {
+      "src": "../assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "../assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "../assets/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

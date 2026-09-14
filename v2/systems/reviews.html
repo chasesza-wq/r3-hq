@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Review engine — RecoverRevenue</title>
+<meta name="description" content="Every finished job triggers a feedback text. Happy customers get the review link; unhappy ones reach you first, privately. Flip the shield and watch your rating change.">
+<link rel="icon" type="image/svg+xml" href="../assets/logo-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="sell.css">
+<style>
+  /* ---------- review shield panel ---------- */
+  .shield-panel{
+    display:flex;align-items:center;justify-content:center;gap:36px;flex-wrap:wrap;
+    margin:40px auto 0;background:#fff;border:1px solid var(--line);border-radius:20px;
+    padding:22px 32px;max-width:640px;box-shadow:0 14px 40px rgba(22,24,29,.06);
+  }
+  .shield-ctl{display:flex;align-items:center;gap:14px}
+  .shield-lab{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--ink)}
+  .shield-toggle{
+    position:relative;width:148px;height:46px;border-radius:99px;border:1px solid var(--line);
+    cursor:pointer;background:#e7e5de;
+    box-shadow:inset 0 2px 7px rgba(22,24,29,.16),inset 0 -1px 0 rgba(255,255,255,.7);
+    font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.14em;
+    transition:background .35s,border-color .35s,box-shadow .35s;
+  }
+  .shield-toggle:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+  .shield-toggle[aria-checked="true"]{background:var(--blue);border-color:var(--blue);box-shadow:inset 0 2px 7px rgba(0,0,0,.3)}
+  .shield-toggle .sh-off,.shield-toggle .sh-on{position:absolute;top:50%;transform:translateY(-50%);transition:opacity .3s;pointer-events:none}
+  .shield-toggle .sh-off{right:20px;color:var(--dim);opacity:1}
+  .shield-toggle .sh-on{left:20px;color:#fff;opacity:0}
+  .shield-toggle[aria-checked="true"] .sh-off{opacity:0}
+  .shield-toggle[aria-checked="true"] .sh-on{opacity:1}
+  .sh-thumb{
+    position:absolute;top:3px;left:3px;width:38px;height:38px;border-radius:50%;
+    background:linear-gradient(180deg,#fff,#efeee8);
+    box-shadow:0 3px 8px rgba(22,24,29,.28),inset 0 1px 0 #fff;
+    transition:left .4s cubic-bezier(.34,1.56,.64,1);
+  }
+  .shield-toggle[aria-checked="true"] .sh-thumb{left:calc(100% - 41px)}
+  .shield-rating{display:flex;align-items:baseline;gap:10px}
+  .rate-num{font-family:var(--disp);font-size:46px;font-weight:800;font-variant-numeric:tabular-nums;color:#c8791b;transition:color .4s;line-height:1}
+  #demo.shield-on .rate-num{color:var(--blue)}
+  .rate-star{color:#f0a500;font-size:22px}
+  .rate-lab{font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--dim);max-width:92px;line-height:1.6}
+  .shield-copy{text-align:center;font-size:14px;color:var(--dim);margin:18px auto 0;max-width:540px;min-height:23px;line-height:1.6}
+  @media(max-width:560px){.shield-panel{flex-direction:column;gap:18px;padding:22px 20px}}
+
+  /* ---------- floating testimonial wheel ---------- */
+  .wheel{overflow:hidden;width:100%;margin-top:40px;padding-top:26px}
+  .wheel-row{display:flex;padding:8px 0}
+  .wheel-track{display:flex;width:max-content;animation:wmarq 46s linear infinite}
+  .wheel-row.r2 .wheel-track{animation-duration:58s;animation-direction:reverse}
+  @keyframes wmarq{to{transform:translateX(-50%)}}
+  .wheel-row:hover .wheel-track{animation-play-state:paused}
+  .bubble{
+    position:relative;flex:0 0 300px;width:300px;margin-right:16px;
+    background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px;
+    transition:box-shadow .3s,transform .3s;
+  }
+  .bubble:hover{box-shadow:0 10px 28px rgba(22,24,29,.09);transform:translateY(-3px)}
+  .bubble .bwrap{width:262px}
+  .btop{display:flex;justify-content:space-between;align-items:center}
+  .stars{font-size:13px;letter-spacing:2px;white-space:nowrap}
+  .stars em{font-style:normal;color:#f0a500}
+  .stars i{font-style:normal;color:#d8d6cf}
+  .niche{font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--dim);font-weight:700}
+  .bubble p{font-size:12.5px;line-height:1.55;color:var(--ink);margin-top:8px}
+  .bubble .who{display:block;font-size:11.5px;color:var(--dim);font-weight:600;margin-top:8px}
+  .bubble.low{
+    border-color:rgba(200,121,27,.55);overflow:hidden;
+    box-shadow:inset 3px 0 0 #c8791b;
+    transition:flex-basis .55s cubic-bezier(.5,0,.2,1),width .55s cubic-bezier(.5,0,.2,1),
+      margin .55s cubic-bezier(.5,0,.2,1),padding .55s cubic-bezier(.5,0,.2,1),
+      border-width .55s,opacity .4s,transform .55s cubic-bezier(.6,-.25,.75,.4);
+  }
+  .bubble.low:hover{box-shadow:inset 3px 0 0 #c8791b,0 10px 28px rgba(22,24,29,.09)}
+  .bubble.low .niche{color:#c8791b}
+  #demo.shield-on .wheel .bubble.low{
+    flex-basis:0;width:0;margin-right:0;padding-left:0;padding-right:0;
+    border-left-width:0;border-right-width:0;opacity:0;
+    transform:translateY(-54px) scale(.55);
+  }
+  .chip{
+    position:absolute;top:-10px;right:12px;background:var(--blue);color:#fff;
+    font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:.08em;
+    padding:4px 9px;border-radius:99px;opacity:0;pointer-events:none;white-space:nowrap;
+  }
+  #demo.shield-on .bubble:not(.low) .chip{animation:chipflash 2.2s ease var(--d,0s) both}
+  @keyframes chipflash{0%{opacity:0;transform:translateY(5px)}14%,68%{opacity:1;transform:none}100%{opacity:0}}
+
+  /* ---------- private dock (caught reviews) ---------- */
+  .dock{
+    max-width:900px;margin:26px auto 0;background:var(--dark);color:var(--dark-ink);
+    border-radius:18px;overflow:hidden;max-height:0;opacity:0;transform:translateY(14px);
+    transition:max-height .6s cubic-bezier(.22,.7,.3,1),opacity .45s,transform .55s cubic-bezier(.22,.7,.3,1);
+  }
+  #demo.shield-on .dock{max-height:640px;opacity:1;transform:none}
+  .dock-inner{padding:22px 26px}
+  .dock-top{display:flex;justify-content:space-between;align-items:baseline;gap:14px;flex-wrap:wrap}
+  .dock-head{font-family:var(--mono);font-size:10px;letter-spacing:.14em;font-weight:700;color:#f0b34f}
+  .dock-sub{font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:#8b93a5}
+  .dock-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+  .dcard{
+    border:1px solid var(--dark-line);border-radius:12px;padding:13px 15px;
+    opacity:0;transform:translateY(12px) scale(.96);
+    transition:opacity .4s,transform .5s cubic-bezier(.22,.7,.3,1);
+  }
+  #demo.shield-on .dcard{opacity:1;transform:none}
+  #demo.shield-on .dcard:nth-child(1){transition-delay:.25s}
+  #demo.shield-on .dcard:nth-child(2){transition-delay:.4s}
+  #demo.shield-on .dcard:nth-child(3){transition-delay:.55s}
+  .dcard .stars{font-size:11px}
+  .dcard .stars i{color:#3a3f49}
+  .dcard p{font-size:11.5px;color:#c7cdd8;line-height:1.5;margin-top:6px}
+  .dcard .who{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:#8b93a5;margin-top:8px}
+  @media(max-width:760px){.dock-row{grid-template-columns:1fr}}
+
+  /* ---------- stat ticker ---------- */
+  .ticker{display:flex;gap:40px;justify-content:center;flex-wrap:wrap;margin-top:52px}
+  .ticker .s .n{font-family:var(--disp);font-size:38px;font-weight:800;color:var(--blue)}
+  .ticker .s .l{font-size:12.5px;color:var(--dim);margin-top:4px;max-width:190px}
+
+  /* ---------- reduced motion: static wrapped grid, toggle still works ---------- */
+  @media (prefers-reduced-motion:reduce){
+    .wheel-track{animation:none !important;flex-wrap:wrap;justify-content:center;width:auto}
+    .wheel-row{max-width:1020px;margin:0 auto;padding:0 24px}
+    .bubble{margin-bottom:16px}
+    .bubble.dup{display:none}
+    .chip{display:none}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="brand" href="../index.html">Recover<i>Revenue</i></a>
+  <a href="../index.html#services">All systems</a>
+  <a href="#demo">Watch it run</a>
+  <a href="#offer">Pricing</a>
+  <a class="cta" href="https://calendly.com/chase-sza/30min?utm_source=recoverrevenue&amp;utm_medium=site&amp;utm_content=reviews-review-engine" target="_blank" rel="noopener">Book a call</a>
+</nav>
+
+<header>
+  <div class="wrap">
+    <div class="kicker">SYSTEM 03 — REVIEW ENGINE</div>
+    <h1 class="h1">Your rating is being written<br>by your <span class="em">angriest 2%.</span></h1>
+    <p class="lead hero-sub">You've done hundreds of great jobs — Google shows a handful of reviews, because only the angry ones bothered to type. The guy with 200 reviews isn't better than you. <b>He just asks. This asks every single job.</b></p>
+    <div class="hero-cta-row">
+      <a class="push" href="https://calendly.com/chase-sza/30min?utm_source=recoverrevenue&amp;utm_medium=site&amp;utm_content=reviews-review-engine" target="_blank" rel="noopener"><span class="edge"><span class="face">Book the 15-minute leak audit →</span></span></a>
+    </div>
+    <div class="crumb"><a href="../index.html#services">← All four systems</a></div>
+  </div>
+</header>
+
+<section class="math">
+  <div class="wrap">
+    <div class="kicker">The money math</div>
+    <h2 class="h2">Reviews are the first quote you give</h2>
+    <div class="math-grid">
+      <div class="mcard rv"><div class="n">88%<small> trust them</small></div><p>Buyers read reviews like referrals from a friend — before they ever call. Your rating is your first impression, made without you in the room.</p></div>
+      <div class="mcard rv"><div class="n">9 vs 212</div><p>Side by side on Google, the shop with 212 reviews gets the call — even when your work is better. Volume reads as safety.</p></div>
+      <div class="mcard rv"><div class="n">3–5×<small> review velocity</small></div><p>Asking every customer, 20 minutes after the job, with a one-tap link. That's the entire difference — and it runs itself.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="demo">
+  <div class="wrap">
+    <div class="kicker">Proof, not promises</div>
+    <h2 class="h2" style="text-align:center">14 reviews. Three are trouble.<br>Flip the shield.</h2>
+    <p class="lead" style="margin:0 auto;text-align:center">Simulated — but this is the exact stream every local shop generates. <b>Toggle the shield and watch what happens to the three bad ones, and to your rating.</b></p>
+
+    <div class="shield-panel rv" id="shieldPanel">
+      <div class="shield-ctl">
+        <span class="shield-lab">REVIEW SHIELD</span>
+        <button class="shield-toggle" id="shieldToggle" type="button" role="switch" aria-checked="false" aria-label="Review shield">
+          <span class="sh-off">OFF</span><span class="sh-on">ON</span><span class="sh-thumb"></span>
+        </button>
+      </div>
+      <div class="shield-rating">
+        <span class="rate-num" id="rateNum">4.1</span><span class="rate-star">★</span>
+        <span class="rate-lab">YOUR PUBLIC RATING</span>
+      </div>
+    </div>
+    <p class="shield-copy rv" id="shieldCopy">This is your Google page today — your angriest 2% writes your rating.</p>
+  </div>
+
+  <div class="wheel rv" id="wheel">
+    <div class="wheel-row r1">
+      <div class="wheel-track">
+        <div class="bubble" data-stars="5" style="--d:0s"><span class="chip">→ review request sent</span><div class="bwrap"><div class="btop"><span class="stars"><em>★★★★★</em></span><span class="niche">TOWING</span></div><p>"Blown tire on I-275 at 11pm. Truck was there in 22 minutes and the driver waited while I got a ride."</p><span class="who">Marcus D.</span></div></div>
+        <div class="bubble" data-stars="5" style="--d:.1s"><span class="chip">→ review request sent</span><div class="bwrap"><div class="btop"><span class="stars"><em>★★★★★</em></span><span class="niche">TREE</span></div><p>"Half an oak on the fence line. Quoted Tuesday, gone Thursday, yard raked like nothing happened."</p><span class="who">Sandra P.</span></div></div>
+        <div class="bubble low" data-stars="1"><div class="bwrap"><div class="btop"><span class="stars"><em>★</em><i>★★★★</i></span><span class="niche">TOWING</span></div><p>"Quoted $95 on the phone. The invoice said $140 and nobody could tell me why."</p><span class="who">Derek F.</span></div></div>
+        <div class="bubble" data-stars="5" style="--d:.2s"><span class="chip">→ review request sent</span><div class="bwrap"><div class="btop"><span class="stars"><em>★★★★★</em></span><span class="niche">MED SPA</span></div><p>"Booked online at midnight, in the chair Friday. First facial in years with zero upsell pressure."</p><span class="who">Alyssa G.</span></div></div>
+        <div class="bubble" data-stars="4" style="--d:.3s"><span class="chip">→ review request sent</span><div class="bwrap"><div class="btop"><span class="stars"><em>★★★★</em><i>★</i></span><span class="niche">RESTAURANT</span></div><p>"Food's excellent. Waited 15 minutes past our reservation on a Friday — still coming back for the grouper."</p><span class="who">Priya N.</span></div></div>
+        <div class="bubble" data-stars="5" style="--d:.4s"><span class="chip">→ review request sent</span><div class="bwrap"><div class="btop"><span class="stars"><em>★★★★★</em></span><span class="niche">DETAILING</span></div><p>"Three years of dog hair out of a Tahoe in one afternoon. It smells like a new truck in there."</p><span class="who">Kevin O.</span></div></div>
+        <div class="bubble low" data-stars="1"><div class="bwrap"><div class="btop"><span class="stars"><em>★</em><i>★★★★</i></span><span class="niche">TREE</span></div><p>"Crew left ruts across the side yard and dumped the stump grindings next to my mailbox."</p><span class="who">Dana K.</span></div></div>
+      </div>
+    </div>
+    <div class="wheel-row r2">
+      <div class="wheel-track">
+        <div class="bubble" data-stars="5" style="--d:.05s"><span class="chip">→ review request sent</span><div class="bwrap"><div class="btop"><span class="stars"><em>★★★★★</em></span><span class="niche">HVAC</span></div><p>"AC died at 96°. Tech came same day and replaced a $180 capacitor instead of selling me a $6k unit."</p><span class="who">Rita M.</span></div></div>
+        <div class="bubble low" data-stars="2"><div class="bwrap"><div class="btop"><span class="stars"><em>★★</em><i>★★★</i></span><span class="niche">MED SPA</span></div><p>"Sat 40 minutes past my appointment time and the front desk never once looked up."</p><span class="who">Lauren S.</span></div></div>
+        <div class="bubble" data-stars="5" style="--d:.15s"><span class="chip">→ review request sent</span><div class="bwrap"><div class="btop"><span class="stars"><em>★★★★★</em></span><span class="niche">TOWING</span></div><p>"Winched my skid steer out of a retention pond before lunch. Fair price, zero lecture."</p><span class="who">Cody B.</span></div></div>
+        <div class="bubble" data-stars="5" style="--d:.25s"><span class="chip">→ review request sent</span><div class="bwrap"><div class="btop"><span class="stars"><em>★★★★★</em></span><span class="niche">RESTAURANT</span></div><p>"Best grouper sandwich on the beach, and the kitchen got our table of 12 out in 20 minutes."</p><span class="who">Tom H.</span></div></div>
+        <div class="bubble" data-stars="4" style="--d:.35s"><span class="chip">→ review request sent</span><div class="bwrap"><div class="btop"><span class="stars"><em>★★★★</em><i>★</i></span><span class="niche">HVAC</span></div><p>"Clean install, good price. Crew left some insulation in the hallway — they came back next day for it."</p><span class="who">Steve K.</span></div></div>
+        <div class="bubble" data-stars="5" style="--d:.45s"><span class="chip">→ review request sent</span><div class="bwrap"><div class="btop"><span class="stars"><em>★★★★★</em></span><span class="niche">TREE</span></div><p>"Crane took the pine over our pool cage. Not one screen scratched."</p><span class="who">Diane W.</span></div></div>
+        <div class="bubble" data-stars="5" style="--d:.55s"><span class="chip">→ review request sent</span><div class="bwrap"><div class="btop"><span class="stars"><em>★★★★★</em></span><span class="niche">DETAILING</span></div><p>"Ceramic coat six months ago and the paint still beads like day one."</p><span class="who">J. Alvarez</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="dock" id="shieldDock" aria-live="polite">
+      <div class="dock-inner">
+        <div class="dock-top">
+          <span class="dock-head">⚠ CAUGHT BEFORE GOOGLE — YOU FIX IT PRIVATELY</span>
+          <span class="dock-sub">ROUTED TO YOUR PHONE — PRIVATE</span>
+        </div>
+        <div class="dock-row">
+          <div class="dcard"><span class="stars"><em>★</em><i>★★★★</i></span><p>"Quoted $95 on the phone. The invoice said $140 and nobody could tell me why."</p><span class="who">DEREK F. — TOWING · TEXT HIM BACK</span></div>
+          <div class="dcard"><span class="stars"><em>★★</em><i>★★★</i></span><p>"Sat 40 minutes past my appointment time and the front desk never once looked up."</p><span class="who">LAUREN S. — MED SPA · TEXT HER BACK</span></div>
+          <div class="dcard"><span class="stars"><em>★</em><i>★★★★</i></span><p>"Crew left ruts across the side yard and dumped the stump grindings next to my mailbox."</p><span class="who">DANA K. — TREE · TEXT HER BACK</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="ticker">
+      <div class="s rv"><div class="n">every job</div><div class="l">triggers the ask — automatically, 20 min after completion</div></div>
+      <div class="s rv"><div class="n">every reply</div><div class="l">to every review drafted for you — good and bad</div></div>
+      <div class="s rv"><div class="n">3 of 14</div><div class="l">reviews above are gripes — shield on, they reach your phone, not your page</div></div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--paper2)">
+  <div class="wrap">
+    <div class="kicker">How it works</div>
+    <h2 class="h2">You finish the job. It does the asking.</h2>
+    <div class="proc">
+      <div class="step rv"><div class="num">01</div><h3>Job marked done</h3><p>From your calendar or a one-tap text from you — that's the only input the system ever needs from your day.</p></div>
+      <div class="step rv"><div class="num">02</div><h3>The ask goes out</h3><p>20 minutes later, while the good feeling is fresh: a friendly text asking how the job went. Every customer, every job, same way.</p></div>
+      <div class="step rv"><div class="num">03</div><h3>Reviews stack, gripes ring you</h3><p>Happy replies get the one-tap Google link and post publicly — we draft the thank-you. Gripes skip Google and reach your phone — you fix them before they become 1-stars.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="dark-band">
+  <div class="wrap">
+    <div class="kicker">The guarantee stack</div>
+    <h2 class="h2">Why this is <span class="em">our</span> risk, not yours</h2>
+    <div class="gstack">
+      <div class="gcard rv"><b>3–5× review velocity.</b><p>That's the honest range from asking every job instead of when you remember. Your portal tracks the count.</p></div>
+      <div class="gcard rv"><b>Feedback first, inside Google's rules.</b><p>Every customer gets the same ask and nobody's paid. Happy customers get the review link; unhappy ones get a direct line to you first.</p></div>
+      <div class="gcard rv"><b>Every reply drafted.</b><p>Good reviews get thanked, bad ones get a fast professional owner reply — which reads better than silence ever does.</p></div>
+      <div class="gcard rv"><b>90 days, then month-to-month.</b><p>Watch the review count and the booked jobs in your portal. If it's not moving, fire us.</p></div>
+    </div>
+    <div class="portal-badge"><i></i>EVERY SYSTEM REPORTS INTO ONE PORTAL — DOLLARS RECOVERED, UPDATED LIVE</div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="kicker">Straight answers</div>
+    <h2 class="h2" style="text-align:center">What owners ask us</h2>
+    <div class="faq">
+      <details><summary>I already ask for reviews.</summary><div class="a">You ask when you remember, from your personal number, with no link. This asks every single job, 20 minutes after it's done — happy customers end up one tap from posting. That's the entire difference between 9 reviews and 200.</div></details>
+      <details><summary>Is this allowed under Google's review rules?</summary><div class="a">Yes. Every customer gets the same feedback ask and nobody's paid a dime. Happy customers get the one-tap review link; unhappy ones get a direct line to you first — the fix happens on your phone, not in public.</div></details>
+      <details><summary>One bad review will sink me anyway.</summary><div class="a">A bad review with a fast, professional owner reply reads better than silence — and you'll have ten fresh 5-stars stacked on top of it. We draft every reply either way.</div></details>
+    </div>
+  </div>
+</section>
+
+<section class="offer" id="offer">
+  <div class="wrap">
+    <div class="offer-grid">
+      <div>
+        <div class="kicker">The plan this page is about</div>
+        <h2 class="h2">Visibility+</h2>
+        <p class="lead">Reviews aren't a gadget — they're one leak in the same bucket. Visibility+ ships the review engine alongside the website, weekly Google profile work and a chatbot that quotes 24/7.</p>
+        <div class="achips">
+          <span class="achip">Add for booking businesses: <b>App Lite +$197/mo</b></span>
+          <span class="achip">Add: <b>SMS reminders — ask</b></span>
+        </div>
+        <p class="lead" style="font-size:13.5px;margin-top:18px">Reviews get them to call. <a href="ai-phone.html" style="color:var(--blue);font-weight:700;text-decoration:none">The AI phone agent makes sure someone answers →</a></p>
+      </div>
+      <div class="tier rv">
+        <div class="tname">Visibility+</div>
+        <div class="tprice">$450<span>/mo</span></div>
+        <div class="tsetup"><b>$1,497 build fee</b> — everything in Visibility, plus chatbot trained on your business</div>
+        <ul>
+          <li>Everything in Visibility (site, GBP weekly, missed-call text-back)</li>
+          <li>Review engine — automated post-job requests</li>
+          <li>Gripes routed to your phone before they go public</li>
+          <li>AI-drafted replies to every review</li>
+          <li>Website chatbot — quotes &amp; captures leads 24/7</li>
+          <li>Quarterly strategy review</li>
+        </ul>
+        <a class="tbtn" href="https://calendly.com/chase-sza/30min?utm_source=recoverrevenue&amp;utm_medium=site&amp;utm_content=reviews-visibility-plus-plan" target="_blank" rel="noopener">Go Visibility+</a>
+        <a class="allplans" href="../index.html#pricing">Compare <b>all plans →</b></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <div class="kicker">One call. Fifteen minutes.</div>
+    <h2 class="h2">Find out what your rating is costing you.</h2>
+    <p class="lead" style="max-width:520px">We'll pull your profile next to your three nearest competitors on the call. You leave with your numbers either way.</p>
+    <a class="push dark-edge" href="https://calendly.com/chase-sza/30min?utm_source=recoverrevenue&amp;utm_medium=site&amp;utm_content=reviews-review-engine" target="_blank" rel="noopener"><span class="edge"><span class="face">Book the 15-minute leak audit →</span></span></a>
+    <div class="sub-cta">Prefer email? <a href="mailto:chase@recoverrevenue.co">chase@recoverrevenue.co</a></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span><b>Recover<i>Revenue</i></b> — Tampa Bay, FL</span>
+    <span>Websites · AI receptionists · Review engines · Lead engines</span>
+    <span>© 2026 RecoverRevenue</span>
+  </div>
+</footer>
+
+<a class="callbar" href="https://calendly.com/chase-sza/30min?utm_source=recoverrevenue&amp;utm_medium=site&amp;utm_content=reviews-review-engine" target="_blank" rel="noopener">Book a 15-min leak audit →</a>
+
+<script>
+(function(){
+  "use strict";
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  },{threshold:.15});
+  document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+
+  /* ---------- review shield demo ---------- */
+  var demo   = document.getElementById('demo');
+  var toggle = document.getElementById('shieldToggle');
+  var rateEl = document.getElementById('rateNum');
+  var copyEl = document.getElementById('shieldCopy');
+
+  /* duplicate each marquee track once for the infinite translateX(-50%) loop */
+  demo.querySelectorAll('.wheel-track').forEach(function(track){
+    var originals = Array.prototype.slice.call(track.children);
+    originals.forEach(function(b){
+      var c = b.cloneNode(true);
+      c.classList.add('dup');
+      c.setAttribute('aria-hidden','true');
+      track.appendChild(c);
+    });
+  });
+
+  /* live-computed ratings from the bubbles actually on the page */
+  var all = [], pub = [];
+  demo.querySelectorAll('.wheel .bubble:not(.dup)').forEach(function(b){
+    var s = parseInt(b.getAttribute('data-stars'), 10);
+    all.push(s);
+    if (s >= 3) pub.push(s);
+  });
+  function avg(a){ return a.reduce(function(x,y){ return x+y; }, 0) / a.length; }
+  var rateOff = Math.round(avg(all) * 10) / 10;   /* 4.1 */
+  var rateOn  = Math.round(avg(pub) * 10) / 10;   /* 4.8 */
+  rateEl.textContent = rateOff.toFixed(1);
+
+  var COPY_OFF = 'This is your Google page today — your angriest 2% writes your rating.';
+  var COPY_ON  = 'Happy customers get the review link. Unhappy ones reach you first — privately.';
+
+  var raf = null;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  function animateRate(to){
+    if (raf){ cancelAnimationFrame(raf); raf = null; }
+    if (reduce.matches){ rateEl.textContent = to.toFixed(1); return; }
+    var from = parseFloat(rateEl.textContent) || rateOff;
+    var t0 = performance.now(), dur = 900;
+    function step(now){
+      var p = Math.min((now - t0) / dur, 1);
+      var e = 1 - Math.pow(1 - p, 3);
+      rateEl.textContent = (from + (to - from) * e).toFixed(1);
+      raf = (p < 1) ? requestAnimationFrame(step) : null;
+    }
+    raf = requestAnimationFrame(step);
+  }
+
+  /* idempotent state machine — everything hangs off one class + aria-checked */
+  function setShield(on){
+    toggle.setAttribute('aria-checked', on ? 'true' : 'false');
+    demo.classList.toggle('shield-on', on);
+    copyEl.textContent = on ? COPY_ON : COPY_OFF;
+    animateRate(on ? rateOn : rateOff);
+  }
+  toggle.addEventListener('click', function(){
+    setShield(toggle.getAttribute('aria-checked') !== 'true');
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>R3 HQ — Staff Portal</title>
+<style>
+  :root{
+    --bg:#ffffff; --bg2:#f4f5f6; --ink:#171a20; --dim:#8e939c;
+    --line:rgba(23,26,32,.09); --green:#1DB667; --amber:#f79009;
+    --blue:#143D73; --red:#d92d20; --pill:#171a20; --pill-ink:#ffffff;
+    --sidebar:#f7f8f9; --sw:220px;
+  }
+  [data-theme="dark"]{
+    --bg:#111214; --bg2:#1b1d20; --ink:#f4f5f6; --dim:#84888f;
+    --line:rgba(244,245,246,.09); --pill:#f4f5f6; --pill-ink:#111214;
+    --blue:#5B8DD9; --red:#f97066; --sidebar:#0d0f11;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;overflow:hidden}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;
+    background:var(--bg); color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    display:flex;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar{
+    width:var(--sw);flex-shrink:0;
+    background:var(--sidebar);border-right:1px solid var(--line);
+    display:flex;flex-direction:column;height:100vh;
+  }
+  .sb-head{
+    padding:20px 18px 14px;
+    display:flex;align-items:center;justify-content:space-between;
+    border-bottom:1px solid var(--line);flex-shrink:0;
+  }
+  .wordmark{font-size:22px;font-weight:700;color:#7DD3FC;letter-spacing:-.02em;line-height:1}
+  .tbtn{
+    width:28px;height:28px;border-radius:50%;border:1px solid var(--line);
+    background:none;color:var(--dim);cursor:pointer;font-size:12px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .sb-nav{padding:10px 10px;flex:1;overflow-y:auto}
+  .nav-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);font-weight:700;padding:10px 8px 4px}
+  .nav-item{
+    display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:9px;
+    font-size:13.5px;font-weight:600;color:var(--dim);cursor:pointer;
+    transition:all .14s;user-select:none;border:none;background:none;width:100%;text-align:left;
+    margin-bottom:2px;
+  }
+  .nav-item:hover{background:var(--bg);color:var(--ink)}
+  .nav-item.active{background:var(--bg);color:var(--ink)}
+  .nav-item svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+  .nb{background:var(--green);color:#fff;font-size:10px;font-weight:700;border-radius:8px;padding:1px 6px;margin-left:auto}
+  .nb.amber{background:var(--amber)}
+  .nb.blue{background:var(--blue)}
+  .sb-foot{padding:14px 18px;border-top:1px solid var(--line);flex-shrink:0}
+  .rep-row{display:flex;align-items:center;gap:9px;cursor:pointer;padding:6px 0}
+  .rep-av{
+    width:30px;height:30px;border-radius:50%;
+    background:var(--blue);color:#fff;font-size:12px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .rep-info{flex:1;min-width:0}
+  .rep-name{font-size:13px;font-weight:700;color:var(--ink)}
+  .rep-role{font-size:11px;color:var(--dim)}
+
+  /* ── Main ── */
+  .main{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden}
+  .topbar{
+    height:52px;flex-shrink:0;padding:0 24px;
+    display:flex;align-items:center;justify-content:space-between;
+    border-bottom:1px solid var(--line);
+    background:color-mix(in srgb,var(--bg) 92%,transparent);
+    backdrop-filter:blur(10px);z-index:10;
+  }
+  .topbar h2{font-size:15px;font-weight:700;letter-spacing:-.01em}
+  .topbar .right{display:flex;align-items:center;gap:10px}
+  .ts{font-size:11.5px;color:var(--dim);font-variant-numeric:tabular-nums}
+  .icon-btn{
+    width:30px;height:30px;border-radius:8px;border:1px solid var(--line);
+    background:none;color:var(--dim);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  }
+  .icon-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .icon-btn:hover{background:var(--bg2);color:var(--ink)}
+  .content{flex:1;overflow-y:auto;padding:22px 24px 32px}
+  .content::-webkit-scrollbar{width:5px}
+  .content::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+  .screen{display:none}
+  .screen.active{display:block}
+
+  /* ── KPI Cards ── */
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+  .kpi{
+    background:var(--bg2);border:1px solid var(--line);border-radius:13px;padding:16px 18px;
+  }
+  .kpi .lbl{font-size:11px;color:var(--dim);font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px}
+  .kpi .val{font-size:30px;font-weight:700;letter-spacing:-.04em;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1}
+  .kpi .hint{font-size:12px;color:var(--dim);margin-top:5px}
+  .kpi .hint .g{color:var(--green);font-weight:600}
+  .kpi .hint .r{color:var(--red);font-weight:600}
+  .kpi .hint .a{color:var(--amber);font-weight:600}
+
+  /* ── Layout rows ── */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+  .grid21{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:12px}
+  .grid12{display:grid;grid-template-columns:1fr 2fr;gap:12px;margin-bottom:12px}
+
+  /* ── Card ── */
+  .card{background:var(--bg2);border:1px solid var(--line);border-radius:13px;padding:18px 20px;margin-bottom:12px}
+  .card-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+  .card-title .dim{color:var(--dim);font-weight:500;font-size:12px}
+
+  /* ── Pipeline stages ── */
+  .stages{display:flex;border-radius:10px;overflow:hidden;border:1px solid var(--line);margin-bottom:4px}
+  .stage{flex:1;padding:11px 10px;text-align:center;border-right:1px solid var(--line)}
+  .stage:last-child{border-right:none}
+  .stage .n{font-size:20px;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1}
+  .stage .s{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-top:3px;opacity:.7}
+  .s-new{background:#f1f5f9;color:#64748b}
+  .s-contact{background:#eff6ff;color:#3b82f6}
+  .s-interest{background:#fffbeb;color:#d97706}
+  .s-booked{background:#f0fdf4;color:#16a34a}
+  .s-ni{background:#fef2f2;color:#dc2626}
+  [data-theme="dark"] .s-new{background:#1e293b;color:#94a3b8}
+  [data-theme="dark"] .s-contact{background:#1e3a5f;color:#60a5fa}
+  [data-theme="dark"] .s-interest{background:#422006;color:#fbbf24}
+  [data-theme="dark"] .s-booked{background:#14532d;color:#4ade80}
+  [data-theme="dark"] .s-ni{background:#450a0a;color:#f87171}
+
+  /* ── Funnel bars ── */
+  .fbar{display:flex;align-items:center;gap:10px;font-size:12.5px;margin-bottom:6px}
+  .fl{width:72px;color:var(--dim);font-weight:600;text-align:right;font-size:12px}
+  .fb{flex:1;background:var(--line);border-radius:5px;height:9px;overflow:hidden}
+  .fb i{display:block;height:100%;border-radius:5px;transition:width .5s ease}
+  .ft{width:30px;text-align:right;font-weight:700;color:var(--ink);font-size:12px;font-variant-numeric:tabular-nums}
+
+  /* ── Activity feed ── */
+  .feed-item{
+    display:flex;align-items:flex-start;gap:10px;padding:9px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .feed-item:last-child{border-bottom:none}
+  .feed-ic{
+    width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:11px;font-weight:700;flex-shrink:0;color:#fff;margin-top:1px;
+  }
+  .feed-body{flex:1;min-width:0}
+  .feed-name{font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .feed-meta{font-size:11.5px;color:var(--dim);margin-top:2px}
+  .feed-ts{font-size:11px;color:var(--dim);flex-shrink:0;white-space:nowrap}
+  .dtag{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 6px;border-radius:5px;margin-left:5px;vertical-align:middle}
+  .dtag-bk{background:#dcfce7;color:#15803d}
+  .dtag-int{background:#fef3c7;color:#b45309}
+  .dtag-ni{background:#fee2e2;color:#b91c1c}
+  .dtag-vm,.dtag-na{background:var(--bg);color:var(--dim);border:1px solid var(--line)}
+  [data-theme="dark"] .dtag-bk{background:#14532d;color:#86efac}
+  [data-theme="dark"] .dtag-int{background:#422006;color:#fbbf24}
+  [data-theme="dark"] .dtag-ni{background:#450a0a;color:#fca5a5}
+
+  /* ── Revenue ── */
+  .rev-big{font-size:38px;font-weight:700;letter-spacing:-.05em;color:var(--ink);font-variant-numeric:tabular-nums}
+  .progress-wrap{margin:10px 0 4px}
+  .progress-bg{background:var(--line);border-radius:6px;height:7px;overflow:hidden}
+  .progress-bg i{display:block;height:100%;border-radius:6px;background:var(--green);transition:width .5s}
+
+  /* ── Hour chart ── */
+  .hour-chart{display:flex;align-items:flex-end;gap:3px;height:56px;margin-top:8px}
+  .hb{flex:1;border-radius:3px 3px 0 0;background:var(--blue);opacity:.6;min-height:3px;transition:height .4s}
+  .hlbl{display:flex;gap:3px;margin-top:4px}
+  .hlbl span{flex:1;text-align:center;font-size:8.5px;color:var(--dim)}
+
+  /* ── Tables ── */
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{text-align:left;font-size:10.5px;font-weight:700;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;padding:8px 10px;border-bottom:1px solid var(--line)}
+  td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle;color:var(--ink)}
+  tr:last-child td{border-bottom:none}
+  tbody tr:hover td{background:color-mix(in srgb,var(--bg2) 60%,transparent)}
+
+  /* ── Dot ── */
+  .dot{display:inline-block;width:7px;height:7px;border-radius:50%;vertical-align:middle;margin-right:4px}
+  .dot-g{background:var(--green)}
+  .dot-a{background:var(--amber)}
+  .dot-r{background:var(--red)}
+  .dot-d{background:var(--dim)}
+  .dot-b{background:var(--blue)}
+
+  /* ── Tag ── */
+  .tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;letter-spacing:.04em;text-transform:uppercase}
+  .tag-cat{background:var(--bg);border:1px solid var(--line);color:var(--dim)}
+
+  /* ── Meeting cards ── */
+  .meet-card{
+    display:flex;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);align-items:flex-start;
+  }
+  .meet-card:last-child{border-bottom:none}
+  .meet-bar{width:3px;align-self:stretch;border-radius:3px;background:var(--green);flex-shrink:0;margin-top:3px}
+  .meet-bar.past{background:var(--dim)}
+  .meet-name{font-size:13.5px;font-weight:600;color:var(--ink)}
+  .meet-meta{font-size:12px;color:var(--dim);margin-top:3px}
+  .meet-badge{
+    font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:7px;
+    background:#dcfce7;color:#15803d;flex-shrink:0;
+  }
+  [data-theme="dark"] .meet-badge{background:#14532d;color:#86efac}
+  .meet-badge.past{background:var(--bg);color:var(--dim);border:1px solid var(--line)}
+
+  /* ── Toolbar ── */
+  .toolbar{display:flex;gap:8px;align-items:center;margin-bottom:14px}
+  .search-in{
+    flex:1;max-width:260px;padding:7px 12px;border-radius:9px;border:1px solid var(--line);
+    background:var(--bg2);color:var(--ink);font-family:inherit;font-size:13px;outline:none;
+  }
+  .search-in::placeholder{color:var(--dim)}
+  .fc{
+    padding:6px 12px;border-radius:18px;border:1px solid var(--line);background:none;
+    color:var(--dim);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;
+    transition:all .14s;
+  }
+  .fc.on{background:var(--pill);color:var(--pill-ink);border-color:transparent}
+
+  /* ── Rep card ── */
+  .rep-card{
+    display:flex;align-items:center;gap:16px;padding:14px;
+    background:var(--bg);border:1px solid var(--line);border-radius:11px;margin-bottom:10px;
+  }
+  .rep-av-lg{
+    width:40px;height:40px;border-radius:50%;background:var(--blue);color:#fff;
+    font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .rep-stats{display:flex;gap:0;flex:1;border-left:1px solid var(--line);margin-left:4px;padding-left:4px}
+  .rs{flex:1;text-align:center;padding:0 10px;border-right:1px solid var(--line)}
+  .rs:last-child{border-right:none}
+  .rs .n{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .rs .c{font-size:10px;color:var(--dim);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+
+  /* ── Empty state ── */
+  .empty{text-align:center;padding:48px 20px;color:var(--dim)}
+  .empty .ico{font-size:28px;margin-bottom:10px}
+  .empty p{font-size:13.5px;line-height:1.6}
+
+  /* ── Revenue tab specifics ── */
+  .client-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}
+  .client-row:last-child{border-bottom:none}
+  .client-name{font-size:13.5px;font-weight:600;color:var(--ink)}
+  .client-meta{font-size:12px;color:var(--dim);margin-top:2px}
+  .mrr-tag{font-size:12px;font-weight:700;color:var(--green)}
+  .section-title{font-size:16px;font-weight:700;letter-spacing:-.02em;margin-bottom:16px;color:var(--ink)}
+  .live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(29,182,103,.18);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(29,182,103,.18)}50%{box-shadow:0 0 0 6px rgba(29,182,103,.06)}}
+</style>
+</head>
+<body>
+
+<!-- ══ SIDEBAR ══ -->
+<aside class="sidebar">
+  <div class="sb-head">
+    <span class="wordmark">R3</span>
+    <button class="tbtn" onclick="toggleTheme()" title="Toggle theme">◐</button>
+  </div>
+  <nav class="sb-nav">
+    <div class="nav-label">Dashboard</div>
+    <button class="nav-item active" data-scr="overview" onclick="go('overview')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Overview
+    </button>
+    <button class="nav-item" data-scr="calls" onclick="go('calls')">
+      <svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>
+      Calls
+      <span class="nb blue" id="badge-calls">0</span>
+    </button>
+    <button class="nav-item" data-scr="leads" onclick="go('leads')">
+      <svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>
+      Leads
+      <span class="nb" id="badge-leads">0</span>
+    </button>
+    <button class="nav-item" data-scr="revenue" onclick="go('revenue')">
+      <svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+      Revenue
+    </button>
+    <button class="nav-item" data-scr="calendar" onclick="go('calendar')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+      Calendar
+      <span class="nb amber" id="badge-cal">0</span>
+    </button>
+    <button class="nav-item" data-scr="team" onclick="go('team')">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Team
+    </button>
+  </nav>
+  <div class="sb-foot">
+    <div style="font-size:10.5px;color:var(--dim);letter-spacing:.04em;text-transform:uppercase;font-weight:600;margin-bottom:6px">Logged in as</div>
+    <div class="rep-row" onclick="switchRep()">
+      <div class="rep-av" id="sb-avatar">CS</div>
+      <div class="rep-info">
+        <div class="rep-name" id="sb-repname">Chase S.</div>
+        <div class="rep-role">Sales Rep</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+  <div class="topbar">
+    <h2 id="page-title">Overview</h2>
+    <div class="right">
+      <span class="ts" id="clock"></span>
+      <button class="icon-btn" onclick="refreshData()" title="Refresh">
+        <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ════ OVERVIEW ════ -->
+    <section class="screen active" id="scr-overview">
+      <div class="kpi-grid" id="kpi-row"></div>
+
+      <div class="grid21">
+        <div class="card" style="margin-bottom:0">
+          <div class="card-title">Pipeline <span class="dim" id="pipeline-updated"></span></div>
+          <div class="stages" id="stage-row"></div>
+          <div style="height:10px"></div>
+          <div class="card-title" style="margin-bottom:10px">Funnel — all time</div>
+          <div id="funnel-bars"></div>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:12px">
+            <div class="card-title">Revenue <span class="dot live-dot" style="margin-left:4px"></span></div>
+            <div class="rev-big" id="rev-mrr">$0</div>
+            <div style="font-size:12px;color:var(--dim);margin-top:4px" id="rev-sub"></div>
+            <div class="progress-wrap" id="rev-bar-wrap">
+              <div class="progress-bg"><i id="rev-bar"></i></div>
+            </div>
+            <div style="font-size:11.5px;color:var(--dim);margin-top:4px" id="rev-target-line"></div>
+          </div>
+          <div class="card" style="margin-bottom:0">
+            <div class="card-title">Bookings this week</div>
+            <div style="font-size:30px;font-weight:700;letter-spacing:-.04em;color:var(--ink);font-variant-numeric:tabular-nums" id="bookings-week">0</div>
+            <div style="font-size:12px;color:var(--dim);margin-top:5px" id="bookings-sub"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="card" style="margin-bottom:0">
+          <div class="card-title">Activity Feed <span class="dim">last 12 dispositions</span></div>
+          <div id="activity-feed"><div class="empty"><p>No calls logged yet. Start dialing.</p></div></div>
+        </div>
+        <div class="card" style="margin-bottom:0">
+          <div class="card-title">Connect Rates</div>
+          <div id="conversion-stats"></div>
+          <div style="margin-top:18px">
+            <div class="card-title" style="margin-bottom:10px">Peak Hours</div>
+            <div class="hour-chart" id="hour-chart"></div>
+            <div class="hlbl" id="hour-labels"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ CALLS ════ -->
+    <section class="screen" id="scr-calls">
+      <div class="section-title">Call Log</div>
+      <div class="kpi-grid" style="grid-template-columns:repeat(5,1fr);margin-bottom:16px" id="calls-kpis"></div>
+      <div class="card" style="margin-bottom:12px">
+        <div class="card-title">Disposition Breakdown</div>
+        <div id="dispo-breakdown"></div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="padding:14px 18px;border-bottom:1px solid var(--line)">
+          <div class="card-title" style="margin-bottom:0">All Calls</div>
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr>
+              <th>Business</th><th>Rep</th><th>Disposition</th><th>Callback Due</th><th>Time</th>
+            </tr></thead>
+            <tbody id="calls-log"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ LEADS ════ -->
+    <section class="screen" id="scr-leads">
+      <div class="section-title">Lead Pipeline</div>
+      <div class="toolbar">
+        <input class="search-in" id="leads-search" placeholder="Search leads…" oninput="renderLeads()">
+        <button class="fc on" data-sf="all" onclick="setLeadFilter('all')">All</button>
+        <button class="fc" data-sf="uncalled" onclick="setLeadFilter('uncalled')">Uncalled</button>
+        <button class="fc" data-sf="interested" onclick="setLeadFilter('interested')">Interested</button>
+        <button class="fc" data-sf="booked" onclick="setLeadFilter('booked')">Booked</button>
+        <button class="fc" data-sf="ni" onclick="setLeadFilter('ni')">Not Int.</button>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr>
+              <th>Business</th><th>Category</th><th>City</th><th>Owner</th><th>Avg Ticket</th><th>Status</th><th>Rep</th><th>Last Contact</th>
+            </tr></thead>
+            <tbody id="leads-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ REVENUE ════ -->
+    <section class="screen" id="scr-revenue">
+      <div class="section-title">Revenue Dashboard</div>
+      <div class="kpi-grid" id="rev-kpis"></div>
+      <div class="grid2">
+        <div class="card" style="margin-bottom:0">
+          <div class="card-title">MRR Tracker</div>
+          <div class="rev-big" id="rev-mrr2">$0</div>
+          <div style="font-size:12px;color:var(--dim);margin-top:4px">est. monthly recurring revenue</div>
+          <div class="progress-wrap">
+            <div class="progress-bg"><i id="rev-bar2"></i></div>
+          </div>
+          <div style="font-size:11.5px;color:var(--dim);margin-top:4px" id="rev-target2"></div>
+          <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--line)">
+            <div style="font-size:12px;font-weight:700;color:var(--ink);margin-bottom:10px">Revenue Components</div>
+            <div id="rev-components"></div>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:0">
+          <div class="card-title">Active Clients <span class="dim">(Booked leads)</span></div>
+          <div id="client-roster"><div class="empty"><p>No booked clients yet.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ CALENDAR ════ -->
+    <section class="screen" id="scr-calendar">
+      <div class="section-title">Meetings &amp; Bookings</div>
+      <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:16px" id="cal-kpis"></div>
+      <div class="grid2">
+        <div class="card" style="margin-bottom:0">
+          <div class="card-title">Upcoming</div>
+          <div id="meetings-upcoming"><div class="empty"><p>No upcoming meetings.</p></div></div>
+        </div>
+        <div class="card" style="margin-bottom:0">
+          <div class="card-title">Past</div>
+          <div id="meetings-past"><div class="empty"><p>No past meetings.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ TEAM ════ -->
+    <section class="screen" id="scr-team">
+      <div class="section-title">Team Performance</div>
+      <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:16px" id="team-kpis"></div>
+      <div id="rep-cards"></div>
+      <div class="card" style="margin-bottom:0">
+        <div class="card-title">Niche Performance</div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr>
+              <th>Niche</th><th>Leads</th><th>Called</th><th>Interested</th><th>Booked</th><th>Book Rate</th>
+            </tr></thead>
+            <tbody id="niche-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+// ══════════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════════
+const LEADS = [{"business_name":"Mike's Auto Detailing","phone":"8137872751","category":"car_detailing","city":"Tampa","owner_name":"Mike","avg_ticket":175,"est_revenue_annual":266875},{"business_name":"Dirty D's Mobile Repair","phone":"7276578747","category":"mobile_mechanic","city":"Pinellas Park","owner_name":"David Gaffney","avg_ticket":250,"est_revenue_annual":225000},{"business_name":"Let Rod Polish Em Off Mobile Ceramic Coatings & Auto Detailing","phone":"8133137593","category":"car_detailing","city":"Lithia","owner_name":"Rod","avg_ticket":175,"est_revenue_annual":192500},{"business_name":"Keep It Klean Car Care","phone":"7278514349","category":"car_detailing","city":"St. Petersburg","owner_name":"Herbert Leroy Jones","avg_ticket":175,"est_revenue_annual":183750},{"business_name":"4K Mobile Detailing Services","phone":"8135202663","category":"car_detailing","city":"Seffner","owner_name":"Lisbeth & Ray","avg_ticket":175,"est_revenue_annual":153125},{"business_name":"Bayou Tinting & Detailing","phone":"7275442886","category":"car_detailing","city":"Pinellas Park","owner_name":"Steve Struthers","avg_ticket":175,"est_revenue_annual":161875},{"business_name":"Top Dog Mobile Detailing South","phone":"4016445370","category":"car_detailing","city":"Land O' Lakes","owner_name":"Carlos","avg_ticket":175,"est_revenue_annual":153125},{"business_name":"HandyDude Rob","phone":"2022362722","category":"handyman","city":"Seminole","owner_name":"Rob","avg_ticket":250,"est_revenue_annual":250000},{"business_name":"1st Choice Handyman Services","phone":"7277440069","category":"handyman","city":"St. Petersburg","owner_name":"James","avg_ticket":250,"est_revenue_annual":275000},{"business_name":"Mister Fixit Tampa Bay","phone":"8135551029","category":"handyman","city":"Tampa","owner_name":"Tony","avg_ticket":250,"est_revenue_annual":260000},{"business_name":"Fast Fix Handyman","phone":"7279113344","category":"handyman","city":"Clearwater","owner_name":"Dave","avg_ticket":225,"est_revenue_annual":240000},{"business_name":"Bay Area Tree Experts","phone":"8134492251","category":"tree_service","city":"Tampa","owner_name":"Carlos Reyes","avg_ticket":900,"est_revenue_annual":485000},{"business_name":"Sunshine State Tree Service","phone":"7274883920","category":"tree_service","city":"Largo","owner_name":"Mike Tanner","avg_ticket":850,"est_revenue_annual":442000},{"business_name":"Florida Premier Tree Care","phone":"8139273310","category":"tree_service","city":"Brandon","owner_name":"Steve","avg_ticket":950,"est_revenue_annual":510000},{"business_name":"A-1 Affordable Tree Service","phone":"7275559201","category":"tree_service","city":"St. Petersburg","owner_name":"Jim","avg_ticket":750,"est_revenue_annual":390000},{"business_name":"Tampa Bay Towing & Recovery","phone":"8135552847","category":"towing","city":"Tampa","owner_name":"Ray Martinez","avg_ticket":150,"est_revenue_annual":330000},{"business_name":"Bay Towing Inc","phone":"7275550193","category":"towing","city":"Clearwater","owner_name":"Phil","avg_ticket":145,"est_revenue_annual":310000},{"business_name":"Lightning Towing","phone":"8135559274","category":"towing","city":"Brandon","owner_name":"Derek","avg_ticket":155,"est_revenue_annual":345000},{"business_name":"Fast & Reliable Towing","phone":"7275558821","category":"towing","city":"St. Pete","owner_name":"Marco","avg_ticket":140,"est_revenue_annual":300000},{"business_name":"SunCoast Towing","phone":"8135554410","category":"towing","city":"Tampa","owner_name":"Bobby","avg_ticket":160,"est_revenue_annual":360000},{"business_name":"Green Thumb Lawn Services","phone":"8135550921","category":"lawn_care","city":"Tampa","owner_name":"Eduardo","avg_ticket":120,"est_revenue_annual":192000},{"business_name":"TampaCut Lawn & Landscape","phone":"7275553847","category":"lawn_care","city":"Pinellas","owner_name":"Juan","avg_ticket":110,"est_revenue_annual":176000},{"business_name":"Prestige Lawn Care","phone":"8135557733","category":"lawn_care","city":"Wesley Chapel","owner_name":"Tom","avg_ticket":135,"est_revenue_annual":216000},{"business_name":"BrightWash Pressure Services","phone":"8135551847","category":"pressure_washing","city":"Tampa","owner_name":"Kevin","avg_ticket":300,"est_revenue_annual":225000},{"business_name":"Gleam Clean Pressure Washing","phone":"7275559348","category":"pressure_washing","city":"Clearwater","owner_name":"Darnell","avg_ticket":280,"est_revenue_annual":210000},{"business_name":"PowerBlast Pro","phone":"8135552291","category":"pressure_washing","city":"Brandon","owner_name":"Chris","avg_ticket":320,"est_revenue_annual":240000},{"business_name":"Spot-Free Pressure Wash","phone":"7275556109","category":"pressure_washing","city":"Largo","owner_name":"Hector","avg_ticket":275,"est_revenue_annual":206250},{"business_name":"AutoFix Mobile Mechanic","phone":"8135559820","category":"mobile_mechanic","city":"Tampa","owner_name":"Luis","avg_ticket":260,"est_revenue_annual":260000},{"business_name":"Mobile Mechanic Mike","phone":"7275551738","category":"mobile_mechanic","city":"St. Pete","owner_name":"Mike","avg_ticket":240,"est_revenue_annual":240000},{"business_name":"Road Runner Mobile Repair","phone":"8135554492","category":"mobile_mechanic","city":"Clearwater","owner_name":"Sam","avg_ticket":255,"est_revenue_annual":255000},{"business_name":"Accurate Appliance Repair","phone":"8135553021","category":"appliance_repair","city":"Tampa","owner_name":"Frank","avg_ticket":180,"est_revenue_annual":198000},{"business_name":"Same Day Appliance Fix","phone":"7275558844","category":"appliance_repair","city":"Pinellas Park","owner_name":"Gary","avg_ticket":175,"est_revenue_annual":192500},{"business_name":"Dr. Appliance Tampa","phone":"8135557192","category":"appliance_repair","city":"Tampa","owner_name":"Nick","avg_ticket":190,"est_revenue_annual":209000},{"business_name":"Bay Area Junk Pros","phone":"8135556380","category":"junk_removal","city":"Tampa","owner_name":"Reggie","avg_ticket":350,"est_revenue_annual":262500},{"business_name":"Junk King Tampa Bay","phone":"7275552914","category":"junk_removal","city":"Clearwater","owner_name":"Lance","avg_ticket":380,"est_revenue_annual":285000},{"business_name":"Haul It All Tampa","phone":"8135559034","category":"junk_removal","city":"Brandon","owner_name":"Wayne","avg_ticket":330,"est_revenue_annual":247500},{"business_name":"Gone Junk Removal","phone":"7275554827","category":"junk_removal","city":"St. Pete","owner_name":"Omar","avg_ticket":360,"est_revenue_annual":270000},{"business_name":"ProShine Ceramic Coating","phone":"8135551920","category":"car_detailing","city":"Tampa","owner_name":"Alex","avg_ticket":600,"est_revenue_annual":360000},{"business_name":"Elite Mobile Detailing","phone":"7275556382","category":"car_detailing","city":"Wesley Chapel","owner_name":"Jordan","avg_ticket":200,"est_revenue_annual":180000},{"business_name":"Crystal Clear Detailing","phone":"8135553847","category":"car_detailing","city":"Land O' Lakes","owner_name":"Marcus","avg_ticket":185,"est_revenue_annual":166500},{"business_name":"A-Plus Handyman & Remodeling","phone":"8135558291","category":"handyman","city":"Riverview","owner_name":"Paul","avg_ticket":300,"est_revenue_annual":330000},{"business_name":"Reliable Home Repairs LLC","phone":"7275550472","category":"handyman","city":"Largo","owner_name":"Steve","avg_ticket":275,"est_revenue_annual":302500},{"business_name":"TreeMasters Tampa","phone":"8135556109","category":"tree_service","city":"Tampa","owner_name":"Joe","avg_ticket":875,"est_revenue_annual":455000},{"business_name":"Priority Tow & Transport","phone":"7275557384","category":"towing","city":"Tampa","owner_name":"Dennis","avg_ticket":165,"est_revenue_annual":363000},{"business_name":"Lawn Doctors Tampa","phone":"8135552938","category":"lawn_care","city":"Tampa","owner_name":"Pedro","avg_ticket":125,"est_revenue_annual":200000},{"business_name":"SteamRight Pressure Washing","phone":"7275553810","category":"pressure_washing","city":"Riverview","owner_name":"Andre","avg_ticket":295,"est_revenue_annual":221250},{"business_name":"Clutch Appliance Repair","phone":"8135559102","category":"appliance_repair","city":"Brandon","owner_name":"Earl","avg_ticket":195,"est_revenue_annual":214500},{"business_name":"BayCity Junk Haulers","phone":"7275558193","category":"junk_removal","city":"Tampa","owner_name":"Curtis","avg_ticket":340,"est_revenue_annual":255000},{"business_name":"Momentum Mobile Mechanic","phone":"8135554718","category":"mobile_mechanic","city":"Riverview","owner_name":"Anthony","avg_ticket":270,"est_revenue_annual":270000},{"business_name":"FlexFix Handyman Services","phone":"7275556920","category":"handyman","city":"New Port Richey","owner_name":"Travis","avg_ticket":235,"est_revenue_annual":258500}];
+
+const NICHE_LABEL = {
+  car_detailing:"Detailing",pressure_washing:"Pressure Wash",handyman:"Handyman",
+  towing:"Towing",tree_service:"Tree Svc",junk_removal:"Junk Removal",
+  lawn_care:"Lawn Care",mobile_mechanic:"Mobile Mech",appliance_repair:"Appliance",
+};
+const MONTHLY_TARGET = 5000;
+const AVG_MRR_PER_CLIENT = 199;
+const CLOSE_RATE = 0.5;
+
+function key(l){ return (l.business_name||"") + "|" + (l.phone||""); }
+function esc(s){ const d=document.createElement("div"); d.textContent=s; return d.innerHTML; }
+function fmt$(n){ return "$" + Math.round(n).toLocaleString(); }
+function pct(a,b){ return b ? Math.round(a/b*100) : 0; }
+
+let results  = {};
+let meetings = [];
+let rep = "CS";
+let leadFilter = "all";
+let currentScr = "overview";
+
+function loadData(){
+  try{ results  = JSON.parse(localStorage.getItem("rr_dialer_results")||"{}"); } catch(e){ results={}; }
+  try{ meetings = JSON.parse(localStorage.getItem("rr_meetings")||"[]"); } catch(e){ meetings=[]; }
+  rep = localStorage.getItem("rr_rep") || "CS";
+}
+
+// ══ Pipeline computation ══
+function pipeline(){
+  const stages = {new:0,contact:0,interested:0,booked:0,ni:0};
+  LEADS.forEach(l=>{
+    const d = results[key(l)];
+    if(!d||!d.dispo) stages.new++;
+    else if(d.dispo==="No Answer"||d.dispo==="Voicemail") stages.contact++;
+    else if(d.dispo==="Interested") stages.interested++;
+    else if(d.dispo==="BOOKED") stages.booked++;
+    else if(d.dispo==="Not Interested") stages.ni++;
+  });
+  return stages;
+}
+function allCalls(){ return Object.values(results).filter(d=>d.dispo); }
+function todayCalls(){
+  const today=new Date().toISOString().slice(0,10);
+  return allCalls().filter(d=>(d.ts||"").slice(0,10)===today);
+}
+function weekCalls(){
+  const now=new Date(), dow=now.getDay(), diff=dow===0?6:dow-1;
+  const monday=new Date(now); monday.setDate(now.getDate()-diff); monday.setHours(0,0,0,0);
+  return allCalls().filter(d=>d.ts&&new Date(d.ts)>=monday);
+}
+function bookedLeads(){ return LEADS.filter(l=>{ const d=results[key(l)]; return d&&d.dispo==="BOOKED"; }); }
+function interLeads(){  return LEADS.filter(l=>{ const d=results[key(l)]; return d&&d.dispo==="Interested"; }); }
+function count(arr,x){ return arr.filter(d=>d.dispo===x).length; }
+function connects(arr){ return arr.filter(d=>["Not Interested","Interested","BOOKED"].includes(d.dispo)); }
+
+function weekMeetings(){
+  const now=new Date(), dow=now.getDay(), diff=dow===0?6:dow-1;
+  const monday=new Date(now); monday.setDate(now.getDate()-diff); monday.setHours(0,0,0,0);
+  const sunday=new Date(monday); sunday.setDate(monday.getDate()+7);
+  return meetings.filter(m=>{ const d=new Date(m.when); return d>=monday&&d<sunday; });
+}
+
+// ══ Revenue ══
+function estMRR(){
+  const bk = bookedLeads().length;
+  const int = interLeads().length;
+  return {
+    mrr: bk * AVG_MRR_PER_CLIENT,
+    pipeline: Math.round(int * CLOSE_RATE * AVG_MRR_PER_CLIENT),
+    clients: bk,
+  };
+}
+
+// ══ Rendering ══
+function dispoBadge(dispo){
+  if(!dispo) return '<span class="dtag dtag-na">Uncalled</span>';
+  if(dispo==="BOOKED")        return '<span class="dtag dtag-bk">BOOKED</span>';
+  if(dispo==="Interested")    return '<span class="dtag dtag-int">Interested</span>';
+  if(dispo==="Not Interested")return '<span class="dtag dtag-ni">Not Int.</span>';
+  if(dispo==="Voicemail")     return '<span class="dtag dtag-vm">VM</span>';
+  if(dispo==="No Answer")     return '<span class="dtag dtag-na">No Ans</span>';
+  return `<span class="dtag dtag-na">${esc(dispo)}</span>`;
+}
+function dispoDot(dispo){
+  if(!dispo) return '<span class="dot dot-d"></span>';
+  if(dispo==="BOOKED")        return '<span class="dot dot-g"></span>';
+  if(dispo==="Interested")    return '<span class="dot dot-a"></span>';
+  if(dispo==="Not Interested")return '<span class="dot dot-r"></span>';
+  return '<span class="dot dot-d"></span>';
+}
+function dispoColor(dispo){
+  if(dispo==="BOOKED")        return "var(--green)";
+  if(dispo==="Interested")    return "var(--amber)";
+  if(dispo==="Not Interested")return "var(--red)";
+  return "var(--dim)";
+}
+function relTime(iso){
+  if(!iso) return "—";
+  const diff = (Date.now()-new Date(iso))/1000;
+  if(diff<60) return "just now";
+  if(diff<3600) return Math.round(diff/60)+"m ago";
+  if(diff<86400) return Math.round(diff/3600)+"h ago";
+  if(diff<604800) return Math.round(diff/86400)+"d ago";
+  return new Date(iso).toLocaleDateString("en-US",{month:"short",day:"numeric"});
+}
+function fmtDate(iso){
+  if(!iso) return "—";
+  return new Date(iso).toLocaleString("en-US",{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"});
+}
+
+function renderOverview(){
+  const all=allCalls(), today=todayCalls(), week=weekCalls();
+  const p=pipeline(), rev=estMRR(), bk=count(all,"BOOKED"), int=count(all,"Interested");
+  const cr=pct(bk,all.length);
+
+  // KPI row
+  document.getElementById("kpi-row").innerHTML = `
+    <div class="kpi"><div class="lbl">Calls Today</div><div class="val">${today.length}</div><div class="hint"><span class="${today.length>=30?"g":"a"}">${today.length>=30?"Goal hit!":"Goal: 30"}</span></div></div>
+    <div class="kpi"><div class="lbl">Calls This Week</div><div class="val">${week.length}</div><div class="hint">${connects(week).length} connects</div></div>
+    <div class="kpi"><div class="lbl">In Pipeline</div><div class="val">${LEADS.length - p.ni}</div><div class="hint">${p.interested} <span class="a">interested</span> · ${p.booked} <span class="g">booked</span></div></div>
+    <div class="kpi"><div class="lbl">Active Clients</div><div class="val">${rev.clients}</div><div class="hint">${rev.clients>0?'<span class="g">'+fmt$(rev.mrr)+'/mo MRR</span>':'Awaiting first close'}</div></div>
+  `;
+
+  // Pipeline stages
+  document.getElementById("stage-row").innerHTML = `
+    <div class="stage s-new"><span class="n">${p.new}</span><span class="s">New</span></div>
+    <div class="stage s-contact"><span class="n">${p.contact}</span><span class="s">Contacted</span></div>
+    <div class="stage s-interest"><span class="n">${p.interested}</span><span class="s">Interested</span></div>
+    <div class="stage s-booked"><span class="n">${p.booked}</span><span class="s">Booked</span></div>
+    <div class="stage s-ni"><span class="n">${p.ni}</span><span class="s">Not Int.</span></div>
+  `;
+
+  // Funnel bars
+  const total = LEADS.length;
+  document.getElementById("funnel-bars").innerHTML = [
+    ["Leads",  total,      "var(--dim)"],
+    ["Called", all.length, "var(--blue)"],
+    ["Interested", int,    "var(--amber)"],
+    ["Booked", bk,         "var(--green)"],
+  ].map(([lab,n,c])=>`
+    <div class="fbar">
+      <span class="fl">${lab}</span>
+      <div class="fb"><i style="width:${pct(n,total)}%;background:${c}"></i></div>
+      <span class="ft">${n}</span>
+    </div>`).join("");
+
+  // Revenue
+  const mrrPct = Math.min(100, pct(rev.mrr, MONTHLY_TARGET));
+  document.getElementById("rev-mrr").textContent = fmt$(rev.mrr);
+  document.getElementById("rev-sub").innerHTML = `<span style="color:var(--dim)">${rev.clients} client${rev.clients!==1?"s":""} × ${fmt$(AVG_MRR_PER_CLIENT)}/mo</span>`;
+  document.getElementById("rev-bar").style.width = mrrPct+"%";
+  document.getElementById("rev-target-line").textContent = `${mrrPct}% of ${fmt$(MONTHLY_TARGET)} monthly target`;
+  const wm = weekMeetings();
+  document.getElementById("bookings-week").textContent = wm.length;
+  document.getElementById("bookings-sub").innerHTML = wm.length ? `${wm.filter(m=>new Date(m.when)>new Date()).length} upcoming` : "No demos booked this week";
+
+  // Activity feed
+  const events = LEADS.flatMap(l=>{
+    const d=results[key(l)]; if(!d||!d.dispo) return [];
+    return [{name:l.business_name, dispo:d.dispo, ts:d.ts, rep:d.rep||"?"}];
+  }).sort((a,b)=>(b.ts||"")>(a.ts||"")?1:-1).slice(0,12);
+
+  document.getElementById("activity-feed").innerHTML = events.length ?
+    events.map(e=>{
+      const ic = e.dispo==="BOOKED"?"var(--green)":e.dispo==="Interested"?"var(--amber)":e.dispo==="Not Interested"?"var(--red)":"var(--dim)";
+      return `<div class="feed-item">
+        <div class="feed-ic" style="background:${ic}">${esc(e.rep.slice(0,2))}</div>
+        <div class="feed-body">
+          <div class="feed-name">${esc(e.name)}${dispoBadge(e.dispo)}</div>
+          <div class="feed-meta">${esc(e.rep)} · ${relTime(e.ts)}</div>
+        </div>
+      </div>`;
+    }).join("") : '<div class="empty"><p>No activity yet.</p></div>';
+
+  // Conversion stats
+  const conRate = pct(connects(all).length,all.length);
+  const bkRate  = pct(bk, all.length);
+  document.getElementById("conversion-stats").innerHTML = `
+    <div class="fbar" style="margin-bottom:10px">
+      <span class="fl" style="width:100px">Dial → Connect</span>
+      <div class="fb"><i style="width:${conRate}%;background:var(--blue)"></i></div>
+      <span class="ft">${conRate}%</span>
+    </div>
+    <div class="fbar" style="margin-bottom:10px">
+      <span class="fl" style="width:100px">Dial → Interested</span>
+      <div class="fb"><i style="width:${pct(int,all.length)}%;background:var(--amber)"></i></div>
+      <span class="ft">${pct(int,all.length)}%</span>
+    </div>
+    <div class="fbar">
+      <span class="fl" style="width:100px">Dial → Booked</span>
+      <div class="fb"><i style="width:${bkRate}%;background:var(--green)"></i></div>
+      <span class="ft">${bkRate}%</span>
+    </div>
+  `;
+
+  // Hour chart
+  const hours = Array(12).fill(0);
+  connects(all).forEach(d=>{ const h=new Date(d.ts||0).getHours(); if(h>=7&&h<19) hours[h-7]++; });
+  const hmax = Math.max(...hours,1);
+  document.getElementById("hour-chart").innerHTML = hours.map(h=>`<div class="hb" style="height:${Math.max(5,Math.round(h/hmax*100))}%"></div>`).join("");
+  document.getElementById("hour-labels").innerHTML = ["7a","8a","9a","10a","11a","12p","1p","2p","3p","4p","5p","6p"].map(x=>`<span>${x}</span>`).join("");
+}
+
+function renderCalls(){
+  const all=allCalls(), today=todayCalls(), week=weekCalls();
+  const bk=count(all,"BOOKED"), int=count(all,"Interested"), ni=count(all,"Not Interested");
+
+  document.getElementById("calls-kpis").innerHTML = `
+    <div class="kpi"><div class="lbl">Total Calls</div><div class="val">${all.length}</div><div class="hint">${pct(all.length,LEADS.length)}% of list</div></div>
+    <div class="kpi"><div class="lbl">Today</div><div class="val">${today.length}</div><div class="hint">goal: 30</div></div>
+    <div class="kpi"><div class="lbl">This Week</div><div class="val">${week.length}</div><div class="hint">connects: ${connects(week).length}</div></div>
+    <div class="kpi"><div class="lbl">Interested</div><div class="val">${int}</div><div class="hint" style="color:var(--amber)">hot leads</div></div>
+    <div class="kpi"><div class="lbl">Booked</div><div class="val">${bk}</div><div class="hint" style="color:var(--green)">demos set</div></div>
+  `;
+
+  // Disposition breakdown
+  const total = all.length || 1;
+  document.getElementById("dispo-breakdown").innerHTML = [
+    ["BOOKED","Booked","var(--green)"],
+    ["Interested","Interested","var(--amber)"],
+    ["Not Interested","Not Interested","var(--red)"],
+    ["Voicemail","Voicemail","var(--blue)"],
+    ["No Answer","No Answer","var(--dim)"],
+  ].map(([d,lab,c])=>`
+    <div class="fbar">
+      <span class="fl" style="width:100px">${lab}</span>
+      <div class="fb"><i style="width:${pct(count(all,d),total)}%;background:${c}"></i></div>
+      <span class="ft">${count(all,d)}</span>
+    </div>`).join("");
+
+  // Call log
+  const log = LEADS.flatMap(l=>{
+    const d=results[key(l)]; if(!d||!d.dispo) return [];
+    return [{lead:l,d}];
+  }).sort((a,b)=>(b.d.ts||"")>(a.d.ts||"")?1:-1);
+
+  document.getElementById("calls-log").innerHTML = log.length ?
+    log.map(({lead:l,d})=>`
+      <tr>
+        <td><span style="font-weight:600">${esc(l.business_name)}</span><br><span style="font-size:11px;color:var(--dim)">${esc(l.city)}</span></td>
+        <td><span style="font-weight:600">${esc(d.rep||"?")}</span></td>
+        <td>${dispoDot(d.dispo)} ${esc(d.dispo)}</td>
+        <td>${d.cbDue ? `<span style="color:var(--amber);font-weight:600">${new Date(d.cbDue).toLocaleDateString("en-US",{month:"short",day:"numeric"})}</span>` : "—"}</td>
+        <td>${fmtDate(d.ts)}</td>
+      </tr>`).join("") :
+    '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--dim)">No calls yet. Use the dialer to log dispositions.</td></tr>';
+}
+
+let leadFilterState = "all";
+function setLeadFilter(f){
+  leadFilterState = f;
+  document.querySelectorAll(".fc[data-sf]").forEach(b=>b.classList.toggle("on",b.getAttribute("data-sf")===f));
+  renderLeads();
+}
+function renderLeads(){
+  const q = (document.getElementById("leads-search")||{}).value?.toLowerCase()||"";
+  const f = leadFilterState;
+  const rows = LEADS.filter(l=>{
+    const d=results[key(l)];
+    if(q && !l.business_name.toLowerCase().includes(q) && !l.city.toLowerCase().includes(q) && !(l.owner_name||"").toLowerCase().includes(q)) return false;
+    if(f==="uncalled")   return !d||!d.dispo;
+    if(f==="interested") return d&&d.dispo==="Interested";
+    if(f==="booked")     return d&&d.dispo==="BOOKED";
+    if(f==="ni")         return d&&d.dispo==="Not Interested";
+    return true;
+  });
+
+  document.getElementById("leads-table").innerHTML = rows.length ?
+    rows.map(l=>{
+      const d=results[key(l)]||{};
+      return `<tr>
+        <td><span style="font-weight:600">${esc(l.business_name)}</span></td>
+        <td><span class="tag tag-cat">${esc(NICHE_LABEL[l.category]||l.category)}</span></td>
+        <td>${esc(l.city)}</td>
+        <td>${esc(l.owner_name||"—")}</td>
+        <td style="font-variant-numeric:tabular-nums">${fmt$(l.avg_ticket)}</td>
+        <td>${dispoDot(d.dispo)}${esc(d.dispo||"Uncalled")}</td>
+        <td>${esc(d.rep||"—")}</td>
+        <td>${d.ts?relTime(d.ts):"—"}</td>
+      </tr>`;
+    }).join("") :
+    '<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--dim)">No leads match this filter.</td></tr>';
+
+  // Update badge
+  const uncalled = LEADS.filter(l=>{ const d=results[key(l)]; return !d||!d.dispo; }).length;
+  document.getElementById("badge-leads").textContent = uncalled;
+}
+
+function renderRevenue(){
+  const rev=estMRR(), all=allCalls(), bk=count(all,"BOOKED"), int=count(all,"Interested");
+  const pipeVal = Math.round(int * CLOSE_RATE * AVG_MRR_PER_CLIENT * 12);
+
+  document.getElementById("rev-kpis").innerHTML = `
+    <div class="kpi"><div class="lbl">Current MRR</div><div class="val">${fmt$(rev.mrr)}</div><div class="hint">${rev.clients} client${rev.clients!==1?"s":""}</div></div>
+    <div class="kpi"><div class="lbl">Monthly Target</div><div class="val">${fmt$(MONTHLY_TARGET)}</div><div class="hint">${pct(rev.mrr,MONTHLY_TARGET)}% of goal</div></div>
+    <div class="kpi"><div class="lbl">Pipeline Value</div><div class="val">${fmt$(pipeVal)}</div><div class="hint">${int} interested × 12mo</div></div>
+    <div class="kpi"><div class="lbl">Avg MRR/Client</div><div class="val">${fmt$(AVG_MRR_PER_CLIENT)}</div><div class="hint">automation retainer</div></div>
+  `;
+
+  // MRR tracker
+  const mrrPct = Math.min(100, pct(rev.mrr, MONTHLY_TARGET));
+  document.getElementById("rev-mrr2").textContent = fmt$(rev.mrr);
+  document.getElementById("rev-bar2").style.width = mrrPct+"%";
+  document.getElementById("rev-target2").textContent = `${mrrPct}% of ${fmt$(MONTHLY_TARGET)} target`;
+  document.getElementById("rev-components").innerHTML = [
+    ["Active client MRR", fmt$(rev.mrr), "var(--green)"],
+    ["Pipeline potential", fmt$(int * CLOSE_RATE * AVG_MRR_PER_CLIENT), "var(--amber)"],
+    ["Gap to target", fmt$(Math.max(0,MONTHLY_TARGET-rev.mrr)), "var(--red)"],
+  ].map(([lab,val,c])=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)">
+      <span style="font-size:13px;color:var(--dim)">${lab}</span>
+      <span style="font-size:14px;font-weight:700;color:${c}">${val}</span>
+    </div>`).join("");
+
+  // Client roster
+  const clients = bookedLeads();
+  document.getElementById("client-roster").innerHTML = clients.length ?
+    clients.map(l=>`
+      <div class="client-row">
+        <div>
+          <div class="client-name">${esc(l.business_name)}</div>
+          <div class="client-meta">${esc(NICHE_LABEL[l.category]||l.category)} · ${esc(l.city)}</div>
+        </div>
+        <div class="mrr-tag">${fmt$(AVG_MRR_PER_CLIENT)}/mo</div>
+      </div>`).join("") :
+    '<div class="empty"><div class="ico">📋</div><p>No clients yet.<br>Close your first booked demo to see them here.</p></div>';
+}
+
+function renderCalendar(){
+  const now = new Date();
+  const upcoming = meetings.filter(m=>new Date(m.when)>=now).sort((a,b)=>a.when>b.when?1:-1);
+  const past = meetings.filter(m=>new Date(m.when)<now).sort((a,b)=>a.when<b.when?1:-1).slice(0,8);
+  const wm = weekMeetings();
+
+  document.getElementById("cal-kpis").innerHTML = `
+    <div class="kpi"><div class="lbl">Total Booked</div><div class="val">${meetings.length}</div><div class="hint">all time</div></div>
+    <div class="kpi"><div class="lbl">This Week</div><div class="val">${wm.length}</div><div class="hint">${upcoming.length} upcoming</div></div>
+    <div class="kpi"><div class="lbl">Past Meetings</div><div class="val">${past.length}</div><div class="hint">completed demos</div></div>
+  `;
+
+  const mkMeet = (m,isPast)=>{
+    const dt = new Date(m.when);
+    return `<div class="meet-card">
+      <div class="meet-bar ${isPast?"past":""}"></div>
+      <div style="flex:1;min-width:0">
+        <div class="meet-name">${esc(m.name)}</div>
+        <div class="meet-meta">${dt.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"})} · ${dt.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"})} · ${m.dur}min${m.rep?" · "+esc(m.rep):""}${m.note?" · "+esc(m.note):""}</div>
+      </div>
+      <span class="meet-badge ${isPast?"past":""}">${isPast?"Done":"Upcoming"}</span>
+    </div>`;
+  };
+
+  document.getElementById("meetings-upcoming").innerHTML = upcoming.length ?
+    upcoming.map(m=>mkMeet(m,false)).join("") :
+    '<div class="empty"><div class="ico">📅</div><p>No upcoming meetings.</p></div>';
+
+  document.getElementById("meetings-past").innerHTML = past.length ?
+    past.map(m=>mkMeet(m,true)).join("") :
+    '<div class="empty"><p>No past meetings.</p></div>';
+
+  // Badge
+  document.getElementById("badge-cal").textContent = upcoming.length;
+  if(!upcoming.length) document.getElementById("badge-cal").style.display="none";
+  else document.getElementById("badge-cal").style.display="";
+}
+
+function renderTeam(){
+  const all = allCalls();
+  const byRep = {};
+  LEADS.forEach(l=>{
+    const d=results[key(l)]; if(!d||!d.dispo) return;
+    const r=d.rep||"?";
+    const o=byRep[r]||(byRep[r]={c:0,int:0,bk:0,ni:0,vm:0,na:0,lastTs:""});
+    o.c++;
+    if(d.dispo==="Interested"||d.dispo==="BOOKED") o.int++;
+    if(d.dispo==="BOOKED") o.bk++;
+    if(d.dispo==="Not Interested") o.ni++;
+    if(d.dispo==="Voicemail") o.vm++;
+    if(d.dispo==="No Answer") o.na++;
+    if((d.ts||"")>(o.lastTs||"")) o.lastTs=d.ts;
+  });
+  const reps = Object.entries(byRep).sort((a,b)=>b[1].c-a[1].c);
+
+  document.getElementById("team-kpis").innerHTML = `
+    <div class="kpi"><div class="lbl">Active Reps</div><div class="val">${reps.length||1}</div><div class="hint">have logged calls</div></div>
+    <div class="kpi"><div class="lbl">Total Dials</div><div class="val">${all.length}</div><div class="hint">across all reps</div></div>
+    <div class="kpi"><div class="lbl">Team Book Rate</div><div class="val">${pct(count(all,"BOOKED"),all.length)}%</div><div class="hint">dials → booked</div></div>
+  `;
+
+  document.getElementById("rep-cards").innerHTML = reps.length ?
+    reps.map(([r,o])=>`
+      <div class="rep-card">
+        <div class="rep-av-lg">${esc(r.slice(0,2).toUpperCase())}</div>
+        <div style="flex:1;min-width:0;padding-left:8px">
+          <div style="font-size:14px;font-weight:700;color:var(--ink)">${esc(r)}</div>
+          <div style="font-size:11.5px;color:var(--dim)">last active ${relTime(o.lastTs)}</div>
+        </div>
+        <div class="rep-stats">
+          <div class="rs"><div class="n">${o.c}</div><div class="c">Dials</div></div>
+          <div class="rs"><div class="n">${o.int}</div><div class="c">Int.</div></div>
+          <div class="rs"><div class="n" style="color:var(--green)">${o.bk}</div><div class="c">Booked</div></div>
+          <div class="rs"><div class="n">${pct(o.bk,o.c)}%</div><div class="c">Book Rate</div></div>
+        </div>
+      </div>`).join("") :
+    '<div class="empty"><div class="ico">👥</div><p>No team data yet.<br>Start dialing to see rep performance.</p></div>';
+
+  // Niche table
+  const byNiche = {};
+  LEADS.forEach(l=>{
+    const d=results[key(l)]; const c=l.category;
+    const o=byNiche[c]||(byNiche[c]={t:0,called:0,int:0,bk:0});
+    o.t++;
+    if(d&&d.dispo){ o.called++;
+      if(d.dispo==="Interested"||d.dispo==="BOOKED") o.int++;
+      if(d.dispo==="BOOKED") o.bk++; }
+  });
+
+  document.getElementById("niche-table").innerHTML = Object.entries(byNiche).sort((a,b)=>b[1].bk-a[1].bk||b[1].int-a[1].int).map(([c,o])=>`
+    <tr>
+      <td><span style="font-weight:600">${esc(NICHE_LABEL[c]||c)}</span></td>
+      <td>${o.t}</td>
+      <td>${o.called} <span style="color:var(--dim);font-size:11px">(${pct(o.called,o.t)}%)</span></td>
+      <td>${o.int}</td>
+      <td style="color:var(--green);font-weight:700">${o.bk}</td>
+      <td>${pct(o.bk,o.called)}%</td>
+    </tr>`).join("");
+}
+
+function render(){
+  if(currentScr==="overview")  renderOverview();
+  if(currentScr==="calls")     renderCalls();
+  if(currentScr==="leads")     renderLeads();
+  if(currentScr==="revenue")   renderRevenue();
+  if(currentScr==="calendar")  renderCalendar();
+  if(currentScr==="team")      renderTeam();
+}
+
+// ══ Navigation ══
+const TITLES = {overview:"Overview",calls:"Calls",leads:"Leads",revenue:"Revenue",calendar:"Calendar",team:"Team"};
+function go(name){
+  currentScr = name;
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById("scr-"+name).classList.add("active");
+  document.querySelectorAll(".nav-item").forEach(b=>b.classList.toggle("active",b.getAttribute("data-scr")===name));
+  document.getElementById("page-title").textContent = TITLES[name]||name;
+  render();
+}
+
+function refreshData(){
+  loadData();
+  render();
+  // brief flash on refresh button
+  const btn = document.querySelector(".icon-btn");
+  btn.style.color = "var(--green)";
+  setTimeout(()=>btn.style.color="", 600);
+}
+
+function switchRep(){
+  const r = prompt("Your initials (matches dialer rep):", rep);
+  if(r&&r.trim()){ rep=r.trim().toUpperCase().slice(0,4); localStorage.setItem("rr_rep",rep); updateRepUI(); }
+}
+function updateRepUI(){
+  document.getElementById("sb-avatar").textContent = rep.slice(0,2);
+  document.getElementById("sb-repname").textContent = rep;
+}
+
+function toggleTheme(){
+  const d = document.documentElement;
+  d.setAttribute("data-theme", d.getAttribute("data-theme")==="dark"?"light":"dark");
+}
+
+// ══ Clock ══
+function tick(){
+  document.getElementById("clock").textContent = new Date().toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});
+}
+
+// ══ Startup ══
+if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches){
+  document.documentElement.setAttribute("data-theme","dark");
+}
+loadData();
+updateRepUI();
+tick();
+setInterval(tick,30000);
+go("overview");
+</script>
+</body>
+</html>

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Websites that sell — RecoverRevenue</title>
+<meta name="description" content="Fast, mobile-first websites built to make the phone ring — live in 7 business days. Drag the before/after and price what a slow site costs you.">
+<link rel="icon" type="image/svg+xml" href="../assets/logo-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="sell.css">
+<style>
+  /* ---- before/after drag slider inside browser chrome ---- */
+  .ba-shell{max-width:940px;margin:44px auto 0}
+  .chrome{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 24px 60px rgba(22,24,29,.1)}
+  .chrome-bar{display:flex;align-items:center;gap:7px;padding:11px 14px;border-bottom:1px solid var(--line);background:var(--paper2)}
+  .cdot{width:10px;height:10px;border-radius:50%;background:rgba(22,24,29,.16);flex:none}
+  .curl{font-family:var(--mono);font-size:11px;color:var(--dim);background:#fff;border:1px solid var(--line);border-radius:8px;padding:4px 12px;margin-left:8px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ba{position:relative;height:clamp(340px,52vw,440px);overflow:hidden;user-select:none;touch-action:pan-y;cursor:col-resize}
+  .ba .site{position:absolute;inset:0;overflow:hidden}
+  /* AFTER — the rebuild (base layer, revealed on the right) */
+  .site.after{background:#0d1015}
+  .new-hero{position:absolute;inset:0;background:#22303c url('https://images.unsplash.com/photo-1626828476637-5bd713ef9f22?q=80&w=1100&auto=format&fit=crop') center/cover no-repeat}
+  .new-hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,12,16,.28),rgba(10,12,16,.78))}
+  .new-inner{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-end;text-align:right;padding:clamp(16px,3.5vw,32px);color:#fff}
+  .new-pill{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;border:1px solid rgba(255,255,255,.35);border-radius:99px;padding:5px 11px;align-self:flex-end}
+  .new-h{font-family:var(--disp);font-weight:800;font-size:clamp(19px,3.4vw,32px);line-height:1.05;letter-spacing:-.02em;margin-top:12px;max-width:420px}
+  .new-stars{font-size:12.5px;margin-top:9px;color:#dfe3ea}
+  .new-stars .st{color:#f0a500;letter-spacing:2px}
+  .new-call{display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:#fff;font-weight:700;font-size:clamp(13px,1.8vw,15.5px);border-radius:12px;padding:13px 18px;margin-top:14px;align-self:flex-end;box-shadow:0 10px 26px rgba(27,72,200,.45)}
+  /* BEFORE — the 2009 site (top layer, clipped) */
+  .site.before{background:#efefe6;color:#111;font-family:'Times New Roman',Times,serif;will-change:clip-path;z-index:4}
+  .old-inner{padding:clamp(12px,2.6vw,24px);font-size:clamp(11px,1.5vw,14px);line-height:1.5}
+  .old-title{font-size:clamp(15px,2.4vw,23px);font-weight:700;color:#00008b;text-align:center}
+  .old-nav{text-align:center;color:#0000cd;text-decoration:underline;font-size:.92em;margin-top:6px;border-top:2px ridge #999;border-bottom:2px ridge #999;padding:5px 0}
+  .old-body p{margin-top:10px}
+  .old-marq{color:#b00000;font-weight:700;text-align:center}
+  .old-foot{margin-top:12px;border-top:1px solid #999;padding-top:7px;font-size:.8em;color:#555;text-align:center}
+  .old-foot .tel{font-size:.9em}
+  /* fake load bars */
+  .loadbar{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;margin-top:12px}
+  .loadbar .track{flex:1;max-width:180px;height:5px;border-radius:3px;overflow:hidden;background:rgba(0,0,0,.18)}
+  .loadbar .fill{display:block;height:100%;width:0;border-radius:3px}
+  .ba.armed .before-fill{background:#b00000;animation:slowload 6.2s linear forwards}
+  .ba.armed .after-fill{background:#2f9e5f;animation:fastload 1.4s ease-out forwards}
+  @keyframes slowload{to{width:100%}}
+  @keyframes fastload{to{width:100%}}
+  .site.after .loadbar{position:absolute;top:42px;right:14px;z-index:3;color:#dfe3ea;width:min(190px,44%)}
+  .site.after .loadbar .track{background:rgba(255,255,255,.25)}
+  .site.before .loadbar{color:#555}
+  /* divider handle */
+  .ba-divider{position:absolute;top:0;bottom:0;left:50%;width:3px;margin-left:-1.5px;background:#fff;z-index:6;box-shadow:0 0 0 1px rgba(22,24,29,.25);cursor:col-resize;outline-offset:6px}
+  .ba-divider .knob{
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;
+    background:#fff;border:1px solid var(--line);box-shadow:0 8px 22px rgba(22,24,29,.3);
+    display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;font-weight:700;color:var(--ink);
+  }
+  .ba-tag{position:absolute;top:12px;font-family:var(--mono);font-size:9px;letter-spacing:.13em;padding:5px 9px;border-radius:7px;z-index:5;max-width:44%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ba-tag.left{left:12px;background:rgba(255,255,255,.9);color:#b00000;border:1px solid rgba(176,0,0,.3)}
+  .ba-tag.right{right:12px;background:rgba(16,18,22,.78);color:#8fd6a8}
+  .ba-hint{font-family:var(--mono);font-size:10.5px;color:var(--dim);letter-spacing:.14em;text-align:center;margin-top:12px}
+  .real-links{display:flex;gap:8px 18px;justify-content:center;flex-wrap:wrap;font-size:12.5px;margin-top:22px;color:var(--dim)}
+  .real-links a{color:var(--blue);font-weight:700;text-decoration:none;white-space:nowrap}
+  /* ---- what this costs you — mini calculator ---- */
+  .cost-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:940px;margin:40px auto 0}
+  @media(max-width:820px){.cost-grid{grid-template-columns:1fr}}
+  .ccard{background:#fff;border:1px solid var(--line);border-radius:20px;padding:28px}
+  .ccard .chead{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--dim);font-weight:700;margin-bottom:20px}
+  .field{margin-bottom:22px}
+  .field label{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;font-weight:600;margin-bottom:10px}
+  .field label output{font-family:var(--mono);color:var(--blue);font-weight:700}
+  .field input[type=range]{width:100%;accent-color:var(--blue);cursor:pointer}
+  .ccard .note{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--dim);line-height:1.7;margin-top:6px}
+  .ccard.dark{background:var(--dark);color:var(--dark-ink);border:0;display:flex;flex-direction:column;justify-content:center}
+  .ccard.dark .rl{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:#8b93a5}
+  .cost-nums{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px}
+  .cost-nums .cn{font-family:var(--disp);font-size:clamp(1.9rem,3.6vw,2.8rem);font-weight:800;color:var(--sky);font-variant-numeric:tabular-nums}
+  .cost-nums .cl{font-size:12px;color:#9aa0a8;margin-top:3px;line-height:1.4}
+  .ccard.dark .rs{font-size:13px;color:#9aa0a8;line-height:1.6;margin-top:16px;border-top:1px dashed var(--dark-line);padding-top:14px}
+  .ccard.dark .rs b{color:var(--dark-ink)}
+  /* speed band (kept) */
+  .speed-band{display:flex;gap:40px;justify-content:center;flex-wrap:wrap;margin-top:56px}
+  .speed-band .s .n{font-family:var(--disp);font-size:38px;font-weight:800;color:var(--blue)}
+  .speed-band .s .l{font-size:12.5px;color:var(--dim);margin-top:4px;max-width:180px}
+  @media (prefers-reduced-motion:reduce){
+    .ba.armed .before-fill,.ba.armed .after-fill{animation:none;width:100%}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="brand" href="../index.html">Recover<i>Revenue</i></a>
+  <a href="../index.html#services">All systems</a>
+  <a href="#demo">See the leak</a>
+  <a href="#offer">Pricing</a>
+  <a class="cta" href="mailto:chase@recoverrevenue.co?subject=Website%20build">Book a call</a>
+</nav>
+
+<header>
+  <div class="wrap">
+    <div class="kicker">SYSTEM 01 — WEBSITES THAT SELL</div>
+    <h1 class="h1">Your work is great.<br>Your website is <span class="em">costing you jobs.</span></h1>
+    <p class="lead hero-sub">The other guy isn't better than you — his website is. 53% of visitors leave a slow mobile site before it loads, and they call whoever Google shows next. We build sites with one job: <b>make the phone ring.</b></p>
+    <div class="hero-cta-row">
+      <a class="push" href="mailto:chase@recoverrevenue.co?subject=Website%20build"><span class="edge"><span class="face">Book the 15-minute leak audit →</span></span></a>
+    </div>
+    <div class="crumb"><a href="../index.html#services">← All four systems</a></div>
+  </div>
+</header>
+
+<section class="math">
+  <div class="wrap">
+    <div class="kicker">The money math</div>
+    <h2 class="h2">What a dead site quietly costs</h2>
+    <div class="math-grid">
+      <div class="mcard rv"><div class="n">53%<small> bounce</small></div><p>Over half your mobile visitors leave before a slow site finishes loading. They don't come back — they call the next result.</p></div>
+      <div class="mcard rv"><div class="n">6 sec<small> vs 1.4 sec</small></div><p>The average small-business site takes ~6 seconds on a phone. Ours load in under 2 — and the phone number is the first thing a thumb can reach.</p></div>
+      <div class="mcard rv"><div class="n">2 jobs<small> /mo is the bar</small></div><p>If a site that sells catches you just two extra jobs a month, it's paid for itself. Your portal shows whether it cleared that bar — in dollars.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="demo">
+  <div class="wrap">
+    <div class="kicker">See the leak</div>
+    <h2 class="h2" style="text-align:center">Same tree company.<br>Drag the line — which one gets the call?</h2>
+    <p class="lead" style="margin:0 auto;text-align:center">Left: the site most Tampa businesses are running right now. Right: the RecoverRevenue rebuild. <b>Drag the divider (or use arrow keys) and decide for yourself.</b></p>
+
+    <div class="ba-shell rv">
+      <div class="chrome">
+        <div class="chrome-bar"><span class="cdot"></span><span class="cdot"></span><span class="cdot"></span><span class="curl">tampatreepros.com — on a phone, on a job site</span></div>
+        <div class="ba" id="ba">
+          <div class="site after" aria-hidden="true">
+            <div class="new-hero"></div>
+            <div class="loadbar"><span>LOADED 1.4s</span><span class="track"><i class="fill after-fill"></i></span></div>
+            <div class="new-inner">
+              <span class="new-pill">TAMPA BAY · 24/7 STORM RESPONSE</span>
+              <div class="new-h">Tree down? Crew on site in under an hour.</div>
+              <div class="new-stars"><span class="st">★★★★★</span> 4.9 · 212 Google reviews</div>
+              <span class="new-call">Tap to call (813) 555-0119</span>
+            </div>
+          </div>
+          <div class="site before" id="baBefore" aria-hidden="true">
+            <div class="old-inner">
+              <div class="old-title">Tampa Tree Pros — Welcome To Our Homepage!!</div>
+              <div class="old-nav">Home | About Us | Services | Photo Gallery | Links | Contact</div>
+              <div class="old-body">
+                <p>Welcome to the offical web site of Tampa Tree Pros. We are a company that does tree work in the Tampa area and we have been in business since 1998. Please look around our web site to read about us and the services we can offer to you.</p>
+                <p class="old-marq">*** NOW OFFERING FREE ESTIMATES ***</p>
+                <p>For a quote please call our office during normal business hours or send us an e-mail and we will try to get back to you with in 2-3 business days.</p>
+              </div>
+              <div class="loadbar"><span>LOADING… 6.2s</span><span class="track"><i class="fill before-fill"></i></span></div>
+              <div class="old-foot">Best viewed in Internet Explorer · You are visitor #004183 · <span class="tel">Tel: 8135550119</span></div>
+            </div>
+          </div>
+          <div class="ba-divider" id="baDiv" role="slider" tabindex="0" aria-label="Compare the old site with the rebuild" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-orientation="horizontal">
+            <span class="knob" aria-hidden="true">◂▸</span>
+          </div>
+          <span class="ba-tag left">THEIR SITE — 6.2s LOAD</span>
+          <span class="ba-tag right">THE REBUILD — 1.4s</span>
+        </div>
+      </div>
+      <div class="ba-hint">◂ DRAG THE LINE · ARROW KEYS WORK TOO ▸</div>
+      <div class="real-links rv">The right side isn't a mockup style we can't ship — open a real build:
+        <a href="../../../demos/fable-5/tree-service/index.html" target="_blank" rel="noopener">Tree service ↗</a>
+        <a href="../../../demos/fable-5/towing-roadside/index.html" target="_blank" rel="noopener">Towing ↗</a>
+        <a href="../../../demos/fable-5/mobile-detailing/index.html" target="_blank" rel="noopener">Detailing ↗</a>
+      </div>
+    </div>
+
+    <div class="cost-grid">
+      <div class="ccard rv">
+        <div class="chead">WHAT THE LEFT SIDE COSTS YOU — DRAG YOUR NUMBERS</div>
+        <div class="field">
+          <label>Visitors to your site per month <output id="visOut">600</output></label>
+          <input type="range" id="visIn" min="100" max="2000" step="25" value="600">
+        </div>
+        <div class="field">
+          <label>Your average job value <output id="tickOut">$250</output></label>
+          <input type="range" id="tickIn" min="75" max="2500" step="25" value="250">
+        </div>
+        <div class="note">53% OF MOBILE VISITORS LEAVE A SLOW SITE BEFORE IT LOADS (GOOGLE). WE COUNT ONLY 3% OF THOSE LOST VISITORS AS LOST CALLS — DELIBERATELY CONSERVATIVE. ESTIMATE ONLY; YOUR PORTAL TRACKS THE REAL NUMBER.</div>
+      </div>
+      <div class="ccard dark rv">
+        <div class="rl">A SLOW SITE, PRICED IN DOLLARS</div>
+        <div class="cost-nums">
+          <div><div class="cn" id="callsOut">10</div><div class="cl">calls lost per month</div></div>
+          <div><div class="cn" id="dollarsOut">$2,500</div><div class="cl">walking to competitors per month</div></div>
+        </div>
+        <div class="rs">The rebuild costs <b>$997 + $99/mo</b> on the site-only plan. If it recovers <b>two of those calls a month,</b> it's paid for itself — your portal shows whether it did.</div>
+      </div>
+    </div>
+
+    <div class="speed-band">
+      <div class="s rv"><div class="n">&lt;2s</div><div class="l">load time on mobile — every build</div></div>
+      <div class="s rv"><div class="n">7</div><div class="l">business days from kickoff to live</div></div>
+      <div class="s rv"><div class="n">100%</div><div class="l">yours after 12 months — code, domain, content</div></div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--paper2)">
+  <div class="wrap">
+    <div class="kicker">How it works</div>
+    <h2 class="h2">One week. Zero homework.</h2>
+    <div class="proc">
+      <div class="step rv"><div class="num">01</div><h3>15-minute call</h3><p>We look at your current site together and put a number on what it's leaking. If it's fine, we'll tell you it's fine.</p></div>
+      <div class="step rv"><div class="num">02</div><h3>We build. You work.</h3><p>Photos, copy, click-to-call, tracking number — all handled. You approve it on a screen share on day 7 and we flip it live.</p></div>
+      <div class="step rv"><div class="num">03</div><h3>The phone rings. The portal proves it.</h3><p>Every call and form the site produces shows up in your portal — attributed conservatively, reported in dollars.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="dark-band">
+  <div class="wrap">
+    <div class="kicker">The guarantee stack</div>
+    <h2 class="h2">Why this is <span class="em">our</span> risk, not yours</h2>
+    <div class="gstack">
+      <div class="gcard rv"><b>90 days, then month-to-month.</b><p>After the first 90 days you can fire us any month. If the site isn't producing, the portal will say so — and so can you.</p></div>
+      <div class="gcard rv"><b>You own it.</b><p>Stay 12 months and the site is 100% yours — code, domain, content. Leave earlier, a one-time $997 buy-out. No hostage hosting.</p></div>
+      <div class="gcard rv"><b>Dollars, not clicks.</b><p>We report revenue recovered — not impressions, not "engagement." If it's not making you money, you'll see that too.</p></div>
+      <div class="gcard rv"><b>Built to pay for itself in 30 days.</b><p>Two extra jobs a month is the bar on most tickets. Your portal shows whether we cleared it.</p></div>
+    </div>
+    <div class="portal-badge"><i></i>EVERY SYSTEM REPORTS INTO ONE PORTAL — DOLLARS RECOVERED, UPDATED LIVE</div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="kicker">Straight answers</div>
+    <h2 class="h2" style="text-align:center">What owners ask us</h2>
+    <div class="faq">
+      <details><summary>I already have a website.</summary><div class="a">Does it book jobs? That's the only question that matters. Your portal will show calls and dollars from day one — if the old site was doing that, you'd already know the number.</div></details>
+      <details><summary>My nephew / Wix can do it cheaper.</summary><div class="a">A cheap site that doesn't ring costs more than we do every single month. Ours loads in under 2 seconds, puts click-to-call everywhere, and comes with someone whose job is to keep it selling — hosting, edits and maintenance included.</div></details>
+      <details><summary>Do I own it, or am I renting?</summary><div class="a">Stay 12 months and it's 100% yours — code, domain, content. Leave earlier and there's a one-time $997 buy-out if you want to take it with you. Nothing breaks if we part ways.</div></details>
+    </div>
+  </div>
+</section>
+
+<section class="offer" id="offer">
+  <div class="wrap">
+    <div class="offer-grid">
+      <div>
+        <div class="kicker">The plan this page is about</div>
+        <h2 class="h2">Visibility</h2>
+        <p class="lead">The website is the anchor — but a site alone still leaks. Visibility wraps it with the Google profile work and missed-call text-back that make it produce.</p>
+        <div class="achips">
+          <span class="achip">Add for booking businesses: <b>App Lite +$197/mo</b></span>
+          <span class="achip">Add: <b>SMS reminders — ask</b></span>
+        </div>
+      </div>
+      <div class="tier rv">
+        <div class="tname">Visibility</div>
+        <div class="tprice">$250<span>/mo</span></div>
+        <div class="tsetup"><b>$997 build fee</b> — site, profile &amp; tracking built once</div>
+        <ul>
+          <li>Conversion website — designed, built &amp; launched in 7 business days</li>
+          <li>Hosted, maintained, unlimited small edits</li>
+          <li>Google Business Profile managed weekly</li>
+          <li>Local SEO + tracking number</li>
+          <li>Missed-call text-back in 60 seconds</li>
+          <li>Live portal + monthly dollars-recovered report</li>
+        </ul>
+        <a class="tbtn" href="mailto:chase@recoverrevenue.co?subject=Visibility%20plan">Start with Visibility</a>
+        <a class="allplans" href="../index.html#pricing">Compare <b>all plans →</b></a>
+      </div>
+    </div>
+    <div class="downsell rv">
+      <span><b>Just need the site?</b> $997 build + $99/mo — hosted, maintained, unlimited small edits. Upgrade to any plan later and your build fee carries over.</span>
+      <a href="mailto:chase@recoverrevenue.co?subject=Website%20only">Start with a site →</a>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <div class="kicker">One call. Fifteen minutes.</div>
+    <h2 class="h2">Find out what your site is costing you.</h2>
+    <p class="lead" style="max-width:520px">You leave with your numbers either way — even if the answer is "your site is fine."</p>
+    <a class="push dark-edge" href="mailto:chase@recoverrevenue.co?subject=Website%20build"><span class="edge"><span class="face">Book the 15-minute leak audit →</span></span></a>
+    <div class="sub-cta">Prefer email? <a href="mailto:chase@recoverrevenue.co">chase@recoverrevenue.co</a></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span><b>Recover<i>Revenue</i></b> — Tampa Bay, FL</span>
+    <span>Websites · AI receptionists · Review engines · Lead engines</span>
+    <span>© 2026 RecoverRevenue</span>
+  </div>
+</footer>
+
+<a class="callbar" href="mailto:chase@recoverrevenue.co?subject=Website%20build">Book a 15-min leak audit →</a>
+
+<script>
+(function(){
+  "use strict";
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* reveals */
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  },{threshold:.15});
+  document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+
+  /* ---- before/after drag slider ---- */
+  var ba = document.getElementById('ba');
+  var before = document.getElementById('baBefore');
+  var div = document.getElementById('baDiv');
+  var pos = 50, dragging = false;
+
+  function setPos(p){
+    pos = Math.max(0, Math.min(100, p));
+    before.style.clipPath = 'inset(0 ' + (100 - pos) + '% 0 0)';
+    before.style.webkitClipPath = 'inset(0 ' + (100 - pos) + '% 0 0)';
+    div.style.left = pos + '%';
+    div.setAttribute('aria-valuenow', String(Math.round(pos)));
+  }
+  setPos(50);
+
+  function posFromEvent(e){
+    var r = ba.getBoundingClientRect();
+    return (e.clientX - r.left) / r.width * 100;
+  }
+  ba.addEventListener('pointerdown', function(e){
+    dragging = true;
+    try { ba.setPointerCapture(e.pointerId); } catch(_){}
+    setPos(posFromEvent(e));
+  });
+  ba.addEventListener('pointermove', function(e){ if (dragging) setPos(posFromEvent(e)); });
+  ba.addEventListener('pointerup', function(){ dragging = false; });
+  ba.addEventListener('pointercancel', function(){ dragging = false; });
+  div.addEventListener('keydown', function(e){
+    var step = e.shiftKey ? 10 : 4;
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowDown'){ e.preventDefault(); setPos(pos - step); }
+    else if (e.key === 'ArrowRight' || e.key === 'ArrowUp'){ e.preventDefault(); setPos(pos + step); }
+    else if (e.key === 'Home'){ e.preventDefault(); setPos(0); }
+    else if (e.key === 'End'){ e.preventDefault(); setPos(100); }
+  });
+  /* start the fake load bars when the frame scrolls into view */
+  var armIo = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if (e.isIntersecting){ ba.classList.add('armed'); armIo.unobserve(e.target); } });
+  },{threshold:.35});
+  armIo.observe(ba);
+
+  /* ---- what-this-costs-you calculator ---- */
+  var visIn = document.getElementById('visIn'), tickIn = document.getElementById('tickIn');
+  var visOut = document.getElementById('visOut'), tickOut = document.getElementById('tickOut');
+  var callsOut = document.getElementById('callsOut'), dollarsOut = document.getElementById('dollarsOut');
+
+  function countTo(el, target, fmt){
+    if (el._raf) cancelAnimationFrame(el._raf);
+    var from = el._val || 0;
+    if (reduced || from === target){ el._val = target; el.textContent = fmt(target); return; }
+    var t0 = null, dur = 450;
+    function frame(ts){
+      if (t0 === null) t0 = ts;
+      var k = Math.min(1, (ts - t0) / dur);
+      k = 1 - Math.pow(1 - k, 3); /* easeOutCubic */
+      var v = Math.round(from + (target - from) * k);
+      el.textContent = fmt(v);
+      if (k < 1){ el._raf = requestAnimationFrame(frame); } else { el._val = target; el._raf = null; }
+    }
+    el._raf = requestAnimationFrame(frame);
+  }
+  var plain = function(v){ return v.toLocaleString('en-US'); };
+  var money = function(v){ return '$' + v.toLocaleString('en-US'); };
+
+  function calc(){
+    var vis = +visIn.value, ticket = +tickIn.value;
+    visOut.textContent = plain(vis);
+    tickOut.textContent = money(ticket);
+    var lostCalls = Math.max(1, Math.round(vis * 0.53 * 0.03));
+    countTo(callsOut, lostCalls, plain);
+    countTo(dollarsOut, lostCalls * ticket, money);
+  }
+  visIn.addEventListener('input', calc);
+  tickIn.addEventListener('input', calc);
+  calc();
+})();
+</script>
+</body>
+</html>
