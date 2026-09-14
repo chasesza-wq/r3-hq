@@ -242,6 +242,10 @@ footer a{text-decoration:none;border-bottom:1px solid var(--line)}
     f.addEventListener("load", paintedNow, { once: true });
   }).observe(w, { childList: true });
 
+  var API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? 'http://localhost:5055'
+    : 'https://cad-frequent-roots-generates.trycloudflare.com';
+
   // Listen for Calendly booking events
   window.addEventListener("message", function(e){
     if (String(e.origin).indexOf("calendly.com") === -1) return;
@@ -250,13 +254,14 @@ footer a{text-decoration:none;border-bottom:1px solid var(--line)}
       if (d.event.indexOf("calendly.") === 0) paintedNow();
       if (d.event === "calendly.event_scheduled") {
         try {
-          fetch("/api/booked", {
+          fetch(API_BASE + "/api/booked", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               phone: phone,
               first_name: name
-            })
+            }),
+            keepalive: true
           }).catch(function(){});
           if (window.fbq) {
             window.fbq("track", "Schedule", { content_name: "15min-diagnostic-booked" });

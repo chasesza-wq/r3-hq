@@ -231,10 +231,14 @@ h1 em{font-style:normal;color:var(--accent)}
 
     try {
       localStorage.setItem("rr_lead", JSON.stringify(payload));
-      fetch("/api/lead", {
+      var API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+        ? 'http://localhost:5055'
+        : 'https://cad-frequent-roots-generates.trycloudflare.com';
+      fetch(API_BASE + "/api/lead", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        keepalive: true
       }).catch(function(){});
     } catch(err){}
 

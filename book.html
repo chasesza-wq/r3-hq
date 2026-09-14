@@ -466,9 +466,11 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(
     "scheduling and reminders. Consent is not a condition of purchase. Message and data rates " +
     "may apply. Message frequency varies. Reply STOP to opt out or HELP for help.";
 
-  /* Set to the lead-intake URL once it is deployed. While empty the lead is still kept in
-     localStorage, but nothing leaves the browser. */
-  var LEAD_ENDPOINT = "";
+  /* Live lead intake endpoint via Cloudflare tunnel to funnel_service.py */
+  var API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? 'http://localhost:5055'
+    : 'https://cad-frequent-roots-generates.trycloudflare.com';
+  var LEAD_ENDPOINT = API_BASE + "/api/lead";
 
   var currentStep = 1;
   var selectedRole = "owner";
@@ -685,6 +687,27 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(
       window.scrollTo({ top: document.querySelector(".form-wrap").offsetTop - 80, behavior: 'smooth' });
     }, 850);
   };
+
+  // Listen for Calendly booking events
+  window.addEventListener("message", function(e){
+    if (String(e.origin).indexOf("calendly.com") === -1) return;
+    var d = e.data;
+    if (d && typeof d.event === "string" && d.event === "calendly.event_scheduled") {
+      try {
+        var phoneVal = document.getElementById("leadPhone").value.replace(/\D/g, "");
+        var nameVal = document.getElementById("leadName").value.trim();
+        fetch(API_BASE + "/api/booked", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            phone: "+1" + phoneVal,
+            first_name: nameVal
+          }),
+          keepalive: true
+        }).catch(function(){});
+      } catch(err){}
+    }
+  });
 
   // Init math
   updateLeakMath();
