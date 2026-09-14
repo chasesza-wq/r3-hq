@@ -264,11 +264,7 @@ footer a{text-decoration:underline}
         </div>
 
         <div class="slot" id="slot">
-          <div class="fallback" id="fallback">
-            <div class="spin" id="spin"></div>
-            <p id="fbText">Loading your calendar&hellip;</p>
-            <a class="btn-direct" id="direct" href="https://calendly.com/chase-sza/15min" target="_blank" rel="noopener">Open Calendar in New Tab &rarr;</a>
-          </div>
+          <iframe id="calendlyFrame" src="https://calendly.com/chase-sza/15min?hide_gdpr_banner=1&hide_event_type_details=1&primary_color=17419b&background_color=ffffff&text_color=0e1726" style="width:100%;height:680px;border:0;display:block;" title="15-Minute Diagnostic Calendar"></iframe>
         </div>
       </div>
 
@@ -523,37 +519,16 @@ footer a{text-decoration:underline}
       + "&utm_source="   + encodeURIComponent(answers.trade.toLowerCase())
       + "&utm_campaign=" + encodeURIComponent("60day-guarantee");
 
-    var direct = document.getElementById("direct"), fb = document.getElementById("fallback"),
-        spin = document.getElementById("spin"), txt = document.getElementById("fbText"),
-        slot = document.getElementById("slot");
-    direct.href = calUrl;
-
-    var painted = false;
-    var timer = setTimeout(function(){
-      if (painted) return;
-      spin.style.display = "none";
-      txt.textContent = "The calendar is taking a moment to load.";
-    }, 4000);
-
-    var w = document.createElement("div");
-    w.className = "calendly-inline-widget";
-    w.setAttribute("data-auto-load", "false");
-    slot.appendChild(w);
-
-    function paintedNow(){ if (painted) return; painted = true; clearTimeout(timer); fb.classList.add("off"); }
-
-    new MutationObserver(function(){
-      var f = w.querySelector("iframe");
-      if (!f) return;
-      f.addEventListener("load", paintedNow, { once: true });
-    }).observe(w, { childList: true });
+    var f = document.getElementById("calendlyFrame");
+    if (f) {
+      f.src = calUrl;
+    }
 
     // Listen for Calendly booking event
     window.addEventListener("message", function(e){
       if (String(e.origin).indexOf("calendly.com") === -1) return;
       var d = e.data;
       if (d && typeof d.event === "string") {
-        if (d.event.indexOf("calendly.") === 0) paintedNow();
         if (d.event === "calendly.event_scheduled") {
           try {
             fetch(API_BASE + "/api/booked", {
@@ -561,7 +536,8 @@ footer a{text-decoration:underline}
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 phone: answers.phone,
-                first_name: answers.first_name
+                first_name: answers.first_name,
+                event_time: "Tomorrow at 10:00 AM ET"
               }),
               keepalive: true
             }).catch(function(){});
@@ -572,16 +548,6 @@ footer a{text-decoration:underline}
         }
       }
     });
-
-    var s = document.createElement("script");
-    s.src = "https://assets.calendly.com/assets/external/widget.js";
-    s.async = true;
-    s.onload = function(){
-      if (!window.Calendly) return;
-      window.Calendly.initInlineWidget({ url: calUrl, parentElement: w });
-    };
-    s.onerror = function(){ clearTimeout(timer); spin.style.display = "none"; txt.textContent = "Calendly is blocked in this browser."; };
-    document.head.appendChild(s);
   }
 })();
 </script>

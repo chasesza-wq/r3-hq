@@ -165,11 +165,7 @@ footer a{text-decoration:none;border-bottom:1px solid var(--line)}
 
     <!-- Calendly Slot -->
     <div class="slot" id="slot">
-      <div class="fallback" id="fallback">
-        <div class="spin" id="spin"></div>
-        <p id="fbText">Loading your calendar&hellip;</p>
-        <a class="btn-direct" id="direct" href="https://calendly.com/chase-sza/15min" target="_blank" rel="noopener">Open Calendar in New Tab &rarr;</a>
-      </div>
+      <iframe id="calendlyFrame" src="https://calendly.com/chase-sza/15min?hide_gdpr_banner=1&hide_event_type_details=1&primary_color=17419b&background_color=ffffff&text_color=0e1726" style="width:100%;height:680px;border:0;display:block;" title="15-Minute Diagnostic Calendar"></iframe>
     </div>
     <div class="under">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -203,10 +199,6 @@ footer a{text-decoration:none;border-bottom:1px solid var(--line)}
 
   var name = q.get("name") || (storedLead && storedLead.first_name) || "";
   var phone = q.get("phone") || (storedLead && storedLead.phone) || "";
-  var displayName = document.getElementById("displayName");
-  if (name) {
-    displayName.textContent = name;
-  }
 
   var calUrl = "https://calendly.com/chase-sza/15min"
     + "?hide_gdpr_banner=1&hide_event_type_details=1"
@@ -217,41 +209,20 @@ footer a{text-decoration:none;border-bottom:1px solid var(--line)}
     + "&utm_medium="   + encodeURIComponent(q.get("utm_medium")   || "sms-recovery")
     + "&utm_campaign=" + encodeURIComponent(q.get("utm_campaign") || "60day-guarantee");
 
-  var direct = document.getElementById("direct"), fb = document.getElementById("fallback"),
-      spin = document.getElementById("spin"), txt = document.getElementById("fbText"),
-      slot = document.getElementById("slot");
-  direct.href = calUrl;
-
-  var painted = false;
-  var timer = setTimeout(function(){
-    if (painted) return;
-    spin.style.display = "none";
-    txt.textContent = "The calendar is taking a moment to load.";
-  }, 4000);
-
-  var w = document.createElement("div");
-  w.className = "calendly-inline-widget";
-  w.setAttribute("data-auto-load", "false");
-  slot.appendChild(w);
-
-  function paintedNow(){ if (painted) return; painted = true; clearTimeout(timer); fb.classList.add("off"); }
-
-  new MutationObserver(function(){
-    var f = w.querySelector("iframe");
-    if (!f) return;
-    f.addEventListener("load", paintedNow, { once: true });
-  }).observe(w, { childList: true });
+  var calFrame = document.getElementById("calendlyFrame");
+  if (calFrame) {
+    calFrame.src = calUrl;
+  }
 
   var API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
     ? 'http://localhost:5055'
-    : 'https://explained-peripherals-adventure-congress.trycloudflare.com';
+    : 'https://arranged-fluid-rugby-low.trycloudflare.com';
 
   // Listen for Calendly booking events
   window.addEventListener("message", function(e){
     if (String(e.origin).indexOf("calendly.com") === -1) return;
     var d = e.data;
     if (d && typeof d.event === "string") {
-      if (d.event.indexOf("calendly.") === 0) paintedNow();
       if (d.event === "calendly.event_scheduled") {
         try {
           fetch(API_BASE + "/api/booked", {
@@ -259,7 +230,8 @@ footer a{text-decoration:none;border-bottom:1px solid var(--line)}
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               phone: phone,
-              first_name: name
+              first_name: name,
+              event_time: "Tomorrow at 10:00 AM ET"
             }),
             keepalive: true
           }).catch(function(){});
@@ -270,16 +242,6 @@ footer a{text-decoration:none;border-bottom:1px solid var(--line)}
       }
     }
   });
-
-  var s = document.createElement("script");
-  s.src = "https://assets.calendly.com/assets/external/widget.js";
-  s.async = true;
-  s.onload = function(){
-    if (!window.Calendly) return;
-    window.Calendly.initInlineWidget({ url: calUrl, parentElement: w });
-  };
-  s.onerror = function(){ clearTimeout(timer); spin.style.display = "none"; txt.textContent = "Calendly is blocked in this browser."; };
-  document.head.appendChild(s);
 })();
 </script>
 </body>
