@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Pick a time · 15 minutes · RecoverRevenue</title>
+<meta name="description" content="15 new jobs in 60 days or you don't pay. Pick a 15-minute phone slot with the founder. Nothing is charged on this page.">
+<link rel="canonical" href="https://recoverrevenue.co/go/">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="15 new jobs in 60 days, or you don't pay">
+<meta property="og:description" content="Pick a 15-minute phone slot. No form, no deck, nothing charged.">
+<meta property="og:url" content="https://recoverrevenue.co/go/">
+<link rel="icon" type="image/svg+xml" href="../assets/logo-mark.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+<link rel="preconnect" href="https://assets.calendly.com" crossorigin>
+<link rel="preconnect" href="https://calendly.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@700,800&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+<style>
+/* Same palette and type as /start/ — this is the same funnel with the reading removed.
+   The page exists for one visitor: someone who tapped a link in a bio or a DM and already
+   knows who we are. They get the calendar, not a pitch. */
+:root{
+  --paper:#f4f7fc; --surface:#fdfdff; --ink:#0e1726; --muted:#5c6a80;
+  --accent:#17419b; --accent-deep:#102e70; --line:rgba(14,23,38,.09);
+  --line-soft:rgba(14,23,38,.055); --pos:#12b866; --warn:#c2410c; --r:18px;
+  --display:'Cabinet Grotesk','Helvetica Neue',Helvetica,Arial,sans-serif;
+  --body:'Satoshi','Helvetica Neue',Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--body);background:var(--paper);color:var(--ink);line-height:1.5;
+  -webkit-font-smoothing:antialiased;min-height:100vh;min-height:100dvh}
+a{color:inherit}
+.wrap{width:100%;max-width:560px;margin:0 auto;padding:0 14px}
+
+/* header: wordmark and the one fact a visitor needs before the calendar */
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 0 10px}
+.logo{font-family:var(--display);font-weight:800;font-size:1.05rem;letter-spacing:-.02em;text-decoration:none}
+.logo b{color:var(--accent)}
+.pill{display:inline-flex;align-items:center;gap:7px;font-size:.72rem;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--pos);background:rgba(18,184,102,.09);padding:5px 11px;border-radius:999px;white-space:nowrap}
+.pill i{width:6px;height:6px;border-radius:50%;background:var(--pos);display:block;animation:pulse 2.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.82)}}
+
+h1{font-family:var(--display);font-weight:800;font-size:clamp(1.55rem,6.2vw,2.1rem);line-height:1.08;letter-spacing:-.02em;margin:4px 0 8px}
+h1 em{font-style:normal;color:var(--accent)}
+.lede{color:var(--muted);font-size:.95rem;line-height:1.55;margin-bottom:14px}
+.lede b{color:var(--ink);font-weight:700}
+
+/* the calendar IS the page */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+  box-shadow:0 24px 60px -34px rgba(14,23,38,.3)}
+.slot{min-height:640px;background:var(--surface);position:relative}
+.calendly-inline-widget{width:100%;height:640px;min-width:280px}
+.fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:12px;padding:28px 22px;text-align:center;background:var(--surface);transition:opacity .25s}
+.fallback.off{opacity:0;pointer-events:none}
+.fallback p{color:var(--muted);font-size:.92rem;max-width:26em}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:#fff;
+  font-weight:700;font-size:1rem;padding:15px 26px;border-radius:12px;text-decoration:none;border:0;width:100%;max-width:340px}
+.btn:active{background:var(--accent-deep)}
+.spin{width:22px;height:22px;border:2.5px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:rot .9s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+.under{display:flex;align-items:center;gap:8px;padding:11px 16px;border-top:1px solid var(--line-soft);
+  font-size:.8rem;color:var(--muted)}
+.under svg{flex:none}
+
+/* below the fold: only what a visitor scrolls for. Three facts, one disqualifier, the price. */
+.facts{padding:28px 0 8px}
+.facts h2{font-family:var(--display);font-weight:700;font-size:1.05rem;margin-bottom:12px}
+.facts ol{list-style:none;display:grid;gap:10px}
+.facts li{display:grid;grid-template-columns:24px 1fr;gap:10px;font-size:.93rem;color:var(--muted);line-height:1.55}
+.facts li i{font-style:normal;font-family:var(--display);font-weight:700;color:var(--accent);
+  background:var(--surface);border:1px solid var(--line);border-radius:8px;width:24px;height:24px;
+  display:grid;place-items:center;font-size:.8rem}
+.facts li b{color:var(--ink);font-weight:700}
+.stop{margin-top:18px;padding:14px 16px;border-radius:12px;background:rgba(194,65,12,.06);border:1px solid rgba(194,65,12,.18);
+  font-size:.9rem;line-height:1.55;color:var(--ink)}
+.stop b{color:var(--warn)}
+.price{margin-top:14px;font-size:.9rem;color:var(--muted);line-height:1.6}
+.price b{color:var(--ink)}
+footer{padding:22px 0 calc(28px + env(safe-area-inset-bottom));font-size:.78rem;color:var(--muted);
+  display:flex;flex-wrap:wrap;gap:6px 16px}
+footer a{text-decoration:none;border-bottom:1px solid var(--line)}
+@media (min-width:640px){
+  .wrap{padding:0 20px}
+  .top{padding:22px 0 14px}
+  .lede{font-size:1rem}
+}
+</style>
+<script>
+/* ---- channel normalisation, BEFORE pixel.js reads the URL ----
+   Bios and DMs carry a clean link: recoverrevenue.co/go/  (or ?c=li / ig / fb / dm).
+   Here the short code, or failing that the referrer, becomes utm_* on this page's
+   own URL so pixel.js and the Calendly booking both record where the visitor came from. */
+(function(){
+  var q = new URLSearchParams(location.search);
+  if (q.get("utm_source")) return;                       /* already tagged: leave it */
+  var map = { li:"linkedin", ig:"instagram", fb:"facebook", dm:"dm", tt:"tiktok", yt:"youtube", x:"x" };
+  var src = map[(q.get("c") || "").toLowerCase()];
+  if (!src) {
+    var r = (document.referrer || "").toLowerCase();
+    if      (/linkedin\.com|lnkd\.in/.test(r))       src = "linkedin";
+    else if (/instagram\.com/.test(r))                src = "instagram";
+    else if (/facebook\.com|fb\.com|fb\.me/.test(r))  src = "facebook";
+    else if (/tiktok\.com/.test(r))                   src = "tiktok";
+    else if (/t\.co|twitter\.com|x\.com/.test(r))     src = "x";
+    else                                              src = "direct";
+  }
+  q.delete("c");
+  q.set("utm_source", src);
+  q.set("utm_medium", "bio");
+  q.set("utm_campaign", "60day-guarantee");
+  try { history.replaceState(null, "", location.pathname + "?" + q.toString() + location.hash); } catch(e) {}
+})();
+</script>
+<script src="../assets/pixel.js"></script>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="https://recoverrevenue.co/">Recover<b>Revenue</b></a>
+    <span class="pill"><i></i> Booking open</span>
+  </header>
+
+  <h1>15 new jobs in 60 days, <em>or you don't pay.</em></h1>
+  <p class="lede">Pick a time below. <b>15 minutes, on the phone, with the founder.</b> No form, no deck, and nothing is charged on this page.</p>
+
+  <div class="card">
+    <div class="slot" id="slot">
+      <div class="fallback" id="fallback">
+        <div class="spin" id="spin"></div>
+        <p id="fbText">Loading the calendar&hellip;</p>
+        <a class="btn" id="direct" href="https://calendly.com/chase-sza/15min" target="_blank" rel="noopener">Open the calendar &rarr;</a>
+      </div>
+    </div>
+    <div class="under">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      You are booking a phone call, not a payment. Nothing is charged here.
+    </div>
+  </div>
+
+  <section class="facts">
+    <h2>What the 15 minutes is</h2>
+    <ol>
+      <li><i>1</i><span>You tell me what an average job is worth and roughly how many calls a week go unanswered.</span></li>
+      <li><i>2</i><span>I tell you what that costs you a year, and whether your past-customer list is long enough to carry the guarantee.</span></li>
+      <li><i>3</i><span><b>If it fits, we start that week. If it doesn't, I say so on the call</b> &mdash; not in a follow-up sequence.</span></li>
+    </ol>
+    <div class="stop"><b>Don't book if</b> you have fewer than 200 past customers with phone numbers, or you can't take new jobs in the next 60 days. The guarantee isn't for you yet, and I'd rather not waste your fifteen minutes.</div>
+    <p class="price"><b>The price is public:</b> $1,497 a month. Card on file the day we start, <b>first charge on day 61, and only if you got the 15 jobs.</b> No setup fee. Full terms and the arithmetic are on <a href="../start/">the long page</a>.</p>
+  </section>
+
+  <footer>
+    <a href="../start/">Full details</a>
+    <a href="../privacy.html">Privacy</a>
+    <a href="../terms.html">SMS terms</a>
+    <span>&copy; RecoverRevenue &middot; Delray Beach, FL</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var q = new URLSearchParams(location.search);
+  var calUrl = "https://calendly.com/chase-sza/15min"
+    + "?hide_gdpr_banner=1&hide_event_type_details=1"
+    + "&primary_color=17419b&background_color=fdfdff&text_color=0e1726"
+    + "&utm_source="   + encodeURIComponent(q.get("utm_source")   || "direct")
+    + "&utm_medium="   + encodeURIComponent(q.get("utm_medium")   || "bio")
+    + "&utm_campaign=" + encodeURIComponent(q.get("utm_campaign") || "60day-guarantee");
+
+  var direct = document.getElementById("direct"), fb = document.getElementById("fallback"),
+      spin = document.getElementById("spin"), txt = document.getElementById("fbText"),
+      slot = document.getElementById("slot");
+  direct.href = calUrl;
+
+  /* If the widget has not painted in 4s the visitor is on a slow in-app browser or
+     Calendly is blocked. Stop spinning and leave the button, which goes to the same URL. */
+  var painted = false;
+  var timer = setTimeout(function(){
+    if (painted) return;
+    spin.style.display = "none";
+    txt.textContent = "The calendar is taking a while to load in this browser.";
+  }, 4000);
+
+  var w = document.createElement("div");
+  w.className = "calendly-inline-widget";
+  w.setAttribute("data-auto-load", "false");
+  slot.appendChild(w);
+
+  function paintedNow(){ if (painted) return; painted = true; clearTimeout(timer); fb.classList.add("off"); }
+
+  /* Two independent signals that the calendar is on screen: the iframe's own load event
+     (works everywhere), and Calendly's postMessage once it has sized itself. */
+  new MutationObserver(function(){
+    var f = w.querySelector("iframe");
+    if (!f) return;
+    f.addEventListener("load", paintedNow, { once: true });
+  }).observe(w, { childList: true });
+  window.addEventListener("message", function(e){
+    if (String(e.origin).indexOf("calendly.com") === -1) return;
+    var d = e.data;
+    if (d && typeof d.event === "string" && d.event.indexOf("calendly.") === 0) paintedNow();
+    /* calendly.event_scheduled -> pixel 'Schedule' is handled in assets/pixel.js */
+  });
+
+  var s = document.createElement("script");
+  s.src = "https://assets.calendly.com/assets/external/widget.js";
+  s.async = true;
+  s.onload = function(){
+    if (!window.Calendly) return;
+    window.Calendly.initInlineWidget({ url: calUrl, parentElement: w });
+  };
+  s.onerror = function(){ clearTimeout(timer); spin.style.display = "none"; txt.textContent = "Calendly is blocked in this browser."; };
+  document.head.appendChild(s);
+})();
+</script>
+</body>
+</html>
