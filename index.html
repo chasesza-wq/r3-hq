@@ -747,7 +747,7 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
           <li>Tracking number, so "where did that job come from" has an answer</li>
         </ul>
         <p class="tier-terms">Month-to-month agreement. Built for shops establishing or modernizing their local market presence.</p>
-        <a class="tier-cta" href="go/">Check Visibility Eligibility &rarr;</a>
+        <a class="tier-cta" href="go/?trade=Roofing&tier=visibility">Check Visibility Eligibility &rarr;</a>
       </article>
 
       <article class="tier hot rv" data-tier="1" style="--d:.1s">
@@ -766,7 +766,7 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
           <li>Lead dashboard: who called, who booked, who went cold</li>
         </ul>
         <p class="tier-terms">Guaranteed to produce 15 qualified jobs in 60 days or you don't pay. Full terms in service agreement.</p>
-        <a class="tier-cta" href="go/">Claim 15-Job Guarantee &rarr;</a>
+        <a class="tier-cta" href="go/?trade=Roofing&tier=guarantee">Claim 15-Job Guarantee &rarr;</a>
       </article>
     </div>
   </div>
@@ -1087,6 +1087,11 @@ function applyVertical(key){
     card.querySelector(".tier-price .setup").textContent = t.setup;
     var terms = card.querySelector(".tier-terms");
     if(terms && t.terms) terms.innerHTML = t.terms;
+    var cta = card.querySelector(".tier-cta");
+    if(cta){
+      var tradeVal = key === 'roofing' ? 'Roofing' : (key === 'hvac' ? 'HVAC' : 'Plumbing');
+      cta.href = "go/?trade=" + encodeURIComponent(tradeVal) + "&tier=" + (i === 0 ? "visibility" : "guarantee");
+    }
     var ul = card.querySelector("ul");
     ul.innerHTML = "";
     t.feats.forEach(function(f){

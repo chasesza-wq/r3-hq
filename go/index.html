@@ -14,6 +14,7 @@
 <link rel="preconnect" href="https://assets.calendly.com" crossorigin>
 <link rel="preconnect" href="https://calendly.com" crossorigin>
 <link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@700,800&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+<script src="../assets/rr-api.js"></script>
 <style>
 :root{
   --ink:#0e1726; --ink2:#1e293b; --mut:#64748b; --mut2:#94a3b8;
@@ -113,6 +114,11 @@ body.survey-full{background:#f4f7fc}
 .err{display:none;margin-top:12px;font-size:13.5px;color:#dc2626;font-weight:600}
 .err.show{display:block}
 .legal{margin-top:12px;font-size:12px;color:var(--mut2);line-height:1.5;text-align:center}
+.consent{display:flex;gap:10px;align-items:flex-start;margin:12px 0 4px;padding:12px 14px;border:1.5px solid #dce5f7;border-radius:12px;background:#fff;cursor:pointer;text-align:left}
+.consent input[type=checkbox]{flex:0 0 auto;width:18px;height:18px;margin-top:2px;accent-color:var(--accent)}
+.consent-copy{font-size:12px;line-height:1.5;color:#20325c}
+.consent-copy a{color:var(--accent);text-decoration:underline}
+
 
 /* Under-card ticks */
 .cta-zone{border-top:1px solid var(--line2);margin-top:28px;padding-top:20px;text-align:center}
@@ -228,7 +234,11 @@ footer a{text-decoration:underline}
                 Continue to Pick Your Call Time &rarr;
               </button>
               <div class="err" id="formErr">Please enter your first name and a valid 10-digit mobile number.</div>
-              <p class="legal">By continuing, you agree to receive SMS updates from RecoverRevenue about your call. Reply STOP to opt out. See our <a href="../terms.html" target="_blank">SMS Terms</a>.</p>
+              <label class="consent" for="smsConsent">
+                <input type="checkbox" id="smsConsent">
+                <span class="consent-copy">I agree to receive text messages from RecoverRevenue at the mobile number provided, including messages about my audit, qualifying questions, and appointment scheduling and reminders. <b>Consent is not a condition of purchase.</b> Message and data rates may apply. Message frequency varies. Reply <b>STOP</b> to opt out or <b>HELP</b> for help. See our <a href="../privacy.html" target="_blank" rel="noopener">Privacy Policy</a> and <a href="../terms.html" target="_blank" rel="noopener">SMS Terms</a>.</span>
+              </label>
+              <p class="legal">The box is optional. Leave it unchecked and we'll only reach you on the call you book.</p>
             </form>
           </div>
 
@@ -285,9 +295,11 @@ footer a{text-decoration:underline}
 
 <script>
 (function(){
-  var API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  var API_BASE = window.RR_API || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://localhost:5055'
-    : 'https://explained-peripherals-adventure-congress.trycloudflare.com';
+    : 'https://vsnet-scroll-medication-hawaiian.trycloudflare.com');
+  var CONSENT_TEXT = "I agree to receive text messages from RecoverRevenue at the mobile number provided, including messages about my audit, qualifying questions, and appointment scheduling and reminders. Consent is not a condition of purchase. Message and data rates may apply. Message frequency varies. Reply STOP to opt out or HELP for help.";
+
 
   var answers = {
     revenue_leak: "Missed calls on jobsites",
@@ -401,9 +413,13 @@ footer a{text-decoration:underline}
       phone: answers.phone,
       trade: answers.trade,
       bottleneck: answers.revenue_leak,
-      utm_source: '3-step-funnel',
+      source: 'go',
+      utm_source: (new URLSearchParams(window.location.search).get('c')) || (document.referrer ? (document.referrer.split('/')[2] || 'direct') : 'direct'),
       utm_medium: 'bio',
-      utm_campaign: '60day-guarantee'
+      utm_campaign: '60day-guarantee',
+      consent: !!(document.getElementById('smsConsent') && document.getElementById('smsConsent').checked),
+      consent_text: (document.getElementById('smsConsent') && document.getElementById('smsConsent').checked) ? CONSENT_TEXT : '',
+      consent_source: window.location.href
     };
 
     // Save lead locally & trigger background SMS campaign
@@ -508,6 +524,18 @@ footer a{text-decoration:underline}
       bookingView.classList.add('on');
       initCalendly(pName, pPhone.replace(/\D/g, ''));
     }, 40);
+  } else {
+    // If trade is passed without direct booking, pre-select it in step 2
+    var pTradeOnly = urlParams.get('trade');
+    if (pTradeOnly) {
+      var capTrade = pTradeOnly.charAt(0).toUpperCase() + pTradeOnly.slice(1);
+      answers.trade = capTrade;
+      var matchedBtn = document.querySelector('#tradeOpts .sv-opt[data-v="' + capTrade + '"]');
+      if (matchedBtn) {
+        document.querySelectorAll('#tradeOpts .sv-opt').forEach(function(b){ b.classList.remove('sel'); });
+        matchedBtn.classList.add('sel');
+      }
+    }
   }
 
   function initCalendly(name, phone){
@@ -537,7 +565,8 @@ footer a{text-decoration:underline}
               body: JSON.stringify({
                 phone: answers.phone,
                 first_name: answers.first_name,
-                event_time: "Tomorrow at 10:00 AM ET"
+                event_uri: (d.payload && d.payload.event && d.payload.event.uri) || "",
+                invitee_uri: (d.payload && d.payload.invitee && d.payload.invitee.uri) || ""
               }),
               keepalive: true
             }).catch(function(){});

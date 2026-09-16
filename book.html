@@ -197,6 +197,7 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 <script src="assets/pixel.js"></script>
+<script src="assets/rr-api.js"></script>
 </head>
 <body>
 
@@ -467,9 +468,7 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(
     "may apply. Message frequency varies. Reply STOP to opt out or HELP for help.";
 
   /* Live lead intake endpoint via Cloudflare tunnel to funnel_service.py */
-  var API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-    ? 'http://localhost:5055'
-    : 'https://explained-peripherals-adventure-congress.trycloudflare.com';
+  var API_BASE = window.RR_API;
   var LEAD_ENDPOINT = API_BASE + "/api/lead";
 
   var currentStep = 1;
@@ -701,7 +700,9 @@ footer{border-top:1px solid var(--line-soft);padding:38px 0 52px;background:var(
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             phone: "+1" + phoneVal,
-            first_name: nameVal
+            first_name: nameVal,
+            event_uri: (d.payload && d.payload.event && d.payload.event.uri) || "",
+            invitee_uri: (d.payload && d.payload.invitee && d.payload.invitee.uri) || ""
           }),
           keepalive: true
         }).catch(function(){});
