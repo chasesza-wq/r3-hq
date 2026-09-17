@@ -514,7 +514,6 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
       <a href="#proof">Live Proof</a>
       <a href="#what">What We Build</a>
       <a href="#issues">The 4 Leaks</a>
-      <a href="#pricing">Pricing</a>
       <a href="#faq">FAQ</a>
       <a class="nav-cta" href="go/">Check Trade Eligibility &rarr;</a>
     </nav>
@@ -717,45 +716,6 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
   </div>
 </section>
 
-<!-- ================= PRICING ================= -->
-<section class="pricing" id="pricing">
-  <div class="wrap">
-    <div class="pricing-head">
-      <p class="eyebrow rv">Pricing &middot; Guaranteed</p>
-      <h2 class="h2 rv" style="--d:.08s">One plan. Two numbers. The monthly waits for the 15th job.</h2>
-      <p class="lede rv" style="--d:.16s">$1,000 builds it. $500 a month runs it &mdash; and the monthly doesn&rsquo;t start until your dashboard posts booked job #15. 15 booked jobs in 60 days, or we work free until you have them.</p>
-      <div class="seg rv" style="--d:.24s" role="group" aria-label="Choose your trade">
-        <button type="button" data-v="roofing" aria-pressed="true"><span class="lf">Roofing &amp; Exterior</span><span class="ls">Roofing</span></button>
-        <button type="button" data-v="hvac" aria-pressed="false"><span class="lf">HVAC &amp; Mechanical</span><span class="ls">HVAC</span></button>
-        <button type="button" data-v="plumbing" aria-pressed="false"><span class="lf">Plumbing &amp; Electrical</span><span class="ls">Plumbing</span></button>
-      </div>
-      <p class="seg-note rv" style="--d:.3s" id="segNote">Roof replacements, storm damage inspection, gutters, siding</p>
-    </div>
-
-    <div class="tiers rv one" style="--d:.2s" id="tiers">
-      <article class="tier hot rv" data-tier="0">
-        <h3 class="tier-name">Recovery Engine <span class="badge">Guaranteed</span></h3>
-        <p class="tier-blurb">Five text-message systems that turn the calls, leads, estimates and past customers you already paid for into booked jobs.</p>
-        <div class="tier-price">
-          <span class="mo num">$500<small> /month</small></span>
-          <span class="setup num">$1,000 setup today &middot; monthly starts the day your 15th booked job posts</span>
-        </div>
-        <span class="guar"><i></i>15 booked jobs in 60 days, or we work free until you have them</span>
-        <ul>
-          <li>Missed-call text-back within 60 seconds, so the caller doesn&rsquo;t call the next shop</li>
-          <li>New-lead follow-up: every form and call answered and pushed to a booked visit</li>
-          <li>Estimate follow-up: every open quote chased until it closes or dies</li>
-          <li>Past-customer reactivation: the numbers already in your records get a reason to call</li>
-          <li>Google review requests after every job</li>
-          <li>Your dashboard: every booked job, its source, and the running count to 15</li>
-        </ul>
-        <p class="tier-terms"><b>$1,000</b> pays for the build and is charged at signing. <b>$500/month</b> is first charged the day the 15th booked job posts &mdash; day 20 or day 90, same rule. Longer than 60 days? We keep working at $0 until it posts. Full terms in the service agreement.</p>
-        <a class="tier-cta" href="go/?trade=Roofing&tier=guarantee">Claim the 15-Job Guarantee &rarr;</a>
-      </article>
-    </div>
-  </div>
-</section>
-
 <!-- ================= FINAL CTA / 15 QUALIFIED JOBS ================= -->
 <section class="final" id="book">
   <div class="wrap">
@@ -778,7 +738,7 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
     <div class="faq-list rv" style="--d:.12s">
       <details>
         <summary>What if it doesn&rsquo;t make me money?</summary>
-        <div class="a">You will see it in your live dashboard &mdash; every booked job, where it came from, and the running count to 15. The $500 monthly is not charged until the day the 15th booked job posts. If that takes longer than 60 days, we keep working at no monthly fee until it does. The $1,000 setup pays for the build and is charged at signing.</div>
+        <div class="a">You will see it in your live dashboard &mdash; every booked job, where it came from, and the running count to 15. The monthly is not charged until the day the 15th booked job posts. If that takes longer than 60 days, we keep working at no monthly fee until it does. Numbers are on the call, in 15 minutes, once we know what an average job is worth to you.</div>
       </details>
       <details>
         <summary>Does the AI actually sound human?</summary>
@@ -790,7 +750,7 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
       </details>
       <details>
         <summary>Do I own the website?</summary>
-        <div class="a">Yes &mdash; stay 12 months on any plan and the site is 100% yours: code, domain, content. Leave before 12 months and there is a one-time $997 buy-out if you want to take it with you. Either way, no hostage hosting &mdash; nothing breaks if we part ways.</div>
+        <div class="a">Yes &mdash; stay 12 months on any plan and the site is 100% yours: code, domain, content. Leave before 12 months and there is a one-time buy-out if you want to take it with you. Either way, no hostage hosting &mdash; nothing breaks if we part ways.</div>
       </details>
       <details>
         <summary>How quickly do we launch?</summary>
@@ -989,87 +949,6 @@ if(HAS_GSAP && FINE && !RM){
   });
 })();
 
-/* ---------- pricing vertical switcher ---------- */
-var PRICING = {
-  roofing: {
-    note: "Roof replacements, storm damage inspection, gutters, siding, exteriors",
-    tiers: [
-      { blurb: "Five text-message systems that turn the roof calls, leads, estimates and past customers you already paid for into booked jobs.",
-        mo: "$500", setup: "$1,000 setup today · monthly starts the day your 15th booked job posts",
-        feats: ["Missed-call text-back within 60 seconds while the crew is on the roof",
-                "New-lead follow-up: every storm and inspection lead pushed to a booked visit",
-                "Estimate follow-up: every open roof quote chased until it closes or dies",
-                "Past-customer reactivation: gutters, inspections and re-roofs from your own records",
-                "Google review requests after every completed roof",
-                "Your dashboard: every booked job, its source, and the running count to 15"] }
-    ]
-  },
-  hvac: {
-    note: "HVAC replacements, AC emergencies, heat pumps, furnace installs, tune-ups",
-    tiers: [
-      { blurb: "Five text-message systems that turn the emergency calls, leads, quotes and past customers you already paid for into booked jobs.",
-        mo: "$500", setup: "$1,000 setup today · monthly starts the day your 15th booked job posts",
-        feats: ["Missed-call text-back within 60 seconds on emergency and after-hours calls",
-                "New-lead follow-up: every replacement and repair lead pushed to a booked visit",
-                "Estimate follow-up: every open replacement quote chased until it closes or dies",
-                "Past-customer reactivation: tune-ups and replacements from your own records",
-                "Google review requests after every service call",
-                "Your dashboard: every booked job, its source, and the running count to 15"] }
-    ]
-  },
-  plumbing: {
-    note: "Emergency repipes, water heaters, drain clearing, electrical & service trades",
-    tiers: [
-      { blurb: "Five text-message systems that turn the emergency calls, leads, quotes and past customers you already paid for into booked jobs.",
-        mo: "$500", setup: "$1,000 setup today · monthly starts the day your 15th booked job posts",
-        feats: ["Missed-call text-back within 60 seconds while you are under a sink or in a panel",
-                "New-lead follow-up: every water heater, repipe and panel lead pushed to a booked visit",
-                "Estimate follow-up: every open quote chased until it closes or dies",
-                "Past-customer reactivation: annual checks and upgrades from your own records",
-                "Google review requests after every dispatch",
-                "Your dashboard: every booked job, its source, and the running count to 15"] }
-    ]
-  }
-};
-var segBtns = document.querySelectorAll(".seg button");
-var tiersEl = document.getElementById("tiers");
-var segNote = document.getElementById("segNote");
-function applyVertical(key){
-  var data = PRICING[key];
-  if(!data) return;
-  segNote.textContent = data.note;
-  var cards = tiersEl.querySelectorAll(".tier");
-  data.tiers.forEach(function(t, i){
-    var card = cards[i];
-    if(!card) return;
-    card.querySelector(".tier-blurb").textContent = t.blurb;
-    card.querySelector(".tier-price .mo").innerHTML = t.mo + "<small> /month</small>";
-    card.querySelector(".tier-price .setup").textContent = t.setup;
-    var cta = card.querySelector(".tier-cta");
-    if(cta){
-      var tradeVal = key === 'roofing' ? 'Roofing' : (key === 'hvac' ? 'HVAC' : 'Plumbing');
-      cta.href = "go/?trade=" + encodeURIComponent(tradeVal) + "&tier=" + (i === 0 ? "visibility" : "guarantee");
-    }
-    var ul = card.querySelector("ul");
-    ul.innerHTML = "";
-    t.feats.forEach(function(f){
-      var li = document.createElement("li");
-      li.textContent = f;
-      ul.appendChild(li);
-    });
-  });
-}
-Array.prototype.forEach.call(segBtns, function(btn){
-  btn.addEventListener("click", function(){
-    if(btn.getAttribute("aria-pressed") === "true") return;
-    Array.prototype.forEach.call(segBtns, function(b){ b.setAttribute("aria-pressed", b === btn ? "true" : "false"); });
-    tiersEl.classList.add("fade");
-    window.setTimeout(function(){
-      applyVertical(btn.dataset.v);
-      tiersEl.classList.remove("fade");
-    }, 240);
-  });
-});
 })();
 /* ---------- how-it-works: checkboxes tick as the steps arrive ---------- */
 (function(){
