@@ -376,6 +376,7 @@ html.js .frame.in img{transform:scale(1)}
   margin-top:clamp(40px,5vw,60px);transition:opacity .28s ease;
 }
 .tiers.fade{opacity:0}
+.tiers.one{grid-template-columns:minmax(0,640px);justify-content:center}
 .tier{
   background:var(--paper);border:1px solid var(--line-soft);border-radius:var(--r);
   padding:38px 34px;display:flex;flex-direction:column;min-width:0;
@@ -721,8 +722,8 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
   <div class="wrap">
     <div class="pricing-head">
       <p class="eyebrow rv">Pricing &middot; Guaranteed</p>
-      <h2 class="h2 rv" style="--d:.08s">Fixed monthly. No contracts. 15 jobs guaranteed.</h2>
-      <p class="lede rv" style="--d:.16s">Choose your trade. You keep the site forever. If we don't produce 15 jobs in 60 days on Recovery Engine, you don't pay.</p>
+      <h2 class="h2 rv" style="--d:.08s">One plan. Two numbers. The monthly waits for the 15th job.</h2>
+      <p class="lede rv" style="--d:.16s">$1,000 builds it. $500 a month runs it &mdash; and the monthly doesn&rsquo;t start until your dashboard posts booked job #15. 15 booked jobs in 60 days, or we work free until you have them.</p>
       <div class="seg rv" style="--d:.24s" role="group" aria-label="Choose your trade">
         <button type="button" data-v="roofing" aria-pressed="true"><span class="lf">Roofing &amp; Exterior</span><span class="ls">Roofing</span></button>
         <button type="button" data-v="hvac" aria-pressed="false"><span class="lf">HVAC &amp; Mechanical</span><span class="ls">HVAC</span></button>
@@ -731,42 +732,25 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
       <p class="seg-note rv" style="--d:.3s" id="segNote">Roof replacements, storm damage inspection, gutters, siding</p>
     </div>
 
-    <div class="tiers rv" style="--d:.2s" id="tiers">
-      <article class="tier rv" data-tier="0">
-        <h3 class="tier-name">Visibility</h3>
-        <p class="tier-blurb">Get found locally. Stop losing the calls you already earn.</p>
-        <div class="tier-price">
-          <span class="mo num">$497<small> /month</small></span>
-          <span class="setup num">Month-to-month &middot; Cancel anytime</span>
-        </div>
-        <ul>
-          <li>Booking website, built to convert, yours to keep</li>
-          <li>Google Business Profile claimed, rebuilt and posted to</li>
-          <li>Missed-call text-back within 60 seconds</li>
-          <li>Automated review requests after every job</li>
-          <li>Tracking number, so "where did that job come from" has an answer</li>
-        </ul>
-        <p class="tier-terms">Month-to-month agreement. Built for shops establishing or modernizing their local market presence.</p>
-        <a class="tier-cta" href="go/?trade=Roofing&tier=visibility">Check Visibility Eligibility &rarr;</a>
-      </article>
-
-      <article class="tier hot rv" data-tier="1" style="--d:.1s">
+    <div class="tiers rv one" style="--d:.2s" id="tiers">
+      <article class="tier hot rv" data-tier="0">
         <h3 class="tier-name">Recovery Engine <span class="badge">Guaranteed</span></h3>
-        <p class="tier-blurb">Everything above, plus speed-to-lead and the outbound engine that produces 15 jobs.</p>
+        <p class="tier-blurb">Five text-message systems that turn the calls, leads, estimates and past customers you already paid for into booked jobs.</p>
         <div class="tier-price">
-          <span class="mo num">$1,497<small> /month</small></span>
-          <span class="setup num">Performance guaranteed &middot; 15 jobs in 60 days</span>
+          <span class="mo num">$500<small> /month</small></span>
+          <span class="setup num">$1,000 setup today &middot; monthly starts the day your 15th booked job posts</span>
         </div>
-        <span class="guar"><i></i>15 jobs in 60 days or you don't pay</span>
+        <span class="guar"><i></i>15 booked jobs in 60 days, or we work free until you have them</span>
         <ul>
-          <li>Everything in Visibility</li>
-          <li>Past-customer reactivation, texted on a real campaign</li>
-          <li>AI receptionist on after-hours and overflow calls, 24/7</li>
-          <li>Speed-to-lead: every form and missed call answered in 60 seconds</li>
-          <li>Lead dashboard: who called, who booked, who went cold</li>
+          <li>Missed-call text-back within 60 seconds, so the caller doesn&rsquo;t call the next shop</li>
+          <li>New-lead follow-up: every form and call answered and pushed to a booked visit</li>
+          <li>Estimate follow-up: every open quote chased until it closes or dies</li>
+          <li>Past-customer reactivation: the numbers already in your records get a reason to call</li>
+          <li>Google review requests after every job</li>
+          <li>Your dashboard: every booked job, its source, and the running count to 15</li>
         </ul>
-        <p class="tier-terms">Guaranteed to produce 15 qualified jobs in 60 days or you don't pay. Full terms in service agreement.</p>
-        <a class="tier-cta" href="go/?trade=Roofing&tier=guarantee">Claim 15-Job Guarantee &rarr;</a>
+        <p class="tier-terms"><b>$1,000</b> pays for the build and is charged at signing. <b>$500/month</b> is first charged the day the 15th booked job posts &mdash; day 20 or day 90, same rule. Longer than 60 days? We keep working at $0 until it posts. Full terms in the service agreement.</p>
+        <a class="tier-cta" href="go/?trade=Roofing&tier=guarantee">Claim the 15-Job Guarantee &rarr;</a>
       </article>
     </div>
   </div>
@@ -794,7 +778,7 @@ footer{padding:44px 0 56px;border-top:1px solid var(--line-soft)}
     <div class="faq-list rv" style="--d:.12s">
       <details>
         <summary>What if it doesn&rsquo;t make me money?</summary>
-        <div class="a">You will see it in your live dashboard &mdash; we report conservatively-attributed dollars, not vanity clicks. On Recovery Engine you are not charged at all until day 61, and only if the system booked you 15 jobs; miss it and you are never charged and you keep the website. That risk is ours on purpose.</div>
+        <div class="a">You will see it in your live dashboard &mdash; every booked job, where it came from, and the running count to 15. The $500 monthly is not charged until the day the 15th booked job posts. If that takes longer than 60 days, we keep working at no monthly fee until it does. The $1,000 setup pays for the build and is charged at signing.</div>
       </details>
       <details>
         <summary>Does the AI actually sound human?</summary>
@@ -1008,66 +992,42 @@ if(HAS_GSAP && FINE && !RM){
 /* ---------- pricing vertical switcher ---------- */
 var PRICING = {
   roofing: {
-    note: "Roofing replacements, storm damage inspection, gutters, siding, exteriors",
+    note: "Roof replacements, storm damage inspection, gutters, siding, exteriors",
     tiers: [
-      { blurb: "Get found locally. Stop losing high-ticket roof calls when crews are on slopes.",
-        mo: "$497", setup: "Month-to-month · Cancel anytime",
-        terms: "Month-to-month agreement. Built for shops establishing or modernizing their local market presence.",
-        feats: ["Conversion website built for homeowners, yours to keep",
-                "Google Business Profile claimed, rebuilt and ranked locally",
-                "Missed-call speed-to-lead text-back within 15 seconds",
-                "Automated 5-star review requests after every completed roof",
-                "Dedicated tracking number with call recording & attribution"] },
-      { blurb: "Everything above, plus past estimate reactivation that produces 15 jobs.",
-        mo: "$1,497", setup: "Performance guaranteed · 15 jobs in 60 days",
-        terms: "Guaranteed to produce 15 qualified jobs in 60 days or you don't pay. Full terms in service agreement.",
-        feats: ["Everything in Visibility",
-                "Dead quote & past-customer reactivation text campaigns",
-                "Speed-to-lead instant response on all inbound inquiries, 24/7",
-                "Estimate consult booking directly onto your estimator's calendar",
-                "Live dashboard: see calls, booked jobs, and recovered dollars live"] }
+      { blurb: "Five text-message systems that turn the roof calls, leads, estimates and past customers you already paid for into booked jobs.",
+        mo: "$500", setup: "$1,000 setup today · monthly starts the day your 15th booked job posts",
+        feats: ["Missed-call text-back within 60 seconds while the crew is on the roof",
+                "New-lead follow-up: every storm and inspection lead pushed to a booked visit",
+                "Estimate follow-up: every open roof quote chased until it closes or dies",
+                "Past-customer reactivation: gutters, inspections and re-roofs from your own records",
+                "Google review requests after every completed roof",
+                "Your dashboard: every booked job, its source, and the running count to 15"] }
     ]
   },
   hvac: {
     note: "HVAC replacements, AC emergencies, heat pumps, furnace installs, tune-ups",
     tiers: [
-      { blurb: "Lock down emergency cooling and heating calls the second they happen.",
-        mo: "$497", setup: "Month-to-month · Cancel anytime",
-        terms: "Month-to-month agreement. Built for shops establishing or modernizing their local market presence.",
-        feats: ["High-converting service website, yours to keep",
-                "Google Business Profile optimized for emergency local search",
-                "Instant missed-call text-back within 15 seconds",
-                "Automated review collection after every service call",
-                "Tracking number with full source and revenue attribution"] },
-      { blurb: "Everything above, plus seasonal tune-up reactivation and replacement leads.",
-        mo: "$1,497", setup: "Performance guaranteed · 15 jobs in 60 days",
-        terms: "Guaranteed to produce 15 qualified jobs in 60 days or you don't pay. Full terms in service agreement.",
-        feats: ["Everything in Visibility",
-                "Seasonal maintenance & replacement quote reactivation",
-                "Instant after-hours response and triage, 24/7",
-                "Service dispatch and diagnostic bookings directly on calendar",
-                "Live dashboard: live revenue recovered and booked equipment"] }
+      { blurb: "Five text-message systems that turn the emergency calls, leads, quotes and past customers you already paid for into booked jobs.",
+        mo: "$500", setup: "$1,000 setup today · monthly starts the day your 15th booked job posts",
+        feats: ["Missed-call text-back within 60 seconds on emergency and after-hours calls",
+                "New-lead follow-up: every replacement and repair lead pushed to a booked visit",
+                "Estimate follow-up: every open replacement quote chased until it closes or dies",
+                "Past-customer reactivation: tune-ups and replacements from your own records",
+                "Google review requests after every service call",
+                "Your dashboard: every booked job, its source, and the running count to 15"] }
     ]
   },
   plumbing: {
     note: "Emergency repipes, water heaters, drain clearing, electrical & service trades",
     tiers: [
-      { blurb: "Secure $1,200+ water heater and repipe jobs before they call the next guy.",
-        mo: "$497", setup: "Month-to-month · Cancel anytime",
-        terms: "Month-to-month agreement. Built for shops establishing or modernizing their local market presence.",
-        feats: ["Clean booking website built for mobile homeowners",
-                "Google Business Profile rebuilt for top map rankings",
-                "Instant missed-call text-back within 15 seconds",
-                "Automated review requests sent after every dispatch",
-                "Dedicated tracking number so marketing ROI is clear"] },
-      { blurb: "Everything above, plus past-customer recall and instant job intake.",
-        mo: "$1,497", setup: "Performance guaranteed · 15 jobs in 60 days",
-        terms: "Guaranteed to produce 15 qualified jobs in 60 days or you don't pay. Full terms in service agreement.",
-        feats: ["Everything in Visibility",
-                "Past customer annual check-up & estimate reactivation",
-                "Instant text-back on emergency and overflow calls, 24/7",
-                "Direct calendar booking for estimates and service visits",
-                "Live dashboard: track every booked job and customer dollar"] }
+      { blurb: "Five text-message systems that turn the emergency calls, leads, quotes and past customers you already paid for into booked jobs.",
+        mo: "$500", setup: "$1,000 setup today · monthly starts the day your 15th booked job posts",
+        feats: ["Missed-call text-back within 60 seconds while you are under a sink or in a panel",
+                "New-lead follow-up: every water heater, repipe and panel lead pushed to a booked visit",
+                "Estimate follow-up: every open quote chased until it closes or dies",
+                "Past-customer reactivation: annual checks and upgrades from your own records",
+                "Google review requests after every dispatch",
+                "Your dashboard: every booked job, its source, and the running count to 15"] }
     ]
   }
 };
@@ -1085,8 +1045,6 @@ function applyVertical(key){
     card.querySelector(".tier-blurb").textContent = t.blurb;
     card.querySelector(".tier-price .mo").innerHTML = t.mo + "<small> /month</small>";
     card.querySelector(".tier-price .setup").textContent = t.setup;
-    var terms = card.querySelector(".tier-terms");
-    if(terms && t.terms) terms.innerHTML = t.terms;
     var cta = card.querySelector(".tier-cta");
     if(cta){
       var tradeVal = key === 'roofing' ? 'Roofing' : (key === 'hvac' ? 'HVAC' : 'Plumbing');
