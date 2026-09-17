@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Pause length="1"/>
+  <Say voice="Polly.Matthew">Hey, you've reached Recover Revenue. We're on a call right now, so watch your phone. In about fifteen seconds you'll get a text back from us. That's exactly what your customers get when your crew can't pick up.</Say>
+  <Hangup/>
+</Response>
