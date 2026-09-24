@@ -129,14 +129,6 @@
   .theask .then b{color:var(--fg);font-weight:700}
   /* ── LIST MODE. Every number on one screen. Chase asked for the sheet of numbers
      back: scan it, tap one, see who they are and the two ways to open. */
-  .found{margin-top:10px;padding:10px 12px;background:var(--bg2);border-radius:11px;
-    font-size:12.5px;line-height:1.45;color:var(--dim)}
-  .found b{color:var(--fg);font-weight:750}
-  .found a{color:var(--teal);font-weight:700}
-  .linkbox{display:flex;align-items:center;gap:9px;padding:11px 13px;background:var(--bg2);
-    border:1px solid var(--line);border-radius:12px}
-  .linkbox span{flex:1;font-size:15px;font-weight:750;letter-spacing:-.01em;
-    font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
   .modesw{display:flex;gap:4px;background:var(--bg3);border-radius:9px;padding:3px}
   .modesw button{border:0;background:none;color:var(--dim);font:inherit;font-size:10px;
     font-weight:750;letter-spacing:.08em;text-transform:uppercase;padding:5px 11px;
@@ -200,7 +192,7 @@
   /* ── outcome ──────────────────────────────────────────── */
   .sec{margin-top:20px}
   .seclab{font-size:9.5px;letter-spacing:.17em;text-transform:uppercase;color:var(--dim);font-weight:750;margin-bottom:9px}
-  .grid5{display:grid;grid-template-columns:repeat(6,1fr);gap:5px}
+  .grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
   .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
   .dbtn{padding:13px 2px;border-radius:13px;border:1px solid var(--line);background:var(--bg);
     color:var(--dim);font-size:10.5px;font-weight:750;line-height:1.25}
@@ -528,7 +520,7 @@ const PRICING = { setup:1000, mo:500 };
 
 // The booking page — all six CTAs on the main site point here, so the link a
 // prospect gets on the phone is the same one they'd have found themselves.
-const BOOK_LINK = "https://recoverrevenue.co/book";  // sayable on a call. /book.html also serves.
+const BOOK_LINK = "https://chasesza-wq.github.io/r3-hq/book.html";
 
 // Yearly intake is an ESTIMATE, not a fact, and the card says so. The only
 // sourced input is review_count. Everything else is this constant, in the open:
@@ -547,7 +539,6 @@ const FOLLOWUP_HOURS = 4;
 const DISPOS = [["na","No answer","No Answer"],["vm","Voicemail","Voicemail"],
                 ["ni","Not now","Not Interested"],["int","Interested","Interested"],
                 ["bk","BOOKED","BOOKED"]];
-const DISPO_COLS = DISPOS.length + 1;  // +1 for the Bad-number button living in the same row
 const KILLS  = [["bad_number","Bad number"],["gone","Out of business"],["wrong_person","Wrong person"]];
 const KILL_LABEL = Object.fromEntries(KILLS);
 
@@ -768,12 +759,12 @@ function openers(l){
     const role=l.posted_role||"front desk";
     return [
       {tag:"Saw the job post", line:`I saw you're hiring a ${role} — how many calls are going to voicemail right now?`},
-      {tag:"After hours", line:`Quick one — what time do you guys close? … And where do those calls go after that?`},
+      {tag:"After hours", line:`Quick one — what time do you guys close? … So what happens to the calls that come in after that?`},
     ];
   }
   return [
-    {tag:"After hours", line:`What time do you guys close? … And where do those calls go after that?`},
-    {tag:"Their own number", line:`How many calls a week do you figure you're missing? … That's the part I fix.`},
+    {tag:"The rung-out phone", line:`When you're on a job and the phone rings out — who picks that up?`},
+    {tag:"After hours", line:`Quick one — what time do you finish for the day? … So what happens to the calls that come in after that?`},
   ];
 }
 
@@ -789,12 +780,12 @@ function questions(l){
   if(isHiring(l)){
     return {
       ask: `I saw you're hiring a ${l.posted_role||"front desk"} — how many calls are going to voicemail right now?`,
-      then: `Then: <b>"What time do you close?"</b> → <b>"Where do those calls go after that?"</b> → <b>"How many a week do you figure you're missing?"</b> Make them say the number.`,
+      then: `Then: <b>"What time do you close?"</b> → <b>"So what happens to the calls that come in after that?"</b> That is the sale. Let them answer it.`,
     };
   }
   return {
-    ask: `What time do you guys close? … And where do those calls go after that?`,
-    then: `Then: <b>"How many calls a week do you figure you're missing?"</b> Make them say the number. It is always higher than they expect, and it is their number, not yours.`,
+    ask: `When you're on a job and the phone rings out — who picks that up?`,
+    then: `Then: <b>"What time do you finish?"</b> → <b>"So what happens to the calls that come in after that?"</b> That is the sale. Let them answer it.`,
   };
 }
 
@@ -1035,58 +1026,6 @@ function msgs(l){
 }
 
 // ════════════════ THE DECK ════════════════
-// Getting the link to them. Three routes on purpose: Chase's carrier SMS is unreliable
-// as of 2026-09-24 (iMessage deregistered, two failed sends), so a card that offers only
-// "Text it" offers nothing on a bad day. Email goes out through Mail and does not touch
-// the carrier at all, and the link is printed in full because the fastest route on a live
-// call is reading twenty-one characters out loud while they are still on the phone.
-// Where this number came from, in one line. A lead that published a job ad is a
-// different call from one pulled off a licence roll, and that is the only thing about
-// the lead Chase needs before the phone rings.
-function foundLine(l){
-  if(isAeo(l)) return `<div class="found"><b>Running Google Ads</b> · invisible in AI answers</div>`;
-  if(isHiring(l)){
-    const m=(l.source||"").match(/(\d{4})-(\d{2})-(\d{2})/);
-    const url=(l.source||"").split(" — ")[1] || "";
-    let age="";
-    if(m){
-      const n=Math.round((Date.now()-new Date(+m[1],+m[2]-1,+m[3]).getTime())/864e5);
-      age = n<=0?"today":n===1?"1 day ago":n+" days ago";
-    }
-    const pay=payOf(l);
-    return `<div class="found"><b>Found on Indeed</b> — they posted a
-      ${esc(l.posted_role||"front desk")} job${age?" "+age:""}${pay?`, about $${pay.toLocaleString()}/yr`:""}.
-      ${url?`<a href="${esc(url)}" target="_blank" rel="noopener">read the post</a>`:""}</div>`;
-  }
-  return `<div class="found"><b>Florida licence roll</b> — they have published nothing.
-    Lead with the after-hours question.</div>`;
-}
-
-function sendLink(l, live){
-  const who = greet(l) || askName(l) || "there";
-  const biz = l.business_name || "your business";
-  const sms = `Hey ${who}, Chase from RecoverRevenue — here's the link to grab a time: ${BOOK_LINK}`;
-  const subj = `RecoverRevenue — booking link for ${biz}`;
-  const body = `Hey ${who},\n\nGreat talking. Grab whatever time works:\n${BOOK_LINK}\n\n`
-             + `Quick recap: every call ${biz} misses gets a text back in 60 seconds and books `
-             + `itself in. You see each one logged.\n\nChase\nRecoverRevenue`;
-  return `<div class="sec">
-    <div class="seclab">Send them the link${live?" — don't let it cool off":""}</div>
-    <div class="linkbox">
-      <span>${esc(BOOK_LINK.replace("https://",""))}</span>
-      <button class="mini ghost" onclick="copyText('${jsq(BOOK_LINK)}');toast('Link copied')">Copy</button>
-    </div>
-    <div class="grid3" style="margin-top:8px">
-      <a class="dbtn" href="${smsHref(l.phone, sms)}" onclick="sent('book')">Text it</a>
-      <a class="dbtn" href="mailto:?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}"
-         onclick="sent('book')">Email it</a>
-      <button class="dbtn" onclick="copyText('${jsq(BOOK_LINK)}');toast('Read it to them')">Say it</button>
-    </div>
-    ${live?`<button class="sbtn hot wide" style="margin-top:8px" onclick="bookIt()">
-      <span class="t">They picked a time — put it in my calendar</span></button>`:""}
-  </div>`;
-}
-
 function modeSwitch(){
   return `<span class="modesw">
     <button class="${dialMode==="cards"?"on":""}" onclick="setDialMode('cards')">Cards</button>
@@ -1125,6 +1064,9 @@ function renderList(v, list){
         ${isHiring(l)?`<div class="lfact"><b>What they published</b>
           Hiring a ${esc(l.posted_role||"front desk")}${pay?` at about $${pay.toLocaleString()}/yr`:""}${age?` · ${age}`:""}.
           ${esc(l.why_on_list||"")}</div>`:""}
+        ${pay?`<div class="lfact"><b>The math</b>$${pay.toLocaleString()}/yr for the seat.
+          We are $${(PRICING.setup+PRICING.mo*12).toLocaleString()} year one, and the monthly
+          doesn't start until 15 jobs are booked.</div>`:""}
         ${warns.map(f=>`<div class="warn" style="margin-top:9px"><b>Before you dial:</b> ${esc(f.why)}</div>`).join("")}
         ${src?`<div class="lfact"><b>Source</b><a href="${esc(src)}" target="_blank" rel="noopener">${esc(src.slice(0,60))}</a></div>`:""}
         ${openers(l).map(o=>`<div class="lopen"><i>${esc(o.tag)}</i><q>${esc(o.line)}</q></div>`).join("")}
@@ -1195,9 +1137,10 @@ function renderDial(){
       <div class="cmeta">${esc(l.city||"")}${l.review_count?` · ★ ${l.rating??"–"} (${l.review_count})`:""} ·
         ${shut?`<b style="color:var(--red)">closed today</b>`:win?`<b style="color:var(--green)">in window</b>`:`best ${esc((NICHE[l.category]||{}).best||"8–9am")}`}</div>
 
-      ${foundLine(l)}
       ${warns.map(f=>`<div class="warn"><b>Before you dial:</b> ${esc(f.why)}</div>`).join("")}
       ${shut?`<div class="warn"><b>Closed today</b> per their listed hours — expect voicemail.</div>`:""}
+
+      ${numStrip(l)}
 
       <div class="theask">
         <div class="ol">${aeo?"Open with this":"Open with this — then stop talking"}</div>
@@ -1226,9 +1169,10 @@ function renderDial(){
       </button>
       <div class="seclab">How did the call go?</div>
       <div class="grid5">${DISPOS.map(([c,short,full])=>
-        `<button class="dbtn ${c} ${d.dispo===full?"on":""}" onclick="setDispo('${full}')">${short}</button>`).join("")}
-        <button class="dbtn ${d.kill==="bad_number"?"on":""}" onclick="setKill('bad_number')"
-          title="Wrong number or out of business — pulls it from the deck">Bad #</button></div>
+        `<button class="dbtn ${c} ${d.dispo===full?"on":""}" onclick="setDispo('${full}')">${short}</button>`).join("")}</div>
+      <div class="seclab" style="margin:12px 0 8px">…or the lead itself was wrong</div>
+      <div class="killrow">${KILLS.map(([k,lab])=>
+        `<button class="kbtn ${d.kill===k?"on":""}" onclick="setKill('${k}')">${lab}</button>`).join("")}</div>
       ${showCb?`<div class="cbrow"><span class="seclab" style="margin:0">Call back</span>
         ${[["1h",1],["Tmrw 9am",-9],["3 days",72]].map(([lab,h])=>
           `<button class="cbbtn" onclick="setCb(cbTime(${h}))">${lab}</button>`).join("")}
@@ -1238,7 +1182,24 @@ function renderDial(){
         value="${esc(d.note||"")}" onchange="setNote(this.value)">
     </div>
 
-    ${sendLink(l, live)}
+    <div class="sec">
+      <div class="seclab">Send it${live?" — don't let it cool off":""}</div>
+      ${aeo?evidenceBox(l):(isHiring(l)?hiringBox(l):"")}
+      <div class="sendgrid" style="margin-top:8px">
+        ${aeo?sendBtn(l,"report",url)+" "+sendBtn(l,"postvm",url)+" "+sendBtn(l,"book",url)+" "+sendBtn(l,"nudge",url)
+             :sendBtn(l,"postvm",url)+" "+sendBtn(l,"pricing",url)+" "+sendBtn(l,"book",url)+" "+sendBtn(l,"info",url)}
+        <button class="sbtn wide" onclick="openTpl()"><span class="t">All ${Object.keys(msgs(l)).length} messages</span>
+          <span class="mini ghost">Open</span></button>
+      </div>
+      ${live?`<div class="sendgrid" style="margin-top:7px">
+        <button class="sbtn hot" onclick="bookIt()"><span class="t">Book the call</span>
+          <span class="d">Drops into Apple Calendar</span></button>
+        <button class="sbtn" onclick="nav(1)"><span class="t">Park it, next lead</span>
+          <span class="d">Stays in Working</span></button></div>`:""}
+      ${d.fuDue?`<div class="srcline" style="margin-top:9px">Auto follow-up due
+        <b>${new Date(d.fuDue).toLocaleString("en-US",{weekday:"short",hour:"numeric",minute:"2-digit"})}</b>
+        — clears when you text pricing or book.</div>`:""}
+    </div>
 
     ${aeo?aeoScript(l):(isHiring(l)?hiringScript(l):`<details class="script"><summary>If they push back — objections</summary><div class="prose">
       <h3>"How much?"</h3><p>"$${PRICING.setup.toLocaleString()} to set up, $${PRICING.mo} a month — and the monthly doesn't start until it's booked you 15 jobs. If it never books 15, you never pay it."</p>
