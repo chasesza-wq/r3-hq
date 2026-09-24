@@ -127,39 +127,6 @@
   .theask .then{margin-top:11px;padding-top:10px;border-top:1px solid var(--line);
     font-size:13px;line-height:1.4;color:var(--dim);font-weight:550}
   .theask .then b{color:var(--fg);font-weight:700}
-  /* ── LIST MODE. Every number on one screen. Chase asked for the sheet of numbers
-     back: scan it, tap one, see who they are and the two ways to open. */
-  .modesw{display:flex;gap:4px;background:var(--bg3);border-radius:9px;padding:3px}
-  .modesw button{border:0;background:none;color:var(--dim);font:inherit;font-size:10px;
-    font-weight:750;letter-spacing:.08em;text-transform:uppercase;padding:5px 11px;
-    border-radius:7px;cursor:pointer}
-  .modesw button.on{background:var(--bg);color:var(--fg);box-shadow:var(--shadow)}
-  .lrow{background:var(--bg);border:1px solid var(--line);border-radius:15px;margin-bottom:7px;
-    overflow:hidden}
-  .lrow.done{opacity:.45}
-  .lhead{display:flex;align-items:center;gap:11px;padding:12px 13px;cursor:pointer}
-  .lhead .lnum{font-size:19px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-  .lhead .lbiz{flex:1;min-width:0}
-  .lhead .lbiz b{display:block;font-size:13px;font-weight:700;white-space:nowrap;
-    overflow:hidden;text-overflow:ellipsis}
-  .lhead .lbiz span{display:block;font-size:11px;color:var(--dim);margin-top:2px;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .lpay{font-size:11px;font-weight:800;color:var(--green);white-space:nowrap}
-  .lbody{padding:0 13px 13px;border-top:1px solid var(--line)}
-  .lfact{font-size:12.5px;line-height:1.5;margin-top:10px}
-  .lfact b{color:var(--dim);font-weight:700;font-size:10px;letter-spacing:.1em;
-    text-transform:uppercase;display:block;margin-bottom:2px}
-  .lopen{display:block;width:100%;text-align:left;margin-top:9px;padding:11px 12px;
-    background:var(--bg2);border:1px solid var(--line);border-left:3px solid var(--teal);
-    border-radius:11px;color:inherit;font:inherit;cursor:pointer}
-  .lopen i{display:block;font-style:normal;font-size:9.5px;letter-spacing:.13em;
-    text-transform:uppercase;color:var(--teal);font-weight:750;margin-bottom:5px}
-  .lopen q{display:block;font-size:14px;line-height:1.4;font-weight:600;quotes:'"' '"'}
-  .lacts{display:flex;gap:7px;margin-top:11px}
-  .lacts a,.lacts button{flex:1;text-align:center;padding:12px;border-radius:12px;border:0;
-    font:inherit;font-size:12.5px;font-weight:750;cursor:pointer}
-  .lacts .lcall{background:var(--teal);color:#fff}
-  .lacts .lcard{background:var(--bg2);color:var(--dim)}
   .altcall{display:block;text-align:center;margin-top:7px;padding:10px;border-radius:12px;
     background:var(--bg2);font-size:12.5px;font-weight:650;color:var(--dim)}
   details.meta{margin-top:11px}
@@ -744,30 +711,6 @@ const URGENT = { towing:"a tow", mobile_mechanic:"a mechanic at the roadside",
   lawn_care:"a yard cut before Saturday", handyman:"something fixed today",
   car_detailing:"a car detailed before the weekend" };
 
-// Two ways to start, because one script for every pickup is how you sound like a script.
-// A is the evidence they published. B is the question that makes them say the problem
-// out loud — it works on a lead that published nothing, which is most of them.
-function openers(l){
-  if(isAeo(l)){
-    const a=l.aeo||{}, comp=(a.competitors||[]).slice(0,2);
-    return [
-      {tag:"The AI check", line:`I asked Claude "best ${AEO_NOUN[l.category]||nlabel(l.category)} in ${a.query||l.city}" this morning and you weren't in the answer.${comp.length?" "+comp.join(" and ")+" were.":""} Got twenty seconds?`},
-      {tag:"The Google gap", line:`You're paying Google to sit at the top — and the customer who asks AI instead never sees Google at all. Can I send you what I found?`},
-    ];
-  }
-  if(isHiring(l)){
-    const role=l.posted_role||"front desk";
-    return [
-      {tag:"Saw the job post", line:`I saw you're hiring a ${role} — how many calls are going to voicemail right now?`},
-      {tag:"After hours", line:`Quick one — what time do you guys close? … So what happens to the calls that come in after that?`},
-    ];
-  }
-  return [
-    {tag:"The rung-out phone", line:`When you're on a job and the phone rings out — who picks that up?`},
-    {tag:"After hours", line:`Quick one — what time do you finish for the day? … So what happens to the calls that come in after that?`},
-  ];
-}
-
 function questions(l){
   if(isAeo(l)){
     const a=l.aeo||{}, comp=(a.competitors||[]);
@@ -854,12 +797,6 @@ function pushDial(){
   }catch(_){}
 }
 function saveQueue(){ localStorage.setItem("rr_queue",JSON.stringify(queue)); }
-// Card mode deals one lead at a time; list mode is the sheet of numbers. The choice
-// sticks, because a preference you re-pick every load is not a preference.
-let dialMode = localStorage.getItem("rr_dialmode")==="list" ? "list" : "cards";
-let listOpen = null;
-function setDialMode(m){ dialMode=m; listOpen=null; localStorage.setItem("rr_dialmode",m); renderDial(); }
-function toggleRow(k){ listOpen = (listOpen===k?null:k); renderDial(); }
 function saveMeetings(){ localStorage.setItem("rr_meetings",JSON.stringify(meetings)); }
 function rec(l, peek){ const k=key(l); return peek ? results[k] : (results[k]||(results[k]={})); }
 function stageOf(d){ return (d&&d.stage) || (d&&d.dispo?"contacted":"new"); }
@@ -1026,66 +963,6 @@ function msgs(l){
 }
 
 // ════════════════ THE DECK ════════════════
-function modeSwitch(){
-  return `<span class="modesw">
-    <button class="${dialMode==="cards"?"on":""}" onclick="setDialMode('cards')">Cards</button>
-    <button class="${dialMode==="list"?"on":""}" onclick="setDialMode('list')">List</button>
-  </span>`;
-}
-
-// The sheet of numbers. Scan it, tap one, and the row tells you who picks up, what they
-// published, and the two ways to open. Everything here is sourced — no estimate, no
-// invented owner name. A lead with a dispo logged is dimmed, not hidden: the deck is a
-// record of the day, and hiding worked rows makes a short list look shorter than it is.
-function renderList(v, list){
-  const rows = list.map((l,i)=>{
-    const k=key(l), d=rec(l,true)||{}, vf=l.verify||{}, pay=payOf(l);
-    const open = listOpen===k;
-    const who = greet(l) || (askName(l)?askName(l)+" (off the sign — ask, don't assume)":null);
-    const m=(l.source||"").match(/(\d{4})-(\d{2})-(\d{2})/);
-    let age="";
-    if(m && isHiring(l)){
-      const n=Math.round((Date.now()-new Date(+m[1],+m[2]-1,+m[3]).getTime())/864e5);
-      age = n<=0?"posted today":n===1?"posted 1 day ago":"posted "+n+" days ago";
-    }
-    const src=(l.source||"").split(" — ")[1] || (vf.sources||[])[0] || "";
-    const warns=(vf.flags||[]).filter(f=>f.status==="check");
-    return `<div class="lrow ${d.dispo?"done":""}">
-      <div class="lhead" onclick="toggleRow('${jsq(k)}')">
-        <span class="lnum">${String(i+1).padStart(2,"0")}</span>
-        <span class="lbiz"><b>${esc(l.business_name||"?")}</b>
-          <span>${esc(fmtPhone(l.phone))} · ${esc(l.city||"")}${
-            isHiring(l)&&l.posted_role?" · "+esc(l.posted_role):""}</span></span>
-        ${pay?`<span class="lpay">$${Math.round(pay/1000)}k</span>`:""}
-        ${d.dispo?`<span class="lpay" style="color:var(--dim)">${esc(d.dispo)}</span>`:""}
-      </div>
-      ${open?`<div class="lbody">
-        <div class="lfact"><b>Who picks up</b>${who?esc(who):"No name published — \u201cis this the owner?\u201d"}</div>
-        ${isHiring(l)?`<div class="lfact"><b>What they published</b>
-          Hiring a ${esc(l.posted_role||"front desk")}${pay?` at about $${pay.toLocaleString()}/yr`:""}${age?` · ${age}`:""}.
-          ${esc(l.why_on_list||"")}</div>`:""}
-        ${pay?`<div class="lfact"><b>The math</b>$${pay.toLocaleString()}/yr for the seat.
-          We are $${(PRICING.setup+PRICING.mo*12).toLocaleString()} year one, and the monthly
-          doesn't start until 15 jobs are booked.</div>`:""}
-        ${warns.map(f=>`<div class="warn" style="margin-top:9px"><b>Before you dial:</b> ${esc(f.why)}</div>`).join("")}
-        ${src?`<div class="lfact"><b>Source</b><a href="${esc(src)}" target="_blank" rel="noopener">${esc(src.slice(0,60))}</a></div>`:""}
-        ${openers(l).map(o=>`<div class="lopen"><i>${esc(o.tag)}</i><q>${esc(o.line)}</q></div>`).join("")}
-        <div class="lacts">
-          <a class="lcall" href="${telHref(l.phone)}" onclick="jumpTo(${i});markCalled()">Call ${esc(fmtPhone(l.phone))}</a>
-          <button class="lcard" onclick="jumpTo(${i});setDialMode('cards')">Full card</button>
-        </div>
-      </div>`:""}
-    </div>`;
-  }).join("");
-  v.innerHTML = `<div class="deckwrap">
-    <div class="deckbar"><span>${list.length} numbers</span>
-      <span class="prog"><i style="width:${list.filter(l=>(rec(l,true)||{}).dispo).length/list.length*100}%"></i></span>
-      ${modeSwitch()}</div>
-    ${rows}
-  </div>`;
-}
-function jumpTo(i){ idx=i; }
-
 function renderDial(){
   const v=$("scr-dial"), list=queueLeads();
   if(!list.length){
@@ -1096,7 +973,6 @@ function renderDial(){
       <button class="mini" onclick="openQueue()">Change the queue</button></div>`;
     return;
   }
-  if(dialMode==="list") return renderList(v, list);
   idx = Math.max(0, Math.min(idx, list.length-1));
   const l=list[idx], d=rec(l,true)||{}, vf=l.verify||{};
   const name=greet(l), ask=askName(l), stage=stageOf(d), url=demoUrl(l);
@@ -1119,7 +995,7 @@ function renderDial(){
     <div class="deckbar">
       <span>${idx+1} / ${list.length}</span>
       <span class="prog"><i style="width:${(idx+1)/list.length*100}%"></i></span>
-      ${modeSwitch()}
+      <span>${esc(nlabel(l.category))}</span>
     </div>
 
     <div class="card" id="card">
