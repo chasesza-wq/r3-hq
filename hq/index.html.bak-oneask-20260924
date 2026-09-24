@@ -111,22 +111,6 @@
   .asks li{font-size:13.5px;line-height:1.42;font-weight:500;margin-bottom:7px}
   .asks li:last-child{margin-bottom:0}
   .asks li::marker{color:var(--dim);font-weight:700;font-size:11px}
-  /* The numbers do the arguing. Three sourced figures, nothing estimated. */
-  .numstrip{display:flex;gap:7px;margin-top:12px}
-  .numstrip div{flex:1;background:var(--bg2);border-radius:12px;padding:10px 9px;text-align:center}
-  .numstrip b{display:block;font-size:19px;font-weight:800;letter-spacing:-.02em;line-height:1.1}
-  .numstrip i{display:block;font-style:normal;font-size:8.5px;letter-spacing:.13em;
-    text-transform:uppercase;color:var(--dim);font-weight:750;margin-top:4px}
-  .numstrip .good b{color:var(--green)}
-  /* One question. Not a discovery script — the thing you say after they say hello. */
-  .theask{margin-top:12px;padding:15px 15px 13px;background:var(--bg2);border-radius:13px;
-    border-left:3px solid var(--teal)}
-  .theask .ol{font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--teal);
-    font-weight:750;margin-bottom:9px}
-  .theask q{display:block;font-size:16.5px;line-height:1.38;font-weight:650;quotes:'"' '"'}
-  .theask .then{margin-top:11px;padding-top:10px;border-top:1px solid var(--line);
-    font-size:13px;line-height:1.4;color:var(--dim);font-weight:550}
-  .theask .then b{color:var(--fg);font-weight:700}
   .altcall{display:block;text-align:center;margin-top:7px;padding:10px;border-radius:12px;
     background:var(--bg2);font-size:12.5px;font-weight:650;color:var(--dim)}
   details.meta{margin-top:11px}
@@ -41560,11 +41544,10 @@ function openLine(l, who){
     const q=`best ${AEO_NOUN[l.category]||nlabel(l.category)} in ${a.query||l.city}`;
     return `"Hey — is the owner around? … ${who}, I'll be quick. I'm a student, I do AI search visibility for ${esc(nlabel(l.category).replace(" (AI)","").toLowerCase())} companies. Honestly I don't Google anymore — I asked Claude '${esc(q)}' this morning and you weren't in the answer. ${comp.length?esc(comp.join(" and "))+" were.":""} Got twenty seconds?"`;
   }
-  // The opener asks about the phone, not a website. We stopped selling websites 2026-09-23.
-  const n=greet(l), a=askName(l), q=questions(l).ask;
-  if(n) return `"Hey ${esc(n)}, this is ${who} — I'll be quick. ${esc(q)}"`;
-  if(a) return `"Hey — is this ${esc(a)}? This is ${who}, I'll be quick. ${esc(q)}"`;
-  return `"Hey, is this the owner of ${esc(l.business_name||"")}? This is ${who}, I'll be quick. ${esc(q)}"`;
+  const n=greet(l), a=askName(l);
+  if(n) return `"Hey ${esc(n)}, this is ${who} — I'll be quick. Do you have a website set up for ${esc(l.business_name||"")}?"`;
+  if(a) return `"Hey — is this ${esc(a)}? This is ${who}, I'll be quick. Do you have a website set up for ${esc(l.business_name||"")}?"`;
+  return `"Hey, is this the owner of ${esc(l.business_name||"")}? This is ${who}, I'll be quick. Do you have a website set up?"`;
 }
 
 // Rough yearly intake, recomputed from the one number that has a source.
@@ -41590,22 +41573,20 @@ const URGENT = { towing:"a tow", mobile_mechanic:"a mechanic at the roadside",
 function questions(l){
   if(isAeo(l)){
     const a=l.aeo||{}, comp=(a.competitors||[]);
-    return {
-      ask: `When somebody asks ChatGPT "who's the best ${AEO_NOUN[l.category]||nlabel(l.category)} in ${a.query||l.city}" — do you know who it names?`,
-      then: comp.length?`It's <b>${comp.slice(0,2).join(" and ")}</b>. Not you. Checked ${a.of||3} ways this morning.`
-                       :`It isn't you — checked ${a.of||3} ways this morning.`,
-    };
+    return [
+      `When somebody asks ChatGPT or Claude "who's the best ${AEO_NOUN[l.category]||nlabel(l.category)} in ${a.query||l.city}" — do you know who it names?`,
+      comp.length?`It's ${comp.slice(0,2).join(" and ")}. Not you. I checked ${a.of||3} different ways this morning.`:`It isn't you — I checked ${a.of||3} different ways this morning.`,
+      "You're paying Google to be at the top — and the customer who asks AI instead never sees Google at all.",
+      "Can I email you the check I ran? Score, who came up instead, and the four things causing it. Free.",
+    ];
   }
-  if(isHiring(l)){
-    return {
-      ask: `I saw you're hiring a ${l.posted_role||"front desk"} — how many calls are going to voicemail right now?`,
-      then: `Then: <b>"What time do you close?"</b> → <b>"So what happens to the calls that come in after that?"</b> That is the sale. Let them answer it.`,
-    };
-  }
-  return {
-    ask: `When you're on a job and the phone rings out — who picks that up?`,
-    then: `Then: <b>"What time do you finish?"</b> → <b>"So what happens to the calls that come in after that?"</b> That is the sale. Let them answer it.`,
-  };
+  const urgent = URGENT[l.category] || "what you do";
+  return [
+    "Where would I go to see your work?",
+    "How would somebody get a price out of you without calling?",
+    `Someone needs ${urgent} and has never heard of you — where do they land?`,
+    "When you're mid-job and the phone rings out — who picks that up?",
+  ];
 }
 
 // ════════════════ DEMO ════════════════
@@ -41886,18 +41867,15 @@ function renderDial(){
 
       <div class="cname">${name?esc(name):ask?esc(ask)+"?":esc(l.business_name||"")}</div>
       ${(name||ask)?`<div class="cbiz">${esc(l.business_name||"")}</div>`:""}
-      <div class="cmeta">${esc(l.city||"")}${l.review_count?` · ★ ${l.rating??"–"} (${l.review_count})`:""} ·
+      <div class="cmeta">${esc(l.city||"")} · ★ ${l.rating??"–"} (${l.review_count??0}) ·
         ${shut?`<b style="color:var(--red)">closed today</b>`:win?`<b style="color:var(--green)">in window</b>`:`best ${esc((NICHE[l.category]||{}).best||"8–9am")}`}</div>
 
       ${warns.map(f=>`<div class="warn"><b>Before you dial:</b> ${esc(f.why)}</div>`).join("")}
       ${shut?`<div class="warn"><b>Closed today</b> per their listed hours — expect voicemail.</div>`:""}
 
-      ${numStrip(l)}
-
-      <div class="theask">
-        <div class="ol">${aeo?"Open with this":"Open with this — then stop talking"}</div>
-        <q>${esc(questions(l).ask)}</q>
-        <div class="then">${questions(l).then}</div>
+      <div class="asks">
+        <div class="ol">${aeo?"The call — competitor names are the whole thing":"Ask these — every answer is \"a website\""}</div>
+        <ol>${questions(l).map(q=>`<li>${esc(q)}</li>`).join("")}</ol>
       </div>
 
       <a class="callbtn" href="${telHref(l.phone)}" onclick="markCalled()">
@@ -41953,14 +41931,15 @@ function renderDial(){
         — clears when you text pricing or book.</div>`:""}
     </div>
 
-    ${aeo?aeoScript(l):(isHiring(l)?hiringScript(l):`<details class="script"><summary>If they push back — objections</summary><div class="prose">
-      <h3>"How much?"</h3><p>"$${PRICING.setup.toLocaleString()} to set up, $${PRICING.mo} a month — and the monthly doesn't start until it's booked you 15 jobs. If it never books 15, you never pay it."</p>
-      <h3>"I don't miss calls"</h3><p>"Then this takes two minutes to prove wrong. Can I call your main line right now while we're talking?"</p>
-      <h3>"All my work is referrals"</h3><p>"Good — this doesn't replace referrals. It catches the referral who called while you were under a truck and got voicemail."</p>
-      <h3>"Send me an email"</h3><p>"What's the best email? I'll have it to you in 5 minutes." Then actually send it in 5 minutes.</p>
-      <h3>"I'm slammed"</h3><p>"That's the point — slammed is exactly when the phone rings out."</p>
-      <h3>"Not interested"</h3><p>"Fair enough — is it the cost, the timing, or just not a priority?"</p>
-      <h3>Voicemail — under 20s, then text immediately</h3><p>"Hey ${name||ask?esc(name||ask):"[name]"}, Chase from RecoverRevenue. I put in a system that texts back every call ${esc(l.business_name||"")} misses, in 60 seconds. Texting you now so you've got my number."</p>
+    ${aeo?aeoScript(l):(isHiring(l)?hiringScript(l):`<details class="script"><summary>Script &amp; objections</summary><div class="prose">
+      <h3>Bridge</h3><p>"Reason I'm calling — I build systems for ${esc(nlabel(l.category).toLowerCase())} businesses that text back every missed call in 60 seconds, so the job doesn't go to the next ${esc((NICHE[l.category]||{}).noun||"guy")}. When you're mid-job and the phone rings out, that money walks."</p>
+      <h3>The ask</h3><p>"Takes 15 minutes to walk you through it. Worth a look?"</p>
+      <h3>"How much?"</h3><p>"$${PRICING.setup.toLocaleString()} to set it up, $${PRICING.mo} a month after — and the monthly doesn't start until it's booked you 15 jobs. If it never books 15, you never pay the monthly."</p>
+      <h3>"Not interested"</h3><p>"Fair enough. Can I ask — is it the cost, the timing, or just not a priority right now?"</p>
+      <h3>"All my work is referrals"</h3><p>"That's great — it means people trust you. This doesn't replace referrals. It catches the referral who called while you were under a truck and got voicemail."</p>
+      <h3>"Send me an email"</h3><p>"I can do that — what's the best email? I'll have it to you in 5 minutes." Then actually send it in 5 minutes.</p>
+      <h3>"I'm slammed"</h3><p>"That's the whole point — when you're slammed is exactly when the phone rings out. I'll text you the short version, look tonight."</p>
+      <h3>Voicemail — under 25s, then text immediately</h3><p>"Hey ${name||ask?esc(name||ask):"[name]"}, Chase from RecoverRevenue. I put in a system that texts back every call ${esc(l.business_name||"")} misses, in 60 seconds. Sending you a text right now so you've got my number."</p>
     </div></details>`)}
   </div>`;
 
@@ -41992,49 +41971,23 @@ function demoBox(l,url){
 // The hiring lane has no demo either. What it has is the job ad — the business saying,
 // in public and with a salary attached, that its phone is not being answered. The card
 // shows the posting and its URL so nothing said on the phone outruns the evidence.
-// Three numbers, all sourced: what they published, what we cost, what is left over.
-// Nothing estimated goes in this strip — the estimate lives behind the meta details.
-function numStrip(l){
-  const y1 = PRICING.setup + PRICING.mo*12;
-  if(isHiring(l)){
-    const pay = payOf(l);
-    const m = (l.source||"").match(/(\d{4})-(\d{2})-(\d{2})/);
-    let age = "";
-    if(m){
-      const d = Math.round((Date.now()-new Date(+m[1],+m[2]-1,+m[3]).getTime())/864e5);
-      age = d<=0?"today":d===1?"1 day":d+" days";
-    }
-    if(!pay) return `<div class="numstrip">
-      <div><b>$${PRICING.setup.toLocaleString()}</b><i>setup</i></div>
-      <div><b>$${PRICING.mo}</b><i>per month</i></div>
-      <div><b>${age||"—"}</b><i>ad has been up</i></div></div>`;
-    return `<div class="numstrip">
-      <div><b>$${pay.toLocaleString()}</b><i>salary posted</i></div>
-      <div><b>$${y1.toLocaleString()}</b><i>us, year one</i></div>
-      <div class="good"><b>$${(pay-y1).toLocaleString()}</b><i>left over</i></div></div>`;
-  }
-  if(isAeo(l)) return "";
-  return `<div class="numstrip">
-    <div><b>$${PRICING.setup.toLocaleString()}</b><i>setup</i></div>
-    <div><b>$${PRICING.mo}</b><i>per month</i></div>
-    <div class="good"><b>15</b><i>jobs before it bills</i></div></div>`;
-}
-
 function hiringScript(l){
   const pay=payOf(l), role=esc(l.posted_role||"front desk"), y1=PRICING.setup+PRICING.mo*12;
-  return `<details class="script"><summary>If they push back — objections</summary><div class="prose">
+  return `<details class="script" open><summary>Script &amp; objections — hiring lane</summary><div class="prose">
+    <h3>Open</h3><p>"Hey — is this the owner of ${esc(l.business_name||"")}?"</p>
+    <h3>Bridge — say the evidence, don't dress it up</h3>
+    <p>"Reason I'm calling: I saw you're hiring a ${role}. ${pay?`Looks like about $${pay.toLocaleString()} a year. `:""}Before you fill it — how many calls are going to voicemail right now?"</p>
+    <p><i>Then stop talking. The number they say is the whole call.</i></p>
+    <h3>The turn</h3><p>"So here's what I do. Every call you miss gets a text back in 60 seconds — 'sorry we missed you, what do you need?' — and it books them in. It doesn't replace the hire. It covers lunch, after 5, and the twelve calls that came in while they were on the other line."</p>
+    <h3>The ask</h3><p>"Fifteen minutes and I'll show you what happens to the calls you miss today. Worth it?"</p>
     <h3>"How much?"</h3>
-    <p>"$${PRICING.setup.toLocaleString()} to set up, $${PRICING.mo} a month — and the monthly doesn't start until it's booked you 15 jobs."${pay?` <b>$${y1.toLocaleString()} year one against the $${pay.toLocaleString()} you're about to pay for the seat.</b>`:""}</p>
-    <h3>"We're hiring someone for that"</h3>
-    <p>"You should. This isn't instead of them. One person answers one call at a time, eight hours a day. Your phone rings twenty-four."</p>
-    <h3>"We don't miss calls"</h3>
-    <p>"Then this takes two minutes to prove wrong. Can I call your main line right now while we're talking?"</p>
-    <h3>"Send me an email"</h3>
-    <p>"What's the best email? I'll have it to you in 5 minutes." Then actually send it in 5 minutes.</p>
-    <h3>"Not interested"</h3>
-    <p>"Fair enough — is it the cost, the timing, or just not a priority?"</p>
-    <h3>Voicemail — under 20s, then text immediately</h3>
-    <p>"Hey, Chase from RecoverRevenue. Saw you're hiring a ${role} — I handle the calls that ring out before anyone can pick up. Texting you now so you've got my number."</p>
+    <p>"$${PRICING.setup.toLocaleString()} to set up, $${PRICING.mo} a month after — and the monthly doesn't start until it has booked you 15 jobs. If it never books 15, you never pay the monthly."${pay?` <b>Year one is $${y1.toLocaleString()} against the $${pay.toLocaleString()} you're about to spend on the seat.</b>`:""}</p>
+    <h3>"We're hiring someone for that"</h3><p>"Good — you should. This isn't instead of them. One person answers one call at a time, eight hours a day. Your phone rings twenty-four. I'm covering the other sixteen and the second line."</p>
+    <h3>"We don't miss calls"</h3><p>"Then this takes me two minutes to prove wrong and I'll leave you alone. Can I call your main line right now while we're talking?"</p>
+    <h3>"Send me an email"</h3><p>"I can do that — what's the best email? I'll have it to you in 5 minutes." Then actually send it in 5 minutes.</p>
+    <h3>"Not interested"</h3><p>"Fair enough. Can I ask — is it the cost, the timing, or just not a priority right now?"</p>
+    <h3>Voicemail — under 25s, then text immediately</h3>
+    <p>"Hey, Chase from RecoverRevenue. Saw ${esc(l.business_name||"")} is hiring a ${role} — I handle the calls that ring out before anyone can pick up. Sending a text now so you've got my number."</p>
   </div></details>`;
 }
 
