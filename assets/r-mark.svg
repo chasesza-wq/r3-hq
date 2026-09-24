@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 76" width="70" height="76" role="img" aria-label="RecoverRevenue">
+  <!-- The R (agency/dashboard/assets/rr-mark.svg), light-ground variant: the bowl goes ink
+       instead of white so it reads on paper. Blue leg unchanged. -->
+  <path fill="#0E1726" d="M1,6 H47 C57,6 62,13 62,22 C62,31 58,38 51,43.5 L48,45.5 L44,43 L36,30 H46 V19.5 H10 Z"/>
+  <path fill="#0A84FF" d="M3,30 H35 L65,70 H46 L17.5,31 V69 H17 L3,56 Z"/>
+</svg>

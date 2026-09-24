@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Missed-Call Demo — RecoverRevenue</title>
+<meta name="description" content="Call our demo line, let it ring out, and watch what your callers would get: a text back in seconds that books them in.">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="/assets/r-mark.svg">
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,700,800&f[]=satoshi@400,500,700&display=swap">
+<style>
+/* recoverrevenue.co house tokens (index.html :root), plus the R's blue for the live bits. */
+:root{
+  --paper:#f4f7fc; --surface:#fdfdff; --ink:#0e1726; --muted:#5c6a80;
+  --accent:#17419b; --accent-deep:#102e70; --accent-light:#eef4ff; --rblue:#0A84FF;
+  --line:rgba(14,23,38,.09); --line-soft:rgba(14,23,38,.055); --pos:#12b866; --sms:#34C759;
+  --display:'Cabinet Grotesk','Helvetica Neue',Helvetica,Arial,sans-serif;
+  --body:'Satoshi','Helvetica Neue',Helvetica,Arial,sans-serif;
+  --r:18px; --e:cubic-bezier(.22,.61,.25,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font:16px/1.55 var(--body);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.022em;line-height:1.08}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:20;background:rgba(244,247,252,.86);backdrop-filter:saturate(1.4) blur(10px);
+  -webkit-backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--line-soft)}
+.nav .wrap{display:flex;align-items:center;gap:12px;height:64px}
+.brand{display:flex;align-items:center;gap:9px;text-decoration:none;font-family:var(--display);font-weight:800;font-size:1.1rem;letter-spacing:-.02em}
+.brand img{width:22px;height:24px}
+.brand b{color:var(--accent);font-weight:800}
+.nav .for{margin-left:14px;padding-left:14px;border-left:1px solid var(--line);color:var(--muted);font-size:.92rem}
+.nav .for strong{color:var(--ink);font-weight:500}
+.nav .cta{margin-left:auto}
+.btn{display:inline-flex;align-items:center;gap:9px;border-radius:999px;padding:12px 20px;font:500 .95rem var(--body);
+  text-decoration:none;border:1px solid transparent;cursor:pointer;transition:transform .15s var(--e),background .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.p{background:var(--accent);color:#fff}
+.btn.p:hover{background:var(--accent-deep)}
+.btn.g{background:var(--surface);border-color:var(--line);color:var(--ink)}
+.nav .btn{padding:9px 16px;font-size:.9rem}
+
+/* hero */
+.hero{padding:72px 0 40px;display:grid;grid-template-columns:1fr auto;gap:48px;align-items:center}
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:.82rem;font-weight:500;color:var(--accent);
+  background:var(--accent-light);border:1px solid rgba(23,65,155,.14);padding:5px 12px;border-radius:999px}
+.kicker i{width:7px;height:7px;border-radius:50%;background:var(--pos);box-shadow:0 0 0 0 rgba(18,184,102,.5);animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 8px rgba(18,184,102,0)}100%{box-shadow:0 0 0 0 rgba(18,184,102,0)}}
+.hero h1{font-size:clamp(2.4rem,4.6vw,3.7rem);margin:18px 0 18px}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero p.lede{font-size:1.14rem;color:var(--muted);max-width:34ch}
+
+/* the live line */
+.live{margin-top:30px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px 24px;
+  box-shadow:0 1px 0 rgba(14,23,38,.03),0 18px 40px -24px rgba(23,65,155,.28)}
+.live .lab{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.live .num{display:block;font-family:var(--display);font-weight:800;font-size:2.3rem;letter-spacing:-.01em;margin:6px 0 4px;
+  color:var(--ink);text-decoration:none}
+.live .num:hover{color:var(--accent)}
+.live ol{list-style:none;display:flex;gap:18px;flex-wrap:wrap;color:var(--muted);font-size:.92rem;margin-top:8px}
+.live ol li{display:flex;gap:7px;align-items:center}
+.live ol b{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--accent-light);
+  color:var(--accent);font-size:.75rem;font-weight:700}
+
+/* phone */
+.stage{position:relative;display:flex;justify-content:center;align-items:flex-start;gap:18px}
+.phone{width:330px;height:660px;border-radius:52px;background:#0b0f18;padding:12px;
+  box-shadow:0 40px 80px -30px rgba(14,23,38,.45),0 0 0 1px rgba(14,23,38,.2)}
+.screen{position:relative;height:100%;border-radius:41px;background:#fff;overflow:hidden;display:flex;flex-direction:column}
+.notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:108px;height:30px;border-radius:20px;background:#0b0f18;z-index:3}
+.sbar{height:48px;display:flex;justify-content:space-between;align-items:flex-end;padding:0 28px 6px;font:600 .8rem var(--body)}
+.thead{text-align:center;padding:8px 0 10px;border-bottom:1px solid #eef0f4}
+.thead .av{width:42px;height:42px;border-radius:50%;margin:0 auto 4px;display:grid;place-items:center;
+  background:linear-gradient(#a7b0bf,#8a93a3);color:#fff;font:600 1rem var(--body)}
+.thead .who{font-size:.78rem;font-weight:500}
+.thread{flex:1;padding:14px 12px;display:flex;flex-direction:column;gap:6px;overflow:hidden}
+.b{max-width:78%;padding:8px 12px;border-radius:18px;font-size:.86rem;line-height:1.35;opacity:0;transform:translateY(8px) scale(.98);
+  transition:opacity .35s var(--e),transform .35s var(--e)}
+.b.in{align-self:flex-start;background:#e9e9eb;color:#111}
+.b.out{align-self:flex-end;background:var(--sms);color:#fff}
+.b.show{opacity:1;transform:none}
+.meta{align-self:center;font-size:.68rem;color:#8a8f98;margin:4px 0;opacity:0;transition:opacity .3s}
+.meta.show{opacity:1}
+.typing{align-self:flex-start;background:#e9e9eb;border-radius:18px;padding:10px 12px;display:none;gap:4px}
+.typing.show{display:flex}
+.typing i{width:6px;height:6px;border-radius:50%;background:#9a9aa0;animation:dot 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes dot{50%{opacity:.3;transform:translateY(-2px)}}
+.callov{position:absolute;inset:0;background:linear-gradient(#26324a,#0e1726);color:#fff;z-index:2;display:flex;flex-direction:column;
+  align-items:center;padding-top:110px;transition:opacity .5s var(--e)}
+.callov.gone{opacity:0;pointer-events:none}
+.callov .cl{font-size:.85rem;opacity:.7}
+.callov .cn{font:700 1.5rem var(--display);margin:6px 0 4px;text-align:center;padding:0 20px}
+.callov .cs{font-size:.9rem;opacity:.8}
+.callov .miss{margin-top:auto;margin-bottom:90px;font-size:.85rem;background:rgba(229,83,75,.18);border:1px solid rgba(229,83,75,.4);
+  color:#ffb3ae;padding:8px 14px;border-radius:999px;opacity:0;transition:opacity .3s}
+.callov .miss.show{opacity:1}
+
+/* side log (what the front desk sees) */
+.log{flex-shrink:0;margin-top:70px;width:210px;background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  padding:14px 16px;box-shadow:0 20px 40px -24px rgba(14,23,38,.35);font-size:.8rem}
+.log h4{font:500 .72rem var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.log div[data-k]{display:flex;gap:8px;padding:5px 0;border-top:1px solid var(--line-soft);opacity:.28;transition:opacity .3s}
+.log div[data-k].on{opacity:1}
+.log div span:last-child{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--muted)}
+.log i{width:7px;height:7px;border-radius:50%;margin-top:6px;flex-shrink:0;background:var(--accent)}
+.log .t{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-weight:500}
+.log .t{color:var(--muted);font-size:.78rem}
+.log .t b{margin-top:2px;font-family:var(--display);font-size:1.3rem;color:var(--pos);display:block}
+.ctrls{display:flex;justify-content:center;gap:8px;margin-top:18px;flex-wrap:wrap}
+.seg{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px}
+.seg button{border:0;background:none;padding:7px 14px;border-radius:999px;font:500 .85rem var(--body);color:var(--muted);cursor:pointer}
+.seg button.on{background:var(--ink);color:#fff}
+.replay{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;font:500 .85rem var(--body);cursor:pointer}
+
+/* sections */
+section.s{padding:84px 0;border-top:1px solid var(--line-soft)}
+.sh{max-width:640px;margin-bottom:40px}
+.sh .ey{font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:500}
+.sh h2{font-size:clamp(1.9rem,3.4vw,2.6rem);margin:10px 0 12px}
+.sh p{color:var(--muted);font-size:1.06rem}
+
+/* math */
+.math{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:26px}
+.field{margin-bottom:20px}
+.field label{display:flex;justify-content:space-between;font-weight:500;font-size:.95rem;margin-bottom:10px}
+.field label output{font-family:var(--display);font-weight:700;color:var(--accent);font-size:1.1rem}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.field small{display:block;color:var(--muted);font-size:.82rem;margin-top:6px}
+.res{background:var(--ink);color:#fff;border-color:var(--ink);display:flex;flex-direction:column}
+.res .l{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;opacity:.6}
+.res .big{font:800 clamp(2.6rem,5vw,3.6rem)/1 var(--display);letter-spacing:-.02em;margin:10px 0 6px}
+.res .big small{font-size:1rem;font-weight:500;opacity:.6}
+.res .yr{opacity:.7}
+.res .work{margin-top:auto;padding-top:22px;border-top:1px solid rgba(255,255,255,.12);font-size:.92rem;opacity:.85;line-height:1.6}
+.res .work b{color:#8ec5ff;font-weight:500}
+
+/* services */
+.svc{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.svc .card h3{font-size:1.2rem;margin:14px 0 8px}
+.svc .card p{color:var(--muted);font-size:.95rem}
+.ico{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--accent-light);color:var(--accent)}
+.svc .quote{margin-top:14px;font-size:.84rem;background:#e9e9eb;border-radius:14px;padding:8px 11px;color:#222;display:inline-block}
+
+/* timeline */
+.tl{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;counter-reset:d}
+.tl .card{position:relative}
+.tl .d{font:700 .8rem var(--body);color:var(--accent);letter-spacing:.06em;text-transform:uppercase}
+.tl h3{font-size:1.1rem;margin:8px 0 6px}
+.tl p{color:var(--muted);font-size:.92rem}
+
+/* faq */
+.faq{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+details{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+summary{cursor:pointer;font-weight:500;list-style:none;display:flex;justify-content:space-between;gap:10px}
+summary::after{content:"+";color:var(--accent);font-weight:700}
+details[open] summary::after{content:"−"}
+details p{margin-top:10px;color:var(--muted);font-size:.95rem}
+
+/* close */
+.close{background:var(--ink);color:#fff;border-radius:28px;padding:56px;display:grid;grid-template-columns:1.3fr 1fr;gap:40px;align-items:center;margin:84px auto}
+.close h2{font-size:clamp(1.9rem,3.4vw,2.6rem)}
+.close p{opacity:.72;margin-top:12px}
+.close .btn.p{background:#fff;color:var(--ink)}
+.close .btn.g{background:transparent;border-color:rgba(255,255,255,.25);color:#fff}
+.close .acts{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+footer{padding:28px 0 48px;color:var(--muted);font-size:.85rem;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+@media (max-width:920px){
+  .hero,.math,.close{grid-template-columns:minmax(0,1fr)}
+  .svc,.tl,.faq{grid-template-columns:1fr}
+  .log{display:none}
+  .nav .for{display:none}
+  .close{padding:36px 24px}
+  .nav .btn{padding:8px 12px;font-size:.84rem}
+  .live .num{font-size:1.9rem}
+}
+@media (max-width:420px){
+  .phone{width:292px;height:600px;border-radius:46px}
+  .screen{border-radius:36px}
+  .seg button{padding:7px 10px}
+}
+@media (prefers-reduced-motion:reduce){ .b,.meta,.callov{transition:none} .kicker i{animation:none} }
+</style>
+</head>
+<body>
+<header class="nav"><div class="wrap">
+  <a class="brand" href="/"><img src="/assets/r-mark.svg" alt=""><span>Recover<b>Revenue</b></span></a>
+  <span class="for" id="for">Live demo</span>
+  <a class="btn p cta" href="/book" data-cta>Book 15 minutes</a>
+</div></header>
+
+<main class="wrap">
+  <div class="hero">
+    <div>
+      <span class="kicker"><i></i><span id="kick">Live demo</span></span>
+      <h1 id="h1">Every call you miss gets a text back <em>in 15 seconds.</em></h1>
+      <p class="lede" id="lede">The caller who hits voicemail doesn't leave a message. They call the next office. This texts them before they do, and books them in.</p>
+      <div class="live">
+        <div class="lab">Try it on your own phone, right now</div>
+        <a class="num" href="tel:+17276106122">(727) 610-6122</a>
+        <ol><li><b>1</b>Call from your cell</li><li><b>2</b>Let it ring out</li><li><b>3</b>Watch your texts</li></ol>
+      </div>
+    </div>
+
+    <div>
+      <div class="stage">
+        <div class="phone" aria-label="Demo: a missed call turning into a booked appointment">
+          <div class="screen">
+            <div class="notch"></div>
+            <div class="sbar"><span id="clock">9:41</span><span>5G ▮▮▮</span></div>
+            <div class="callov" id="callov">
+              <div class="cl">calling…</div>
+              <div class="cn" id="calln">Your Practice</div>
+              <div class="cs" id="calls">ringing</div>
+              <div class="miss" id="miss">No answer: front desk is with a patient</div>
+            </div>
+            <div class="thead"><div class="av" id="av">Y</div><div class="who" id="who">Your Practice</div></div>
+            <div class="thread" id="thread"></div>
+          </div>
+        </div>
+        <aside class="log" aria-label="What your front desk sees">
+          <h4>What you see</h4>
+          <div data-k="0"><i></i><span>Missed call</span><span id="t0"></span></div>
+          <div data-k="1"><i></i><span>Text sent</span><span id="t1"></span></div>
+          <div data-k="2"><i></i><span>They replied</span><span id="t2"></span></div>
+          <div data-k="3"><i style="background:var(--pos)"></i><span>Booked</span><span id="t3"></span></div>
+          <div class="t">Missed call to booked<b id="tt">—</b></div>
+        </aside>
+      </div>
+      <div class="ctrls">
+        <div class="seg" id="seg" role="tablist" aria-label="Business type">
+          <button data-n="dental">Dental</button><button data-n="medical">Medical</button><button data-n="home">Home services</button>
+        </div>
+        <button class="replay" id="replay">↻ Replay</button>
+      </div>
+    </div>
+  </div>
+
+  <section class="s" id="math">
+    <div class="sh"><div class="ey">The math</div><h2>What the phone is costing <span id="mathwho">you</span>.</h2>
+      <p>Your numbers, not ours. Slide them to what's true at your front desk.</p></div>
+    <div class="math">
+      <div class="card">
+        <div class="field"><label for="mw"><span>Calls that ring out, per week</span> <output id="mwo">10</output></label>
+          <input type="range" id="mw" min="1" max="60" value="10"><small>Busy mornings, lunch, after close. Most offices guess low.</small></div>
+        <div class="field"><label for="nw"><span>Of those, new <span class="nn">patients</span></span> <output id="nwo">33%</output></label>
+          <input type="range" id="nw" min="5" max="80" value="33"><small>The rest are existing <span class="nn">patients</span> who'll call back.</small></div>
+        <div class="field" style="margin:0"><label for="vv"><span>What a new <span class="n1">patient</span> is worth</span> <output id="vvo">$800</output></label>
+          <input type="range" id="vv" min="100" max="5000" step="50" value="800"><small>First-year value, not one visit.</small></div>
+      </div>
+      <div class="card res" aria-live="polite">
+        <div class="l">Walking out the door</div>
+        <div class="big" id="leak">$0<small>/mo</small></div>
+        <div class="yr" id="leakyr"></div>
+        <div class="work" id="work"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="s" id="what">
+    <div class="sh"><div class="ey">What it does</div><h2>Texting that answers the phone for you.</h2>
+      <p>No app to learn, no new phone number. It sits behind the line you already have.</p></div>
+    <div class="svc">
+      <div class="card"><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/><path d="M16 3l5 5M21 3l-5 5"/></svg></div>
+        <h3>Missed-call text-back</h3><p>A call rings out and a text goes back within 60 seconds, in your office's voice. It asks what they need and offers real openings.</p>
+        <div class="quote" id="q1">Sorry we missed you! Are you a new or existing patient?</div></div>
+      <div class="card"><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+        <h3>After-hours booking</h3><p>The 7 PM caller doesn't wait until morning. They get the text, pick a time, and are on tomorrow's schedule before you open.</p>
+        <div class="quote">We're closed, but I can book you. Thu 9:30 or Fri 2:15?</div></div>
+      <div class="card"><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M8 14l2.5 2.5L16 12"/></svg></div>
+        <h3>Reminders and no-show rebooking</h3><p>Confirmation by text, a reminder the day before, and a same-day rebook when someone doesn't show. Every thread lands in one inbox your desk can read.</p>
+        <div class="quote">Reminder: tomorrow 9:30 AM. Reply C to confirm.</div></div>
+    </div>
+  </section>
+
+  <section class="s" id="live">
+    <div class="sh"><div class="ey">Going live</div><h2>Running in a week. You don't touch the tech.</h2></div>
+    <div class="tl">
+      <div class="card"><div class="d">Day 1</div><h3>Intake</h3><p>Your hours, services, and how you want the texts to sound. One form, about 15 minutes.</p></div>
+      <div class="card"><div class="d">Day 3</div><h3>Built</h3><p>Your text-back is written in your office's voice and connected behind your number.</p></div>
+      <div class="card"><div class="d">Day 5</div><h3>Test together</h3><p>We call your line and let it ring out, and you watch the text land on your own phone.</p></div>
+      <div class="card"><div class="d">Day 7</div><h3>Live</h3><p>Every missed call from then on gets a text. At two weeks we look at the numbers together.</p></div>
+    </div>
+  </section>
+
+  <section class="s" id="faq">
+    <div class="sh"><div class="ey">Questions</div><h2>What people ask before they start.</h2></div>
+    <div class="faq">
+      <details><summary>Does this replace my front desk?</summary><p>No. It catches the calls your front desk can't get to: during check-in, at lunch, after close. They still take every call they can.</p></details>
+      <details><summary>What number does the text come from?</summary><p>A local business number registered for your office, set up behind the line you already publish. Patients keep calling the number they know.</p></details>
+      <details><summary>What goes in the texts?</summary><p>Scheduling only: who you are, what they need, and open times. No medical details go over text.</p></details>
+      <details><summary>What if someone doesn't want texts?</summary><p>Every thread honors STOP. One reply and they're off the list for good.</p></details>
+      <details><summary>What does it cost?</summary><p>One setup fee, then a monthly that doesn't start until it's booked you 15 new appointments. We'll go through the exact numbers on the call.</p></details>
+      <details><summary>How fast can it be live?</summary><p>About a week from the intake form. You'll test it on your own phone before it goes live.</p></details>
+    </div>
+  </section>
+
+  <div class="close" data-cta-block>
+    <div><h2 id="closeh">See it on your own numbers.</h2>
+      <p>15 minutes. We'll run your missed calls through the math above and show you exactly what your callers would get.</p></div>
+    <div class="acts"><a class="btn p" href="/book">Book 15 minutes →</a>
+      <a class="btn g" href="tel:+17276106122">Or call the demo line again</a></div>
+  </div>
+</main>
+<div class="wrap"><footer><span>© RecoverRevenue</span><span><a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></span></footer></div>
+
+<script>
+// ?biz=Serene+Surgical&niche=dental|medical|home&call=1
+// call=1 hides the booking CTAs: Tim's rule for a demo you share on a closing call.
+const P=new URLSearchParams(location.search);
+const BIZ=(P.get("biz")||"").trim();
+let niche=["dental","medical","home"].includes(P.get("niche"))?P.get("niche"):"dental";
+if(P.get("call")==="1") document.querySelectorAll("[data-cta],[data-cta-block]").forEach(e=>e.remove());
+const $=id=>document.getElementById(id);
+
+const N={
+  dental:{who:BIZ||"Bright Smile Dental",cust:"patient",value:800,thread:[
+    ["in","Hi, this is {who}. Sorry we missed your call, we're with a patient. Are you a new or existing patient, and what can we help with?"],
+    ["out","New patient. I chipped a tooth, can I get in this week?"],
+    ["in","So sorry about the tooth! We have Thu 9:30 AM or Fri 2:15 PM open. Which works better?"],
+    ["out","Thursday 9:30"],
+    ["in","You're booked: Thu 9:30 AM. Reply C to confirm and we'll text a reminder the day before."]]},
+  medical:{who:BIZ||"Family Care Clinic",cust:"patient",value:600,thread:[
+    ["in","Hi, this is {who}. Sorry we missed you, we're helping a patient at the desk. Is this about a new appointment, a refill, or something else?"],
+    ["out","New appointment. My son needs a school physical"],
+    ["in","We can see him Tue 3:40 PM or Wed 10:10 AM. Which works?"],
+    ["out","Wed works"],
+    ["in","Booked: Wed 10:10 AM. Bring his insurance card. Reply C to confirm."]]},
+  home:{who:BIZ||"Coastal Air & Plumbing",cust:"customer",value:450,thread:[
+    ["in","Hey, it's {who}. Sorry we missed you, the crew's on a job. What's going on?"],
+    ["out","AC is blowing warm air"],
+    ["in","Got it. We can have a tech out today 4–6 PM or tomorrow 8–10 AM. Which works?"],
+    ["out","Today please"],
+    ["in","Booked: today 4–6 PM. Your tech will text when he's on the way."]]},
+};
+
+// ── the phone ──
+let timers=[];
+function clear(){ timers.forEach(clearTimeout); timers=[]; }
+function at(ms,fn){ timers.push(setTimeout(fn,ms)); }
+function stamp(base,addSec){ const d=new Date(base.getTime()+addSec*1000); return d.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit",second:addSec<60?"2-digit":undefined}); }
+function play(){
+  clear(); const n=N[niche], who=n.who, th=$("thread");
+  th.innerHTML=""; $("who").textContent=who; $("calln").textContent=who; $("av").textContent=who[0].toUpperCase();
+  $("calls").textContent="ringing"; $("miss").classList.remove("show"); $("callov").classList.remove("gone");
+  document.querySelectorAll(".log div[data-k]").forEach(d=>d.classList.remove("on"));
+  ["t0","t1","t2","t3"].forEach(i=>$(i).textContent=""); $("tt").textContent="—";
+  const base=new Date(); base.setHours(10,42,0,0);
+  const logOn=(k,sec)=>{ const d=document.querySelector(`.log div[data-k="${k}"]`); d.classList.add("on"); $("t"+k).textContent=stamp(base,sec); };
+  let t=0;
+  at(t+=2400,()=>{ $("calls").textContent="no answer"; $("miss").classList.add("show"); logOn(0,0); });
+  at(t+=1800,()=>{ $("callov").classList.add("gone"); const m=document.createElement("div"); m.className="meta"; m.textContent="15 seconds later"; th.appendChild(m); requestAnimationFrame(()=>m.classList.add("show")); });
+  // times that go into the side log, in seconds after the missed call
+  const secs=[15,70,95,130,150];
+  n.thread.forEach(([dir,txt],i)=>{
+    if(dir==="in"&&i>0){ at(t+=700,()=>{ const ty=document.createElement("div"); ty.className="typing show"; ty.innerHTML="<i></i><i></i><i></i>"; ty.id="ty"; th.appendChild(ty); }); }
+    at(t+=(i===0?900:dir==="in"?1300:1700),()=>{
+      const ty=$("ty"); if(ty) ty.remove();
+      const b=document.createElement("div"); b.className="b "+dir; b.textContent=txt.replace("{who}",who); th.appendChild(b);
+      requestAnimationFrame(()=>b.classList.add("show"));
+      if(i===0) logOn(1,secs[0]); if(i===1) logOn(2,secs[1]);
+      if(i===n.thread.length-1){ logOn(3,secs[4]); $("tt").textContent="2 min 30 sec"; }
+    });
+  });
+}
+function setNiche(k){
+  niche=k; document.querySelectorAll("#seg button").forEach(b=>b.classList.toggle("on",b.dataset.n===k));
+  const n=N[k];
+  document.querySelectorAll(".nn").forEach(e=>e.textContent=n.cust+"s");
+  document.querySelectorAll(".n1").forEach(e=>e.textContent=n.cust);
+  $("q1").textContent=k==="home"?"Sorry we missed you! What's going on?":"Sorry we missed you! Are you a new or existing patient?";
+  if(!P.get("v")) { $("vv").value=n.value; }
+  play(); calc();
+}
+$("seg").addEventListener("click",e=>{ if(e.target.dataset.n) setNiche(e.target.dataset.n); });
+$("replay").addEventListener("click",play);
+
+// ── the math ──
+// leak/mo = missed per week × 4.3 × share that are new × value. Shown in the open, below the number.
+function calc(){
+  const mw=+$("mw").value, nw=+$("nw").value/100, vv=+$("vv").value, cust=N[niche].cust;
+  $("mwo").textContent=mw; $("nwo").textContent=Math.round(nw*100)+"%"; $("vvo").textContent="$"+vv.toLocaleString();
+  const newMo=mw*4.3*nw, mo=Math.round(newMo*vv);
+  $("leak").innerHTML="$"+mo.toLocaleString()+"<small>/mo</small>";
+  $("leakyr").textContent="$"+(mo*12).toLocaleString()+" a year";
+  const save=Math.max(1,Math.round(newMo*0.3));
+  $("work").innerHTML=`${mw} missed a week × 4.3 weeks × ${Math.round(nw*100)}% new = <b>${newMo.toFixed(1)} new ${cust}s a month</b> reaching voicemail.<br>If the text wins back even 3 in 10 of them, that's <b>${save} ${cust}${save===1?"":"s"}</b> and <b>$${Math.round(save*vv).toLocaleString()}</b> a month.`;
+}
+["mw","nw","vv"].forEach(i=>$(i).addEventListener("input",calc));
+
+// ── personalize ──
+if(BIZ){
+  $("for").innerHTML=`Prepared for <strong>${BIZ.replace(/[<>&]/g,"")}</strong>`;
+  $("kick").textContent="Built for "+BIZ;
+  $("mathwho").textContent=BIZ;
+  document.title=BIZ+" · Missed-Call Demo";
+}
+setNiche(niche);
+// replay when the phone scrolls back into view
+new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting&&e.intersectionRatio>.6&&!timers.length) play(); }),{threshold:.6}).observe(document.querySelector(".phone"));
+setInterval(()=>{ const d=new Date(); $("clock").textContent=d.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"}).replace(/\s?[AP]M/,""); },10000);
+</script>
+</body>
+</html>
