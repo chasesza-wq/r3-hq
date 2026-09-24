@@ -197,6 +197,46 @@
   .callbtn svg{width:19px;height:19px;stroke:#fff;stroke-width:2.1;fill:none}
   .callbtn small{display:block;font-size:11.5px;opacity:.82;font-weight:600;letter-spacing:.02em;margin-top:1px}
 
+  .theask .why{display:block;margin-top:7px;font-size:11.5px;color:var(--dim);font-weight:500}
+  /* Smaller cards (Chase, 2026-09-24): the card was a poster. Same content, tighter. */
+  .card{padding:12px 13px 13px;border-radius:17px}
+  .cname{font-size:19px;margin:7px 0 2px}
+  .cbiz{font-size:13px}
+  .cmeta{font-size:11.5px;margin-top:3px}
+  .found{margin-top:8px;padding:8px 10px;font-size:11.5px}
+  .theask{margin-top:9px;padding:10px 11px 9px}
+  .theask .ol{margin-bottom:5px}
+  .theask q{font-size:14px}
+  .theask .then{margin-top:7px;padding-top:7px;font-size:12px}
+  .callbtn{margin-top:10px;padding:10px;border-radius:13px;font-size:15px}
+  .sec{margin-top:13px}
+  .seclab{margin-bottom:6px}
+  .dbtn{padding:9px 2px;border-radius:10px}
+  .lhead{padding:8px 11px;gap:9px}
+  .lhead .lnum{font-size:14px}
+  .lrow{border-radius:11px;margin-bottom:5px}
+
+  /* ── DESKTOP. Every lead on the left, the clicked one on the right: who, the opening
+     line, call, text. Nothing else competes for the eye while the phone is ringing. */
+  .split{display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:18px;align-items:start}
+  .split .llist{max-height:calc(100vh - 210px);overflow-y:auto;padding-right:4px}
+  .split .lrow.sel{border-color:var(--teal);box-shadow:0 0 0 1px var(--teal)}
+  .pane{position:sticky;top:0;background:var(--bg);border:1px solid var(--line);border-radius:17px;
+    padding:18px 20px;max-height:calc(100vh - 210px);overflow-y:auto}
+  .pane .cname{font-size:22px;margin-top:0}
+  .pane .theask q{font-size:17px}
+  .pane .row2{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-top:10px}
+  .pane .row2 a,.pane .row2 button{padding:10px 6px;border-radius:11px;background:var(--bg2);
+    border:1px solid var(--line);font-size:12.5px;font-weight:700;text-align:center;cursor:pointer}
+  .pane .txt{margin-top:6px;font-size:12px;line-height:1.45;color:var(--dim);background:var(--bg2);
+    border-radius:10px;padding:8px 10px}
+  @media (min-width:1000px){
+    body{padding:16px}
+    .device{max-width:1280px;height:calc(100vh - 32px);max-height:none;border-radius:22px;
+      box-shadow:0 20px 60px rgba(0,0,0,.18)}
+    main{padding:0 24px 96px}
+  }
+
   /* ── outcome ──────────────────────────────────────────── */
   .sec{margin-top:20px}
   .seclab{font-size:9.5px;letter-spacing:.17em;text-transform:uppercase;color:var(--dim);font-weight:750;margin-bottom:9px}
@@ -446,7 +486,7 @@
   <!-- ── settings ─────────────────────────────────────── -->
   <div class="sheet" id="sheet">
     <div class="grab"></div>
-    <h2 id="sheetRep">Chase</h2>
+    <h2 id="sheetRep">Garrett</h2>
     <div class="sub">RecoverRevenue — internal</div>
     <div class="rows">
       <div class="row"><div class="l"><div class="t">Dark mode</div><div class="d">Follows the system by default</div></div>
@@ -515,6 +555,9 @@ function isAeo(l){ return l.lane==="aeo"; }
 // A hiring lead advertised, in public, that its phone is not being answered. Different
 // bridge, different math, and no demo site to send — that offer no longer exists.
 function isHiring(l){ return l.pool==="hiring"; }
+// Most of the Indeed board is medical and dental front desks. Those callers are patients,
+// the person who picks up is the office manager, and "saw your Indeed post" is a cold open.
+function isMedical(l){ return l.category==="hiring:medical" || /dental|medical|patient|clinic|ortho|pediatric|dermat|chiro|surgical|imaging|vet/i.test((l.posted_role||"")+" "+(l.business_name||"")); }
 function payOf(l){ const n=parseInt(l.posted_pay||0,10); return isFinite(n)&&n>0?n:0; }
 // What the consumer asked the assistant — mirrors NICHES[n].ai in adlead.py.
 const AEO_NOUN = { roofing:"roofing company", hvac:"AC repair company", plumbing:"plumber",
@@ -729,6 +772,7 @@ function openLine(l, who){
   // The opener asks about the phone, not a website. We stopped selling websites 2026-09-23.
   const n=greet(l), a=askName(l), q=questions(l).ask;
   if(n) return `"Hey ${esc(n)}, this is ${who} — I'll be quick. ${esc(q)}"`;
+  if(isHiring(l)&&isMedical(l)) return `"Hi, is this the office manager? This is ${who}, I'll be quick. ${esc(q)}"`;
   if(a) return `"Hey — is this ${esc(a)}? This is ${who}, I'll be quick. ${esc(q)}"`;
   return `"Hey, is this the owner of ${esc(l.business_name||"")}? This is ${who}, I'll be quick. ${esc(q)}"`;
 }
@@ -765,10 +809,13 @@ function openers(l){
     ];
   }
   if(isHiring(l)){
-    const role=l.posted_role||"front desk";
+    if(isMedical(l)) return [
+      {tag:"Busy front desk", line:`When the front desk is checking someone in and the phone rings — where does that call go?`},
+      {tag:"After hours", line:`What time does the office close? … And a new patient who calls after that — what happens?`},
+    ];
     return [
-      {tag:"Saw the job post", line:`I saw you're hiring a ${role} — how many calls are going to voicemail right now?`},
-      {tag:"After hours", line:`Quick one — what time do you guys close? … And where do those calls go after that?`},
+      {tag:"Busy phones", line:`When everyone's tied up and the phone rings — where does that call go?`},
+      {tag:"After hours", line:`What time do you guys close? … And where do those calls go after that?`},
     ];
   }
   return [
@@ -787,9 +834,15 @@ function questions(l){
     };
   }
   if(isHiring(l)){
+    if(isMedical(l)) return {
+      ask: `When the front desk is checking someone in and the phone rings, where does that call go?`,
+      then: `Then: <b>"How many go to voicemail on a busy morning?"</b> → <b>"A new patient who hits voicemail — do they leave a message, or call the next office?"</b> Let them say it.
+        <br><span class="why">If they ask how you found them: "Saw you're hiring for the front desk — figured the phones are stretched."</span>`,
+    };
     return {
-      ask: `I saw you're hiring a ${l.posted_role||"front desk"} — how many calls are going to voicemail right now?`,
-      then: `Then: <b>"What time do you close?"</b> → <b>"Where do those calls go after that?"</b> → <b>"How many a week do you figure you're missing?"</b> Make them say the number.`,
+      ask: `When everyone's tied up and the phone rings, where does that call go?`,
+      then: `Then: <b>"How many a week go to voicemail?"</b> → <b>"Does that caller leave a message, or call the next place?"</b> Let them say it.
+        <br><span class="why">If they ask how you found them: "Saw you're hiring someone for the phones."</span>`,
     };
   }
   return {
@@ -865,7 +918,9 @@ function pushDial(){
 function saveQueue(){ localStorage.setItem("rr_queue",JSON.stringify(queue)); }
 // Card mode deals one lead at a time; list mode is the sheet of numbers. The choice
 // sticks, because a preference you re-pick every load is not a preference.
-let dialMode = localStorage.getItem("rr_dialmode")==="list" ? "list" : "cards";
+let dialMode = localStorage.getItem("rr_dialmode")==="list" ? "list"
+             : localStorage.getItem("rr_dialmode")==="cards" ? "cards"
+             : (window.matchMedia("(min-width:1000px)").matches ? "list" : "cards");
 let listOpen = null;
 function setDialMode(m){ dialMode=m; listOpen=null; localStorage.setItem("rr_dialmode",m); renderDial(); }
 function toggleRow(k){ listOpen = (listOpen===k?null:k); renderDial(); }
@@ -990,47 +1045,52 @@ function msgs(l){
     const q=`best ${AEO_NOUN[l.category]||nlabel(l.category)} in ${a.query||l.city}`;
     return {
       postvm:{label:"After voicemail", hint:"Send within 60 seconds of hanging up",
-        body:`Hey — Chase, just left you a voicemail. I asked Claude "${q}" this morning and ${biz} wasn't in the answer${comp?" — "+comp+" were":""}. I put the check in a one-page report. What's the best email to send it to?`, needsDemo:false},
+        body:`Hey, it's Garrett — just left you a voicemail. I asked Claude "${q}" this morning and ${biz} wasn't in the answer${comp?" — "+comp+" were":""}. I put the check in a one-page report. What's the best email to send it to?`, needsDemo:false},
       report:{label:"Ask for the email", hint:"They said yes on the phone",
-        body:`Hey, Chase from RecoverRevenue — great talking. Send me the best email for the AI visibility report on ${biz} and I'll have it over today. Score, who's coming up instead of you, and the four fixes.`, needsDemo:false},
+        body:`Hey, it's Garrett — great talking. Send me the best email for the AI visibility report on ${biz} and I'll have it over today. Score, who's coming up instead of you, and the four fixes.`, needsDemo:false},
       book:{label:"Send the booking link", hint:"After they've seen the report",
-        body:`Hey, Chase from RecoverRevenue. Grab a slot and I'll walk you through the four fixes for ${biz} — 15 minutes, no deck: ${BOOK_LINK}`, needsDemo:false},
+        body:`Hey, it's Garrett. Grab a slot and I'll walk you through the four fixes for ${biz} — 15 minutes, no deck: ${BOOK_LINK}`, needsDemo:false},
       confirm:{label:"Confirm the call", hint:"Lock in a booked slot",
-        body:`Hey, Chase — locking in our call. I'll have the ${biz} report pulled up so you can see exactly what Claude and ChatGPT say. Talk soon.`, needsDemo:false},
+        body:`Hey, Garrett — locking in our call. I'll have the ${biz} report pulled up so you can see exactly what Claude and ChatGPT say. Talk soon.`, needsDemo:false},
       nudge:{label:"Nudge, no answer", hint:"Two days after the report went out",
-        body:`Hey, Chase — did the ${biz} report land? The short version: you're buying the Google click, and the customer who asks AI instead is calling ${comp||"a competitor"}. Worth 15 minutes?`, needsDemo:false},
+        body:`Hey, Garrett — did the ${biz} report land? The short version: you're buying the Google click, and the customer who asks AI instead is calling ${comp||"a competitor"}. Worth 15 minutes?`, needsDemo:false},
     };
   }
+  // Every text is from Garrett, no company name (Chase, 2026-09-24). It reads like a
+  // person who just called and got nothing — which is exactly what their missed
+  // customer experienced. The missed call IS the pitch.
   if(isHiring(l)){
     const role=l.posted_role||"someone to answer the phone", pay=payOf(l);
+    const cust=isMedical(l)?"patient":"customer", next=isMedical(l)?"office":"place";
     return {
-      postvm:{label:"After voicemail", hint:"Send within 60 seconds of hanging up",
-        body:`Hey — Chase from RecoverRevenue, just left you a voicemail. Saw ${biz} is hiring a ${role}. I put in a system that answers the calls that ring out — texts every missed caller back in 60 seconds. Worth 2 minutes?`, needsDemo:false},
+      postvm:{label:"Missed-call text", hint:"Send the second it rings out",
+        body:`Hey, it's Garrett — just called ${biz} and nobody picked up. If I'd been a new ${cust}, I'd already be calling the next ${next}. That's the call I fix. Worth 2 min?`, needsDemo:false},
+      book:{label:"Send the booking link", hint:"“Can I text you a link real fast?”",
+        body:`Hey ${who}, it's Garrett — here's the link, grab any time that works: ${BOOK_LINK}`, needsDemo:false},
       pricing:{label:"Text the pricing", hint:"They asked what it costs",
-        body:`Hey ${who}, Chase from RecoverRevenue. $${PRICING.setup.toLocaleString()} to set up, $${PRICING.mo}/mo after — and the monthly doesn't start until the system has booked you 15 jobs. ${pay?`You're budgeting $${pay.toLocaleString()}/yr for the ${role} — this is the part of that job that never calls in sick.`:`It doesn't replace the ${role} you're hiring. It covers lunch, after 5, and the second line.`}`, needsDemo:false},
-      book:{label:"Send the booking link", hint:"Let them pick the slot",
-        body:`Hey ${who}, Chase from RecoverRevenue. Grab whatever slot works — 15 minutes, I'll show you exactly what happens to the calls ${biz} misses today: ${BOOK_LINK}`, needsDemo:false},
+        body:`Hey ${who}, it's Garrett. $${PRICING.setup.toLocaleString()} to set up, $${PRICING.mo}/mo — and the monthly doesn't start until it's booked you 15 ${cust}s.${pay?` A fraction of what the ${role} costs, and it never calls in sick.`:""}`, needsDemo:false},
       confirm:{label:"Confirm the call", hint:"Lock in a booked slot",
-        body:`Hey ${who}, Chase — locking in our call. I'll have the numbers on what a missed call costs ${biz} pulled up. Talk soon.`, needsDemo:false},
+        body:`Hey ${who}, Garrett — locking in our call. Talk soon.`, needsDemo:false},
       info:{label:'"Send me info"', hint:"One paragraph, not a brochure",
-        body:`Hey ${who}, Chase from RecoverRevenue. Short version: every call ${biz} misses gets a text back in 60 seconds, books itself into your calendar, and you see each one logged. $${PRICING.setup.toLocaleString()} setup, $${PRICING.mo}/mo — and the monthly doesn't start until it has booked 15 jobs. If it never books 15, you never pay it.`, needsDemo:false},
+        body:`Hey ${who}, it's Garrett. Short version: every call ${biz} misses gets a text back in 60 seconds and books itself in. $${PRICING.setup.toLocaleString()} setup, $${PRICING.mo}/mo, and the monthly doesn't start until it's booked 15 ${cust}s.`, needsDemo:false},
       nudge:{label:"Nudge, no answer", hint:"Two days after the first call",
-        body:`Hey ${who}, Chase from RecoverRevenue — quick one. That ${role} post is still up. Whoever you hire still goes to lunch, and the phone still rings. Worth 15 minutes?`, needsDemo:false},
+        body:`Hey ${who}, it's Garrett — tried ${biz} again. Every call that rings out is a ${cust} booking somewhere else. Worth 2 min?`, needsDemo:false},
     };
   }
+  const noun=(NICHE[l.category]||{}).noun||"guy";
   return {
-    postvm:{label:"After voicemail", hint:"Send within 60 seconds of hanging up",
-      body:`Hey ${who}, Chase from RecoverRevenue — just left you a voicemail. When you're mid-job and the phone rings out, that caller dials the next ${(NICHE[l.category]||{}).noun||"guy"}. I set up a system that texts them back in 60 seconds. Worth 2 minutes?`, needsDemo:false},
+    postvm:{label:"Missed-call text", hint:"Send the second it rings out",
+      body:`Hey, it's Garrett — just called ${biz} and it rang out. If I'd been a customer, I'd already be calling the next ${noun}. That's the call I fix. Worth 2 min?`, needsDemo:false},
+    book:{label:"Send the booking link", hint:"“Can I text you a link real fast?”",
+      body:`Hey ${who}, it's Garrett — here's the link, grab any time that works: ${BOOK_LINK}`, needsDemo:false},
     pricing:{label:"Text the pricing", hint:"They asked what it costs",
-      body:`Hey ${who}, Chase from RecoverRevenue. $${PRICING.setup.toLocaleString()} to set up, $${PRICING.mo}/mo after — and the monthly doesn't start until the system has booked ${biz} 15 jobs. One saved job pays the month.`, needsDemo:false},
-    book:{label:"Send the booking link", hint:"Let them pick the slot themselves",
-      body:`Hey ${who}, Chase from RecoverRevenue. Grab whatever slot works and I'll walk you through what I'd build for ${biz} — 15 minutes, no pitch deck: ${BOOK_LINK}`, needsDemo:false},
+      body:`Hey ${who}, it's Garrett. $${PRICING.setup.toLocaleString()} to set up, $${PRICING.mo}/mo — and the monthly doesn't start until it's booked ${biz} 15 jobs. One saved job pays the month.`, needsDemo:false},
     confirm:{label:"Confirm the call", hint:"Lock in a booked slot",
-      body:`Hey ${who}, Chase — locking in our call. I'll have the numbers on what a missed call costs ${biz} pulled up. 15 minutes. Talk soon.`, needsDemo:false},
+      body:`Hey ${who}, Garrett — locking in our call. Talk soon.`, needsDemo:false},
     nudge:{label:"Nudge, no answer", hint:"Two days after the first call",
-      body:`Hey ${who}, Chase from RecoverRevenue. Quick one — when you're on a job and the phone rings out, that caller hits the next ${(NICHE[l.category]||{}).noun||"guy"}. I set up a system that texts them back in 60 seconds. Worth 2 minutes?`, needsDemo:false},
+      body:`Hey ${who}, it's Garrett — tried ${biz} again. Every call that rings out is a job going to the next ${noun}. Worth 2 min?`, needsDemo:false},
     info:{label:'"Send me info"', hint:"One paragraph, not a brochure",
-      body:`Hey ${who}, Chase from RecoverRevenue. Short version: every call ${biz} misses gets a text back in 60 seconds and books itself in. $${PRICING.setup.toLocaleString()} setup, $${PRICING.mo}/mo — and the monthly doesn't start until it has booked 15 jobs. If it never books 15, you never pay it.`, needsDemo:false},
+      body:`Hey ${who}, it's Garrett. Short version: every call ${biz} misses gets a text back in 60 seconds and books itself in. $${PRICING.setup.toLocaleString()} setup, $${PRICING.mo}/mo, and the monthly doesn't start until it's booked 15 jobs.`, needsDemo:false},
   };
 }
 
@@ -1065,11 +1125,11 @@ function foundLine(l){
 function sendLink(l, live){
   const who = greet(l) || askName(l) || "there";
   const biz = l.business_name || "your business";
-  const sms = `Hey ${who}, Chase from RecoverRevenue — here's the link to grab a time: ${BOOK_LINK}`;
-  const subj = `RecoverRevenue — booking link for ${biz}`;
+  const sms = `Hey ${who}, it's Garrett — here's the link, grab any time that works: ${BOOK_LINK}`;
+  const subj = `That link — ${biz}`;
   const body = `Hey ${who},\n\nGreat talking. Grab whatever time works:\n${BOOK_LINK}\n\n`
              + `Quick recap: every call ${biz} misses gets a text back in 60 seconds and books `
-             + `itself in. You see each one logged.\n\nChase\nRecoverRevenue`;
+             + `itself in. You see each one logged.\n\nGarrett`;
   return `<div class="sec">
     <div class="seclab">Send them the link${live?" — don't let it cool off":""}</div>
     <div class="linkbox">
@@ -1098,7 +1158,9 @@ function modeSwitch(){
 // published, and the two ways to open. Everything here is sourced — no estimate, no
 // invented owner name. A lead with a dispo logged is dimmed, not hidden: the deck is a
 // record of the day, and hiding worked rows makes a short list look shorter than it is.
+function isWide(){ return window.matchMedia("(min-width:1000px)").matches; }
 function renderList(v, list){
+  if(isWide()) return renderSplit(v, list);
   const rows = list.map((l,i)=>{
     const k=key(l), d=rec(l,true)||{}, vf=l.verify||{}, pay=payOf(l);
     const open = listOpen===k;
@@ -1143,6 +1205,73 @@ function renderList(v, list){
   </div>`;
 }
 function jumpTo(i){ idx=i; }
+
+// Desktop: the whole list, and one lead in focus. Picks the first unworked lead
+// so the pane is never empty on load.
+function renderSplit(v, list){
+  let sel = list.find(l=>key(l)===listOpen);
+  if(!sel){ sel = list.find(l=>!(rec(l,true)||{}).dispo) || list[0]; listOpen = key(sel); }
+  const si = list.indexOf(sel); idx = si;
+  const rows = list.map((l,i)=>{
+    const k=key(l), d=rec(l,true)||{}, pay=payOf(l);
+    return `<div class="lrow ${d.dispo?"done":""} ${k===listOpen?"sel":""}">
+      <div class="lhead" onclick="pickRow('${jsq(k)}')">
+        <span class="lnum">${String(i+1).padStart(2,"0")}</span>
+        <span class="lbiz"><b>${esc(l.business_name||"?")}</b>
+          <span>${esc(fmtPhone(l.phone))} · ${esc(l.city||"")}${
+            isHiring(l)&&l.posted_role?" · "+esc(l.posted_role):""}</span></span>
+        ${d.dispo?`<span class="lpay" style="color:var(--dim)">${esc(d.dispo)}</span>`:pay?`<span class="lpay">$${Math.round(pay/1000)}k</span>`:""}
+      </div></div>`;
+  }).join("");
+  const l=sel, d=rec(l,true)||{}, vf=l.verify||{}, M=msgs(l);
+  const name=greet(l), ask=askName(l);
+  const warns=(vf.flags||[]).filter(f=>f.status==="check");
+  const who = rep===REP_DEFAULT?"Garrett":esc(rep);
+  const pane = `<div class="pane">
+    <div class="cname">${esc(l.business_name||"")}</div>
+    <div class="cmeta">${esc(fmtPhone(l.phone))} · ${esc(l.city||"")}${name?` · ask for <b>${esc(name)}</b>`:ask?` · maybe <b>${esc(ask)}</b>?`:""}</div>
+    ${foundLine(l)}
+    ${warns.map(f=>`<div class="warn"><b>Before you dial:</b> ${esc(f.why)}</div>`).join("")}
+    <div class="theask">
+      <div class="ol">Open with this — then stop talking</div>
+      <q>${openLine(l, who).replace(/^"|"$/g,"")}</q>
+      <div class="then">${questions(l).then}</div>
+    </div>
+    <a class="callbtn" href="${telHref(l.phone)}" onclick="markCalled()">
+      <svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>
+      <span>Call ${esc(fmtPhone(l.phone))}</span></a>
+    <div class="sec">
+      <div class="seclab">Text them</div>
+      <div class="row2">
+        <a href="${smsHref(l.phone, M.book.body)}" onclick="sent('book')">Booking link</a>
+        <a href="${smsHref(l.phone, M.postvm.body)}" onclick="sent('postvm')">Missed-call text</a>
+        <button onclick="copyText('${jsq(BOOK_LINK)}');toast('Link copied')">Copy link</button>
+      </div>
+      <div class="txt"><b>Missed-call text:</b> ${esc(M.postvm.body)}</div>
+    </div>
+    <div class="sec">
+      <div class="seclab">How did the call go?</div>
+      <div class="grid5">${DISPOS.map(([c,short,full])=>
+        `<button class="dbtn ${c} ${d.dispo===full?"on":""}" onclick="setDispo('${full}')">${short}</button>`).join("")}
+        <button class="dbtn ${d.kill==="bad_number"?"on":""}" onclick="setKill('bad_number')">Bad #</button></div>
+      <input class="note-in" placeholder="One line — what they actually said…"
+        value="${esc(d.note||"")}" onchange="setNote(this.value)">
+    </div>
+    <details class="meta"><summary>More texts · objections</summary>
+      ${Object.entries(M).filter(([k])=>k!=="book"&&k!=="postvm").map(([k,m])=>
+        `<a class="txt" style="display:block" href="${smsHref(l.phone,m.body)}" onclick="sent('${k}')"><b>${esc(m.label)}:</b> ${esc(m.body)}</a>`).join("")}
+      ${isAeo(l)?aeoScript(l):isHiring(l)?hiringScript(l):""}
+    </details>
+  </div>`;
+  v.innerHTML = `<div class="deckwrap">
+    <div class="deckbar"><span>${list.length} numbers</span>
+      <span class="prog"><i style="width:${list.filter(l=>(rec(l,true)||{}).dispo).length/list.length*100}%"></i></span>
+      ${modeSwitch()}</div>
+    <div class="split"><div class="llist">${rows}</div>${pane}</div>
+  </div>`;
+}
+function pickRow(k){ listOpen=k; renderDial(); }
+window.addEventListener("resize",(()=>{let w=isWide();return ()=>{if(isWide()!==w){w=isWide();if(dialMode==="list")renderDial();}};})());
 
 function renderDial(){
   const v=$("scr-dial"), list=queueLeads();
@@ -1211,7 +1340,7 @@ function renderDial(){
       ${l.alt_phone?`<a class="altcall" href="${telHref(l.alt_phone)}">Other number on file — ${esc(fmtPhone(l.alt_phone))}</a>`:""}
 
       <details class="meta"><summary>${greet(l)||askName(l)?"Who this is":"No name published"} · sources · opener</summary>
-        <p>${openLine(l, rep===REP_DEFAULT?"Chase":esc(rep))}</p>
+        <p>${openLine(l, rep===REP_DEFAULT?"Garrett":esc(rep))}</p>
         ${info.length?`<div class="srcline">${esc(info[0].why)}</div>`:""}
         ${l.address?`<div class="srcline">${esc(l.address)}</div>`:""}
         ${inc?`<div class="srcline">Intake is an estimate: ${l.review_count} reviews × ${JOBS_PER_REVIEW} jobs/review × $${inc.t} typical ticket. The review count is the only sourced number in it.</div>`:""}
@@ -1247,7 +1376,7 @@ function renderDial(){
       <h3>"Send me an email"</h3><p>"What's the best email? I'll have it to you in 5 minutes." Then actually send it in 5 minutes.</p>
       <h3>"I'm slammed"</h3><p>"That's the point — slammed is exactly when the phone rings out."</p>
       <h3>"Not interested"</h3><p>"Fair enough — is it the cost, the timing, or just not a priority?"</p>
-      <h3>Voicemail — under 20s, then text immediately</h3><p>"Hey ${name||ask?esc(name||ask):"[name]"}, Chase from RecoverRevenue. I put in a system that texts back every call ${esc(l.business_name||"")} misses, in 60 seconds. Texting you now so you've got my number."</p>
+      <h3>Voicemail — under 20s, then text immediately</h3><p>"Hey ${name||ask?esc(name||ask):"[name]"}, it's Garrett — just called and got voicemail, which is the exact call I fix. Texting you now so you've got my number."</p>
     </div></details>`)}
   </div>`;
 
@@ -1321,7 +1450,7 @@ function hiringScript(l){
     <h3>"Not interested"</h3>
     <p>"Fair enough — is it the cost, the timing, or just not a priority?"</p>
     <h3>Voicemail — under 20s, then text immediately</h3>
-    <p>"Hey, Chase from RecoverRevenue. Saw you're hiring a ${role} — I handle the calls that ring out before anyone can pick up. Texting you now so you've got my number."</p>
+    <p>"Hey, it's Garrett — just called and got voicemail. That's the call I fix: the one that rings out while the front desk is busy. Texting you now so you've got my number."</p>
   </div></details>`;
 }
 
@@ -1360,15 +1489,15 @@ function aeoScript(l){
   const q=`best ${AEO_NOUN[l.category]||n} in ${a.query||l.city}`;
   const who=comp.length?esc(comp.join(" and ")):"your competitors";
   return `<details class="script"><summary>Script &amp; objections — AI visibility</summary><div class="prose">
-      <h3>Open — the query was actually run. Everything below is true.</h3><p>${openLine(l,"Chase")}</p>
+      <h3>Open — the query was actually run. Everything below is true.</h3><p>${openLine(l,"Garrett")}</p>
       <h3>"So what / who cares"</h3><p>"Fair. You're paying to sit at the top of Google and that still works. But the customer who asks AI instead never sees Google at all — they get three names and call one. Right now those three names are ${who}."</p>
       <h3>"We already do SEO / we run ads"</h3><p>"You do, and it's working — that's how I found you. Google ranks pages, AI cites sources. Different systems. You can be number one on Google and invisible in ChatGPT. That's what's happening here."</p>
       <h3>THE ASK — the email, not the sale</h3><p>"It's already in a one-pager — your score, the exact question where ${who} come up instead of you, and the four things causing it. Free, no strings. What's the best email?"</p>
       <h3>"How much?"</h3><p>"Depends what the report finds — I'm not going to quote you on something I haven't shown you. Look at it first; if it's not a problem for you, we're done." <i>No number. Ladder B pricing is not approved.</i></p>
       <h3>"Send me info" / "Email me"</h3><p>"That's exactly what I'm asking for — what's the address?" Then send it today. A report that arrives tomorrow is a cold lead.</p>
-      <h3>"Who are you?"</h3><p>"Chase, RecoverRevenue, Tampa. I'm a student — my whole generation asks ChatGPT before it Googles anything, and that's the customer you're missing."</p>
+      <h3>"Who are you?"</h3><p>"Garrett, out of Tampa. I'm a student — my whole generation asks ChatGPT before it Googles anything, and that's the customer you're missing."</p>
       <h3>"Not interested"</h3><p>"Fair enough. One question — do you know who ChatGPT sends your customers to right now? … It's ${who}. That's all I wanted you to have."</p>
-      <h3>Voicemail — under 20s, then text</h3><p>"Hey, Chase calling for the owner. I asked Claude '${esc(q)}' this morning and ${esc(l.business_name||"you")} didn't come up — ${who} did. I've got the check in a one-pager. Call me back and I'll send it."</p>
+      <h3>Voicemail — under 20s, then text</h3><p>"Hey, Garrett calling for the owner. I asked Claude '${esc(q)}' this morning and ${esc(l.business_name||"you")} didn't come up — ${who} did. I've got the check in a one-pager. Call me back and I'll send it."</p>
       <h3>Never say</h3><p>"I saw your ad" (unless the card says Transparency Center) · "ChatGPT said" (we asked Claude — say Claude, or check ChatGPT yourself first) · any monthly number.</p>
     </div></details>`;
 }
@@ -1418,6 +1547,7 @@ function armSwipe(){
 function nav(dir){
   const n=queueLeads().length; if(!n) return;
   idx=(idx+dir+n)%n;
+  if(dialMode==="list") listOpen=key(queueLeads()[idx]);
   renderDial(); renderQueueBtn(); $("main").scrollTop=0;
 }
 function cbTime(h){
@@ -1771,7 +1901,7 @@ document.addEventListener("keydown",e=>{
   $("healthLine").innerHTML=`<b>${g.ok+g.check}</b> of ${leads.length} verified · `+
     `${g.check} carry a caveat · <b>${g.held}</b> held back by the gate`;
   $("repLine").innerHTML=`Calls get tagged <b>${esc(rep)}</b> — tap to change`;
-  $("sheetRep").textContent = rep===REP_DEFAULT?"Chase":rep;
+  $("sheetRep").textContent = rep===REP_DEFAULT?"Garrett":rep;
   render();
   if(!queue.length && !Object.keys(results).length) setTimeout(openQueue,420);
 })();
