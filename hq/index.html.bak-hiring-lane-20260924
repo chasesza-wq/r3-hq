@@ -446,28 +446,15 @@ const NICHE = {
   remodeling:{label:"Remodeling (AI)", best:"9–11am or 2–4pm", win:[[9,11],[14,16]], noun:"remodeler", lane:"aeo"},
   pool:{label:"Pool (AI)", best:"9–11am or 2–4pm", win:[[9,11],[14,16]], noun:"pool builder", lane:"aeo"},
   chiropractor:{label:"Chiro (AI)", best:"10am–12 or 2–4pm", win:[[10,12],[14,16]], noun:"chiropractor", lane:"aeo"},
-  // ── LADDER C · hiring signal (tools/hiring/pull.py). They posted a job to answer their own
-  // phone, so the pain is not inferred — it is published, with a salary attached. Office hours.
-  "hiring:medical":{label:"Hiring · Medical", best:"9–11am or 2–4pm", win:[[9,11],[14,16]], noun:"practice", pool:"hiring"},
-  "hiring:property":{label:"Hiring · Property", best:"9–11am or 2–4pm", win:[[9,11],[14,16]], noun:"office", pool:"hiring"},
-  "hiring:services":{label:"Hiring · Services", best:"9–11am or 2–4pm", win:[[9,11],[14,16]], noun:"company", pool:"hiring"},
-  "hiring:trade":{label:"Hiring · Trade", best:"7–8am or 4–6pm", win:[[7,8],[16,18]], noun:"crew", pool:"hiring"},
-  "hiring:other":{label:"Hiring · Other", best:"9–11am or 2–4pm", win:[[9,11],[14,16]], noun:"office", pool:"hiring"},
 };
 function isAeo(l){ return l.lane==="aeo"; }
-// A hiring lead advertised, in public, that its phone is not being answered. Different
-// bridge, different math, and no demo site to send — that offer no longer exists.
-function isHiring(l){ return l.pool==="hiring"; }
-function payOf(l){ const n=parseInt(l.posted_pay||0,10); return isFinite(n)&&n>0?n:0; }
 // What the consumer asked the assistant — mirrors NICHES[n].ai in adlead.py.
 const AEO_NOUN = { roofing:"roofing company", hvac:"AC repair company", plumbing:"plumber",
   pest_control:"pest control company", med_spa:"med spa", dentist:"dentist", moving:"moving company",
   remodeling:"kitchen and bath remodeler", pool:"pool builder", chiropractor:"chiropractor" };
 const DEFAULT_WIN = [[8,9],[16,18]];
 
-// $1,000 setup + $500/mo, decided 2026-09-16. The monthly is first charged the day the
-// 15th booked job posts. No site/host tier — the website lane was killed 2026-09-23.
-const PRICING = { setup:1000, mo:500 };
+const PRICING = { setup:497, mo:149, site:1497, host:99 };
 
 // The booking page — all six CTAs on the main site point here, so the link a
 // prospect gets on the phone is the same one they'd have found themselves.
@@ -41692,11 +41679,7 @@ function niches(){
 // Killed leads still drop out; nothing else moves until the queue changes.
 let deckOrder = null;
 function buildDeck(){
-  // With no queue picked, hiring leads go first. They are the only records where the
-  // business published the problem itself — burying them behind 1,000 licence-roll
-  // numbers is how a found lead becomes a lead that was never called.
-  const src = queue.length ? queue
-    : Object.keys(niches()).sort((a,b)=>(a.indexOf("hiring:")===0?0:1)-(b.indexOf("hiring:")===0?0:1));
+  const src = queue.length ? queue : Object.keys(niches());
   const out = [];
   src.forEach(c=>{
     leads.filter(l=>l.category===c && diallable(l))
@@ -41786,36 +41769,21 @@ function msgs(l){
         body:`Hey, Chase — did the ${biz} report land? The short version: you're buying the Google click, and the customer who asks AI instead is calling ${comp||"a competitor"}. Worth 15 minutes?`, needsDemo:false},
     };
   }
-  if(isHiring(l)){
-    const role=l.posted_role||"someone to answer the phone", pay=payOf(l);
-    return {
-      postvm:{label:"After voicemail", hint:"Send within 60 seconds of hanging up",
-        body:`Hey — Chase from RecoverRevenue, just left you a voicemail. Saw ${biz} is hiring a ${role}. I put in a system that answers the calls that ring out — texts every missed caller back in 60 seconds. Worth 2 minutes?`, needsDemo:false},
-      pricing:{label:"Text the pricing", hint:"They asked what it costs",
-        body:`Hey ${who}, Chase from RecoverRevenue. $${PRICING.setup.toLocaleString()} to set up, $${PRICING.mo}/mo after — and the monthly doesn't start until the system has booked you 15 jobs. ${pay?`You're budgeting $${pay.toLocaleString()}/yr for the ${role} — this is the part of that job that never calls in sick.`:`It doesn't replace the ${role} you're hiring. It covers lunch, after 5, and the second line.`}`, needsDemo:false},
-      book:{label:"Send the booking link", hint:"Let them pick the slot",
-        body:`Hey ${who}, Chase from RecoverRevenue. Grab whatever slot works — 15 minutes, I'll show you exactly what happens to the calls ${biz} misses today: ${BOOK_LINK}`, needsDemo:false},
-      confirm:{label:"Confirm the call", hint:"Lock in a booked slot",
-        body:`Hey ${who}, Chase — locking in our call. I'll have the numbers on what a missed call costs ${biz} pulled up. Talk soon.`, needsDemo:false},
-      info:{label:'"Send me info"', hint:"One paragraph, not a brochure",
-        body:`Hey ${who}, Chase from RecoverRevenue. Short version: every call ${biz} misses gets a text back in 60 seconds, books itself into your calendar, and you see each one logged. $${PRICING.setup.toLocaleString()} setup, $${PRICING.mo}/mo — and the monthly doesn't start until it has booked 15 jobs. If it never books 15, you never pay it.`, needsDemo:false},
-      nudge:{label:"Nudge, no answer", hint:"Two days after the first call",
-        body:`Hey ${who}, Chase from RecoverRevenue — quick one. That ${role} post is still up. Whoever you hire still goes to lunch, and the phone still rings. Worth 15 minutes?`, needsDemo:false},
-    };
-  }
   return {
+    demo:{label:"Text the demo", hint:"After they said yes to a look",
+      body:`Hey ${who}, Chase from RecoverRevenue — here's the demo site I built for ${biz}: ${link}\n\nIf you like it we can talk. If not, no hard feelings.`, needsDemo:true},
     postvm:{label:"After voicemail", hint:"Send within 60 seconds of hanging up",
-      body:`Hey ${who}, Chase from RecoverRevenue — just left you a voicemail. When you're mid-job and the phone rings out, that caller dials the next ${(NICHE[l.category]||{}).noun||"guy"}. I set up a system that texts them back in 60 seconds. Worth 2 minutes?`, needsDemo:false},
-    pricing:{label:"Text the pricing", hint:"They asked what it costs",
-      body:`Hey ${who}, Chase from RecoverRevenue. $${PRICING.setup.toLocaleString()} to set up, $${PRICING.mo}/mo after — and the monthly doesn't start until the system has booked ${biz} 15 jobs. One saved job pays the month.`, needsDemo:false},
+      body:`Hey ${who}, Chase here — just left you a voicemail. I put a demo website together for ${biz}. Takes 30 seconds to look at: ${link}`, needsDemo:true},
+    pricing:{label:"Text the pricing", hint:"Only after they've seen the demo",
+      body:`Hey ${who}, Chase from RecoverRevenue. Straight-up pricing for ${biz}: $${PRICING.setup} setup + $${PRICING.mo}/mo — missed-call text-back live in 3 days. Website too? $${PRICING.site} build + $${PRICING.host}/mo hosting. Demo's here: ${link}\n\nOne saved job pays the month.`, needsDemo:true},
     book:{label:"Send the booking link", hint:"Let them pick the slot themselves",
       body:`Hey ${who}, Chase from RecoverRevenue. Grab whatever slot works and I'll walk you through what I'd build for ${biz} — 15 minutes, no pitch deck: ${BOOK_LINK}`, needsDemo:false},
     confirm:{label:"Confirm the call", hint:"Lock in a booked slot",
-      body:`Hey ${who}, Chase — locking in our call. I'll have the numbers on what a missed call costs ${biz} pulled up. 15 minutes. Talk soon.`, needsDemo:false},
-    nudge:{label:"Nudge, no answer", hint:"Two days after the first call",
+      body:`Hey ${who}, Chase — locking in our call. I'll have the ${biz} demo pulled up so you can see it live. 5 minutes, no pressure. Talk soon.`, needsDemo:false},
+    nudge:{label:"Nudge, no demo", hint:"When there's no demo built yet",
       body:`Hey ${who}, Chase from RecoverRevenue. Quick one — when you're on a job and the phone rings out, that caller hits the next ${(NICHE[l.category]||{}).noun||"guy"}. I set up a system that texts them back in 60 seconds. Worth 2 minutes?`, needsDemo:false},
-    info:{label:'"Send me info"', hint:"One paragraph, not a brochure",
-      body:`Hey ${who}, Chase from RecoverRevenue. Short version: every call ${biz} misses gets a text back in 60 seconds and books itself in. $${PRICING.setup.toLocaleString()} setup, $${PRICING.mo}/mo — and the monthly doesn't start until it has booked 15 jobs. If it never books 15, you never pay it.`, needsDemo:false},
+    info:{label:'"Send me info"', hint:"No brochure — the demo is the info",
+      body:`Hey ${who}, Chase from RecoverRevenue. No brochure, just this: ${link} — a working site for ${biz}. $${PRICING.setup} setup + $${PRICING.mo}/mo and every missed call gets a text back in 60 seconds. Look when you get a minute.`, needsDemo:true},
   };
 }
 
@@ -41914,10 +41882,10 @@ function renderDial(){
 
     <div class="sec">
       <div class="seclab">Send it${live?" — don't let it cool off":""}</div>
-      ${aeo?evidenceBox(l):(isHiring(l)?hiringBox(l):"")}
+      ${aeo?evidenceBox(l):demoBox(l,url)}
       <div class="sendgrid" style="margin-top:8px">
         ${aeo?sendBtn(l,"report",url)+" "+sendBtn(l,"postvm",url)+" "+sendBtn(l,"book",url)+" "+sendBtn(l,"nudge",url)
-             :sendBtn(l,"postvm",url)+" "+sendBtn(l,"pricing",url)+" "+sendBtn(l,"book",url)+" "+sendBtn(l,"info",url)}
+             :sendBtn(l,"demo",url)+" "+sendBtn(l,"postvm",url)+" "+sendBtn(l,"pricing",url)+" "+sendBtn(l,"book",url)}
         <button class="sbtn wide" onclick="openTpl()"><span class="t">All ${Object.keys(msgs(l)).length} messages</span>
           <span class="mini ghost">Open</span></button>
       </div>
@@ -41931,16 +41899,16 @@ function renderDial(){
         — clears when you text pricing or book.</div>`:""}
     </div>
 
-    ${aeo?aeoScript(l):(isHiring(l)?hiringScript(l):`<details class="script"><summary>Script &amp; objections</summary><div class="prose">
-      <h3>Bridge</h3><p>"Reason I'm calling — I build systems for ${esc(nlabel(l.category).toLowerCase())} businesses that text back every missed call in 60 seconds, so the job doesn't go to the next ${esc((NICHE[l.category]||{}).noun||"guy")}. When you're mid-job and the phone rings out, that money walks."</p>
-      <h3>The ask</h3><p>"Takes 15 minutes to walk you through it. Worth a look?"</p>
-      <h3>"How much?"</h3><p>"$${PRICING.setup.toLocaleString()} to set it up, $${PRICING.mo} a month after — and the monthly doesn't start until it's booked you 15 jobs. If it never books 15, you never pay the monthly."</p>
+    ${aeo?aeoScript(l):`<details class="script"><summary>Script &amp; objections</summary><div class="prose">
+      <h3>Bridge</h3><p>"Reason I'm calling — I build systems for ${esc(nlabel(l.category).toLowerCase())} businesses that text back every missed call in 60 seconds, so the job doesn't go to the next ${esc((NICHE[l.category]||{}).noun||"guy")}. You've got ${l.review_count??"a stack of"} reviews — that's real trust — but when you're mid-job and the phone rings out, that money walks."</p>
+      <h3>The ask</h3><p>"Takes 2 minutes to see it. I'll text you a link right now — if it's not for you, no hard feelings."</p>
+      <h3>"How much?"</h3><p>"$${PRICING.setup} setup, $${PRICING.mo} a month. One saved job pays for the month. Look at it first though — no point talking price on something you haven't seen."</p>
       <h3>"Not interested"</h3><p>"Fair enough. Can I ask — is it the cost, the timing, or just not a priority right now?"</p>
-      <h3>"All my work is referrals"</h3><p>"That's great — it means people trust you. This doesn't replace referrals. It catches the referral who called while you were under a truck and got voicemail."</p>
+      <h3>"All my work is referrals"</h3><p>"That's great — it means people trust you. This doesn't replace referrals, it makes them convert. When someone gets your name and Googles you, right now they find nothing."</p>
       <h3>"Send me an email"</h3><p>"I can do that — what's the best email? I'll have it to you in 5 minutes." Then actually send it in 5 minutes.</p>
-      <h3>"I'm slammed"</h3><p>"That's the whole point — when you're slammed is exactly when the phone rings out. I'll text you the short version, look tonight."</p>
-      <h3>Voicemail — under 25s, then text immediately</h3><p>"Hey ${name||ask?esc(name||ask):"[name]"}, Chase from RecoverRevenue. I put in a system that texts back every call ${esc(l.business_name||"")} misses, in 60 seconds. Sending you a text right now so you've got my number."</p>
-    </div></details>`)}
+      <h3>"I'm slammed"</h3><p>"Perfect time to build the pipeline so you're not scrambling when it slows down. I'll text it — look tonight, no pressure."</p>
+      <h3>Voicemail — under 25s, then text immediately</h3><p>"Hey ${name||ask?esc(name||ask):"[name]"}, Chase calling. I built a demo website for ${esc(l.business_name||"")} and wanted to show you before I moved on — it's live right now. Call me back, takes 2 minutes."</p>
+    </div></details>`}
   </div>`;
 
   armSwipe();
@@ -41966,43 +41934,6 @@ function demoBox(l,url){
     paste it in the terminal, then drop the URL back in here and every text below wakes up.</div>
     <input class="url-in" placeholder="Paste the demo URL once it's live…"
       value="${esc(d.demoUrl||"")}" onchange="setDemoUrl(this.value)"></div>`;
-}
-
-// The hiring lane has no demo either. What it has is the job ad — the business saying,
-// in public and with a salary attached, that its phone is not being answered. The card
-// shows the posting and its URL so nothing said on the phone outruns the evidence.
-function hiringScript(l){
-  const pay=payOf(l), role=esc(l.posted_role||"front desk"), y1=PRICING.setup+PRICING.mo*12;
-  return `<details class="script" open><summary>Script &amp; objections — hiring lane</summary><div class="prose">
-    <h3>Open</h3><p>"Hey — is this the owner of ${esc(l.business_name||"")}?"</p>
-    <h3>Bridge — say the evidence, don't dress it up</h3>
-    <p>"Reason I'm calling: I saw you're hiring a ${role}. ${pay?`Looks like about $${pay.toLocaleString()} a year. `:""}Before you fill it — how many calls are going to voicemail right now?"</p>
-    <p><i>Then stop talking. The number they say is the whole call.</i></p>
-    <h3>The turn</h3><p>"So here's what I do. Every call you miss gets a text back in 60 seconds — 'sorry we missed you, what do you need?' — and it books them in. It doesn't replace the hire. It covers lunch, after 5, and the twelve calls that came in while they were on the other line."</p>
-    <h3>The ask</h3><p>"Fifteen minutes and I'll show you what happens to the calls you miss today. Worth it?"</p>
-    <h3>"How much?"</h3>
-    <p>"$${PRICING.setup.toLocaleString()} to set up, $${PRICING.mo} a month after — and the monthly doesn't start until it has booked you 15 jobs. If it never books 15, you never pay the monthly."${pay?` <b>Year one is $${y1.toLocaleString()} against the $${pay.toLocaleString()} you're about to spend on the seat.</b>`:""}</p>
-    <h3>"We're hiring someone for that"</h3><p>"Good — you should. This isn't instead of them. One person answers one call at a time, eight hours a day. Your phone rings twenty-four. I'm covering the other sixteen and the second line."</p>
-    <h3>"We don't miss calls"</h3><p>"Then this takes me two minutes to prove wrong and I'll leave you alone. Can I call your main line right now while we're talking?"</p>
-    <h3>"Send me an email"</h3><p>"I can do that — what's the best email? I'll have it to you in 5 minutes." Then actually send it in 5 minutes.</p>
-    <h3>"Not interested"</h3><p>"Fair enough. Can I ask — is it the cost, the timing, or just not a priority right now?"</p>
-    <h3>Voicemail — under 25s, then text immediately</h3>
-    <p>"Hey, Chase from RecoverRevenue. Saw ${esc(l.business_name||"")} is hiring a ${role} — I handle the calls that ring out before anyone can pick up. Sending a text now so you've got my number."</p>
-  </div></details>`;
-}
-
-function hiringBox(l){
-  const pay=payOf(l), src=(l.verify||{}).sources||[];
-  const url=(l.source||"").split(" — ")[1]||src[0]||"";
-  const when=(l.source||"").match(/\d{4}-\d{2}-\d{2}/);
-  return `<div class="demobox"><div class="dh"><span class="dt">They posted the problem</span>
-    ${when?`<span class="mini ghost">${esc(when[0])}</span>`:""}</div>
-    <div class="ds">Hiring a <b>${esc(l.posted_role||"front desk")}</b>${pay?` at about <b>$${pay.toLocaleString()}/yr</b>`:""}.
-    ${esc(l.why_on_list||"")}</div>
-    ${pay?`<div class="ds" style="margin-top:6px">That is <b>$${pay.toLocaleString()}</b> a year for the phone.
-      Year one with us is <b>$${(PRICING.setup+PRICING.mo*12).toLocaleString()}</b>, and the monthly
-      doesn't start until 15 jobs are booked.</div>`:""}
-    ${url?`<a class="demolink" href="${esc(url)}" target="_blank" rel="noopener">${esc(url)}</a>`:""}</div>`;
 }
 
 // The AI lane has no demo. What it has is evidence, and the card shows exactly
