@@ -2016,6 +2016,13 @@ function buildCmd(l){
 let results  = JSON.parse(localStorage.getItem("rr_results")||"{}");
 let meetings = JSON.parse(localStorage.getItem("rr_meetings")||"[]");
 let queue    = JSON.parse(localStorage.getItem("rr_queue")||"[]");
+// 2026-09-28: a phone that saved the Indeed hiring queue kept building its deck from categories
+// that left the corpus, so the roofers never showed. Drop saved niches with no leads; if none
+// survive, start on Roofing.
+{ const have=new Set(LEADS.map(l=>l.category));
+  const kept=queue.filter(c=>have.has(c));
+  if(kept.length!==queue.length){ queue = kept.length ? kept : (have.has("roofing") ? ["roofing"] : []);
+    localStorage.setItem("rr_queue",JSON.stringify(queue)); } }
 let rep      = localStorage.getItem("rr_rep")||REP_DEFAULT;
 let scr="dial", idx=0, bookKey=null, tplCache=[];
 
