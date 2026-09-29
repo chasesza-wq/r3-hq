@@ -2111,10 +2111,33 @@ function niches(){
 // you mid-call — you'd hit Interested and be looking at somebody else.
 // Killed leads still drop out; nothing else moves until the queue changes.
 let deckOrder = null;
+const CALLED_YESTERDAY = new Set([
+  "9549449400", "7543411178", "5613967550", "7862591793", "5618166110",
+  "2392567788", "7865500901", "2393683900", "9547757260", "5616525876",
+  "9549532055", "7727814596", "9542740311", "7276561772"
+]);
+function isDelray(l){
+  const c = (l.city || "").toLowerCase();
+  const a = (l.address || "").toLowerCase();
+  return c.includes("delray") || a.includes("delray");
+}
+function geoRank(l){
+  if(isDelray(l)) return 0;
+  const c = (l.city || "").toLowerCase();
+  if(c.includes("boynton") || c.includes("boca")) return 1;
+  if(c.includes("lake worth") || c.includes("west palm") || c.includes("wellington") || c.includes("deerfield")) return 2;
+  if(c.includes("pompano") || c.includes("coral springs") || c.includes("jupiter")) return 3;
+  return 4;
+}
+function cleanDigits(p){
+  return String(p||"").replace(/\D/g,"").slice(-10);
+}
+function repName(){
+  if(rep === "CS" || rep === REP_DEFAULT) return "Chase";
+  if(rep === "GP") return "Garrett";
+  return esc(rep);
+}
 function buildDeck(){
-  // With no queue picked, hiring leads go first. They are the only records where the
-  // business published the problem itself — burying them behind 1,000 licence-roll
-  // numbers is how a found lead becomes a lead that was never called.
   const src = queue.length ? queue
     : Object.keys(niches()).sort((a,b)=>(a.indexOf("hiring:")===0?0:1)-(b.indexOf("hiring:")===0?0:1));
   const out = [];
@@ -2122,11 +2145,15 @@ function buildDeck(){
     leads.filter(l=>l.category===c && diallable(l))
       .sort((a,b)=>{
         const da=rec(a,true)||{}, db=rec(b,true)||{};
-        if(!!da.dispo !== !!db.dispo) return da.dispo?1:-1;          // uncalled first
+        const callA = !!da.dispo || CALLED_YESTERDAY.has(cleanDigits(a.phone));
+        const callB = !!db.dispo || CALLED_YESTERDAY.has(cleanDigits(b.phone));
+        if(callA !== callB) return callA ? 1 : -1;
+        const ga = geoRank(a), gb = geoRank(b);
+        if(ga !== gb) return ga - gb;
         const oa=firstName(a)?0:1, ob=firstName(b)?0:1;
-        if(oa!==ob) return oa-ob;                                     // a name to ask for first (2026-09-28)
+        if(oa!==ob) return oa-ob;
         const sa=(a.verify||{}).status==="ok"?0:1, sb=(b.verify||{}).status==="ok"?0:1;
-        if(sa!==sb) return sa-sb;                                     // clean before caveated
+        if(sa!==sb) return sa-sb;
         return (b.review_count||0)-(a.review_count||0);
       }).forEach(l=>out.push(key(l)));
   });
@@ -2333,7 +2360,7 @@ function renderList(v, list){
       <div class="lhead" onclick="toggleRow('${jsq(k)}')">
         <span class="lnum">${String(i+1).padStart(2,"0")}</span>
         <span class="lbiz"><b>${esc(l.business_name||"?")}</b>
-          <span>${esc(fmtPhone(l.phone))} · ${esc(l.city||"")}${
+          <span>${esc(fmtPhone(l.phone))} · ${esc(l.city||"")}${firstName(l)?` · <b style="color:var(--accent,#2563eb)">👤 ${esc(firstName(l))}</b>`:""}${
             isHiring(l)&&l.posted_role?" · "+esc(l.posted_role):""}</span></span>
         ${pay?`<span class="lpay">$${Math.round(pay/1000)}k</span>`:""}
         ${d.dispo?`<span class="lpay" style="color:var(--dim)">${esc(d.dispo)}</span>`:""}
@@ -2374,7 +2401,7 @@ function renderSplit(v, list){
       <div class="lhead" onclick="pickRow('${jsq(k)}')">
         <span class="lnum">${String(i+1).padStart(2,"0")}</span>
         <span class="lbiz"><b>${esc(l.business_name||"?")}</b>
-          <span>${esc(fmtPhone(l.phone))} · ${esc(l.city||"")}${
+          <span>${esc(fmtPhone(l.phone))} · ${esc(l.city||"")}${firstName(l)?` · <b style="color:var(--accent,#2563eb)">👤 ${esc(firstName(l))}</b>`:""}${
             isHiring(l)&&l.posted_role?" · "+esc(l.posted_role):""}</span></span>
         ${d.dispo?`<span class="lpay" style="color:var(--dim)">${esc(d.dispo)}</span>`:pay?`<span class="lpay">$${Math.round(pay/1000)}k</span>`:""}
       </div></div>`;
@@ -2382,7 +2409,7 @@ function renderSplit(v, list){
   const l=sel, d=rec(l,true)||{}, vf=l.verify||{}, M=msgs(l);
   const name=greet(l), ask=askName(l);
   const warns=(vf.flags||[]).filter(f=>f.status==="check");
-  const who = rep===REP_DEFAULT?"Garrett":esc(rep);
+  const who = repName();
   const pane = `<div class="pane">
     <div class="cname">${esc(l.business_name||"")}</div>
     <div class="cmeta">${esc(fmtPhone(l.phone))} · ${esc(l.city||"")}${name?` · ask for <b>${esc(name)}</b>`:ask?` · maybe <b>${esc(ask)}</b>?`:""}</div>
@@ -2496,7 +2523,7 @@ function renderDial(){
       ${l.alt_phone?`<a class="altcall" href="${telHref(l.alt_phone)}">Other number on file — ${esc(fmtPhone(l.alt_phone))}</a>`:""}
 
       <details class="meta"><summary>${greet(l)||askName(l)?"Who this is":"No name published"} · sources · opener</summary>
-        <p>${openLine(l, rep===REP_DEFAULT?"Garrett":esc(rep))}</p>
+        <p>${openLine(l, repName())}</p>
         ${info.length?`<div class="srcline">${esc(info[0].why)}</div>`:""}
         ${l.address?`<div class="srcline">${esc(l.address)}</div>`:""}
         ${inc?`<div class="srcline">Intake is an estimate: ${l.review_count} reviews × ${JOBS_PER_REVIEW} jobs/review × $${inc.t} typical ticket. The review count is the only sourced number in it.</div>`:""}
@@ -3057,7 +3084,7 @@ document.addEventListener("keydown",e=>{
   $("healthLine").innerHTML=`<b>${g.ok+g.check}</b> of ${leads.length} verified · `+
     `${g.check} carry a caveat · <b>${g.held}</b> held back by the gate`;
   $("repLine").innerHTML=`Calls get tagged <b>${esc(rep)}</b> — tap to change`;
-  $("sheetRep").textContent = rep===REP_DEFAULT?"Garrett":rep;
+  $("sheetRep").textContent = repName();
   render();
   if(!queue.length && !Object.keys(results).length) setTimeout(openQueue,420);
 })();
