@@ -1,0 +1,21 @@
+# One group for every crawler, AI bots included (GPTBot, OAI-SearchBot, PerplexityBot, ClaudeBot, Google-Extended): nothing is blocked except internal pages.
+User-agent: *
+Allow: /
+Disallow: /hq/
+Disallow: /staff/
+Disallow: /portal/
+Disallow: /twiml/
+Disallow: /library/
+Disallow: /v2/
+Disallow: /fitness/
+Disallow: /demo/
+Disallow: /lawn/
+Disallow: /towing/
+Disallow: /tree/
+Disallow: /washing/
+Disallow: /detailing/
+Disallow: /ads/
+Disallow: /index.numbered.html
+Disallow: /solutions_and_process_blueprint.html
+
+Sitemap: https://recoverrevenue.co/sitemap.xml
